@@ -1,0 +1,56 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2008-2011
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+from osv import osv, fields
+import sale
+ 
+class pos_ar(osv.osv):
+     _name = "pos.ar"
+     _description = "Point of Sale for Argentina"
+     _columns = {
+        'name' : fields.char('Nro', required=True, size=6),
+        'desc' : fields.text('Description', required=False, size=180),
+        'priority' : fields.integer('Priority', required=True, size=6),
+        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
+        'denomination_ids': fields.one2many('invoice.denomination' ,'name' ,'Denomination'),
+     }
+
+pos_ar()
+
+class sale_shop(osv.osv):
+    _name = "sale.shop"
+    _inherit = "sale.shop"
+    _columns = {
+        'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
+    }
+sale_shop()
+
+class invoice_denomination(osv.osv):
+    _name = "invoice.denomination"
+    _description = "Denomination for Invoices"
+    _columns = { 
+        'name' : fields.char('Denomination', required=True, size=4),
+        'desc' : fields.char('Description', required=True, size=100),
+    }
+    _sql_constraints = [
+        ('code_denomination_uniq', 'unique (name)', 'The Denomination of the Invoices must be unique per company !')
+    ]
+invoice_denomination()
+    
+    
