@@ -1,9 +1,7 @@
-
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2008-2011 
-# 
+#    Copyright (C) 2008-2011
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,13 +14,15 @@
 #    GNU General Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################sss
+##############################################################################
+from osv import osv, fields
 
-import pos_ar
-import sale
-import invoice
-
-
-
+class sale_shop(osv.osv):
+    _name = "sale.shop"
+    _inherit = "sale.shop"
+    _columns = {
+        'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
+    }
+sale_shop()

@@ -18,29 +18,7 @@
 #
 ##############################################################################
 from osv import osv, fields
-import sale
  
-class pos_ar(osv.osv):
-     _name = "pos.ar"
-     _description = "Point of Sale for Argentina"
-     _columns = {
-        'name' : fields.char('Nro', required=True, size=6),
-        'desc' : fields.text('Description', required=False, size=180),
-        'priority' : fields.integer('Priority', required=True, size=6),
-        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
-        'denomination_ids': fields.one2many('invoice.denomination' ,'name' ,'Denomination'),
-     }
-
-pos_ar()
-
-class sale_shop(osv.osv):
-    _name = "sale.shop"
-    _inherit = "sale.shop"
-    _columns = {
-        'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
-    }
-sale_shop()
-
 class invoice_denomination(osv.osv):
     _name = "invoice.denomination"
     _description = "Denomination for Invoices"
@@ -53,4 +31,14 @@ class invoice_denomination(osv.osv):
     ]
 invoice_denomination()
     
-    
+class pos_ar(osv.osv):
+     _name = "pos.ar"
+     _description = "Point of Sale for Argentina"
+     _columns = {
+        'name' : fields.char('Nro', required=True, size=6),
+        'desc' : fields.text('Description', required=False, size=180),
+        'priority' : fields.integer('Priority', required=True, size=6),
+        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
+        'denomination_id': fields.many2one('invoice.denomination', 'Denomination'),
+     }
+pos_ar()

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--vista Heredada de Sale_Shop-->
+        <!--para agregar los shops_ids que contiene esa sucurzal-->
+        <record id="view_pos_invoice_form" model="ir.ui.view">
+            <field name="name">account.invoice.form.inherit2</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                    <field name="journal_id" position="after">
+                        <field name="denomination_id"/>
+                        <field name="pos_ar_id"/>
+                    </field>
+                    <field name="number" position="after">
+                        <newline/>
+                    </field>
+            </field>
+        </record>
+    </data>
+</openerp>
