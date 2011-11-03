@@ -11,7 +11,7 @@
             <field name="arch" type="xml">
                     <field name="journal_id" position="after">
                         <field name="denomination_id"/>
-                        <field name="pos_ar_id"/>
+                        <field name="pos_ar_id" widget="selection"/>
                     </field>
                     <field name="number" position="after">
                         <newline/>

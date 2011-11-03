@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2010 Tiny SPRL (http://tiny.be). All Rights Reserved
+#    Copyright (C) 2004-2011 Tiny SPRL (http://tiny.be). All Rights Reserved
 #    
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 {
     "name": "Point of Sale ARGENTINA",
     "version": "1.0",
-    "depends": ["base", "sale" ,"account" ],
+    "depends": ["base", "sale" ,"account" , "account_accountant" ],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -36,6 +36,7 @@
         'pos_ar_view.xml',
         'sale_view.xml',
         'account_invoice_view.xml',
+        'partner_view.xml',
     ],
     'demo_xml': [],
     'installable': True,

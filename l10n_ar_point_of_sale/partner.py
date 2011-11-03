@@ -1,9 +1,7 @@
-
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2008-2011 
-# 
+#    Copyright (C) 2008-2011
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,14 +14,17 @@
 #    GNU General Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################sss
-
-import pos_ar
-import sale
-import invoice
-import partner
+##############################################################################
+from osv import osv, fields
 
 
-
+class account_fiscal_position (osv.osv):
+    _name = "account.fiscal.position"
+    _inherit = "account.fiscal.position"
+    _description = ""
+    _columns = {
+        'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
+    }
+account_fiscal_position()
