@@ -25,6 +25,6 @@ class account_fiscal_position (osv.osv):
     _inherit = "account.fiscal.position"
     _description = ""
     _columns = {
-        'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
+        'denomination_id' : fields.many2one('invoice.denomination','Denomination', required=True),
     }
 account_fiscal_position()

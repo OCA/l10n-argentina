@@ -24,6 +24,7 @@ import pos_ar
 import sale
 import invoice
 import partner
+import stock
 
 
 

@@ -19,39 +19,30 @@
 ##############################################################################
 from osv import osv, fields
 
-class sale_shop(osv.osv):
-    _name = "sale.shop"
-    _inherit = "sale.shop"
-    _columns = {
-        'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
-    }
-sale_shop()
-
-class sale_order(osv.osv):
-    _name = "sale.order"
-    _inherit = "sale.order"
+class stock_picking(osv.osv):
+    _name = "stock.picking"
+    _inherit = "stock.picking"
 
     #overwrite    
-    def _make_invoice(self, cr, uid, sale_or_obj, lines, context=None):
+    def _invoice_hook(self, cr, uid, picking, invoice_id):
         
-        invoice_id = super(sale_order, self)._make_invoice(cr, uid, sale_or_obj, lines, context)
+        order_to_pick_obj = picking.sale_id
         
-        # Para la denomination, se deberia? preguntar si esta seteada la fiscal position y sino lazar una exept??                         
-        denom_id = sale_or_obj.fiscal_position.denomination_id
-               
+        # Obtengo el browse del objeto de denominacion
+        denom_id = order_to_pick_obj.fiscal_position.denomination_id
+
         pos_ar_obj = self.pool.get('pos.ar')
-    
-        res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', sale_or_obj.shop_id.id), ('denomination_id', '=', denom_id.id)])
+        
+        res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order_to_pick_obj.shop_id.id), ('denomination_id', '=', denom_id.id)])
+        
         if not len(res_pos):
             raise osv.except_osv( ('Error'),
                                   ('You need to set up a shop and/or denomination')) 
-                                  
+        
         inv_obj = self.pool.get('account.invoice')
         vals = {'denomination_id' : denom_id.id , 'pos_ar_id': res_pos[0] }
-        #escribo en esa invoice y retorno su id como debe ser
         inv_obj.write(cr, uid, invoice_id, vals)
-                
-        return invoice_id
-
-    
-sale_order()
+        
+        return
+        
+stock_picking()
