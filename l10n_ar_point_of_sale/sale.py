@@ -26,3 +26,27 @@ class sale_shop(osv.osv):
         'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
     }
 sale_shop()
+
+class sale_order(osv.osv):
+    _name = "sale.order"
+    _inherit = "sale.order"
+    
+
+    def _make_invoice(self, cr, uid, order, lines, context=None):
+        
+        inv_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+                    
+        # Browse de order                   
+        sale_or_obj = self.browse(cr, uid, order)
+                                                    
+        # Para la denomination                              
+        denom_id = sale_or_obj.fiscal_position.denomination_id
+                                                                    
+        # La necesitas para hacer un search de pos_ar que tengan ese shop_id
+        sale_or_obj.shop_id 
+                                                                  
+        pos_ar_obj.search([('shop_id', '=', o.shop_id), ('denomination_id', '=', denom_id)])
+        
+    
+    
+sale_order()

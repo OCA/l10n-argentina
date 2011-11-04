@@ -32,13 +32,26 @@ class invoice_denomination(osv.osv):
 invoice_denomination()
     
 class pos_ar(osv.osv):
-     _name = "pos.ar"
-     _description = "Point of Sale for Argentina"
-     _columns = {
+    _name = "pos.ar"
+    _description = "Point of Sale for Argentina"
+    _columns = {
         'name' : fields.char('Nro', required=True, size=6),
-        'desc' : fields.text('Description', required=False, size=180),
+        'desc' : fields.char('Description', required=True, size=180),
         'priority' : fields.integer('Priority', required=True, size=6),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
         'denomination_id': fields.many2one('invoice.denomination', 'Denomination'),
-     }
+    }
+     
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        reads = self.read(cr, uid, ids, ['name', 'desc'], context=context)
+        res = []
+        for record in reads:
+            name = record['name']
+            if record['desc']:
+                name = name + ' - '+ record['desc']
+            res.append((record['id'], name))
+        return res
+        
 pos_ar()

@@ -18,7 +18,7 @@
                         <field name="priority" colspan="2"/>
                         <field name="denomination_id" select="1"/>
                         <separator string="Description" colspan="4"/>                        
-                        <field name="desc" select="1" nolabel="1" height="300" colspan="4"/>
+                        <field name="desc" select="1" nolabel="1" colspan="4"/>
                     </group>
                 </form>
             </field>
