@@ -28,6 +28,10 @@ class stock_picking(osv.osv):
         
         order_to_pick_obj = picking.sale_id
         
+        if not order_to_pick_obj.fiscal_position :
+            raise osv.except_osv( ('Error'),
+                                  ('Check the Fiscal Position Configuration'))         
+        
         # Obtengo el browse del objeto de denominacion
         denom_id = order_to_pick_obj.fiscal_position.denomination_id
 
@@ -37,7 +41,7 @@ class stock_picking(osv.osv):
         
         if not len(res_pos):
             raise osv.except_osv( ('Error'),
-                                  ('You need to set up a shop and/or denomination')) 
+                                  ('You need to set up a Shop and/or a Fiscal Position')) 
         
         inv_obj = self.pool.get('account.invoice')
         vals = {'denomination_id' : denom_id.id , 'pos_ar_id': res_pos[0] }

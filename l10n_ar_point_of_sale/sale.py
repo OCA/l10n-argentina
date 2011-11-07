@@ -32,19 +32,23 @@ class sale_order(osv.osv):
     _inherit = "sale.order"
 
     #overwrite    
-    def _make_invoice(self, cr, uid, sale_or_obj, lines, context=None):
+    def _make_invoice(self, cr, uid, order, lines, context=None):
         
-        invoice_id = super(sale_order, self)._make_invoice(cr, uid, sale_or_obj, lines, context)
-        
+        invoice_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+    
         # Para la denomination, se deberia? preguntar si esta seteada la fiscal position y sino lazar una exept??                         
-        denom_id = sale_or_obj.fiscal_position.denomination_id
+        denom_id = order.fiscal_position.denomination_id
                
         pos_ar_obj = self.pool.get('pos.ar')
-    
-        res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', sale_or_obj.shop_id.id), ('denomination_id', '=', denom_id.id)])
+        
+        if not order.fiscal_position :
+            raise osv.except_osv( ('Error'),
+                                  ('Check the Fiscal Position Configuration')) 
+        
+        res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order.shop_id.id), ('denomination_id', '=', denom_id.id)])
         if not len(res_pos):
             raise osv.except_osv( ('Error'),
-                                  ('You need to set up a shop and/or denomination')) 
+                                  ('You need to set up a Shop and/or a Fiscal Position')) 
                                   
         inv_obj = self.pool.get('account.invoice')
         vals = {'denomination_id' : denom_id.id , 'pos_ar_id': res_pos[0] }
@@ -52,6 +56,5 @@ class sale_order(osv.osv):
         inv_obj.write(cr, uid, invoice_id, vals)
                 
         return invoice_id
-
     
 sale_order()
