@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!--vista Heredada de Sale_Shop-->
-        <!--para agregar los shops_ids que contiene esa sucurzal-->
+        <!--vista Heredada de account_invoice-->
         <record id="view_pos_invoice_form" model="ir.ui.view">
             <field name="name">account.invoice.form.inherit2</field>
             <field name="model">account.invoice</field>
@@ -19,6 +18,18 @@
                     </field>
                     <field name="currency_id" position="before">
                         <field name="journal_id"/>
+                    </field>
+            </field>
+        </record>
+        <!--vista Heredada de account_invoice-->
+        <record id="view_pos_invoice_tree" model="ir.ui.view">
+            <field name="name">account.invoice.tree.inherit2</field>
+            <field name="model">account.invoice</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                    <field name="number" position="replace">
+                        <field name="internal_number"/>
                     </field>
             </field>
         </record>
