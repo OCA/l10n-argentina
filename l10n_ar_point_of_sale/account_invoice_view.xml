@@ -9,12 +9,16 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-                    <field name="journal_id" position="after">
+                    <field name="journal_id" position="replace">
+                    </field>
+                    <field name="number" position="replace">
                         <field name="denomination_id"/>
                         <field name="pos_ar_id" widget="selection"/>
-                    </field>
-                    <field name="number" position="after">
+                        <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                         <newline/>
+                    </field>
+                    <field name="currency_id" position="before">
+                        <field name="journal_id"/>
                     </field>
             </field>
         </record>
