@@ -11,7 +11,6 @@
                     <field name="journal_id" position="replace">
                     </field>
                     <field name="number" position="replace">
-                        <field name="denomination_id"/>
                         <field name="pos_ar_id" widget="selection"/>
                         <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                         <newline/>

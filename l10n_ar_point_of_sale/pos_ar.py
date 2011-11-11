@@ -45,12 +45,12 @@ class pos_ar(osv.osv):
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
             return []
-        reads = self.read(cr, uid, ids, ['name', 'desc'], context=context)
+        reads = self.read(cr, uid, ids, ['name', 'denomination_id'], context=context)
         res = []
         for record in reads:
             name = record['name']
-            if record['desc']:
-                name = name + ' - '+ record['desc']
+            if record['denomination_id']:
+                name = record['denomination_id'][1] + ' - '+ name
             res.append((record['id'], name))
         return res
         

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.3\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2011-11-09 17:10+0000\n"
-"PO-Revision-Date: 2011-11-09 17:10+0000\n"
+"POT-Creation-Date: 2011-11-11 18:32+0000\n"
+"PO-Revision-Date: 2011-11-11 18:32+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,39 +18,39 @@ msgstr ""
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_pos_ar_root
 msgid "Point of Sale AR"
-msgstr "Punto de Venta"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: field:pos.ar,priority:0
 msgid "Priority"
-msgstr "Prioridad"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_stock_picking
 msgid "Picking List"
-msgstr "Remito"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_pos_ar
 msgid "Point of Sale for Argentina"
-msgstr "Punto de Venta para Argentina"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: sql_constraint:sale.order:0
 msgid "Order Reference must be unique !"
-msgstr "¡La referencia del pedido debe ser única!"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: field:pos.ar,name:0
 msgid "Nro"
-msgstr "Nro"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: field:invoice.denomination,desc:0
 #: view:pos.ar:0
 #: field:pos.ar,desc:0
 msgid "Description"
-msgstr "Descripcion"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: field:account.fiscal.position,denomination_id:0
@@ -58,7 +58,7 @@ msgstr "Descripcion"
 #: field:invoice.denomination,name:0
 #: field:pos.ar,denomination_id:0
 msgid "Denomination"
-msgstr "Denominación"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.module.module,description:l10n_ar_point_of_sale.module_meta_information
@@ -66,77 +66,74 @@ msgid "\n"
 "    This module provide :\n"
 "    1) Implementation of Point of Sale for Argentina.\n"
 "    "
-msgstr "\n"
-"    Este Modulo contiene :\n"
-"    1) Implementacion de Punto de Venta para Argentina.\n"
-"    "
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_sale_shop
 msgid "Sales Shop"
-msgstr "Sucursal de Ventas"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: field:pos.ar,shop_id:0
 msgid "Shop"
-msgstr "Sucursal"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.module.module,shortdesc:l10n_ar_point_of_sale.module_meta_information
 msgid "Point of Sale ARGENTINA"
-msgstr "Punto de Venta ARGENTINA"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_invoice_denomination
 msgid "Denomination for Invoices"
-msgstr "Denominación para Facturas"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_invoice_denomination
 msgid "Denominations"
-msgstr "Denominaciones"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: view:account.fiscal.position:0
 #: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_denomination_view_tree
 msgid "Invoice Denomination"
-msgstr "Denominación de la Factura"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: field:account.invoice,pos_ar_id:0
 #: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_form
 #: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_tree
 msgid "Point of Sale"
-msgstr "Punto de Venta"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.base_invoices
 msgid "Invoices"
-msgstr "Facturas"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: sql_constraint:invoice.denomination:0
 msgid "The Denomination of the Invoices must be unique per company !"
-msgstr "La Denominación de las facturas debe ser única por empresa !"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_account_fiscal_position
 msgid "Fiscal Position"
-msgstr "Posición fiscal"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_account_invoice
 msgid "Invoice"
-msgstr "Factura"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: view:sale.shop:0
 #: field:sale.shop,pos_ar_ids:0
 msgid "Points of Sales"
-msgstr "Puntos de Ventas"
+msgstr ""
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_sale_order
 msgid "Sales Order"
-msgstr "Orden de Venta"
+msgstr ""
 

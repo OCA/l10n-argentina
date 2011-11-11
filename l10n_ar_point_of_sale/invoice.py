@@ -52,7 +52,7 @@ class invoice(osv.osv):
             reference = obj_inv.reference or ''
             
 #del        self.write(cr, uid, ids, {'internal_number':number})
-#se agrega:         
+#add:         
         #~ si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1. 
         #~ si el usuario hizo un ingreso dejo ese numero
             if not obj_inv.internal_number:
@@ -60,15 +60,14 @@ class invoice(osv.osv):
                 cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s", (pos_ar, ('open', 'paid', 'cancel',)))
                 max_number = cr.fetchone()    
                 if not max_number[0]:
-                    val = "1"
+                    val = '%08d' % 1
                     self.write(cr, uid, id, {'internal_number' : val })
-                    print 'hola ' , id
                 else :
-                    val = str( int(max_number[0]) + 1)
+                    val = '%08d' % ( int(max_number[0]) + 1)
                     self.write(cr, uid, id, {'internal_number' : val })
             else :
-                self.write(cr, uid, id, {'internal_number' : obj_inv.internal_number })
-# fin de agregado            
+                self.write(cr, uid, id, {'internal_number' : ('%08d' % int(obj_inv.internal_number))})
+#end add            
             if invtype in ('in_invoice', 'in_refund'):
                 if not reference:
                     ref = self._convert_ref(cr, uid, number)
@@ -107,5 +106,18 @@ class invoice(osv.osv):
                 raise osv.except_osv( ('Error'),
                                       ('The Invoice Number can not contain characters'))
         return super(invoice, self).write(cr, uid, ids, vals, context=context)
-
+    
+    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
+    
+        #devuelve los ids de las invoice modificadas
+        inv_ids = super(invoice , self).refund(cr, uid, ids, date=None, period_id=None, description=None, journal_id=None)
+        #busco los puntos de venta de las invoices anteriores
+        #TODO falta iterar sobre las facturas creadas inv_ids
+        res=[]
+        inv_obj = self.browse(cr, uid , ids , context=None)
+        for obj in inv_obj:
+            self.write(cr, uid , inv_ids , {'pos_ar_id': obj.pos_ar_id.id } , context=None)
+             
+        return inv_ids
+        
 invoice()
