@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.3\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2011-11-09 17:10+0000\n"
-"PO-Revision-Date: 2011-11-09 17:10+0000\n"
+"POT-Creation-Date: 2011-11-16 18:57+0000\n"
+"PO-Revision-Date: 2011-11-16 18:57+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,14 +16,26 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_ar_point_of_sale
-#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_pos_ar_root
-msgid "Point of Sale AR"
-msgstr "Punto de Venta"
+#: code:addons/l10n_ar_point_of_sale/sale.py:47
+#: code:addons/l10n_ar_point_of_sale/stock.py:34
+#, python-format
+msgid "Check the Fiscal Position Configuration"
+msgstr "Corrija la Configuración de la Posición Fiscal"
+
+#. module: l10n_ar_point_of_sale
+#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_invoice_denomination
+msgid "Denominations"
+msgstr "Denominaciones"
 
 #. module: l10n_ar_point_of_sale
 #: field:pos.ar,priority:0
 msgid "Priority"
 msgstr "Prioridad"
+
+#. module: l10n_ar_point_of_sale
+#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_pos_ar_root
+msgid "Point of Sale AR"
+msgstr "Punto de Venta"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_stock_picking
@@ -50,7 +62,13 @@ msgstr "Nro"
 #: view:pos.ar:0
 #: field:pos.ar,desc:0
 msgid "Description"
-msgstr "Descripcion"
+msgstr "Descripción"
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/invoice.py:95
+#, python-format
+msgid "is validated."
+msgstr "es validada."
 
 #. module: l10n_ar_point_of_sale
 #: field:account.fiscal.position,denomination_id:0
@@ -71,10 +89,23 @@ msgstr "\n"
 "    1) Implementacion de Punto de Venta para Argentina.\n"
 "    "
 
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/invoice.py:107
+#, python-format
+msgid "The Invoice Number can not contain characters"
+msgstr "El Numero de la Factura no puede contener Caracteres"
+
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_sale_shop
 msgid "Sales Shop"
-msgstr "Sucursal de Ventas"
+msgstr "Puntos de Venta"
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/invoice.py:95
+#, python-format
+msgid "Invoice "
+msgstr "Factura "
 
 #. module: l10n_ar_point_of_sale
 #: field:pos.ar,shop_id:0
@@ -92,9 +123,14 @@ msgid "Denomination for Invoices"
 msgstr "Denominación para Facturas"
 
 #. module: l10n_ar_point_of_sale
-#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_invoice_denomination
-msgid "Denominations"
-msgstr "Denominaciones"
+#: code:addons/l10n_ar_point_of_sale/invoice.py:106
+#: code:addons/l10n_ar_point_of_sale/sale.py:46
+#: code:addons/l10n_ar_point_of_sale/sale.py:51
+#: code:addons/l10n_ar_point_of_sale/stock.py:33
+#: code:addons/l10n_ar_point_of_sale/stock.py:44
+#, python-format
+msgid "Error"
+msgstr "Error"
 
 #. module: l10n_ar_point_of_sale
 #: view:account.fiscal.position:0
@@ -103,11 +139,16 @@ msgid "Invoice Denomination"
 msgstr "Denominación de la Factura"
 
 #. module: l10n_ar_point_of_sale
-#: field:account.invoice,pos_ar_id:0
-#: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_form
-#: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_tree
-msgid "Point of Sale"
-msgstr "Punto de Venta"
+#: code:addons/l10n_ar_point_of_sale/sale.py:52
+#: code:addons/l10n_ar_point_of_sale/stock.py:45
+#, python-format
+msgid "You need to set up a Shop and/or a Fiscal Position"
+msgstr "Se necesita tener configurada una Sucursal y/o una Posicion Fiscal"
+
+#. module: l10n_ar_point_of_sale
+#: model:ir.model,name:l10n_ar_point_of_sale.model_sale_order
+msgid "Sales Order"
+msgstr "Orden de venta"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.base_invoices
@@ -136,7 +177,9 @@ msgid "Points of Sales"
 msgstr "Puntos de Ventas"
 
 #. module: l10n_ar_point_of_sale
-#: model:ir.model,name:l10n_ar_point_of_sale.model_sale_order
-msgid "Sales Order"
-msgstr "Orden de Venta"
+#: field:account.invoice,pos_ar_id:0
+#: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_form
+#: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_tree
+msgid "Point of Sale"
+msgstr "Punto de Venta"
 

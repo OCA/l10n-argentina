@@ -18,7 +18,7 @@
 #
 ##############################################################################
 from osv import osv, fields
-
+from tools.translate import _
 
 class invoice(osv.osv):
     _name = "account.invoice"
@@ -33,7 +33,7 @@ class invoice(osv.osv):
             ('out_debit','Customer Debit'),
             ('in_debit','Supplier Debit'),
             ],'Type', readonly=True, select=True, change_default=True),
-        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale'),
+        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale', required=True),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True),
         'internal_number': fields.char('Invoice Number', size=32, readonly=False, help="Unique number of the invoice, computed automatically when the invoice is created."),
     }
@@ -92,7 +92,7 @@ class invoice(osv.osv):
                 ctx = context.copy()
                 if obj_inv.type in ('out_invoice', 'out_refund'):
                     ctx = self.get_log_context(cr, uid, context=ctx)
-                message = ('Invoice ') + " '" + name + "' "+ ("is validated.")
+                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
                 self.log(cr, uid, inv_id, message, context=ctx)
         return True
         
@@ -103,8 +103,8 @@ class invoice(osv.osv):
             try: 
                 int(vals['internal_number']) 
             except :
-                raise osv.except_osv( ('Error'),
-                                      ('The Invoice Number can not contain characters'))
+                raise osv.except_osv( _('Error'),
+                                      _('The Invoice Number can not contain characters'))
         return super(invoice, self).write(cr, uid, ids, vals, context=context)
     
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
@@ -113,7 +113,7 @@ class invoice(osv.osv):
         inv_ids = super(invoice , self).refund(cr, uid, ids, date=None, period_id=None, description=None, journal_id=None)
         #busco los puntos de venta de las invoices anteriores
         #TODO falta iterar sobre las facturas creadas inv_ids
-        res=[]
+        
         inv_obj = self.browse(cr, uid , ids , context=None)
         for obj in inv_obj:
             self.write(cr, uid , inv_ids , {'pos_ar_id': obj.pos_ar_id.id } , context=None)

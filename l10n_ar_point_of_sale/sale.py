@@ -18,6 +18,7 @@
 #
 ##############################################################################
 from osv import osv, fields
+from tools.translate import _
 
 class sale_shop(osv.osv):
     _name = "sale.shop"
@@ -42,13 +43,13 @@ class sale_order(osv.osv):
         pos_ar_obj = self.pool.get('pos.ar')
         
         if not order.fiscal_position :
-            raise osv.except_osv( ('Error'),
-                                  ('Check the Fiscal Position Configuration')) 
+            raise osv.except_osv( _('Error'),
+                                  _('Check the Fiscal Position Configuration')) 
         
         res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order.shop_id.id), ('denomination_id', '=', denom_id.id)])
         if not len(res_pos):
-            raise osv.except_osv( ('Error'),
-                                  ('You need to set up a Shop and/or a Fiscal Position')) 
+            raise osv.except_osv( _('Error'),
+                                  _('You need to set up a Shop and/or a Fiscal Position')) 
                                   
         inv_obj = self.pool.get('account.invoice')
         vals = {'denomination_id' : denom_id.id , 'pos_ar_id': res_pos[0] }
