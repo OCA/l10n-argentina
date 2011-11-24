@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_acc_voucher_form2" model="ir.ui.view">
+            <field name="name">account.voucher.form.inherit</field>
+            <field name="model">account.voucher</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
+            <field name="arch" type="xml">
+<!--
+                <xpath expr='///record/field[@name="arch"]/form/notebook/page[@string="Payment Information"]/group[2]' position="replace">
+                    <separator string="Hola" colspan="4"/>
+                </xpath>
+-->
+                <notebook>     
+                     <page string="Payment Information" position="inside">
+                        <field name="payment_line_ids" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="date"/>
+                                <field name="amount_total"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</openerp>
+
+
+
