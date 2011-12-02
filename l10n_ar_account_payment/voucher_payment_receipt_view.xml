@@ -8,18 +8,29 @@
             <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <field name="name" position="after">
-                            <separator string="Invoices to Pay" colspan="5"/>
-                            <button icon="gtk-find" name="" colspan="1" string="Select Invoices to Pay" type="object"/>
+                    <field name="company_id" position="after" >
+                        <button name="get_invoices_and_credits" type="object" string="Get Invoices and Credits"/>
                     </field>
                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]' position="before">
-                        <field name="payment_line_ids" nolabel="1">
+                        <field name="currency_id" invisible="1" />
+                        <field name="payment_line_ids" nolabel="1" colspan="4">
                             <tree string="Payment Lines">
                                 <field name="name"/>
                                 <field name="date"/>
                                 <field name="amount_total"/>
                             </tree>
                         </field>
+                    </xpath>
+                    <field name="amount" position="replace" >
+                        <field name="amount"
+                            string="Paid Amount"
+                            on_change="onchange_amount(amount, context)"/>
+                    </field>
+                    <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]/tree/field[@name="amount"]' position="after" >
+                        <button name="delete_voucher_line" string="Remove" type="object" icon="gtk-cancel" />
+                    </xpath>
+                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_dr_ids"]/tree/field[@name="amount"]' position="after" >
+                        <button name="delete_voucher_line" string="Remove" type="object" icon="gtk-cancel" />
                     </xpath>
                     <xpath expr='//notebook/page[@string="Payment Information"]/group[2]' position="replace"/>
                     <xpath expr='//notebook/page[@string="Payment Information"]/group[1]' position="replace"/>
