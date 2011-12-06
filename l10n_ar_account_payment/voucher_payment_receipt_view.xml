@@ -9,8 +9,12 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="company_id" position="after" >
-                        <button name="get_invoices_and_credits" type="object" string="Get Invoices and Credits"/>
+                        <button name="get_invoices_and_credits" type="object" icon="gtk-find" states="draft,proforma" string="Get Invoices and Credits"/>
                     </field>
+                    <button name="cancel_voucher" position="after">
+                        <button name="compute" type="object" string="Compute" icon="gtk-ok" states="draft,proforma" />
+                        <button name="clean" type="object" string="Clean" icon="" states="draft,proforma" />
+                    </button>
                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]' position="before">
                         <field name="currency_id" invisible="1" />
                         <field name="payment_line_ids" nolabel="1" colspan="4">
@@ -21,17 +25,71 @@
                             </tree>
                         </field>
                     </xpath>
-                    <field name="amount" position="replace" >
-                        <field name="amount"
-                            string="Paid Amount"
-                            on_change="onchange_amount(amount, context)"/>
+                    <field  name="amount" position="replace" >
+                        <field  name="amount"
+                                string="Paid Amount"
+                                on_change="onchange_amount(amount, context)"/>
                     </field>
-                    <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]/tree/field[@name="amount"]' position="after" >
-                        <button name="delete_voucher_line" string="Remove" type="object" icon="gtk-cancel" />
+                    <field name="journal_id" position="replace" >
+                        <field  name="journal_id" 
+                                on_change="onchange_journal_id()"/>
+                    </field>
+                    
+                    <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]' position="replace">
+                        <field name="line_cr_ids" default_get="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" colspan="4" nolabel="1" height="140">
+                                                                        <!--editable="bottom"-->
+                            <tree   string="Supplier Invoices and Outstanding transactions"
+                                    colors="black:state=='included' ;grey:state=='not_included'">                                  >
+                                <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
+                                    on_change="onchange_move_line_id(move_line_id)"
+                                    domain="[('account_id.type','=','payable'), ('reconcile_id','=', False), ('partner_id','=',parent.partner_id)]"/>
+                                <field name="account_id" groups="base.group_extended" domain="[('type','=','payable')]"/>
+                                <field name="date_original" readonly="1"/>
+                                <field name="date_due" readonly="1"/>
+                                <field name="amount_original" readonly="1"/>
+                                <field name="amount_unreconciled" sum="Open Balance" readonly="1"/>
+                                <field name="amount" sum="Payment"/>
+
+                                <field name="state"/>
+                                <button name="add_voucher_line" 
+                                        string="Add" 
+                                        type="object" 
+                                        icon="gtk-go-back" 
+                                        states="not_included"/>
+                                <button name="delete_voucher_line" 
+                                        string="Remove" 
+                                        type="object" 
+                                        icon="gtk-cancel"
+                                        states="included"/>
+                            </tree>
+                        </field>
                     </xpath>
-                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_dr_ids"]/tree/field[@name="amount"]' position="after" >
-                        <button name="delete_voucher_line" string="Remove" type="object" icon="gtk-cancel" />
+                    
+                    <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_dr_ids"]' position="replace" >
+                        <!--attrs="{'invisible': [('pre_line','=',False)]}"-->   <!--editable="bottom"-->
+                        <field name="line_dr_ids" colspan="4" editable="bottom" attrs="{'invisible': [('pre_line','=',False)]}" nolabel="1" default_get="{'journal_id':journal_id, 'partner_id':partner_id}">
+                            <tree string="Credits" 
+                            colors="black:state=='included' ;grey:state=='not_included'">
+                                <field name="move_line_id"/>
+                                <field name="account_id" groups="base.group_extended" domain="[('type','=','receivable')]"/>
+                                <field name="date_original"/>
+                                <field name="amount_original"/>
+                                <field name="amount" sum="Payment"/>
+
+                                <field name="state" readonly="1"/>
+                                <button name="add_voucher_line" string="Add" 
+                                        type="object" 
+                                        icon="gtk-go-back"
+                                        states="not_included"/>
+                                <button name="delete_voucher_line" 
+                                        string="Remove" 
+                                        type="object" 
+                                        icon="gtk-cancel"
+                                        states="included"/>
+                            </tree>
+                        </field>
                     </xpath>
+                    
                     <xpath expr='//notebook/page[@string="Payment Information"]/group[2]' position="replace"/>
                     <xpath expr='//notebook/page[@string="Payment Information"]/group[1]' position="replace"/>
                 </data>

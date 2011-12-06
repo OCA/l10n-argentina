@@ -7,11 +7,6 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
             <field name="arch" type="xml">
-<!--
-                <xpath expr='///record/field[@name="arch"]/form/notebook/page[@string="Payment Information"]/group[2]' position="replace">
-                    <separator string="Hola" colspan="4"/>
-                </xpath>
--->
                 <notebook>     
                      <page string="Payment Information" position="inside">
                         <field name="payment_line_ids" nolabel="1">

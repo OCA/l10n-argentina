@@ -53,10 +53,3 @@ class payment_mode_line(osv.osv):
         'src_bank_id' : fields.many2one('res.partner.bank', 'Source Bank account'),
     }
 payment_mode_line()
-
-#~ class voucher_line(osv.osv):
-    #~ _name = ''
-    #~ 
-    #~ 
-    #~ 
-#~ voucher_lines()
