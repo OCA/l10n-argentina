@@ -33,7 +33,7 @@ class invoice(osv.osv):
             ('out_debit','Customer Debit'),
             ('in_debit','Supplier Debit'),
             ],'Type', readonly=True, select=True, change_default=True),
-        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale', required=True),
+        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale'),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True),
         'internal_number': fields.char('Invoice Number', size=32, readonly=False, help="Unique number of the invoice, computed automatically when the invoice is created."),
     }
