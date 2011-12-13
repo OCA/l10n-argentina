@@ -32,7 +32,9 @@
                     </field>
                     <field name="journal_id" position="replace" >
                         <field  name="journal_id" 
-                                on_change="onchange_journal_id()"/>
+                                on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, context)"
+                                domain="[('type','in',['bank', 'cash'])]"
+                                widget="selection" select="1" string="Payment Method"/>
                     </field>
                     
                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]' position="replace">

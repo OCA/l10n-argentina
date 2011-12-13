@@ -34,7 +34,7 @@ class account_voucher(osv.osv):
     }
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
-        """price
+        """
         Returns a dict that contains new values and context
 
         @param partner_id: latest value from user input for field partner_id
@@ -53,15 +53,21 @@ class account_voucher(osv.osv):
         if not partner_id:
             return default
 
-        partner = partner_pool.browse(cr, uid, partner_id, context=context)
-        journal = journal_pool.browse(cr, uid, journal_id, context=context)
+        if not journal_id:
+            return default
 
+        partner = partner_pool.browse(cr, uid, partner_id, context=context)
         vals = self.onchange_journal(cr, uid, ids, journal_id, [], False, partner_id, context)
         vals = vals.get('value')
         currency_id = vals.get('currency_id', currency_id)
         default = {
                 'value':{'line_ids':[], 'line_dr_ids':[], 'line_cr_ids':[], 'pre_line': False, 'currency_id':currency_id},
         }
+
+        if not journal_id:
+            return default
+
+        journal = journal_pool.browse(cr, uid, journal_id, context=context)
 
         account_id = False
         if journal.type in ('sale','sale_refund'):
@@ -150,6 +156,8 @@ class account_voucher(osv.osv):
                 pre_line = 1
             elif ttype == 'receipt' and len(line_dr_ids) > 0:
                 pre_line = 1
+            else:
+                pre_line = False
             
             self.write(cr, uid, v.id, {'pre_line':pre_line})
 
