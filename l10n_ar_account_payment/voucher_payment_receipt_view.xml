@@ -9,11 +9,11 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="company_id" position="after" >
-                        <button name="get_invoices_and_credits" type="object" icon="gtk-find" states="draft,proforma" string="Get Invoices and Credits"/>
+                        <separator string="" colspan="5"/>
+                        <button colspan="1" name="get_invoices_and_credits" type="object" icon="gtk-find" states="draft,proforma" string="Get Invoices and Credits"/>
                     </field>
                     <button name="cancel_voucher" position="after">
-                        <button name="compute" type="object" string="Compute" icon="gtk-ok" states="draft,proforma" />
-                        <button name="clean" type="object" string="Clean" icon="" states="draft,proforma" />
+                        <button name="compute" type="object" string="Compute" icon="gtk-execute" states="draft,proforma" />
                     </button>
                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]' position="before">
                         <field name="currency_id" invisible="1" />

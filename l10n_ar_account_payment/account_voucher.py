@@ -78,6 +78,7 @@ class account_voucher(osv.osv):
             account_id = journal.default_credit_account_id.id or journal.default_debit_account_id.id
 
         default['value']['account_id'] = account_id
+        
         return default
 
     def get_invoices_and_credits(self, cr, uid, ids, context):
@@ -283,6 +284,18 @@ class account_voucher(osv.osv):
         if lines_to_clean:
                 line_pool.unlink(cr, uid, lines_to_clean)
         return True
+       
+    def proforma_voucher(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+        for voucher_id in ids:
+            ttype = self.browse(cr, uid, voucher_id).type    
+            context.update({'type':ttype})
+            self.compute(cr, uid, ids, context)
+            self.clean(cr, uid, ids, context)
+            self.action_move_line_create(cr, uid, ids, context=context)
+        return True
+
             
 account_voucher()
 
