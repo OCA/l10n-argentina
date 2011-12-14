@@ -19,6 +19,7 @@
 ##############################################################################
 from osv import osv, fields
 from tools.translate import _
+import time
 
 class sale_shop(osv.osv):
     _name = "sale.shop"
@@ -57,5 +58,20 @@ class sale_order(osv.osv):
         inv_obj.write(cr, uid, invoice_id, vals)
                 
         return invoice_id
+    
+    def action_wait(self, cr, uid, ids, *args):
+        for o in self.browse(cr, uid, ids):
+            if not o.fiscal_position:
+                raise osv.except_osv(   _('No Fiscal Position Setting'),
+                                        _('Please set the Fiscal Position First'))
+            if (o.order_policy == 'manual'):
+                self.write(cr, uid, [o.id], {'state': 'manual', 'date_confirm': time.strftime('%Y-%m-%d')})
+            else:
+                self.write(cr, uid, [o.id], {'state': 'progress', 'date_confirm': time.strftime('%Y-%m-%d')})
+            self.pool.get('sale.order.line').button_confirm(cr, uid, [x.id for x in o.order_line])
+            message = _("The quotation '%s' has been converted to a sales order.") % (o.name,)
+            self.log(cr, uid, o.id, message)
+        return True
+
     
 sale_order()

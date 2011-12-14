@@ -8,10 +8,10 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-                    <field name="journal_id" position="replace">
-                    </field>
+                    <field name="journal_id" position="replace"/>
                     <field name="number" position="replace">
-                        <field name="pos_ar_id" widget="selection" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                        <field  name="pos_ar_id" required="1" 
+                                attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                         <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                         <newline/>
                     </field>
@@ -28,6 +28,7 @@
             <field name="inherit_id" ref="account.invoice_tree"/>
             <field name="arch" type="xml">
                     <field name="number" position="replace">
+                        <field name="pos_ar_id" string="POS"/>
                         <field name="internal_number"/>
                     </field>
             </field>

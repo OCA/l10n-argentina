@@ -49,5 +49,5 @@ class stock_picking(osv.osv):
         inv_obj.write(cr, uid, invoice_id, vals)
         
         return
-        
+    
 stock_picking()

@@ -18,7 +18,7 @@
 #
 ##############################################################################
 from osv import osv, fields
- 
+
 class invoice_denomination(osv.osv):
     _name = "invoice.denomination"
     _description = "Denomination for Invoices"
@@ -50,7 +50,7 @@ class pos_ar(osv.osv):
         for record in reads:
             name = record['name']
             if record['denomination_id']:
-                name = record['denomination_id'][1] + ' - '+ name
+                name = record['denomination_id'][1] + ' '+ name
             res.append((record['id'], name))
         return res
         

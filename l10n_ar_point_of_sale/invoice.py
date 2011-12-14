@@ -39,6 +39,7 @@ class invoice(osv.osv):
     }
     
     def action_number(self, cr, uid, ids, context=None):
+        pos_ar_obj = self.pool.get('pos.ar')
         if context is None:
             context = {}
         #TODO: not correct fix but required a frech values before reading it.
@@ -55,26 +56,31 @@ class invoice(osv.osv):
 #add:         
         #~ si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1. 
         #~ si el usuario hizo un ingreso dejo ese numero
+            internal_number = False
+            pos_ar = obj_inv.pos_ar_id.id
+            pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
             if not obj_inv.internal_number:
-                pos_ar = obj_inv.pos_ar_id.id
                 cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s", (pos_ar, ('open', 'paid', 'cancel',)))
                 max_number = cr.fetchone()    
                 if not max_number[0]:
-                    val = '%08d' % 1
-                    self.write(cr, uid, id, {'internal_number' : val })
+                    internal_number = '%08d' % 1
+                    self.write(cr, uid, id, {'internal_number' : internal_number })
                 else :
-                    val = '%08d' % ( int(max_number[0]) + 1)
-                    self.write(cr, uid, id, {'internal_number' : val })
+                    internal_number = '%08d' % ( int(max_number[0]) + 1)
+                    self.write(cr, uid, id, {'internal_number' : internal_number })
             else :
-                self.write(cr, uid, id, {'internal_number' : ('%08d' % int(obj_inv.internal_number))})
+                internal_number = ('%08d' % int(obj_inv.internal_number))
+                self.write(cr, uid, id, {'internal_number' : internal_number})
 #end add            
             if invtype in ('in_invoice', 'in_refund'):
                 if not reference:
-                    ref = self._convert_ref(cr, uid, number)
+#mod                #self._convert_ref(cr, uid, internal_number)   
+                    ref = pos_ar_name + ' ' + internal_number 
                 else:
                     ref = reference
             else:
-                ref = self._convert_ref(cr, uid, number)
+#mod            #ref = self._convert_ref(cr, uid, number)
+                ref = pos_ar_name + ' ' + internal_number
 
             cr.execute('UPDATE account_move SET ref=%s ' \
                     'WHERE id=%s AND (ref is null OR ref = \'\')',
@@ -112,12 +118,31 @@ class invoice(osv.osv):
         #devuelve los ids de las invoice modificadas
         inv_ids = super(invoice , self).refund(cr, uid, ids, date=None, period_id=None, description=None, journal_id=None)
         #busco los puntos de venta de las invoices anteriores
-        #TODO falta iterar sobre las facturas creadas inv_ids
-        
+
         inv_obj = self.browse(cr, uid , ids , context=None)
         for obj in inv_obj:
             self.write(cr, uid , inv_ids , {'pos_ar_id': obj.pos_ar_id.id } , context=None)
              
         return inv_ids
+    
+    def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
+            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+        res =   super(invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
+                date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+        fiscal_position_id = res['value']['fiscal_position']
+        if not fiscal_position_id:
+            raise osv.except_osv(   _('Error'),
+                                    _('First set the Fiscal Position for the Partner'))
+                                    
+        fiscal_pool = self.pool.get('account.fiscal.position')
+        pos_pool = self.pool.get('pos.ar')
+        denomination_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denomination_id.id
+        res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
         
+        pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)] , limit=1 )
+        res['value'].update({'pos_ar_id': pos[0]})
+        
+        return res
+         
+   
 invoice()

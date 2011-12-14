@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2008-2011 
+#    Copyright (C) 2011
 # 
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-##############################################################################sss
+##############################################################################
 
 import pos_ar
 import sale
