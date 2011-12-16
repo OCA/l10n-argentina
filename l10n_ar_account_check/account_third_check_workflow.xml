@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="third_checks" model="workflow">
+            <field name="name">Third Checks Workflow</field>
+            <field name="osv">account.third.check</field>
+            <field name="on_create">True</field>
+        </record>
+
+    <!-- Activities -->
+
+        <record id="act_draft" model="workflow.activity">
+            <field name="wkf_id" ref="third_checks"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+
+        <record id="act_cartera" model="workflow.activity">
+            <field name="wkf_id" ref="third_checks"/>
+            <field name="name">cartera</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_cartera()</field>
+        </record>
+
+        <record id="act_deposited" model="workflow.activity">
+            <field name="wkf_id" ref="third_checks"/>
+            <field name="name">deposited</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_deposited()</field>
+        </record>
+
+        <record id="act_rejected" model="workflow.activity">
+            <field name="wkf_id" ref="third_checks"/>
+            <field name="name">rejected</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_rejected()</field>
+        </record>
+
+        <record id="act_delivered" model="workflow.activity">
+            <field name="wkf_id" ref="third_checks"/>
+            <field name="name">delivered</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_delivered()</field>
+        </record>
+
+    <!-- Transition -->
+
+        <record id="trans_check_cartera" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_cartera"/>
+            <field name="signal">draft_cartera</field>
+        </record>
+
+        <record id="trans_cartera_deposited" model="workflow.transition">
+            <field name="act_from" ref="act_cartera"/>
+            <field name="act_to" ref="act_deposited"/>
+            <field name="signal">cartera_deposited</field>
+        </record>
+
+        <record id="trans_cartera_rejected" model="workflow.transition">
+            <field name="act_from" ref="act_cartera"/>
+            <field name="act_to" ref="act_rejected"/>
+            <field name="signal">cartera_rejected</field>
+        </record>
+
+        <record id="trans_cartera_delivered" model="workflow.transition">
+            <field name="act_from" ref="act_cartera"/>
+            <field name="act_to" ref="act_delivered"/>
+            <field name="signal">cartera_delivered</field>
+        </record>
+
+    </data>
+</openerp>

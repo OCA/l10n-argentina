@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <!-- Payment -->
+
+        <record id="view_voucher_check_form" model="ir.ui.view">
+            <field name="name">account.voucher.form.inherit</field>
+            <field name="model">account.voucher</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_payment_form"/>
+            <field name="arch" type="xml">
+                <field name="amount" position="after">
+                    <separator string="Metodos de Pago" colspan="8"/>
+                </field>
+                <page string="Payment Information" position="after">
+                    <page string="Checks">
+                        <field name="issued_check_ids" string="Issued Checks"
+                            nolabel="1" colspan="4"
+                            on_change="onchange_issued_checks(issued_check_ids, journal_id, partner_id, currency_id, type, date)"/>
+                        <separator string="Cheques De Terceros" colspan="4"/>
+                        <field name="third_check_ids" string="Third Checks"
+                            nolabel="1" colspan="4"
+                            on_change="onchange_third_check_ids(third_check_ids, journal_id, partner_id, currency_id, type, date)"/>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+   <!-- Receipt -->
+
+        <record id="view_vendor_receipt_check_form" model="ir.ui.view">
+            <field name="name">account.voucher.form.receipt.inherit</field>
+            <field name="model">account.voucher</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
+            <field name="arch" type="xml">
+                <field name="amount" position="after">
+                    <separator string="Metodos de Cobro" colspan="8"/>
+                </field>
+                <page string="Payment Information" position="after">
+                    <page string="Checks">
+                        <field name="third_check_receipt_ids"
+                            string="Third Checks" nolabel="1" colspan="4"
+                            on_change="onchange_third_check_receipt_ids(third_check_receipt_ids, journal_id, partner_id, currency_id, type, date)"/>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+    </data>
+</openerp>
