@@ -82,15 +82,13 @@ class account_voucher(osv.osv):
         return default
 
     def get_invoices_and_credits(self, cr, uid, ids, context):
+        if context is None:
+            context = {}        
         line_pool = self.pool.get('account.voucher.line')
         currency_pool = self.pool.get('res.currency')
         move_line_pool = self.pool.get('account.move.line')
-
         ttype = context.get('type', 'receipt')
-
-        if context is None:
-            context = {}
-
+        
         line_cr_ids = []
         line_dr_ids = []
 
@@ -113,12 +111,13 @@ class account_voucher(osv.osv):
 
             if not context.get('move_line_ids', False):
                 domain = [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', v.partner_id.id)]
-                ids = move_line_pool.search(cr, uid, domain, context=context)    
+                if 'invoice_id' in context:
+                    domain.append(('invoice','=',context['invoice_id']))
+                ids = move_line_pool.search(cr, uid, domain, context=context)   
             else:
                 ids = context['move_line_ids']
             ids.reverse()
             moves = move_line_pool.browse(cr, uid, ids, context=context)
-
             company_currency = v.journal_id.company_id.currency_id.id
             currency_id = v.currency_id.id
             voucher_line_ids = []
@@ -127,6 +126,7 @@ class account_voucher(osv.osv):
                     continue
                 if line.debit and line.reconcile_partial_id and ttype == 'payment':
                     continue
+                
                 original_amount = line.credit or line.debit or 0.0
                 amount_unreconciled = currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, abs(line.amount_residual_currency), context=context_multi_currency)
             
@@ -141,8 +141,7 @@ class account_voucher(osv.osv):
                     'date_due':line.date_maturity,
                     'amount_unreconciled': amount_unreconciled,
                 }
-
-
+                
                 # Creamos las lineas del voucher
                 id = line_pool.create(cr, uid, rs)
                 voucher_line_ids.append(id)
@@ -163,7 +162,6 @@ class account_voucher(osv.osv):
             self.write(cr, uid, v.id, {'pre_line':pre_line})
 
             #self._compute_voucher(cr, uid, v.id, voucher_line_ids, ttype, context=context_multi_currency)
-
         return True
 
     def _compute_voucher(self, cr, uid, voucher_id, voucher_line_ids, ttype, context):
@@ -275,6 +273,8 @@ class account_voucher(osv.osv):
             self._compute_voucher(cr, uid, v.id, voucher_line_ids, ttype, context=context_multi_currency)
         
         return True
+
+
     
     def clean(self, cr, uid, ids, context=None):
         line_pool = self.pool.get('account.voucher.line')
@@ -294,16 +294,16 @@ class account_voucher(osv.osv):
             self.compute(cr, uid, ids, context)
             self.clean(cr, uid, ids, context)
             self.action_move_line_create(cr, uid, ids, context=context)
-        return True
 
-            
+        return True
+        
 account_voucher()
 
 class account_voucher_line(osv.osv):
     _name = 'account.voucher.line'
     _inherit = 'account.voucher.line'
     _columns = {
-        'state' : fields.selection([('included','Included') , ('not_included','Not included')], readonly=True, string='State')
+        'state' : fields.selection([('included','Included') , ('not_included','Not included')], readonly=True, string='State'),
     }
     _defaults = {
         'state': 'not_included',
@@ -312,11 +312,13 @@ class account_voucher_line(osv.osv):
     def delete_voucher_line(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids):
             self.write(cr, uid , [line.id] , {'state' : 'not_included'} ,context=None)
+
         return True
     
     def add_voucher_line(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids):
             self.write(cr, uid , [line.id] , {'state' : 'included'} ,context=None)
+            
         return True
         
 account_voucher_line()
