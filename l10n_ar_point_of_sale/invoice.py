@@ -34,8 +34,8 @@ class invoice(osv.osv):
             ('in_debit','Supplier Debit'),
             ],'Type', readonly=True, select=True, change_default=True),
         'pos_ar_id' : fields.many2one('pos.ar','Point of Sale'),
-        'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True),
-        'internal_number': fields.char('Invoice Number', size=32, readonly=False, help="Unique number of the invoice, computed automatically when the invoice is created."),
+        'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
+        'internal_number': fields.char('Invoice Number', size=32, help="Unique number of the invoice, computed automatically when the invoice is created."),
     }
     
     def action_number(self, cr, uid, ids, context=None):
@@ -58,9 +58,12 @@ class invoice(osv.osv):
         #~ si el usuario hizo un ingreso dejo ese numero
             internal_number = False
             pos_ar = obj_inv.pos_ar_id.id
-            pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
+            pos_ar_name = False
+            if pos_ar:
+                pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
+            
             if not obj_inv.internal_number:
-                cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s", (pos_ar, ('open', 'paid', 'cancel',)))
+                cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type='out_invoice'", (pos_ar, ('open', 'paid', 'cancel',)))
                 max_number = cr.fetchone()    
                 if not max_number[0]:
                     internal_number = '%08d' % 1
@@ -75,7 +78,7 @@ class invoice(osv.osv):
             if invtype in ('in_invoice', 'in_refund'):
                 if not reference:
 #mod                #self._convert_ref(cr, uid, internal_number)   
-                    ref = pos_ar_name + ' ' + internal_number 
+                    ref = internal_number 
                 else:
                     ref = reference
             else:
@@ -126,23 +129,33 @@ class invoice(osv.osv):
         return inv_ids
     
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
-            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
         res =   super(invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
                 date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
         fiscal_position_id = res['value']['fiscal_position']
         if not fiscal_position_id:
-            raise osv.except_osv(   _('Error'),
-                                    _('First set the Fiscal Position for the Partner'))
-                                    
+            return res
+        
         fiscal_pool = self.pool.get('account.fiscal.position')
         pos_pool = self.pool.get('pos.ar')
         denomination_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denomination_id.id
         res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
-        
+        #para las invoices de suppliers
+        denom_sup_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denom_supplier_id.id
+        res['value'].update({'denomination_id': denom_sup_id})
+        #para las customers invoices
         pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)] , limit=1 )
         res['value'].update({'pos_ar_id': pos[0]})
         
         return res
-         
-   
+        
+    def invoice_pay_customer(self, cr, uid, ids, context=None):
+        if not ids: return []
+        inv = self.browse(cr, uid, ids[0], context=context)
+        res = super(invoice, self).invoice_pay_customer(cr, uid, ids, context=context)
+        res['context']['type'] = inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment'
+        
+        return res
+        
+        
 invoice()
