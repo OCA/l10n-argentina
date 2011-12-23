@@ -49,7 +49,7 @@ class account_voucher(osv.osv):
 
         journal_pool = self.pool.get('account.journal')
         partner_pool = self.pool.get('res.partner')
-
+        
         if not partner_id:
             return default
 
@@ -66,9 +66,8 @@ class account_voucher(osv.osv):
 
         if not journal_id:
             return default
-
+        
         journal = journal_pool.browse(cr, uid, journal_id, context=context)
-
         account_id = False
         if journal.type in ('sale','sale_refund'):
             account_id = partner.property_account_receivable.id
@@ -82,93 +81,106 @@ class account_voucher(osv.osv):
         return default
 
     def get_invoices_and_credits(self, cr, uid, ids, context):
+
         if context is None:
             context = {}        
         line_pool = self.pool.get('account.voucher.line')
         currency_pool = self.pool.get('res.currency')
         move_line_pool = self.pool.get('account.move.line')
         ttype = context.get('type', 'receipt')
-        
         line_cr_ids = []
         line_dr_ids = []
-
+        lines = {}
         for v in self.browse(cr, uid, ids):
-
-            context_multi_currency = context.copy()
-            if v.date:
-                context_multi_currency.update({'date': v.date})
-
-            line_ids = ids and line_pool.search(cr, uid, [('voucher_id', '=', v.id)]) or False
-            if line_ids:
-                line_pool.unlink(cr, uid, line_ids)
-
-            account_type = 'receivable'
-
-            if ttype == 'payment':
-                account_type = 'payable'
-            else:
-                account_type = 'receivable'
-
-            if not context.get('move_line_ids', False):
-                domain = [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', v.partner_id.id)]
-                if 'invoice_id' in context:
-                    domain.append(('invoice','=',context['invoice_id']))
-                ids = move_line_pool.search(cr, uid, domain, context=context)   
-            else:
-                ids = context['move_line_ids']
-            ids.reverse()
-            moves = move_line_pool.browse(cr, uid, ids, context=context)
-            company_currency = v.journal_id.company_id.currency_id.id
-            currency_id = v.currency_id.id
-            voucher_line_ids = []
-            for line in moves:
-                if line.credit and line.reconcile_partial_id and ttype == 'receipt':
-                    continue
-                if line.debit and line.reconcile_partial_id and ttype == 'payment':
-                    continue
-                
-                original_amount = line.credit or line.debit or 0.0
-                amount_unreconciled = currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, abs(line.amount_residual_currency), context=context_multi_currency)
-            
-                rs = {
-                    'name':line.move_id.name,
-                    'voucher_id':v.id,
-                    'type': line.credit and 'dr' or 'cr',
-                    'move_line_id':line.id,
-                    'account_id':line.account_id.id,
-                    'amount_original': currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, line.currency_id and abs(line.amount_currency) or original_amount, context=context_multi_currency),
-                    'date_original':line.date,
-                    'date_due':line.date_maturity,
-                    'amount_unreconciled': amount_unreconciled,
-                }
-                
-                # Creamos las lineas del voucher
-                id = line_pool.create(cr, uid, rs)
-                voucher_line_ids.append(id)
-                
-                if rs['type'] == 'cr':
-                    line_cr_ids.append(id)
-                elif rs['type'] == 'dr':
-                    line_dr_ids.append(id)
-
-            
-            if ttype == 'payment' and len(line_cr_ids) > 0:
+            lines = self._get_voucher_lines(cr, uid, v.id, context=context)
+            if ttype == 'payment' and len(lines['line_cr_ids']) > 0:
                 pre_line = 1
-            elif ttype == 'receipt' and len(line_dr_ids) > 0:
+            elif ttype == 'receipt' and len(lines['line_dr_ids']) > 0:
                 pre_line = 1
             else:
                 pre_line = False
-            
             self.write(cr, uid, v.id, {'pre_line':pre_line})
-
             #self._compute_voucher(cr, uid, v.id, voucher_line_ids, ttype, context=context_multi_currency)
         return True
+        
+    def _get_voucher_lines(self, cr, uid, ids, state='not_included', context=None):
+        
+        if context is None:
+            context = {}        
+        line_pool = self.pool.get('account.voucher.line')
+        currency_pool = self.pool.get('res.currency')
+        move_line_pool = self.pool.get('account.move.line')
+        ttype = context.get('type', 'receipt')
+        v = self.browse(cr, uid, ids)
+        line_cr_ids = []
+        line_dr_ids = []
+        line_ids = []
+        res={}
+        context_multi_currency = context.copy()
+        if v.date:
+            context_multi_currency.update({'date': v.date})
+            line_ids = ids and line_pool.search(cr, uid, [('voucher_id', '=', v.id)]) or False
+        if line_ids:
+            line_pool.unlink(cr, uid, line_ids)
+
+        account_type = 'receivable'
+
+        if ttype == 'payment':
+            account_type = 'payable'
+        else:
+            account_type = 'receivable'
+            
+        if not context.get('move_line_ids', False):
+            domain = [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', v.partner_id.id)]
+            if 'invoice_id' in context:
+                domain += ['|', ('invoice','=',context['invoice_id']), ('debit','!=',0.0)]
+            ids = move_line_pool.search(cr, uid, domain, context=context)   
+        else:
+            ids = context['move_line_ids']
+        ids.reverse()
+        moves = move_line_pool.browse(cr, uid, ids, context=context)
+        company_currency = v.journal_id.company_id.currency_id.id
+        currency_id = v.currency_id.id
+        #voucher_line_ids = []
+        for line in moves:
+            if line.credit and line.reconcile_partial_id and ttype == 'receipt':
+                continue
+            if line.debit and line.reconcile_partial_id and ttype == 'payment':
+                continue
+            
+            original_amount = line.credit or line.debit or 0.0
+            amount_unreconciled = currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, abs(line.amount_residual_currency), context=context_multi_currency)
+            
+            rs = {
+                'name':line.move_id.name,
+                'voucher_id':v.id,
+                'type': line.credit and 'dr' or 'cr',
+                'move_line_id':line.id,
+                'account_id':line.account_id.id,
+                'amount_original': currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, line.currency_id and abs(line.amount_currency) or original_amount, context=context_multi_currency),
+                'date_original':line.date,
+                'date_due':line.date_maturity,
+                'amount_unreconciled': amount_unreconciled,
+                'state' : state,
+            }
+            
+            # Creamos las lineas del voucher
+            id = line_pool.create(cr, uid, rs)
+            rs['id'] = id
+            if rs['type'] == 'cr':
+                line_cr_ids.append(rs)
+            elif rs['type'] == 'dr':
+                line_dr_ids.append(rs)
+            
+        res = { 'line_cr_ids' : line_cr_ids , 'line_dr_ids': line_dr_ids } 
+        
+        return res
 
     def _compute_voucher(self, cr, uid, voucher_id, voucher_line_ids, ttype, context):
 
         if not voucher_line_ids:
             return False
-        
+                    
         vline_obj = self.pool.get('account.voucher.line')
         move_line_obj = self.pool.get('account.move.line')
         currency_pool = self.pool.get('res.currency')
@@ -249,12 +261,12 @@ class account_voucher(osv.osv):
         return {'value':{}}
         
     def compute(self, cr, uid, ids, context=None):
+        
         line_pool = self.pool.get('account.voucher.line')
         currency_pool = self.pool.get('res.currency')
         move_line_pool = self.pool.get('account.move.line')
-
         ttype = context.get('type', 'receipt')
-        
+
         if context is None:
             context = {}
             
@@ -267,16 +279,17 @@ class account_voucher(osv.osv):
             voucher_line_ids = line_pool.search( cr, uid , [('voucher_id' ,'=', v_id ) , ( 'state' , '=', 'included')] )
             lines_no_amount  = line_pool.search( cr, uid , [('voucher_id' ,'=', v_id ) , 
                                                             ( 'state' , '=', 'not_included'),( 'amount' , '>', 0)])
+    
         if len(lines_no_amount):
             line_pool.write(cr, uid , lines_no_amount , {'amount' : 0.0} ,context=None)
         if len(voucher_line_ids):
             self._compute_voucher(cr, uid, v.id, voucher_line_ids, ttype, context=context_multi_currency)
-        
+                            
         return True
-
 
     
     def clean(self, cr, uid, ids, context=None):
+        
         line_pool = self.pool.get('account.voucher.line')
         for v_id in ids: 
             lines_to_clean  = line_pool.search( cr, uid , [('voucher_id' ,'=', v_id ) , 
@@ -286,6 +299,7 @@ class account_voucher(osv.osv):
         return True
        
     def proforma_voucher(self, cr, uid, ids, context=None):
+        
         if not context:
             context = {}
         for voucher_id in ids:
@@ -294,7 +308,7 @@ class account_voucher(osv.osv):
             self.compute(cr, uid, ids, context)
             self.clean(cr, uid, ids, context)
             self.action_move_line_create(cr, uid, ids, context=context)
-
+            
         return True
         
 account_voucher()
@@ -310,12 +324,16 @@ class account_voucher_line(osv.osv):
     }
 
     def delete_voucher_line(self, cr, uid, ids, context=None):
+        
         for line in self.browse(cr, uid, ids):
             self.write(cr, uid , [line.id] , {'state' : 'not_included'} ,context=None)
 
         return True
     
     def add_voucher_line(self, cr, uid, ids, context=None):
+        
+        if not ids:
+            return False
         for line in self.browse(cr, uid, ids):
             self.write(cr, uid , [line.id] , {'state' : 'included'} ,context=None)
             

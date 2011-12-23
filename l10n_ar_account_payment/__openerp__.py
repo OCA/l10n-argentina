@@ -35,7 +35,6 @@
     "init_xml": [],
     'update_xml': [ 'voucher_payment_receipt_view.xml',
                     'account_payment_view.xml',
-                    'payment_mode_receipt_view.xml'
     ],
     'demo_xml': [],
     'installable': True,

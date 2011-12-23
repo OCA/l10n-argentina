@@ -58,6 +58,7 @@
                                         type="object" 
                                         icon="gtk-go-back" 
                                         states="not_included"/>
+                                        
                                 <button name="delete_voucher_line" 
                                         string="Remove" 
                                         type="object" 
@@ -107,7 +108,8 @@
                 <data>
                     <field name="name" position="after" >
                         <separator string="" colspan="5"/>
-                        <button colspan="1" name="get_invoices_and_credits" type="object" icon="gtk-find" invisible = "context.get('invoice_id', False)" string="Get Invoices and Credits"/>
+                        <!--invisible = "context.get('invoice_id', False)" -->
+                        <button colspan="1" name="get_invoices_and_credits" type="object" icon="gtk-find" string="Get Invoices and Credits"/>
                     </field>
                     <button name="cancel_voucher" position="after">
                         <button name="compute" type="object" string="Compute" icon="gtk-execute" states="draft,proforma" />
