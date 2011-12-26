@@ -36,7 +36,7 @@ class account_issued_check(osv.osv):
         'date_changed': fields.date('Date Changed', readonly=True),
         'receiving_partner_id': fields.many2one('res.partner',
             'Receiving Entity', required=False, readonly=True),
-        'bank_id': fields.many2one('res.bank', 'Banco', required=True),
+        'bank_id': fields.many2one('res.bank', 'Bank', required=True),
         'on_order': fields.char('On Order', size=64),
         'signatory': fields.char('Signatory', size=64),
         'clearing': fields.selection((
@@ -124,7 +124,6 @@ class account_third_check(osv.osv):
     def wkf_delivered(self, cr, uid, ids, context=None):
         # Transicion efectuada al validar un pago a proveedores que entregue
         # cheques de terceros
-        print "INGRESO A DELIVERED"
         for check in self.browse(cr, uid, ids):
             check.write({
                 'state': 'delivered',

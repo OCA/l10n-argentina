@@ -27,7 +27,6 @@
     'depends': [
         'account',
         'account_voucher',
-        'account_debit_note',
     ],
     'init_xml': [],
     'demo_xml': [],

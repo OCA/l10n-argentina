@@ -52,14 +52,12 @@ class account_voucher(osv.osv):
                 for third_check in voucher_obj.third_check_ids:
                     res['third_check_amount'] += third_check.amount
             if voucher_obj.third_check_receipt_ids:
-                print "INGRESO A LA FUNCION EN CUESTION JODER...."
                 for third_rec_check in voucher_obj.third_check_receipt_ids:
                     res['third_check_receipt_amount'] += third_rec_check.amount
         return res
 
     def onchange_issued_checks(self, cr, uid, ids, issued_check_ids,
             journal_id, partner_id, currency_id, type, date, context=None):
-        print "IDS EN FUNCION ORIGINAL", ids
         if len(ids) < 1:
             raise osv.except_osv(_('ATENTION !'),
                     _('Save the voucher before use checks !'))
@@ -68,9 +66,9 @@ class account_voucher(osv.osv):
         for check in issued_check_ids:
             amount += check[2].get('amount', 0.00)
         data['amount'] = amount
-        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
-                amount, currency_id, type, date)
-        data.update(vals.get('value'))
+#del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
+#del                amount, currency_id, type, date)
+#del        data.update(vals.get('value'))
         return {'value': data}
 
     def onchange_third_check_receipt_ids(self, cr, uid, ids,
@@ -81,9 +79,9 @@ class account_voucher(osv.osv):
         for check in third_check_receipt_ids:
             amount += check[2].get('amount', 0.00)
         data['amount'] = amount
-        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
-                amount, currency_id, type, date)
-        data.update(vals.get('value'))
+#del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
+#del                amount, currency_id, type, date)
+#del        data.update(vals.get('value'))
         return {'value': data}
 
     def onchange_third_check_ids(self, cr, uid, ids, third_check_ids,
@@ -98,10 +96,9 @@ class account_voucher(osv.osv):
 
         data['amount'] = amount
 
-        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
-                amount, currency_id, type, date)
-
-        data.update(vals.get('value'))
+#del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
+#del                amount, currency_id, type, date)    
+#del        data.update(vals.get('value'))
 
         return {'value': data}
 
