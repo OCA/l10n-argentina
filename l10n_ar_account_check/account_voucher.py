@@ -55,16 +55,55 @@ class account_voucher(osv.osv):
                 for third_rec_check in voucher_obj.third_check_receipt_ids:
                     res['third_check_receipt_amount'] += third_rec_check.amount
         return res
+    
+    def onchange_pay_amount(  self, cr, uid, ids, payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
+                                journal_id, partner_id, currency_id, type, date ,context=None):
+    
+        print '**onchange_pay_amount in Checks'
+        #~ print 'issued_check_ids:', issued_check_ids
+        issued_pool = self.pool.get('account.issued.check')
+        third_pool = self.pool.get('account.third.check')
+        amount = 0.0
+        res= {}
+        res= super(account_voucher, self).onchange_paymode_line(cr, uid, ids, payment_line_ids, context=context)
+        amount = res['value']['amount']
+        
+        if len(issued_check_ids):
+            res = self.onchange_issued_checks(  cr, uid, ids, issued_check_ids,
+                                                journal_id, partner_id, currency_id, type, date, context)
+            amount += res['value']['amount']
 
-    def onchange_issued_checks(self, cr, uid, ids, issued_check_ids,
-            journal_id, partner_id, currency_id, type, date, context=None):
+        if type == 'receipt':
+            if len(third_check_receipt_ids):
+                res = self.onchange_third_check_receipt_ids( cr, uid, ids, third_check_receipt_ids, journal_id, 
+                                                             partner_id, currency_id, type, date, context)
+                amount += res['value']['amount']
+        else:
+            if len(third_check_ids):
+                res = self.onchange_third_check_ids(cr, uid, ids, third_check_ids,
+                    journal_id, partner_id, currency_id, type, date)
+                amount += res['value']['amount']
+        print 'amount', amount
+        #self.write(cr, uid, ids, {'amount':amount , 'issued_check_ids': issued_check_ids, 'third_check_ids':third_check_ids ,'third_check_receipt_ids': third_check_receipt_ids })
+        res['value']['amount'] = amount
+        return res
+
+    def onchange_issued_checks( self, cr, uid, ids, issued_check_ids,
+                                journal_id, partner_id, currency_id, type, date, context=None):
+        print '**onchange_issued_checks'
+        amount = 0.00
+
+        #~ if len(payment_line_ids):
+            #~ res = self.onchange_paymode_line(cr, uid, ids, payment_line_ids, context)
+            #~ amount = res['value']['amount']
+        
         if len(ids) < 1:
             raise osv.except_osv(_('ATENTION !'),
                     _('Save the voucher before use checks !'))
         data = {}
-        amount = 0.00
         for check in issued_check_ids:
             amount += check[2].get('amount', 0.00)
+            print 'Check:', check
         data['amount'] = amount
 #del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
 #del                amount, currency_id, type, date)
@@ -74,6 +113,7 @@ class account_voucher(osv.osv):
     def onchange_third_check_receipt_ids(self, cr, uid, ids,
             third_check_receipt_ids, journal_id, partner_id, currency_id, type,
             date, context=None):
+        print '**onchange_third_check_receipt_ids'
         data = {}
         amount = 0.00
         for check in third_check_receipt_ids:
@@ -86,6 +126,7 @@ class account_voucher(osv.osv):
 
     def onchange_third_check_ids(self, cr, uid, ids, third_check_ids,
             journal_id, partner_id, currency_id, type, date):
+        print '**onchange_third_check_ids'
         data = {}
         amount = 0.00
         third_checks = self.pool.get('account.third.check').browse(cr, uid,

@@ -27,6 +27,7 @@
     'depends': [
         'account',
         'account_voucher',
+        'l10n_ar_account_payment'
     ],
     'init_xml': [],
     'demo_xml': [],
