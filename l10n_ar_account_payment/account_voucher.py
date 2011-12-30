@@ -23,14 +23,42 @@ from osv import osv, fields
 
 
 class account_voucher(osv.osv):
+    
+    def _total_amount(self, cr, uid, ids, name, arg, context=None):
+        print '**Total Amount'
+        pay_line_pool = self.pool.get('payment.mode.receipt.line')
+        res = {}
+        for v in self.browse(cr, uid , ids, context):
+            amount = 0.0
+            payment_lines = pay_line_pool.search(cr, uid, [('voucher_id','=', v.id)] )
+            for line in pay_line_pool.browse(cr, uid, payment_lines, context):
+                if not line.amount:
+                    continue
+                amount += line.amount  
+            res[v.id] = amount
+
+        return res
+    
     _name = "account.voucher"
     _inherit = "account.voucher"
     _columns = {
-      'payment_line_ids' : fields.one2many('payment.mode.line' , 'voucher_id' , 'Payments Lines'),   
+      'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
+      'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
     }
+
+    def _get_payment_lines_default(self, cr, uid, context=None):
+        print '***_get_payment_lines_default***'
+        pay_mod_pool = self.pool.get('payment.mode.receipt')
+        modes = pay_mod_pool.search(cr, uid, [])
+        lines = []
+        for mode in pay_mod_pool.browse(cr, uid, modes, context=context):
+            lines.append({'name': mode.name ,'amount': 0.0 ,'amount_currency':0.0 ,'payment_mode_id': mode.id})
+            print mode.name
+        return lines
 
     _defaults = {
         'pre_line': lambda *a: False,
+        #'payment_line_ids': _get_payment_lines_default,
     }
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
@@ -79,6 +107,22 @@ class account_voucher(osv.osv):
         default['value']['account_id'] = account_id
         
         return default
+    
+    def onchange_paymode_line(self, cr, uid, ids, payment_lines, context=None):
+        pay_mod_line_pool = self.pool.get('payment.mode.receipt.line')
+        res={'value':{'amount':0.0}}
+        #amount = 0.0        
+        lines= [(x[1] , x[2]['amount']) for x in payment_lines]
+        print payment_lines
+        print lines
+
+#        for line in lines:
+#            pay_mod_line_pool.write(cr, uid, line[0], {'amount':line[1]})
+            #amount += line[1] 
+            #pay_line = pay_mod_line_pool.browse(cr, uid, line[0], context)
+#        self.write(cr, uid, ids, {'amount':amount})
+#        res['value']['amount'] = amount
+        return res
 
     def get_invoices_and_credits(self, cr, uid, ids, context):
 
@@ -99,8 +143,9 @@ class account_voucher(osv.osv):
                 pre_line = 1
             else:
                 pre_line = False
-            self.write(cr, uid, v.id, {'pre_line':pre_line})
+            self.write(cr, uid, v.id, {'pre_line':pre_line })
             #self._compute_voucher(cr, uid, v.id, voucher_line_ids, ttype, context=context_multi_currency)
+        
         return True
         
     def _get_voucher_lines(self, cr, uid, ids, state='not_included', context=None):
@@ -148,7 +193,7 @@ class account_voucher(osv.osv):
             
             original_amount = line.credit or line.debit or 0.0
             amount_unreconciled = currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, abs(line.amount_residual_currency), context=context_multi_currency)
-        
+
             rs = {
                 'name':line.move_id.name,
                 'voucher_id':v.id,
@@ -171,9 +216,9 @@ class account_voucher(osv.osv):
             elif rs['type'] == 'dr':
                 line_dr_ids.append(rs)
             
-    
-        line_pool.unpost_voucher_lines(cr, uid, voucher_line_ids, context=context)
-        res = { 'line_cr_ids' : line_cr_ids , 'line_dr_ids': line_dr_ids } 
+        #payment_mode_lines = self._get_payment_lines_default(cr, uid, ids, context=context)    
+        #line_pool.unpost_voucher_lines(cr, uid, voucher_line_ids, context=context)
+        res = { 'line_cr_ids' : line_cr_ids , 'line_dr_ids': line_dr_ids } #,'payment_line_ids' : payment_mode_lines  } 
         
         return res
 
@@ -242,9 +287,12 @@ class account_voucher(osv.osv):
         self.write(cr, uid, v.id, {'pre_line':pre_line, 'writeoff_amount': writeoff_amount})
 
         return True
-
+    
     def onchange_amount(self, cr, uid, ids, amount, context):
-        return {'value': {}}
+        print '**onchage_amount:' , amount 
+        #self.write(cr, uid, ids, {'amount':amount})
+#        return {'value': {'amount': amount}}
+        return {}
 
     def onchange_line_ids(self, cr, uid, ids, line_dr_ids, line_cr_ids, amount):
         return {'value':{}}
@@ -301,10 +349,22 @@ class account_voucher(osv.osv):
             self.clean(cr, uid, ids, context)
             lines_to_post = line_pool.search(cr , uid , [('voucher_id' , '=' , voucher_id) , ('state' , '=' ,'included')] )
             line_pool.post_voucher_lines(cr, uid, lines_to_post, context=context)
-            self.action_move_line_create(cr, uid, ids, context=context)
-            
+            #self.action_move_line_create(cr, uid, ids, context=context)
+                               
         return True
-        
+    
+    def create(self, cr, uid, vals, context=None):
+        res = self._get_payment_lines_default(cr, uid, context)
+        payment_lines = [(0, 0, values) for values in res]        
+        vals['payment_line_ids'] = payment_lines
+
+        return super(account_voucher, self).create(cr, uid, vals, context=context)
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        print '**Write'
+        print 'Vals:' , vals
+        return super(account_voucher, self).write(cr, uid, ids, vals, context=context)
+
 account_voucher()
 
 class account_voucher_line(osv.osv):
