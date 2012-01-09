@@ -172,7 +172,10 @@ class account_voucher(osv.osv):
         if not context.get('move_line_ids', False):
             domain = [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', v.partner_id.id)]
             if 'invoice_id' in context:
-                domain += ['|', ('invoice','=',context['invoice_id']), ('debit','!=',0.0)]
+                if ttype == 'payment':
+                    domain += ['|', ('invoice','=',context['invoice_id']), ('debit','!=',0.0)]
+                else:
+                    domain += ['|', ('invoice','=',context['invoice_id']), ('credit','!=',0.0)]
             ids = move_line_pool.search(cr, uid, domain, context=context)  
         else:
             ids = context['move_line_ids']
