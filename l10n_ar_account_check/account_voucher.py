@@ -34,7 +34,7 @@ class account_voucher(osv.osv):
         'third_check_receipt_ids': fields.one2many('account.third.check',
             'voucher_id', 'Third Checks', required=False),
         'third_check_ids': fields.many2many('account.third.check',
-            'third_check_voucher_rel', 'third_check_id', 'voucher_id',
+            'third_check_voucher_rel', 'voucher_id', 'third_check_id',
             'Third Checks', domain=[('state', '=', 'C')]),
     }
 
@@ -58,9 +58,7 @@ class account_voucher(osv.osv):
     
     def onchange_pay_amount(  self, cr, uid, ids, payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                 journal_id, partner_id, currency_id, type, date ,context=None):
-    
-        print '**onchange_pay_amount in Checks'
-        #~ print 'issued_check_ids:', issued_check_ids
+
         issued_pool = self.pool.get('account.issued.check')
         third_pool = self.pool.get('account.third.check')
         amount = 0.0
@@ -83,19 +81,15 @@ class account_voucher(osv.osv):
                 res = self.onchange_third_check_ids(cr, uid, ids, third_check_ids,
                     journal_id, partner_id, currency_id, type, date)
                 amount += res['value']['amount']
-        print 'amount', amount
-        #self.write(cr, uid, ids, {'amount':amount , 'issued_check_ids': issued_check_ids, 'third_check_ids':third_check_ids ,'third_check_receipt_ids': third_check_receipt_ids })
+
         res['value']['amount'] = amount
         return res
 
     def onchange_issued_checks( self, cr, uid, ids, issued_check_ids,
                                 journal_id, partner_id, currency_id, type, date, context=None):
-        print '**onchange_issued_checks'
+                                    
         amount = 0.00
-
-        #~ if len(payment_line_ids):
-            #~ res = self.onchange_paymode_line(cr, uid, ids, payment_line_ids, context)
-            #~ amount = res['value']['amount']
+        issued_check_pool = self.pool.get('account.issued.check')
         
         if len(ids) < 1:
             raise osv.except_osv(_('ATENTION !'),
@@ -103,43 +97,45 @@ class account_voucher(osv.osv):
         data = {}
         for check in issued_check_ids:
             amount += check[2].get('amount', 0.00)
-            print 'Check:', check
         data['amount'] = amount
-#del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
-#del                amount, currency_id, type, date)
-#del        data.update(vals.get('value'))
+
         return {'value': data}
+        
 
     def onchange_third_check_receipt_ids(self, cr, uid, ids,
             third_check_receipt_ids, journal_id, partner_id, currency_id, type,
             date, context=None):
-        print '**onchange_third_check_receipt_ids'
         data = {}
         amount = 0.00
+        third_check_pool = self.pool.get('account.third.check')
+        checks= [(x[1] , x[2]['amount']) for x in third_check_receipt_ids]
+        for check in checks:
+            third_check_pool.write(cr, uid, check[0], {'amount':check[1]})
         for check in third_check_receipt_ids:
             amount += check[2].get('amount', 0.00)
         data['amount'] = amount
-#del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
-#del                amount, currency_id, type, date)
-#del        data.update(vals.get('value'))
+
         return {'value': data}
 
     def onchange_third_check_ids(self, cr, uid, ids, third_check_ids,
             journal_id, partner_id, currency_id, type, date):
-        print '**onchange_third_check_ids'
         data = {}
         amount = 0.00
-        third_checks = self.pool.get('account.third.check').browse(cr, uid,
-                third_check_ids[0][2])
-
-        for check in third_checks:
-            amount += check.amount
 
         data['amount'] = amount
+       
+        third_check_ids = third_check_ids[0][2]
+        voucher_id = ids[0]
 
-#del        vals = self.onchange_partner_id(cr, uid, ids, partner_id, journal_id,
-#del                amount, currency_id, type, date)    
-#del        data.update(vals.get('value'))
+        if not len(third_check_ids):
+            return {'value': data}
+
+        # Borramos todas las referencias de los cheques al voucher
+        cr.execute("DELETE FROM third_check_voucher_rel WHERE voucher_id=%s", (voucher_id,))
+
+        for check_id in third_check_ids:
+            # Insertamos los nuevos cheques
+            res = cr.execute("INSERT INTO third_check_voucher_rel (third_check_id, voucher_id) values (%s, %s)", (check_id, voucher_id,))
 
         return {'value': data}
 

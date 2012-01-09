@@ -54,6 +54,17 @@ class account_issued_check(osv.osv):
     _defaults = {
         'clearing': lambda *a: '24',
     }
+    
+    def add_issued_checks(self, cr , uid , ids , context=None):
+        voucher_pool = self.pool.get('account.voucher')
+        voucher_ids = context['active_ids']
+        
+        for v in self.browse(cr, uid , voucher_ids, context):
+            voucher_pool.write(cr , uid , v.id , {'issued_check_ids': [(1, ids[0] , {'voucher_id': v.id})]})
+        
+        return { 'type': 'ir.actions.act_window.close'} 
+    
+
 
 account_issued_check()
 
@@ -144,5 +155,16 @@ class account_third_check(osv.osv):
                 'state': 'rejected',
             })
         return True
+    
+    def add_third_checks(self, cr , uid , ids , context=None):
+        voucher_pool = self.pool.get('account.voucher')
+        voucher_ids = context['active_ids']
+        
+        for v in self.browse(cr, uid , voucher_ids, context):
+            voucher_pool.write(cr , uid , v.id , {'third_check_receipt_ids': [(1, ids[0] , {'voucher_id': v.id})]})
+            
+        return {
+            'type': 'ir.actions.act_window.close'
+            }     
 
 account_third_check()

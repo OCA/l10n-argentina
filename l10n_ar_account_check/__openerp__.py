@@ -38,6 +38,7 @@
         'wizard/view_check_deposit.xml',
         'wizard/view_check_reject.xml',
         'partner_view.xml',
+        'wizard/add_checks_view.xml',
     ],
     'test': [
     ],
