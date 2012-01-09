@@ -210,7 +210,7 @@ class account_voucher(osv.osv):
             elif rs['type'] == 'dr':
                 line_dr_ids.append(rs)
             
-        
+        #solo para realizar pruebas:
         #line_pool.unpost_voucher_lines(cr, uid, voucher_line_ids, context=context)
         res = { 'line_cr_ids' : line_cr_ids , 'line_dr_ids': line_dr_ids } #,'payment_line_ids' : payment_mode_lines  } 
         
@@ -317,11 +317,18 @@ class account_voucher(osv.osv):
     def clean(self, cr, uid, ids, context=None):
         
         line_pool = self.pool.get('account.voucher.line')
+        pay_mode_line_pool = self.pool.get('payment.mode.receipt.line')
+        
         for v_id in ids: 
-            lines_to_clean  = line_pool.search( cr, uid , [('voucher_id' ,'=', v_id ) ,'|', ( 'state' , '=', 'not_included')
+            vlines_to_clean  = line_pool.search( cr, uid , [('voucher_id' ,'=', v_id ) ,'|', ( 'state' , '=', 'not_included')
                                                             ,'&',( 'state' , '=', 'included'),( 'amount' , '=', 0.0)])
-        if lines_to_clean:
-                line_pool.unlink(cr, uid, lines_to_clean)
+            pay_modes_to_clean = pay_mode_line_pool.search(cr, uid , [('voucher_id' ,'=', v_id ) , ( 'amount' , '=', 0.0)])
+            
+        if vlines_to_clean:
+            line_pool.unlink(cr, uid, vlines_to_clean)
+        if pay_modes_to_clean:
+            pay_mode_line_pool.unlink(cr, uid, pay_modes_to_clean)
+        
         return True
        
     def proforma_voucher(self, cr, uid, ids, context=None):
