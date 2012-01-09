@@ -34,8 +34,7 @@
                     </xpath>
                     <field  name="amount" position="replace" >
                         <field  name="amount"
-                                string="Paid Amount"
-                                on_change="onchange_amount(amount, context)"/>
+                                string="Paid Amount"/>
                     </field>
                     <field name="journal_id" position="replace" >
                         <field  name="journal_id" 
@@ -46,7 +45,6 @@
                     
                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_cr_ids"]' position="replace">
                         <field name="line_cr_ids" default_get="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" colspan="4" nolabel="1" height="140">
-                                                                        <!--editable="bottom"-->
                             <tree   string="Invoices and Outstanding transactions"
                                     colors="black:state=='included' ;grey:state=='not_included'">                                  >
                                 <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
@@ -76,7 +74,6 @@
                     </xpath>
                     
                     <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_dr_ids"]' position="replace" >
-                        <!--attrs="{'invisible': [('pre_line','=',False)]}"-->   <!--editable="bottom"-->
                         <field name="line_dr_ids" colspan="4" editable="bottom" attrs="{'invisible': [('pre_line','=',False)]}" nolabel="1" default_get="{'journal_id':journal_id, 'partner_id':partner_id}">
                             <tree string="Credits" 
                             colors="black:state=='included' ;grey:state=='not_included'">
@@ -121,7 +118,7 @@
                 </button>
                 <xpath expr='//notebook/page[@string="Payment Information"]/field[@name="line_dr_ids"]' position="before">
                     <field name="currency_id" invisible="1" />
-                    <field name="payment_line_ids" nolabel="1" colspan="4" on_change="onchange_paymode_line(payment_line_ids)">
+                    <field name="payment_line_ids" nolabel="1" colspan="4" on_change="onchange_paymode_line(payment_line_ids, context)">
                         <tree string="Payment Lines" editable="bottom">
                             <field name="name"/>
                             <field name="date" readonly="1"/>
@@ -138,8 +135,7 @@
                 </xpath>
                 <field  name="amount" position="replace" >
                     <field  name="amount"
-                            string="Paid Amount"
-                            on_change="onchange_amount(amount, context)"/>
+                            string="Paid Amount"/>
                 </field>
                 <field name="journal_id" position="replace" >
                     <field  name="journal_id" 
@@ -163,7 +159,7 @@
                             <field name="amount" sum="Payment"/>
 
                             <field name="state"/>
-                            <button name="add_voucher_line" 
+                            <button name="add_voucher_line"  
                                     string="Add" 
                                     type="object" 
                                     icon="gtk-go-back" 
@@ -203,7 +199,7 @@
                 
                 <xpath expr='//notebook/page[@string="Payment Information"]/group[2]' position="replace"/>
                 <xpath expr='//notebook/page[@string="Payment Information"]/group[1]' position="replace"/>
-           
+    
             </field>
         </record>
     </data>

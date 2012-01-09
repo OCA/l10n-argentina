@@ -64,14 +64,6 @@ class payment_mode_receipt_line(osv.osv):
                 date = order.date_scheduled
         return date
         
-    #~ def _amount(self, cursor, user, ids, name, args, context=None):
-        #~ if not ids:
-            #~ return {}
-        #~ currency_obj = self.pool.get('res.currency')
-        #~ if context is None:
-            #~ context = {}
-        #~ res = {}
-
     
     _columns= {
         'name': fields.char('Mode', size=64, required=True, readonly=True, help='Payment reference'),
@@ -86,7 +78,6 @@ class payment_mode_receipt_line(osv.osv):
     }
 
     _defaults = {
-        #'name': lambda obj, cursor, user, context: obj.pool.get('ir.sequence').get(cursor, user, 'payment.line'),
         'amount': 0.0,
         'currency': _get_currency,
         'company_currency': _get_currency,
