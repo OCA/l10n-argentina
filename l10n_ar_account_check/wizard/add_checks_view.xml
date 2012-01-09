@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!--Para los Supplier Payments-->
         <record model="ir.ui.view" id="add_issued_checks_form_view">
             <field name="name">account.add.issued.checks.wizard.form</field>
             <field name="model">account.issued.check</field>
@@ -30,7 +31,7 @@
             <field name="target">new</field>
         </record>
         
-        
+        <!--Para los Customer Payments-->
         <record model="ir.ui.view" id="add_third_checks_form_view">
             <field name="name">account.add.third.checks.wizard.form</field>
             <field name="model">account.third.check</field>

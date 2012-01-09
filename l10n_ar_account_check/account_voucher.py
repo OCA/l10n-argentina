@@ -28,6 +28,25 @@ class account_voucher(osv.osv):
     _inherit = 'account.voucher'
     _description = 'Change the journal_id relation kind'
 
+    def _total_amount(self, cr, uid, ids, name, arg, context=None):
+        vouchers = super(account_voucher, self)._total_amount(cr, uid, ids, name, arg, context=context)
+        for v in vouchers:
+            amount = 0.0
+            amount_check = self._amount_checks(cr, uid, v)
+            
+            if amount_check['issued_check_amount'] != 0 :
+                amount += amount_check['issued_check_amount']
+            
+            if amount_check['third_check_amount'] != 0 :
+                amount += amount_check['third_check_amount']
+            
+            if amount_check['third_check_receipt_amount'] != 0 :
+                amount += amount_check['third_check_receipt_amount']
+                
+            vouchers[v] += amount 
+        
+        return vouchers
+
     _columns = {
         'issued_check_ids': fields.one2many('account.issued.check',
             'voucher_id', 'Issued Checks', required=False),
@@ -36,6 +55,7 @@ class account_voucher(osv.osv):
         'third_check_ids': fields.many2many('account.third.check',
             'third_check_voucher_rel', 'voucher_id', 'third_check_id',
             'Third Checks', domain=[('state', '=', 'C')]),
+        'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
     }
 
     def _amount_checks(self, cr, uid, voucher_id):
@@ -58,7 +78,7 @@ class account_voucher(osv.osv):
     
     def onchange_pay_amount(  self, cr, uid, ids, payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                 journal_id, partner_id, currency_id, type, date ,context=None):
-
+        
         issued_pool = self.pool.get('account.issued.check')
         third_pool = self.pool.get('account.third.check')
         amount = 0.0
@@ -87,7 +107,7 @@ class account_voucher(osv.osv):
 
     def onchange_issued_checks( self, cr, uid, ids, issued_check_ids,
                                 journal_id, partner_id, currency_id, type, date, context=None):
-                                    
+    
         amount = 0.00
         issued_check_pool = self.pool.get('account.issued.check')
         
@@ -96,7 +116,8 @@ class account_voucher(osv.osv):
                     _('Save the voucher before use checks !'))
         data = {}
         for check in issued_check_ids:
-            amount += check[2].get('amount', 0.00)
+            if check[2]:
+                amount += check[2].get('amount', 0.00)
         data['amount'] = amount
 
         return {'value': data}
@@ -105,24 +126,24 @@ class account_voucher(osv.osv):
     def onchange_third_check_receipt_ids(self, cr, uid, ids,
             third_check_receipt_ids, journal_id, partner_id, currency_id, type,
             date, context=None):
+        
         data = {}
         amount = 0.00
-        third_check_pool = self.pool.get('account.third.check')
-        checks= [(x[1] , x[2]['amount']) for x in third_check_receipt_ids]
-        for check in checks:
-            third_check_pool.write(cr, uid, check[0], {'amount':check[1]})
+        data['amount'] = 0.0
+        if not len(third_check_receipt_ids):
+            return {'value': data}
         for check in third_check_receipt_ids:
-            amount += check[2].get('amount', 0.00)
+            if check[1] != 0 and check[2]:
+                amount += check[2]['amount']
         data['amount'] = amount
-
+    
         return {'value': data}
 
     def onchange_third_check_ids(self, cr, uid, ids, third_check_ids,
             journal_id, partner_id, currency_id, type, date):
         data = {}
         amount = 0.00
-
-        data['amount'] = amount
+        data['amount'] = 0.0
        
         third_check_ids = third_check_ids[0][2]
         voucher_id = ids[0]
