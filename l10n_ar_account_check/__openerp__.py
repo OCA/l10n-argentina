@@ -32,13 +32,13 @@
     'init_xml': [],
     'demo_xml': [],
     'update_xml': [
+        'wizard/add_checks_view.xml',
         'account_check_view.xml',
         'account_voucher_view.xml',
         'account_third_check_workflow.xml',
         'wizard/view_check_deposit.xml',
         'wizard/view_check_reject.xml',
         'partner_view.xml',
-        'wizard/add_checks_view.xml',
     ],
     'test': [
     ],
