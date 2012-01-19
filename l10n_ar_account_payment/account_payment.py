@@ -28,10 +28,7 @@ class payment_mode(osv.osv):
     _inherit = "payment.mode"
     _description= 'Payment Mode'
     _columns = {
-        #'name': fields.char('Name', size=64, required=True, help='Mode of Payment'), 
-        #'bank_id': fields.many2one('res.partner.bank', "Bank account", required=True,help='Bank Account for the Payment Mode'),
-        #'journal': fields.many2one('account.journal', 'Journal', required=True, domain=[('type', 'in', ('bank','cash'))], help='Bank or Cash Journal for the Payment Mode'),
-        'account_id' : fields.many2one( 'account.account' , 'Account' ,required=True),
+        'account_id' : fields.many2one( 'account.account' , 'Account' ,required=False),
     }
 payment_mode()
 

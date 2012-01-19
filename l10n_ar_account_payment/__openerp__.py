@@ -22,7 +22,7 @@
 {
     "name": "Payments for ARGENTINA",
     "version": "1.0",
-    "depends": ["base" , "account_voucher" , "account_payment"],
+    "depends": ["base" , "account_voucher" , "account_payment" , "account_accountant"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",

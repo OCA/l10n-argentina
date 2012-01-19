@@ -49,6 +49,9 @@ class account_voucher(osv.osv):
         
         pay_mod_pool = self.pool.get('payment.mode.receipt')
         modes = pay_mod_pool.search(cr, uid, [])
+        if not modes:
+            #TODO esto va en un log:
+            print 'Warnig - No se configuraron modos de pago (Payment Modes Receipt)'
         lines = []
         for mode in pay_mod_pool.browse(cr, uid, modes, context=context):
             lines.append({'name': mode.name ,'amount': 0.0 ,'amount_currency':0.0 ,'payment_mode_id': mode.id})
