@@ -36,7 +36,7 @@ class pos_ar(osv.osv):
     _description = "Point of Sale for Argentina"
     _columns = {
         'name' : fields.char('Nro', required=True, size=6),
-        'desc' : fields.char('Description', required=True, size=180),
+        'desc' : fields.char('Description', required=False, size=180),
         'priority' : fields.integer('Priority', required=True, size=6),
         'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
         'denomination_id': fields.many2one('invoice.denomination', 'Denomination'),

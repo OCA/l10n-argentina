@@ -63,15 +63,22 @@ class invoice(osv.osv):
                 pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
             
             if not obj_inv.internal_number:
-                cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type='out_invoice'", (pos_ar, ('open', 'paid', 'cancel',)))
-                max_number = cr.fetchone()    
-                if not max_number[0]:
+                max_number = []
+                if obj_inv.type == 'out_invoice':
+                    cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type='out_invoice'", (pos_ar, ('open', 'paid', 'cancel',)))
+                    max_number = cr.fetchone()
+                if not max_number:
                     internal_number = '%08d' % 1
                     self.write(cr, uid, id, {'internal_number' : internal_number })
                 else :
                     internal_number = '%08d' % ( int(max_number[0]) + 1)
                     self.write(cr, uid, id, {'internal_number' : internal_number })
             else :
+                try: 
+                    int(obj_inv.internal_number) 
+                except :
+                    raise osv.except_osv( _('Error'),
+                                          _('The Invoice Number can not contain characters'))
                 internal_number = ('%08d' % int(obj_inv.internal_number))
                 self.write(cr, uid, id, {'internal_number' : internal_number})
 #end add            
@@ -106,16 +113,6 @@ class invoice(osv.osv):
         return True
         
     
-    def write(self, cr, uid, ids, vals, context=None):
-        
-        if 'internal_number' in vals.keys():
-            try: 
-                int(vals['internal_number']) 
-            except :
-                raise osv.except_osv( _('Error'),
-                                      _('The Invoice Number can not contain characters'))
-        return super(invoice, self).write(cr, uid, ids, vals, context=context)
-    
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
     
         #devuelve los ids de las invoice modificadas
@@ -145,8 +142,8 @@ class invoice(osv.osv):
         res['value'].update({'denomination_id': denom_sup_id})
         #para las customers invoices
         pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)] , limit=1 )
-        res['value'].update({'pos_ar_id': pos[0]})
-        
+        if len(pos):
+            res['value'].update({'pos_ar_id': pos[0]})
         return res
         
     def invoice_pay_customer(self, cr, uid, ids, context=None):

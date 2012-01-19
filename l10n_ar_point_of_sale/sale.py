@@ -62,8 +62,10 @@ class sale_order(osv.osv):
     def action_wait(self, cr, uid, ids, *args):
         for o in self.browse(cr, uid, ids):
             if not o.fiscal_position:
-                raise osv.except_osv(   _('No Fiscal Position Setting'),
-                                        _('Please set the Fiscal Position First'))
+                #TODO poner esto en un log:
+                print 'Error - No Fiscal Position Setting. Please set the Fiscal Position First'
+                #~ raise osv.except_osv(   _('No Fiscal Position Setting'),
+                                        #~ _('Please set the Fiscal Position First'))
             if (o.order_policy == 'manual'):
                 self.write(cr, uid, [o.id], {'state': 'manual', 'date_confirm': time.strftime('%Y-%m-%d')})
             else:
