@@ -71,7 +71,11 @@ class invoice(osv.osv):
                     internal_number = '%08d' % 1
                     self.write(cr, uid, id, {'internal_number' : internal_number })
                 else :
-                    internal_number = '%08d' % ( int(max_number[0]) + 1)
+                    if not max_number[0]:
+                        max_number = 0
+                    else: 
+                        max_number = max_number[0]
+                    internal_number = '%08d' % ( int(max_number) + 1)
                     self.write(cr, uid, id, {'internal_number' : internal_number })
             else :
                 try: 
