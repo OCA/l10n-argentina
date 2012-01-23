@@ -86,7 +86,7 @@ class account_voucher(osv.osv):
         res= super(account_voucher, self).onchange_paymode_line(cr, uid, ids, payment_line_ids, context=context)
         amount = res['value']['amount']
         
-        if len(issued_check_ids):
+        if issued_check_ids:
             res = self.onchange_issued_checks(  cr, uid, ids, issued_check_ids,
                                                 journal_id, partner_id, currency_id, type, date, context)
             amount += res['value']['amount']
@@ -184,5 +184,41 @@ class account_voucher(osv.osv):
             for check in voucher_obj.third_check_receipt_ids:
                 wf_service.trg_validate(uid, 'account.third.check', check.id, 'draft_cartera', cr)
         return super(account_voucher, self).action_move_line_create(cr, uid, ids, context=None)
+
+    def call_issued_checks(self, cr , uid , ids , context=None):
+
+        context['active_ids'] = ids[0]
+        view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.add.issued.checks.wizard.form')])
+        return {
+            'name':_("Add Check aaa"),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.add.issued.check',
+            'src_model': 'account.add.issued.check',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': False,
+            'target': 'new',
+            'nodestroy': True,
+            'domain': '[]',
+            'context': dict(context, active_ids=ids)
+            }   
+
+    def call_third_checks(self, cr , uid , ids , context=None):
+
+        context['active_ids'] = ids[0]
+        view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.add.third.checks.wizard.form')])
+        return {
+            'name':_("Add Check aaa"),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.add.third.check',
+            'src_model': 'account.add.third.check',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': False,
+            'target': 'new',
+            'nodestroy': True,
+            'domain': '[]',
+            'context': dict(context, active_ids=ids)
+            }   
 
 account_voucher()

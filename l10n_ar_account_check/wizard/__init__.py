@@ -17,3 +17,4 @@
 
 import check_deposit
 import check_reject
+import add_checks

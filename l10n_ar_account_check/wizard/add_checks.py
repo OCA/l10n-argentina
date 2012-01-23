@@ -1,6 +1,6 @@
 # coding=utf-8
 
-#    Copyright (C) 2008-2011  Thymbra
+#    Copyright (C) 2011-2012
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,18 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from osv import osv, fields
+from tools.translate import _
 import time
-from osv import fields, osv
 
 
-class account_issued_check(osv.osv):
-    '''
-    Account Issued Check
-    '''
-    _name = 'account.issued.check'
-    _description = 'Manage Checks'
-    _rec_name = 'number'
-
+class account_add_issued_check(osv.osv_memory):
+    
+    _name = 'account.add.issued.check'
     _columns = {
         'number': fields.char('Check Number', size=20, required=True),
         'amount': fields.float('Amount Check', required=True),
@@ -54,18 +50,32 @@ class account_issued_check(osv.osv):
     _defaults = {
         'clearing': lambda *a: '24',
     }
+     
+        
+    def add_issued_checks(self, cr , uid , ids , context=None):
+        
+        issued_check_obj = self.pool.get('account.issued.check')
+        voucher_id = context['active_ids'][0]
+        wiz_check_obj = self.pool.get('account.add.issued.check')
+        wiz_check = wiz_check_obj.browse(cr, uid , ids[0], context)
+        rs = {
+            'number': wiz_check.number,
+            'date_out': wiz_check.date_out,
+            'date': wiz_check.date,
+            'bank_id': wiz_check.bank_id.id,
+            'account_bank_id': wiz_check.account_bank_id.id,
+            'amount': wiz_check.amount,
+            'voucher_id': voucher_id,
+        }        
+        check_id = issued_check_obj.create(cr, uid, rs)
 
-account_issued_check()
+        return {'type': 'ir.actions.act_window_close'}
+    
+account_add_issued_check()
 
-
-class account_third_check(osv.osv):
-    '''
-    Account Third Check
-    '''
-    _name = 'account.third.check'
-    _description = 'Manage Checks'
-    _rec_name = 'number'
-
+class account_add_third_check(osv.osv_memory):
+    
+    _name = 'account.add.third.check'
     _columns = {
         'number': fields.char('Check Number', size=20, required=True),
         'amount': fields.float('Check Amount', required=True),
@@ -100,49 +110,30 @@ class account_third_check(osv.osv):
         'reject_debit_note': fields.many2one('account.invoice',
             'Reject Debit Note'),
     }
-
     _defaults = {
         'date_in': lambda *a: time.strftime('%Y-%m-%d'),
         'state': lambda *a: 'draft',
         'clearing': lambda *a: '24',
-    }
-
-    def wkf_cartera(self, cr, uid, ids, context=None):
-        # Transicion efectuada al validar un pago de cliente que contenga
-        # cheques
-        for check in self.browse(cr, uid, ids):
-            if check.voucher_id:
-                source_partner_id = check.voucher_id.partner_id.id
-            else:
-                source_partner_id = None
-            check.write({
-                'state': 'C',
-                'source_partner_id': source_partner_id,
-            })
-        return True
-
-    def wkf_delivered(self, cr, uid, ids, context=None):
-        # Transicion efectuada al validar un pago a proveedores que entregue
-        # cheques de terceros
-        for check in self.browse(cr, uid, ids):
-            check.write({
-                'state': 'delivered',
-            })
-        return True
-
-    def wkf_deposited(self, cr, uid, ids, context=None):
-        # Transicion efectuada via wizard
-        for check in self.browse(cr, uid, ids):
-            check.write({
-                'state': 'deposited',
-            })
-        return True
-
-    def wkf_rejected(self, cr, uid, ids, context=None):
-        for check in self.browse(cr, uid, ids):
-            check.write({
-                'state': 'rejected',
-            })
-        return True
-
-account_third_check()
+    }    
+    
+    def add_third_checks(self, cr , uid , ids , context=None):
+        
+        third_check_obj = self.pool.get('account.third.check')
+        voucher_id = context['active_ids'][0]
+        wiz_check_obj = self.pool.get('account.add.third.check')
+        wiz_check = wiz_check_obj.browse(cr, uid , ids[0], context)
+        rs = {
+            'number': wiz_check.number,
+            'amount': wiz_check.amount,
+            'date_in': wiz_check.date_in,
+            'date': wiz_check.date,
+            'vat': wiz_check.vat,
+            'bank_id': wiz_check.bank_id.id,
+            'clearing' : wiz_check.clearing,
+            'account_bank_id': wiz_check.account_bank_id.id,
+            'voucher_id': voucher_id,
+        }
+        check_id = third_check_obj.create(cr, uid, rs)
+        return {'type': 'ir.actions.act_window_close'}
+            
+account_add_third_check()

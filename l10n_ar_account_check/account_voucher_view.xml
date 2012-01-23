@@ -22,7 +22,7 @@
                             on_change="onchange_pay_amount(payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                         journal_id, partner_id, currency_id, type, date ,context)"/>
                         <group col="24">
-                            <button name="%(action_add_issued_check)d" colspan="1" string="Add Check" type="action" target="new" icon="gtk-go-back"/>
+                            <button name="call_issued_checks" colspan="1" string="Add Check21" type="object" target="new" icon="gtk-go-back"/>
                             <separator string="" colspan="23"/>
                         </group>
                         <separator string="Third Checks" colspan="4"/>
@@ -55,7 +55,7 @@
                             on_change="onchange_pay_amount(payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                         journal_id, partner_id, currency_id, type, date ,context)"/>
                         <group col="24">
-                            <button name="%(action_add_third_check)d" colspan="1" string="Add Check" type="action" target="new" icon="gtk-go-back"/>
+                            <button name="call_third_checks" colspan="1" string="Add Check" type="object" target="new" icon="gtk-go-back"/>
                             <separator string="" colspan="23"/>
                         </group>
                     </page>
