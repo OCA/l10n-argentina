@@ -48,7 +48,6 @@ class invoice(osv.osv):
         for obj_inv in self.browse(cr, uid, ids, context=context):
             id = obj_inv.id
             invtype = obj_inv.type
-            number = obj_inv.number
             move_id = obj_inv.move_id and obj_inv.move_id.id or False
             reference = obj_inv.reference or ''
             

@@ -22,9 +22,7 @@
 
 import pos_ar
 import sale
+import purchase
 import invoice
 import partner
 import stock
-
-
-
