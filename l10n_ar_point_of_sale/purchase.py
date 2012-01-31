@@ -17,12 +17,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import osv
+from osv import osv, fields
 from tools.translate import _
 
 class purchase_order(osv.osv):
     _name = "purchase.order"
     _inherit = "purchase.order"
+
+    def _invoiced_rate2(self, cursor, user, ids, name, arg, context=None):
+        res = {}
+        for purchase in self.browse(cursor, user, ids, context=context):
+            tot = 0.0
+            for invoice in purchase.invoice_ids:
+                if invoice.state not in ('draft','cancel'):
+                    tot += invoice.amount_total - invoice.residual
+            if purchase.amount_total:
+                res[purchase.id] = tot * 100.0 / purchase.amount_total
+            else:
+                res[purchase.id] = 0.0
+        return res
+
+    _columns = {
+        'invoiced_rate': fields.function(_invoiced_rate2, method=True, string='Invoiced', type='float'),
+    }
 
     def action_invoice_create(self, cr, uid, ids, *args):
         invoice_obj = self.pool.get('account.invoice')
@@ -45,18 +62,5 @@ class purchase_order(osv.osv):
             invoice_obj.write(cr, uid, inv_id, {'denomination_id': denomination_id})
 
         return inv_id
-
-    def _invoiced_rate(self, cursor, user, ids, name, arg, context=None):
-        res = {}
-        for purchase in self.browse(cursor, user, ids, context=context):
-            tot = 0.0
-            for invoice in purchase.invoice_ids:
-                if invoice.state not in ('draft','cancel'):
-                    tot += invoice.amount_total - invoice.residual
-            if purchase.amount_total:
-                res[purchase.id] = tot * 100.0 / purchase.amount_total
-            else:
-                res[purchase.id] = 0.0
-        return res
 
 purchase_order()
