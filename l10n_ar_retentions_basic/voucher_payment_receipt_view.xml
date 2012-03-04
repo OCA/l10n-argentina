@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <!-- Supplier Payment -->
+    <record id="view_vendor_payment_retention_form" model="ir.ui.view">
+      <field name="name">account.voucher.payment.retention.form.inherit</field>
+      <field name="model">account.voucher</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="account_voucher.view_vendor_payment_form"/>
+      <field name="arch" type="xml">
+        <page string="Journal Items" position="before">
+          <page string="Retentions">
+            <separator string="Applied Retentions"/>
+            <field name="retention_ids" nolabel="1" />
+          </page>
+        </page>
+      </field>
+    </record>
+
+    <!-- Customer Payment -->
+    <record id="view_vendor_receipt_retention_form" model="ir.ui.view">
+      <field name="name">account.voucher.receipt.retention.form.inherit</field>
+      <field name="model">account.voucher</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
+      <field name="arch" type="xml">
+        <data>
+          <page string="Journal Items" position="before">
+            <page string="Retentions">
+              <separator string="Supported Retentions"/>
+              <field name="retention_ids" nolabel="1" colspan="4" on_change="onchange_retentions(retention_ids, context)">
+                <tree string="Retention Lines">
+                  <field name="retention_id" string="Retention Type" />
+                  <field name="certificate_no" />
+                  <field name="base" />
+                  <field name="amount" />
+                </tree>
+                <form string="Retention Lines">
+                  <field name="retention_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_retention(retention_id, context)"/>
+                  <field name="name" />
+                  <field name="certificate_no" />
+                  <field name="base" />
+                  <field name="amount" />
+                  <field name="account_id" invisible="1" />
+                  <field name="base_code_id" invisible="1" />
+                  <field name="tax_code_id" invisible="1" />
+                </form>
+              </field>
+            </page>
+          </page>
+        </data>
+      </field>
+    </record>
+
+  </data>
+</openerp>

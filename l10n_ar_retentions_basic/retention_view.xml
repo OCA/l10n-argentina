@@ -16,6 +16,7 @@
           <separator colspan="6" string="Configuration"/>
           <field name="name" select="1"/>
           <field name="tax_id" select="1"/>
+          <field name="type_tax_use" select="1"/>
         </group>
       </form>
     </field>
@@ -30,6 +31,7 @@
       <tree string="Retentions">
         <field name="name" />
         <field name="tax_id" />
+        <field name="type_tax_use" />
       </tree>
     </field>
   </record>

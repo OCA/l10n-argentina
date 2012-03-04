@@ -21,7 +21,7 @@
 {
     "name": "Retentions for ARGENTINA (Retenciones)",
     "version": "1.0",
-    "depends": ["base", "account" , "account_accountant", "sale" ,"purchase" , "account_voucher" ],
+    "depends": ["base", "account" , "account_accountant", "sale" ,"purchase" , "account_voucher", "l10n_ar_account_payment", "l10n_ar_account_check" ],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -35,6 +35,7 @@
     'update_xml': [
         'retention_view.xml',
         'retention_data.xml',
+        'voucher_payment_receipt_view.xml',
     ],
     'demo_xml': [],
     'installable': True,
