@@ -91,5 +91,90 @@ class account_voucher(osv.osv):
         res={'value':{}}
         return res
 
+    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
+        move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
+
+        currency_pool = self.pool.get('res.currency')
+        retention_obj = self.pool.get('retention.tax.line')
+
+        v = self.browse(cr, uid, voucher_id)
+
+        context_multi_currency = context.copy()
+        context_multi_currency.update({'date': v.date})
+
+        for r in v.retention_ids:
+            if r.amount == 0.0:
+                continue
+
+            # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
+            company_currency = v.journal_id.company_id.currency_id.id
+            current_currency = v.currency_id.id
+
+            debit = 0.0
+            credit = 0.0
+            # TODO: is there any other alternative then the voucher type ??
+            # -for sale, purchase we have but for the payment and receipt we do not have as based on the bank/cash journal we can not know its payment or receipt
+            # Calculamos el tax_amount y el base_amount basados en las currency de la compania y del voucher
+            # TODO: Esto tendriamos que hacerlo en el mismo objeto retention_tax_line
+            tax_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.amount, context=context_multi_currency, round=False)
+            base_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.base, context=context_multi_currency, round=False)
+
+            # Lo escribimos en el objeto retention_tax_line
+            retention_obj.write(cr, uid, r.id, {'tax_amount': tax_amount, 'base_amount': base_amount})
+
+            if v.type in ('purchase', 'payment'):
+                credit = tax_amount
+            elif v.type in ('sale', 'receipt'):
+                debit = tax_amount
+            if debit < 0:
+                credit = -debit
+                debit = 0.0
+            if credit < 0:
+                debit = -credit
+                credit = 0.0
+            sign = debit - credit < 0 and -1 or 1
+
+            # Creamos la linea contable perteneciente a la retencion
+            move_line = {
+                'name': r.name or '/',
+                'debit': debit,
+                'credit': credit,
+                'account_id': r.account_id.id,
+                'tax_code_id': r.tax_code_id.id,
+                'tax_amount': tax_amount,
+                'move_id': move_id,
+                'journal_id': v.journal_id.id,
+                'period_id': v.period_id.id,
+                'partner_id': v.partner_id.id,
+                'currency_id': company_currency <> current_currency and  current_currency or False,
+                'amount_currency': company_currency <> current_currency and sign * r.amount or 0.0,
+                'date': v.date,
+                'date_maturity': v.date_due
+            }
+
+            move_lines.append(move_line)
+
+            # ...y ahora creamos la linea contable perteneciente a la base imponible de la retencion
+            # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
+            move_line = {
+                'name': r.name or '/',
+                'ref': v.name,
+                'debit': 0.0,
+                'credit': 0.0,
+                'account_id': r.account_id.id,
+                'tax_code_id': r.base_code_id.id,
+                'tax_amount': base_amount,
+                'move_id': move_id,
+                'journal_id': v.journal_id.id,
+                'period_id': v.period_id.id,
+                'partner_id': v.partner_id.id,
+                'currency_id': company_currency <> current_currency and  current_currency or False,
+                'amount_currency': company_currency <> current_currency and sign * r.amount or 0.0,
+                'date': v.date,
+                'date_maturity': v.date_due
+            }
+
+            move_lines.append(move_line)
+            return move_lines
 
 account_voucher()
