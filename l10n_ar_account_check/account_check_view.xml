@@ -4,6 +4,48 @@
 
         <menuitem id="menu_treasury_root" name="Treasury"/>
         <menuitem id="menu_treasury_check" name="Checks" parent="menu_treasury_root"/>
+        <menuitem id="menu_treasury_configuration" name="Configuration" parent="menu_treasury_root"/>
+
+    <!-- Cheques Configuracion -->
+
+        <record model="ir.ui.view" id="view_account_check_config_tree">
+            <field name="name">account.check.config.tree</field>
+            <field name="model">account.check.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Checks Config">
+                    <field name="account_id"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_account_check_config_form">
+            <field name="name">account.check.config.form</field>
+            <field name="model">account.check.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Check Config">
+                    <separator string="Configuration" colspan="4" />
+                    <field name="account_id"/>
+                    <field name="company_id"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_check_config">
+            <field name="name">Check Config</field>
+            <field name="res_model">account.check.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            action="action_check_config"
+            id="menu_treasury_check_config"
+            name="Check Config"
+            parent="menu_treasury_configuration"
+        />
 
     <!-- Cheques Emitidos -->
 

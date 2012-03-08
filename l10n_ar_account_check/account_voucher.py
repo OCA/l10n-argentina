@@ -26,25 +26,25 @@ class account_voucher(osv.osv):
     '''
     _name = 'account.voucher'
     _inherit = 'account.voucher'
-    _description = 'Change the journal_id relation kind'
+    #_description = 'Change the journal_id relation kind'
 
     def _total_amount(self, cr, uid, ids, name, arg, context=None):
         vouchers = super(account_voucher, self)._total_amount(cr, uid, ids, name, arg, context=context)
         for v in vouchers:
             amount = 0.0
             amount_check = self._amount_checks(cr, uid, v)
-            
+
             if amount_check['issued_check_amount'] != 0 :
                 amount += amount_check['issued_check_amount']
-            
+
             if amount_check['third_check_amount'] != 0 :
                 amount += amount_check['third_check_amount']
-            
+
             if amount_check['third_check_receipt_amount'] != 0 :
                 amount += amount_check['third_check_receipt_amount']
-                
-            vouchers[v] += amount 
-        
+
+            vouchers[v] += amount
+
         return vouchers
 
     _columns = {
@@ -75,10 +75,10 @@ class account_voucher(osv.osv):
                 for third_rec_check in voucher_obj.third_check_receipt_ids:
                     res['third_check_receipt_amount'] += third_rec_check.amount
         return res
-    
+
     def onchange_pay_amount(  self, cr, uid, ids, payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                 journal_id, partner_id, currency_id, type, date ,context=None):
-        
+
         issued_pool = self.pool.get('account.issued.check')
         third_pool = self.pool.get('account.third.check')
         amount = 0.0
@@ -184,6 +184,46 @@ class account_voucher(osv.osv):
             for check in voucher_obj.third_check_receipt_ids:
                 wf_service.trg_validate(uid, 'account.third.check', check.id, 'draft_cartera', cr)
         return super(account_voucher, self).action_move_line_create(cr, uid, ids, context=None)
+
+
+    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
+        move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
+
+        third_check_pool = self.pool.get('account.third.check')
+        issued_check_pool = self.pool.get('account.issued.check')
+
+        # Voucher en cuestion que puede ser un Recibo u Orden de Pago
+        v = self.browse(cr, uid, voucher_id)
+
+        if v.type in ('sale', 'receipt'):
+            for check in v.third_check_receipt_ids:
+                if check.amount == 0.0:
+                    continue
+
+                res = third_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res['move_id'] = move_id
+                move_lines.append(res)
+
+        elif v.type in ('purchase', 'payment'):
+            # Cheques recibidos de terceros que los damos a un proveedor
+            for check in v.third_check_ids:
+                if check.amount == 0.0:
+                    continue
+
+                res = third_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res['move_id'] = move_id
+                move_lines.append(res)
+
+            # Cheques propios que los damos a un proveedor
+            for check in v.issued_check_ids:
+                if check.amount == 0.0:
+                    continue
+
+                res = issued_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res['move_id'] = move_id
+                move_lines.append(res)
+
+        return move_lines
 
     def call_issued_checks(self, cr , uid , ids , context=None):
 
