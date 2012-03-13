@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+  <!-- *************************** -->
+  <!-- * Perception Configuration * -->
+  <!-- *************************** -->
+  <!-- Form View for perception.perception -->
+  <record id="view_perception_perception_form" model="ir.ui.view">
+    <field name="name">perception.perception.form</field>
+    <field name="model">perception.perception</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Perceptions">
+        <group colspan="4" col="6">
+          <separator colspan="6" string="Configuration"/>
+          <field name="name" select="1"/>
+          <field name="tax_id" select="1"/>
+          <field name="type_tax_use" select="1"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <!-- Tree View for perception.perception -->
+  <record id="view_perception_perception_tree" model="ir.ui.view">
+    <field name="name">perception.perception.tree</field>
+    <field name="model">perception.perception</field>
+    <field name="type">tree</field>
+    <field name="arch" type="xml">
+      <tree string="Perceptions">
+        <field name="name" />
+        <field name="tax_id" />
+        <field name="type_tax_use" />
+      </tree>
+    </field>
+  </record>
+
+  <!--Window Action para Perceptions -->
+  <record model="ir.actions.act_window" id="action_perception_perception_tree">
+    <field name="name">Perception</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">perception.perception</field>
+    <field name="help">Here you can define Perceptions and their configuration to be used in Customer Invoices or Supplier Invoices</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <record id="action_perception_perception_tree_view" model="ir.actions.act_window.view">
+    <field eval="20" name="sequence"/>
+    <field name="view_mode">tree</field>
+    <field name="view_id" ref="view_perception_perception_tree"/>
+    <field name="act_window_id" ref="action_perception_perception_tree"/>
+  </record>
+
+  <menuitem id="perception_perception_menu" name="Perceptions" parent="account.next_id_27" sequence="20" action="action_perception_perception_tree"/>
+
+  </data>
+</openerp>
+

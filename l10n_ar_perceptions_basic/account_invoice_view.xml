@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="view_invoice_perception_form" model="ir.ui.view">
+      <field name="name">account.invoice.perception.form.inherit</field>
+      <field name="model">account.invoice</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="account.invoice_form"/>
+      <field name="arch" type="xml">
+        <page string="Invoice" position="after">
+          <page string="Perceptions">
+            <separator string="Applied Perceptions"/>
+            <field name="perception_ids" nolabel="1" colspan="4">
+              <tree string="Perception Lines">
+                <field name="perception_id" string="Perception Type" />
+                <field name="certificate_no" />
+                <field name="base" />
+                <field name="amount" />
+              </tree>
+              <form string="Perception Lines">
+                <field name="perception_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
+                <field name="name" />
+                <field name="certificate_no" />
+                <field name="base" />
+                <field name="amount" />
+                <field name="account_id" invisible="0" />
+                <field name="base_code_id" invisible="0" />
+                <field name="tax_code_id" invisible="0" />
+              </form>
+            </field>
+          </page>
+        </page>
+      </field>
+    </record>
+  </data>
+</openerp>
