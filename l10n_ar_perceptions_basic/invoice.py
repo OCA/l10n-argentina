@@ -154,14 +154,11 @@ class account_invoice(osv.osv):
         """
         # Como nos faltan los account.move.line de las bases imponibles de las percepciones
         # utilizamos este hook para agregarlos
-        import pdb
-        pdb.set_trace()
         plt_obj = self.pool.get('perception.tax.line')
         company_currency = invoice_browse.company_id.currency_id.id
         current_currency = invoice_browse.currency_id.id
 
         for p in invoice_browse.perception_ids:
-            print 'Perception: ', p.name
             sign = p.perception_id.tax_id.base_sign
             tax_amount, base_amount = plt_obj._compute(cr, uid, p.perception_id.id, invoice_browse.id, p.base, p.amount)
 
