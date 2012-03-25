@@ -18,26 +18,16 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-{
-    "name": "Tax Reports for Argentina",
-    "version": "1.0",
-    "depends": ["base", "account" , "account_accountant",
-                "sale" ,"purchase", "l10n_ar_chart_of_account", "l10n_ar_account_payment",
-                "l10n_ar_retentions_basic", "l10n_ar_perceptions_basic"],
-    "author": "E-MIPS",
-    "website": "http://e-mips.com.ar",
-    "license": "GPL-3",
-    "category": "Localisation Modules",
-    "description": """
-    This module provide :
-    1) Tax Report for VAT, Perceptions and Retentions
-    """,
-    "init_xml": [],
-    'update_xml': [
-        "tax_report.xml",
-        "wizard/account_tax_subjournal_view.xml",
-    ],
-    'demo_xml': [],
-    'installable': True,
-    'active': False,
-}
+from osv import fields, osv
+from tools.translate import _
+
+class account_tax_subjournal(osv.osv_memory):
+    _name = "account.tax.subjournal"
+    _description = "Account Tax Subjournal Report"
+
+    _columns = {
+        'fiscalyear_id': fields.many2one('account.fiscalyear', 'Fiscal year', help='Keep empty for all open fiscal year'),
+        'period': fields.many2one('account.period', 'Period'),
+        }
+
+account_tax_subjournal()
