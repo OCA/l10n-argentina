@@ -10,11 +10,13 @@
       <form string="Taxes Subjournal">
         <separator string="Taxes Subjournal" colspan="4"/>
         <field name="fiscalyear_id"/>
-        <separator string="Period"  colspan="4"/>
-        <field name="period" />
+        <field name="period" domain="[('fiscalyear_id','=',fiscalyear_id)]"/>
+        <separator string="Configuration"  colspan="4"/>
+        <field name="report_id" invisible="1" />
+        <field name="report_config_id" domain="[('tax_report_id','=',report_id)]" />
         <group col="2" colspan="4">
           <button icon='gtk-cancel' special="cancel"  string="Cancel" />
-          <button name="create_vat" string="Print Report" colspan="1" type="object" icon="gtk-ok"/>
+          <button name="create_report" string="Print Report" colspan="1" type="object" icon="gtk-ok"/>
         </group>
       </form>
     </field>

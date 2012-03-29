@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
+  <data noupdate="0">
 
     <record id="account_tax_subjournal_report_id" model="ir.actions.report.xml">
         <field name="name">Tax Subjournal</field>
         <field name="type">ir.actions.report.xml</field>
-        <field name="model">account.account</field>
-        <field name="report_name">account_tax_subjournal</field>
+        <field name="model">account.move.line</field>
+        <field name="report_name">account.tax.subjournal</field>
         <field name="report_type">aeroo</field>
         <field name="in_format">oo-ods</field>
         <field name="parser_loc">l10n_ar_tax_reports/report/parser.py</field>

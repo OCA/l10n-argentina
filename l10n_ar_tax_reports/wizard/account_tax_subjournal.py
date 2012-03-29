@@ -25,9 +25,34 @@ class account_tax_subjournal(osv.osv_memory):
     _name = "account.tax.subjournal"
     _description = "Account Tax Subjournal Report"
 
+    def _get_report_id(self, cr, uid, context):
+        report_id = self.pool.get('ir.actions.report.xml').search(cr, uid, [('report_name','=','account.tax.subjournal')])
+        if len(report_id):
+            return report_id[0]
+        return False
+
     _columns = {
-        'fiscalyear_id': fields.many2one('account.fiscalyear', 'Fiscal year', help='Keep empty for all open fiscal year'),
-        'period': fields.many2one('account.period', 'Period'),
+        'fiscalyear_id': fields.many2one('account.fiscalyear', 'Fiscal year', help='Keep empty for all open fiscal year', required=True),
+        'period': fields.many2one('account.period', 'Period', required=True),
+        'report_config_id': fields.many2one('tax.subjournal.report.config', 'Configuration', required=True),
+        'report_id': fields.many2one('ir.actions.report.xml', 'Report'),
+        }
+
+    _defaults = {
+            'report_id': _get_report_id,
+            }
+
+    def create_report(self, cr, uid, ids, data, context=None):
+        if context is None:
+            context = {}
+        datas = {'ids': context.get('active_ids', [])}
+        datas['model'] = 'account.account'
+        datas['form'] = self.read(cr, uid, ids)[0]
+        #datas['form']['company_id'] = self.pool.get('account.tax.code').browse(cr, uid, [datas['form']['chart_tax_id']], context=context)[0].company_id.id
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'account.tax.subjournal',
+            'datas': datas,
         }
 
 account_tax_subjournal()
