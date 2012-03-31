@@ -36,10 +36,13 @@ class account_tax_subjournal(osv.osv_memory):
         'period': fields.many2one('account.period', 'Period', required=True),
         'report_config_id': fields.many2one('tax.subjournal.report.config', 'Configuration', required=True),
         'report_id': fields.many2one('ir.actions.report.xml', 'Report'),
+        'based_on': fields.selection([('sale', 'Sales'),
+                                      ('purchase', 'Purchases')], 'Based On', required=True)
         }
 
     _defaults = {
             'report_id': _get_report_id,
+            'based_on': 'sale',
             }
 
     def create_report(self, cr, uid, ids, data, context=None):

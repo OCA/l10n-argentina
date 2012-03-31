@@ -12,7 +12,7 @@
       <field name="type">form</field>
       <field name="arch" type="xml">
         <form string="Subjournal Report Configuration">
-          <group colspan="4" cols="6">
+          <group colspan="4" col="6">
             <field name="name" string="Configuration Name"/>
             <field name="tax_report_id"/>
             <field name="based_on"/>
@@ -36,6 +36,7 @@
         <tree string="Subjournal Report Configuration">
           <field name="name"/>
           <field name="tax_report_id"/>
+          <field name="based_on"/>
         </tree>
       </field>
     </record>

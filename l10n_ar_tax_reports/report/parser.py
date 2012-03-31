@@ -31,24 +31,37 @@ class Parser(report_sxw.rml_parse):
             'set_period':self._set_period,
             'get_lines':self.get_lines,
             'get_columns':self.get_columns,
+            'set_context': self._set_context,
         })
         self.period_id = None
         self.columns = None
+        self.based_on = None
 
     def _set_period(self, period_id):
         self.period_id = period_id
 
-    def get_columns(self, config_id):
+    def _set_context(self, data):
+        self.based_on = data['based_on']
 
+    def _get_types(self):
+        #print 'Based_on: ', self.based_on
+        if self.based_on == 'sale':
+            return ['out_invoice', 'out_refund', 'out_debit']
+        else:
+            return ['in_invoice', 'in_refund', 'in_debit']
+
+    def get_columns(self, config_id):
         # Obtenemos los tax_code que tuvieron movimientos en el periodo pedido
+        types = self._get_types()
+
         q = "SELECT DISTINCT at.id, at.name, at.code " \
         "FROM account_tax_code at, account_period p, account_move_line l, account_invoice i " \
         "WHERE p.id=l.period_id AND at.id=l.tax_code_id AND p.id=%s " \
-        "AND i.type IN ('out_invoice', 'out_debit', 'out_refund') AND i.move_id=l.move_id " \
+        "AND i.type IN %s AND i.move_id=l.move_id " \
         "AND at.id IN (SELECT tax_code_id FROM subjournal_report_taxcode_column " \
         "WHERE report_config_id=%s) ORDER BY at.code"
 
-        self.cr.execute(q, (self.period_id, config_id))
+        self.cr.execute(q, (self.period_id, tuple(types), config_id))
         res = self.cr.fetchall()
         self.columns = res
         return res
@@ -56,12 +69,14 @@ class Parser(report_sxw.rml_parse):
     def get_lines(self):
         tax_code_ids = [col[0] for col in self.columns]
 
+        types = self._get_types()
+
         self.cr.execute("SELECT l.id FROM account_move_line l, account_invoice i, " \
         "account_tax_code tc, account_period ap " \
         "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  " \
-        "AND i.type IN ('out_invoice', 'out_debit', 'out_refund') " \
+        "AND i.type IN %s " \
         "AND ap.id=l.period_id AND ap.id=%s " \
-        "AND tc.id IN %s", (self.period_id, tuple(tax_code_ids)))
+        "AND tc.id IN %s ORDER BY l.date", (tuple(types), self.period_id, tuple(tax_code_ids)))
 
         # Obtenemos el resultado de la consulta
         res = self.cr.fetchall()
@@ -122,16 +137,17 @@ class Parser(report_sxw.rml_parse):
     def get_sum(self):
         tax_code_ids = [col[0] for col in self.columns]
 
+        types = self._get_types()
+
         self.cr.execute("SELECT l.tax_code_id, sum(l.tax_amount) as sum_amount " \
         "FROM account_move_line l, account_invoice i,  " \
         "account_tax_code tc, account_period ap " \
         "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  " \
-        "AND i.type IN ('out_invoice', 'out_debit', 'out_refund') " \
+        "AND i.type IN %s " \
         "AND ap.id=l.period_id AND ap.id=%s AND tc.id IN %s " \
-        "GROUP BY l.tax_code_id ORDER BY l.tax_code_id", (self.period_id, tuple(tax_code_ids)))
+        "GROUP BY l.tax_code_id ORDER BY l.tax_code_id", (tuple(types), self.period_id, tuple(tax_code_ids)))
 
         res = self.cr.fetchall()
-        print 'Sumas: ', res
         return res
 
     def get_invoice_type(self, inv):
