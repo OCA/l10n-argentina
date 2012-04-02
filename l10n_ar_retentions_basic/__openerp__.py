@@ -31,10 +31,11 @@
     1) Implementation of Retentions Taxes for Argentina
        based on tax objects of OpenERP like account.tax and account.tax.code.
     """,
-    "init_xml": [],
+    "init_xml": [
+        #'retention_data.xml',
+        ],
     'update_xml': [
         'retention_view.xml',
-        'retention_data.xml',
         'voucher_payment_receipt_view.xml',
     ],
     'demo_xml': [],

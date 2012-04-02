@@ -44,10 +44,13 @@ class retention_tax_line(osv.osv):
         #'factor_base': fields.function(_count_factor, method=True, string='Multipication factor for Base code', type='float', multi="all"),
         #'factor_tax': fields.function(_count_factor, method=True, string='Multipication factor Tax code', type='float', multi="all")
         'certificate_no': fields.char('Certificate No.', required=True, size=32),
+        'state_id': fields.many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]"),
     }
 
     def onchange_retention(self, cr, uid, ids, retention_id, context):
-        print 'onchange_retention: ', retention_id
+        if not retention_id:
+            return {}
+
         retention_obj = self.pool.get('retention.retention')
         retention = retention_obj.browse(cr, uid, retention_id)
         vals = {}
@@ -157,7 +160,7 @@ class account_voucher(osv.osv):
             # ...y ahora creamos la linea contable perteneciente a la base imponible de la retencion
             # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
             move_line = {
-                'name': r.name or '/',
+                'name': r.name + '(Base Imp)',
                 'ref': v.name,
                 'debit': 0.0,
                 'credit': 0.0,
@@ -175,6 +178,6 @@ class account_voucher(osv.osv):
             }
 
             move_lines.append(move_line)
-            return move_lines
+        return move_lines
 
 account_voucher()
