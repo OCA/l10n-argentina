@@ -13,20 +13,18 @@
             <separator string="Applied Perceptions"/>
             <field name="perception_ids" nolabel="1" colspan="4">
               <tree string="Perception Lines">
-                <field name="perception_id" string="Perception Type" />
-                <field name="certificate_no" />
+                <field name="perception_id" string="Perception Type"/>
                 <field name="base" />
                 <field name="amount" />
               </tree>
               <form string="Perception Lines">
-                <field name="perception_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
                 <field name="name" />
-                <field name="certificate_no" />
+                <field name="perception_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
                 <field name="base" />
                 <field name="amount" />
-                <field name="account_id" invisible="0" />
-                <field name="base_code_id" invisible="0" />
-                <field name="tax_code_id" invisible="0" />
+                <field name="account_id" invisible="1" />
+                <field name="base_code_id" invisible="1" />
+                <field name="tax_code_id" invisible="1" />
               </form>
             </field>
           </page>
@@ -46,25 +44,22 @@
             <field name="perception_ids" nolabel="1" colspan="4">
               <tree string="Perception Lines">
                 <field name="perception_id" string="Perception Type" />
-                <field name="certificate_no" />
                 <field name="base" />
                 <field name="amount" />
               </tree>
               <form string="Perception Lines">
-                <field name="perception_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_perception(perception_id, context)"/>
                 <field name="name" />
-                <field name="certificate_no" />
+                <field name="perception_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_perception(perception_id, context)"/>
                 <field name="base" />
                 <field name="amount" />
-                <field name="account_id" invisible="0" />
-                <field name="base_code_id" invisible="0" />
-                <field name="tax_code_id" invisible="0" />
+                <field name="account_id" invisible="1" />
+                <field name="base_code_id" invisible="1" />
+                <field name="tax_code_id" invisible="1" />
               </form>
             </field>
           </page>
         </page>
       </field>
     </record>
-
   </data>
 </openerp>

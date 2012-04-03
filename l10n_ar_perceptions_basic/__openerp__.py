@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2011
-#
+#    Copyright (C) 2012 E-MIPS Electronica e Informatica
+#                       info@e-mips.com.ar
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,10 +31,9 @@
     1) Implementation of Perceptions Taxes for Argentina
        based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
     """,
-    "init_xml": [],
+    "init_xml": ["perception_data.xml"],
     'update_xml': [
         'perception_view.xml',
-        'perception_data.xml',
         'account_invoice_view.xml',
     ],
     'demo_xml': [],

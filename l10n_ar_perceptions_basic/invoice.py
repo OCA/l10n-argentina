@@ -44,11 +44,13 @@ class perception_tax_line(osv.osv):
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
         #'factor_base': fields.function(_count_factor, method=True, string='Multipication factor for Base code', type='float', multi="all"),
         #'factor_tax': fields.function(_count_factor, method=True, string='Multipication factor Tax code', type='float', multi="all")
-        'certificate_no': fields.char('Certificate No.', required=True, size=32),
         'ait_id': fields.many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade'),
     }
 
     def onchange_perception(self, cr, uid, ids, perception_id, context):
+        if not perception_id:
+            return {}
+        print 'onchange_perception'
         perception_obj = self.pool.get('perception.perception')
         perception = perception_obj.browse(cr, uid, perception_id)
         vals = {}
