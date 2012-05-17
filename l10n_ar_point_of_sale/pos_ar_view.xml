@@ -72,7 +72,8 @@
             <field name="arch" type="xml">
                 <form>
                     <field name="name" select="1"/>
-                    <field name="desc" select="1"/>
+                    <field name="desc" select="1" nolabel="1" height="100"/>
+                    <field name="vat_discriminated" select="1"/>
                 </form>
             </field>
         </record>
@@ -83,8 +84,9 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name" select="1"/>
-                    <field name="desc" select="1" nolabel="1" height="100"/>
+                    <field name="name" />
+                    <field name="desc" />
+                    <field name="vat_discriminated" />
                 </tree>
             </field>
         </record>

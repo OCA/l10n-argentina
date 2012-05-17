@@ -20,6 +20,7 @@
 from osv import osv, fields
 from tools.translate import _
 
+#TODO: Sobrecargar el wizard de creacion de facturas por lineas (purchase_line_invoice.py) para terminar de corregir la escritura de la denomination_id en todas las maneras de crear una invoice.
 class purchase_order(osv.osv):
     _name = "purchase.order"
     _inherit = "purchase.order"

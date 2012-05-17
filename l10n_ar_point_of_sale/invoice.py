@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2008-2011
+#    Copyright (C) 2008-2011 E-MIPS Electronica e Informatica <info@e-mips.com.ar>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
 ##############################################################################
 from osv import osv, fields
 from tools.translate import _
+import re
 
 class invoice(osv.osv):
     _name = "account.invoice"
     _inherit = "account.invoice"
-    _description = ""
+    _order = "internal_number desc"
+
     _columns = {
         'type': fields.selection([
             ('out_invoice','Customer Invoice'),
@@ -50,42 +52,51 @@ class invoice(osv.osv):
             invtype = obj_inv.type
             move_id = obj_inv.move_id and obj_inv.move_id.id or False
             reference = obj_inv.reference or ''
-            
+
 #del        self.write(cr, uid, ids, {'internal_number':number})
-#add:         
-        #~ si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1. 
+#add:
+        #~ si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
         #~ si el usuario hizo un ingreso dejo ese numero
             internal_number = False
             pos_ar = obj_inv.pos_ar_id.id
             pos_ar_name = False
             if pos_ar:
                 pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
-            
+
             if not obj_inv.internal_number:
                 max_number = []
-                if obj_inv.type == 'out_invoice':
+                if obj_inv.type == ('out_invoice', 'out_refund', 'out_debit'):
                     cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type='out_invoice'", (pos_ar, ('open', 'paid', 'cancel',)))
                     max_number = cr.fetchone()
                 if not max_number:
                     internal_number = '%08d' % 1
                     self.write(cr, uid, id, {'internal_number' : internal_number })
-                else :
+                else:
                     if not max_number[0]:
                         max_number = 0
-                    else: 
+                    else:
                         max_number = max_number[0]
                     internal_number = '%08d' % ( int(max_number) + 1)
                     self.write(cr, uid, id, {'internal_number' : internal_number })
             else :
-                try: 
-                    int(obj_inv.internal_number) 
-                except :
-                    raise osv.except_osv( _('Error'),
-                                          _('The Invoice Number can not contain characters'))
-                internal_number = ('%08d' % int(obj_inv.internal_number))
+                # Si es factura de proveedor
+                if obj_inv.type in ['in_invoice', 'in_refund', 'in_debit']:
+                    m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
+                    if not m:
+                        raise osv.except_osv( _('Error'),
+                                            _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                    internal_number = obj_inv.internal_number
+                else:
+                    try:
+                        int(obj_inv.internal_number) 
+                    except :
+                        raise osv.except_osv( _('Error'),
+                                            _('The Invoice Number can not contain characters'))
+                    internal_number = ('%08d' % int(obj_inv.internal_number))
+
                 self.write(cr, uid, id, {'internal_number' : internal_number})
-#end add            
-            if invtype in ('in_invoice', 'in_refund'):
+#end add
+            if invtype in ('in_invoice', 'in_refund', 'in_debit'):
                 if not reference:
 #mod                #self._convert_ref(cr, uid, internal_number)   
                     ref = internal_number 
@@ -114,48 +125,65 @@ class invoice(osv.osv):
                 message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
                 self.log(cr, uid, inv_id, message, context=ctx)
         return True
-        
-    
-    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
-    
-        #devuelve los ids de las invoice modificadas
-        inv_ids = super(invoice , self).refund(cr, uid, ids, date=None, period_id=None, description=None, journal_id=None)
-        #busco los puntos de venta de las invoices anteriores
 
+
+    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
+
+        #devuelve los ids de las invoice modificadas
+        inv_ids = super(invoice , self).refund(cr, uid, ids, date, period_id, description, journal_id)
+
+        #busco los puntos de venta de las invoices anteriores
         inv_obj = self.browse(cr, uid , ids , context=None)
         for obj in inv_obj:
-            self.write(cr, uid , inv_ids , {'pos_ar_id': obj.pos_ar_id.id } , context=None)
-             
+            self.write(cr, uid , inv_ids , {'pos_ar_id': obj.pos_ar_id.id, 'denomination_id': obj.denomination_id.id} , context=None)
+
         return inv_ids
-    
+
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
             date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
         res =   super(invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
                 date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
         fiscal_position_id = res['value']['fiscal_position']
+
+        # HACK: Si no encontramos una fiscal position, buscamos una property que nos de el default
+        # En realidad, si tenemos esa property creada desde el principio, todos los partners tendrian
+        # su posicion fiscal. Pero si ya tenemos varios partners creados sin posicion fiscal, leemos
+        # la property que creamos de la posicion fiscal para que quede como default y asi no tenemos
+        # que hacerle muchas modificaciones al sistema. Igualmente, al setear una property que sea Global
+        # ya no hace falta buscarla por codigo porque se la asigna solito a todos los que no tenian.
         if not fiscal_position_id:
-            return res
-        
+            property_obj = self.pool.get('ir.property')
+            fpos_pro_id = property_obj.search(cr, uid, [('name','=','property_account_position'),('company_id','=',company_id)])
+            if not fpos_pro_id:
+                return res
+            fpos_line_data = property_obj.read(cr, uid, fpos_pro_id, ['name','value_reference','res_id'])
+
+            fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference',False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
+
         fiscal_pool = self.pool.get('account.fiscal.position')
         pos_pool = self.pool.get('pos.ar')
         denomination_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denomination_id.id
         res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
+
         #para las invoices de suppliers
-        denom_sup_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denom_supplier_id.id
-        res['value'].update({'denomination_id': denom_sup_id})
+        if type in ['in_invoice', 'in_refund', 'in_debit']:
+            denom_sup_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denom_supplier_id.id
+            res['value'].update({'denomination_id': denom_sup_id})
         #para las customers invoices
-        pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)] , limit=1 )
-        if len(pos):
-            res['value'].update({'pos_ar_id': pos[0]})
+        else:
+            pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)] , limit=1 )
+            if len(pos):
+                res['value'].update({'pos_ar_id': pos[0]})
+                res['value'].update({'denomination_id': denomination_id})
         return res
-        
+
     def invoice_pay_customer(self, cr, uid, ids, context=None):
         if not ids: return []
         inv = self.browse(cr, uid, ids[0], context=context)
         res = super(invoice, self).invoice_pay_customer(cr, uid, ids, context=context)
         res['context']['type'] = inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment'
-        
+
         return res
-        
-        
+
+
 invoice()
