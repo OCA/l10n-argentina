@@ -18,15 +18,15 @@
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_iibb_sufrida" model="account.tax.code">
-    <field name="name">Retencion IIBB Sufrida (Cobros)</field>
+  <record id="retencion_iibb_caba_sufrida" model="account.tax.code">
+    <field name="name">Retencion IIBB CABA Sufrida (Cobros)</field>
     <field name="code">503</field>
     <!--<field name="parent_id" ref="retencion_iibb"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_iibb_efectuada" model="account.tax.code">
-    <field name="name">Retencion IIBB Efectuada (Pagos)</field>
+  <record id="retencion_iibb_caba_efectuada" model="account.tax.code">
+    <field name="name">Retencion IIBB CABA Efectuada (Pagos)</field>
     <field name="code">504</field>
     <!--<field name="parent_id" ref="retencion_iibb"/>-->
     <field name="sign">1.0</field>
@@ -89,15 +89,15 @@
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_iibb_sufrida" model="account.tax.code">
-    <field name="name">Operaciones con Retencion IIBB Sufrida</field>
+  <record id="operaciones_con_retencion_iibb_caba_sufrida" model="account.tax.code">
+    <field name="name">Operaciones con Retencion IIBB CABA Sufrida</field>
     <field name="code">602</field>
     <field name="parent_id" ref="operaciones_con_retencion_sufrida"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_iibb_efectuada" model="account.tax.code">
-    <field name="name">Operaciones con Retencion IIBB Efectuada</field>
+  <record id="operaciones_con_retencion_iibb_caba_efectuada" model="account.tax.code">
+    <field name="name">Operaciones con Retencion IIBB CABA Efectuada</field>
     <field name="code">702</field>
     <field name="parent_id" ref="operaciones_con_retencion_efectuada"/>
     <field name="sign">1.0</field>
@@ -153,22 +153,22 @@
   </record>
 
   <!-- Cuenta de retencion de iibb efectuada al momento de pagar a un proveedor -->
-  <record id="retencion_iibb_a_depositar" model="account.account">
+  <record id="retencion_iibb_caba_a_depositar" model="account.account">
     <field name="code">212052</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
     <field name="type">other</field>
-    <field name="name">Retenciones IIBB a Depositar</field>
+    <field name="name">Retenciones IIBB CABA a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
   </record>
 
   <!-- Cuenta de retencion de iibb sufrida al momento de cobrar a un cliente -->
-  <record id="retencion_iibb" model="account.account">
+  <record id="retencion_iibb_caba" model="account.account">
     <field name="code">114052</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
     <field name="type">other</field>
-    <field name="name">Retenciones IIBB</field>
+    <field name="name">Retenciones IIBB CABA</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
   </record>
 
@@ -253,15 +253,15 @@
     <field name="type_tax_use">purchase</field>
   </record>
 
-  <record id="tax_retencion_iibb_sufrida" model="account.tax">
-    <field name="name">Retencion IIBB Sufrida</field>
-    <field name="description">Retencion IIBB Sufrida</field>
+  <record id="tax_retencion_iibb_caba_sufrida" model="account.tax">
+    <field name="name">Retencion IIBB CABA Sufrida</field>
+    <field name="description">Ret IIBB CABA Sufrida</field>
     <field name="sequence">31</field>
     <field name="type">none</field>
-    <field name="account_collected_id" ref="retencion_iibb"/>
-    <field name="account_paid_id" ref="retencion_iibb"/>
-    <field name="base_code_id" ref="operaciones_con_retencion_iibb_sufrida"/>
-    <field name="tax_code_id" ref="retencion_iibb_sufrida"/>
+    <field name="account_collected_id" ref="retencion_iibb_caba"/>
+    <field name="account_paid_id" ref="retencion_iibb_caba"/>
+    <field name="base_code_id" ref="operaciones_con_retencion_iibb_caba_sufrida"/>
+    <field name="tax_code_id" ref="retencion_iibb_caba_sufrida"/>
     <field eval="1.0" name="tax_sign"/>
     <field eval="1.0" name="base_sign"/>
     <!--
@@ -273,15 +273,15 @@
     <field name="type_tax_use">sale</field>
   </record>
 
-  <record id="tax_retencion_iibb_efectuada" model="account.tax">
-    <field name="name">Retencion IIBB Efectuada</field>
-    <field name="description">Retencion IIBB Efectuada</field>
+  <record id="tax_retencion_iibb_caba_efectuada" model="account.tax">
+    <field name="name">Retencion IIBB CABA Efectuada</field>
+    <field name="description">Retencion IIBB CABA Efectuada</field>
     <field name="sequence">31</field>
     <field name="type">none</field>
-    <field name="account_collected_id" ref="retencion_iibb_a_depositar"/>
-    <field name="account_paid_id" ref="retencion_iibb_a_depositar"/>
-    <field name="base_code_id" ref="operaciones_con_retencion_iibb_efectuada"/>
-    <field name="tax_code_id" ref="retencion_iibb_efectuada"/>
+    <field name="account_collected_id" ref="retencion_iibb_caba_a_depositar"/>
+    <field name="account_paid_id" ref="retencion_iibb_caba_a_depositar"/>
+    <field name="base_code_id" ref="operaciones_con_retencion_iibb_caba_efectuada"/>
+    <field name="tax_code_id" ref="retencion_iibb_caba_efectuada"/>
     <field eval="1.0" name="tax_sign"/>
     <field eval="1.0" name="base_sign"/>
     <!--
@@ -384,14 +384,14 @@
     <field name="tax_id" ref="tax_retencion_iva_efectuada" />
   </record>
 
-  <record id="retention_retention_iibb_sufrida" model="retention.retention">
-    <field name="name">Retencion IIBB Sufrida</field>
-    <field name="tax_id" ref="tax_retencion_iibb_sufrida" />
+  <record id="retention_retention_iibb_caba_sufrida" model="retention.retention">
+    <field name="name">Retencion IIBB CABA Sufrida</field>
+    <field name="tax_id" ref="tax_retencion_iibb_caba_sufrida" />
   </record>
 
-  <record id="retention_retention_iibb_efectuada" model="retention.retention">
-    <field name="name">Retencion IIBB Efectuada</field>
-    <field name="tax_id" ref="tax_retencion_iibb_efectuada" />
+  <record id="retention_retention_iibb_caba_efectuada" model="retention.retention">
+    <field name="name">Retencion IIBB CABA Efectuada</field>
+    <field name="tax_id" ref="tax_retencion_iibb_caba_efectuada" />
   </record>
 
   <record id="retention_retention_ganancias_sufrida" model="retention.retention">
