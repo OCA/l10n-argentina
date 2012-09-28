@@ -72,6 +72,9 @@
                     <field name="currency_id" position="before">
                         <field name="journal_id"/>
                     </field>
+                    <field name="fiscal_position" position="attributes">
+                      <attribute name="required">1</attribute>
+                    </field>
             </field>
         </record>
     

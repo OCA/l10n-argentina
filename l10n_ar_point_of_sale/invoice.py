@@ -39,7 +39,43 @@ class invoice(osv.osv):
         'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
         'internal_number': fields.char('Invoice Number', size=32, help="Unique number of the invoice, computed automatically when the invoice is created."),
     }
-    
+
+    def _check_fiscal_values(self, cr, uid, inv):
+        # Si es factura de cliente
+        if inv.type in ('out_invoice', 'out_refund', 'out_debit'):
+            denomination_id = inv.denomination_id and inv.denomination_id.id 
+
+            if not denomination_id:
+                raise osv.except_osv(_('Error!'), _('Denomination not set in invoice'))
+#                if inv.pos_ar_id.denomination_id:
+#                    self.write(cr, uid, inv.id, {'denomination_id' : inv.pos_ar_id.denomination_id.id})
+#                    denomination_id = inv.pos_ar_id.denomination_id.id
+#                else:
+#                    raise osv.except_osv(_('Error!'), _('Denomination not set neither in invoice nor point of sale'))
+#            else:
+            if inv.pos_ar_id.denomination_id.id != denomination_id:
+                raise osv.except_osv(_('Error!'), _('Point of sale has not the same denomination as the invoice.'))
+
+            # Chequeamos que la posicion fiscal y la denomination_id coincidan
+            if inv.fiscal_position.denomination_id.id != denomination_id:
+                raise osv.except_osv( _('Error'),
+                            _('The invoice denomination does not corresponds with this fiscal position.'))
+
+        # Si es factura de proveedor
+        else:
+            if not denomination_id:
+                raise osv.except_osv(_('Error!'), _('Denomination not set in invoice'))
+
+            # Chequeamos que la posicion fiscal y la denomination_id coincidan
+            if inv.fiscal_position.denom_supplier_id.id != inv.denomination_id.id:
+                raise osv.except_osv( _('Error'),
+                                    _('The invoice denomination does not corresponds with this fiscal position.'))
+
+        # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
+        if inv.fiscal_position.id != inv.partner_id.property_account_position.id:
+            raise osv.except_osv( _('Error'),
+                                _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
+
     def action_number(self, cr, uid, ids, context=None):
         pos_ar_obj = self.pool.get('pos.ar')
         if context is None:
@@ -62,6 +98,8 @@ class invoice(osv.osv):
             pos_ar_name = False
             if pos_ar:
                 pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
+
+            self._check_fiscal_values(cr, uid, obj_inv)
 
             if not obj_inv.internal_number:
                 max_number = []
@@ -86,13 +124,34 @@ class invoice(osv.osv):
                         raise osv.except_osv( _('Error'),
                                             _('The Invoice Number should be the format XXXX-XXXXXXXX'))
                     internal_number = obj_inv.internal_number
+#                    # Chequeamos que la posicion fiscal y la denomination_id coincidan
+#                    if obj_inv.fiscal_position.denom_supplier_id.id != obj_inv.denomination_id.id:
+#                        raise osv.except_osv( _('Error'),
+#                                            _('The invoice denomination does not corresponds with this fiscal position.'))
+#
+#                    # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
+#                    if obj_inv.fiscal_position.id != obj_inv.partner_id.property_account_position.id:
+#                        raise osv.except_osv( _('Error'),
+#                                            _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
+
+                # Si es de cliente
                 else:
                     try:
-                        int(obj_inv.internal_number) 
+                        int(obj_inv.internal_number)
                     except :
                         raise osv.except_osv( _('Error'),
                                             _('The Invoice Number can not contain characters'))
                     internal_number = ('%08d' % int(obj_inv.internal_number))
+
+#                    # Chequeamos que la posicion fiscal y la denomination_id coincidan
+#                    if obj_inv.fiscal_position.denomination_id.id != obj_inv.denomination_id.id:
+#                        raise osv.except_osv( _('Error'),
+#                                            _('The invoice denomination does not corresponds with this fiscal position.'))
+#
+#                    # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
+#                    if obj_inv.fiscal_position.id != obj_inv.partner_id.property_account_position.id:
+#                        raise osv.except_osv( _('Error'),
+#                                            _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
                 self.write(cr, uid, id, {'internal_number' : internal_number})
 #end add

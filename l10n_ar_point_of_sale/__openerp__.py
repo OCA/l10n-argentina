@@ -1,4 +1,3 @@
-
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
@@ -22,7 +21,7 @@
 {
     "name": "Point of Sale ARGENTINA",
     "version": "1.0",
-    "depends": ["base", "sale" ,"account" , "account_accountant" ],
+    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant" ],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -37,6 +36,7 @@
         'sale_view.xml',
         'account_invoice_view.xml',
         'partner_view.xml',
+        'security/ir.model.access.csv',
     ],
     'demo_xml': [],
     'installable': True,
