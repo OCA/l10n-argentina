@@ -38,7 +38,7 @@ class retention_retention(osv.osv):
             'name': fields.char('Retention', required=True, size=64),
             'tax_id': fields.many2one('account.tax', 'Tax', required=True, help="Tax configuration for this retention"),
             'type_tax_use': fields.related('tax_id', 'type_tax_use', type='char', string='Tax Application', readonly=True),
-            'state_id': fields.many2one('res.country.state', 'State/Province'),
+            'state_id': fields.many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]"),
             'jurisdiccion': fields.selection([('nacional', 'Nacional'),
                                               ('provincial', 'Provincial'),
                                               ('municipal', 'Municipal')], 'Jurisdiccion'),

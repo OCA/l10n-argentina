@@ -21,6 +21,7 @@
 
 from osv import osv, fields
 import decimal_precision as dp
+import time
 
 class retention_tax_line(osv.osv):
     _name = "retention.tax.line"
@@ -29,7 +30,9 @@ class retention_tax_line(osv.osv):
     #TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
     _columns = {
         'name': fields.char('Retention', required=True, size=64),
+        'date': fields.date('Date', readonly=True, select=True),
         'voucher_id': fields.many2one('account.voucher', 'Voucher'),
+        'voucher_number': fields.related('voucher_id', 'number', type='char', string='Voucher No.'),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
                                       domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
         'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
@@ -44,7 +47,11 @@ class retention_tax_line(osv.osv):
         #'factor_base': fields.function(_count_factor, method=True, string='Multipication factor for Base code', type='float', multi="all"),
         #'factor_tax': fields.function(_count_factor, method=True, string='Multipication factor Tax code', type='float', multi="all")
         'certificate_no': fields.char('Certificate No.', required=True, size=32),
-        'state_id': fields.many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]"),
+        'state_id': fields.many2one('res.country.state', string="State/Province"),
+    }
+
+    _defaults = {
+        'date': lambda *a: time.strftime('%Y-%m-%d'),
     }
 
     def onchange_retention(self, cr, uid, ids, retention_id, context):
@@ -58,6 +65,12 @@ class retention_tax_line(osv.osv):
         vals['account_id'] = retention.tax_id.account_collected_id.id
         vals['base_code_id'] = retention.tax_id.base_code_id.id
         vals['tax_code_id'] = retention.tax_id.tax_code_id.id
+
+        if retention.state_id:
+            vals['state_id'] = retention.state_id.id
+        else:
+            vals['state_id'] = False
+
         return {'value': vals}
 
     #TODO: Calculo del base_amount y todo eso. Ver invoice.py:1582

@@ -136,7 +136,7 @@
   <record id="retencion_iva_a_depositar" model="account.account">
     <field name="code">212051</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones IVA a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -146,7 +146,7 @@
   <record id="retencion_iva" model="account.account">
     <field name="code">114051</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/> <!-- Otros Creditos -->
     <field name="type">other</field>
     <field name="name">Retenciones IVA</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -156,7 +156,7 @@
   <record id="retencion_iibb_caba_a_depositar" model="account.account">
     <field name="code">212052</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones IIBB CABA a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -166,7 +166,7 @@
   <record id="retencion_iibb_caba" model="account.account">
     <field name="code">114052</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones IIBB CABA</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -176,7 +176,7 @@
   <record id="retencion_ganancias_a_depositar" model="account.account">
     <field name="code">212053</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones Ganancias a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -186,7 +186,7 @@
   <record id="retencion_ganancias" model="account.account">
     <field name="code">114053</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones Ganancias</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -196,7 +196,7 @@
   <record id="retencion_suss_a_depositar" model="account.account">
     <field name="code">212054</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones SUSS a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -206,7 +206,7 @@
   <record id="retencion_suss" model="account.account">
     <field name="code">114054</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>
     <field name="type">other</field>
     <field name="name">Retenciones SUSS</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>

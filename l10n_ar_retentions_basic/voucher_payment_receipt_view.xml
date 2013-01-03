@@ -26,6 +26,7 @@
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />
+                  <field name="state_id" invisible="1" />
                   <field name="account_id" invisible="1" />
                   <field name="base_code_id" invisible="1" />
                   <field name="tax_code_id" invisible="1" />
@@ -61,6 +62,7 @@
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />
+                  <field name="state_id" invisible="1" />
                   <field name="account_id" invisible="1" />
                   <field name="base_code_id" invisible="1" />
                   <field name="tax_code_id" invisible="1" />
