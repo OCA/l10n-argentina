@@ -52,6 +52,7 @@
           <separator orientation="vertical"/>
           <field name="name"/>
           <field name="date"/>
+          <field name="partner_id"/>
           <field name="certificate_no"/>
           <field name="voucher_number"/>
           <field name="retention_id"/>
@@ -76,13 +77,14 @@
       <tree string="Retention Tax Lines">
           <field name="date"/>
           <field name="name"/>
+          <field name="partner_id"/>
+          <field name="vat"/>
           <field name="certificate_no"/>
-          <field name="retention_id"/>
           <field name="voucher_number"/>
           <field name="amount" sum="Amount Total"/>
           <field name="base" sum="Base Total"/>
           <field name="state_id"/>
-          <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+          <field name="company_id" groups="base.group_multi_company"/>
       </tree>
     </field>
   </record>

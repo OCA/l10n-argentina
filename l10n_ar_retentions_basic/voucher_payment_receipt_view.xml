@@ -15,14 +15,17 @@
               <separator string="Applied Retentions"/>
               <field name="retention_ids" nolabel="1" colspan="4" on_change="onchange_retentions(retention_ids, context)">
                 <tree string="Retention Lines">
+                  <field name="date" />
                   <field name="retention_id" string="Retention Type" />
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />
                 </tree>
                 <form string="Retention Lines">
+                  <field name="date" />
+                  <label string="Keep it empty if the date is the same as the voucher." />
+                  <field name="name" invisible="1"/>
                   <field name="retention_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_retention(retention_id, context)"/>
-                  <field name="name" />
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />
@@ -51,14 +54,17 @@
               <separator string="Supported Retentions"/>
               <field name="retention_ids" nolabel="1" colspan="4" on_change="onchange_retentions(retention_ids, context)">
                 <tree string="Retention Lines">
+                  <field name="date" />
                   <field name="retention_id" string="Retention Type" />
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />
                 </tree>
                 <form string="Retention Lines">
+                  <field name="date" />
+                  <label string="Keep it empty if the date is the same as the voucher." />
+                  <field name="name" invisible="1"/>
                   <field name="retention_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_retention(retention_id, context)"/>
-                  <field name="name" />
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />

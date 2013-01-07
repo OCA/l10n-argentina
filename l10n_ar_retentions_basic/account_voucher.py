@@ -30,8 +30,8 @@ class retention_tax_line(osv.osv):
     #TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
     _columns = {
         'name': fields.char('Retention', required=True, size=64),
-        'date': fields.date('Date', readonly=True, select=True),
-        'voucher_id': fields.many2one('account.voucher', 'Voucher'),
+        'date': fields.date('Date', select=True),
+        'voucher_id': fields.many2one('account.voucher', 'Voucher', ondelete='cascade'),
         'voucher_number': fields.related('voucher_id', 'number', type='char', string='Voucher No.'),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
                                       domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
@@ -44,15 +44,30 @@ class retention_tax_line(osv.osv):
         'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
         'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        #'factor_base': fields.function(_count_factor, method=True, string='Multipication factor for Base code', type='float', multi="all"),
-        #'factor_tax': fields.function(_count_factor, method=True, string='Multipication factor Tax code', type='float', multi="all")
+        'partner_id': fields.related('voucher_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
+        'vat': fields.related('voucher_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
         'certificate_no': fields.char('Certificate No.', required=True, size=32),
         'state_id': fields.many2one('res.country.state', string="State/Province"),
     }
 
     _defaults = {
-        'date': lambda *a: time.strftime('%Y-%m-%d'),
+        #'date': lambda *a: time.strftime('%Y-%m-%d'),
     }
+
+#    def create(self, cr, uid, vals, context=None):
+#        import pdb
+#        pdb.set_trace()
+#        voucher_obj = self.pool.get('account.voucher')
+#        print 'Create vals, antes: ', vals
+#        if 'voucher_id' in vals:
+#            voucher_id = vals['voucher_id']
+#            res = voucher_obj.read(cr, uid, voucher_id, ['date'], context=context)
+#            print res
+#            if 'date' in vals and not vals['date']:
+#                vals['date'] = res['date']
+#
+#        print 'Create: ', vals
+#        return super(retention_tax_line, self).create(cr, uid, vals, context)
 
     def onchange_retention(self, cr, uid, ids, retention_id, context):
         if not retention_id:
@@ -122,6 +137,11 @@ class account_voucher(osv.osv):
             if r.amount == 0.0:
                 continue
 
+            # Chequeamos si esta seteada la fecha, sino le ponemos la fecha del voucher
+            retention_vals = {}
+            if not r.date:
+                retention_vals['date'] = v.date
+ 
             # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
             company_currency = v.journal_id.company_id.currency_id.id
             current_currency = v.currency_id.id
@@ -135,8 +155,12 @@ class account_voucher(osv.osv):
             tax_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.amount, context=context_multi_currency, round=False)
             base_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.base, context=context_multi_currency, round=False)
 
-            # Lo escribimos en el objeto retention_tax_line
-            retention_obj.write(cr, uid, r.id, {'tax_amount': tax_amount, 'base_amount': base_amount})
+
+           # Lo escribimos en el objeto retention_tax_line
+            retention_vals['tax_amount'] = tax_amount
+            retention_vals['base_amount'] = base_amount
+
+            retention_obj.write(cr, uid, r.id, retention_vals)
 
             if v.type in ('purchase', 'payment'):
                 credit = tax_amount
