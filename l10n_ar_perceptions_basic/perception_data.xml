@@ -81,7 +81,7 @@
   <record id="percepcion_iva_a_depositar" model="account.account">
     <field name="code">212151</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
     <field name="type">other</field>
     <field name="name">Percepcion IVA a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -91,7 +91,7 @@
   <record id="percepcion_iva" model="account.account">
     <field name="code">114151</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>  <!-- Otros Creditos -->
     <field name="type">other</field>
     <field name="name">Percepcion IVA</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -101,7 +101,7 @@
   <record id="percepcion_iibb_caba_a_depositar" model="account.account">
     <field name="code">212161</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.deudas_fiscales"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
     <field name="type">other</field>
     <field name="name">Percepcion IIBB CABA a Depositar</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
@@ -111,7 +111,7 @@
   <record id="percepcion_iibb_caba" model="account.account">
     <field name="code">114161</field>
     <field name="reconcile" eval="False"/>
-    <field name="parent_id" ref="l10n_ar_chart_of_account.otros_creditos"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>
     <field name="type">other</field>
     <field name="name">Percepcion IIBB CABA</field>
     <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
