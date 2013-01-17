@@ -61,7 +61,7 @@
                     <field name="date"/>
                     <field name="debit_date"/>
                     <field name="bank_id"/>
-                    <field name="account_bank_id"/>
+                    <field name="account_bank_id" />
                     <field name="issued"/>
                     <field name="amount"/>
                 </tree>
@@ -80,7 +80,7 @@
                     <field name="date"/>
                     <field name="debit_date"/>
                     <field name="bank_id"/>
-                    <field name="account_bank_id"/>
+                    <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
                     <field name="amount"/>
                 </form>
             </field>

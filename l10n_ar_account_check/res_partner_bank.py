@@ -20,7 +20,6 @@ from osv import fields, osv
 
 class res_partner_bank(osv.osv):
     _name = 'res.partner.bank'
-    _description = 'Res Partner Bank Inherited'
     _inherit = 'res.partner.bank'
 
     _columns = {
