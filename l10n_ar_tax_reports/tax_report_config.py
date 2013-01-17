@@ -48,7 +48,7 @@ class subjournal_report_taxcode_column(osv.osv):
             'name': fields.char('Name', size=32),
             'report_config_id': fields.many2one('tax.subjournal.report.config', ondelete='cascade'),
             'tax_code_id': fields.many2one('account.tax.code', 'Tax code'),
-            'print_total': fields.boolean('Print Total'),
+            'print_total': fields.boolean('Print Total', help="If true, sum  Tax and Base amount. You should use only Tax Code and not Base Code if this is True."),
             }
 
     #TODO: Como tenemos el campo based_on en el report_config, podriamos

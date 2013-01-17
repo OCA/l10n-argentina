@@ -49,7 +49,7 @@ class account_tax_subjournal(osv.osv_memory):
         if context is None:
             context = {}
         datas = {'ids': context.get('active_ids', [])}
-        datas['model'] = 'account.account'
+        datas['model'] = 'account.move.line'
         datas['form'] = self.read(cr, uid, ids)[0]
         #datas['form']['company_id'] = self.pool.get('account.tax.code').browse(cr, uid, [datas['form']['chart_tax_id']], context=context)[0].company_id.id
         return {
