@@ -27,7 +27,7 @@ class payment_mode_receipt(osv.osv):
     _description= 'Payment Mode for Receipt'
     _columns = {
         'name': fields.char('Name', size=64, required=True, help='Mode of Payment'),
-        'bank_id': fields.many2one('res.partner.bank', "Bank account", required=True, help='Bank Account for the Payment Mode'),
+        'bank_id': fields.many2one('res.partner.bank', "Bank account", required=False, help='Bank Account for the Payment Mode'),
         'account_id':fields.many2one('account.account','Account', required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
         'currency' : fields.many2one('res.currency', "Currency", required=True, help="The currency the field is expressed in."),

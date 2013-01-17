@@ -128,9 +128,12 @@ class account_voucher(osv.osv):
         if context is None:
             context = {}
         ttype = context.get('type', 'receipt')
+        state = 'not_included'
+        if context.get('included', False):
+            state = 'included'
         lines = {}
         for v in self.browse(cr, uid, ids):
-            lines = self._get_voucher_lines(cr, uid, v.id, context=context)
+            lines = self._get_voucher_lines(cr, uid, v.id, state=state, context=context)
             if ttype == 'payment' and len(lines['line_cr_ids']) > 0:
                 pre_line = 1
             elif ttype == 'receipt' and len(lines['line_dr_ids']) > 0:
@@ -184,8 +187,9 @@ class account_voucher(osv.osv):
         currency_id = v.currency_id.id
         voucher_line_ids = []
         for line in moves:
-            if line.credit and line.reconcile_partial_id and ttype == 'receipt':
-                continue
+            # Se comenta esta parte, sino no aparecen los creditos parcialmente conciliados
+            #if line.credit and line.reconcile_partial_id and ttype == 'receipt':
+            #    continue
 
             original_amount = line.credit or line.debit or 0.0
             amount_unreconciled = currency_pool.compute(cr, uid, line.currency_id and line.currency_id.id or company_currency, currency_id, abs(line.amount_residual_currency), context=context_multi_currency)
@@ -403,14 +407,15 @@ class account_voucher(osv.osv):
             total_debit = 0
             total_credit = 0
 
+            company_currency = inv.journal_id.company_id.currency_id.id
+
             pml = []
             for payment_line in inv.payment_line_ids:
-                print 'Metodo de pago: ', payment_line.name, payment_line.amount, payment_line.payment_mode_id.account_id.name
+                #print 'Metodo de pago: ', payment_line.name, payment_line.amount, payment_line.payment_mode_id.account_id.name
                 if payment_line.amount == 0.0:
                     continue
 
-                # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
-                company_currency = inv.journal_id.company_id.currency_id.id
+                # TODO: Chequear que funcione bien en multicurrency
                 current_currency = payment_line.currency.id
 
                 debit = 0.0
@@ -478,7 +483,7 @@ class account_voucher(osv.osv):
                 if line.amount == line.amount_unreconciled:
                     amount = line.move_line_id.amount_residual #residual amount in company currency
                 else:
-                    amount = currency_pool.compute(cr, uid, current_currency, company_currency, line.untax_amount or line.amount, context=context_multi_currency)
+                    amount = currency_pool.compute(cr, uid, inv.currency_id.id, company_currency, line.untax_amount or line.amount, context=context_multi_currency)
                 move_line = {
                     'journal_id': inv.journal_id.id,
                     'period_id': inv.period_id.id,
@@ -486,7 +491,7 @@ class account_voucher(osv.osv):
                     'account_id': line.account_id.id,
                     'move_id': move_id,
                     'partner_id': inv.partner_id.id,
-                    'currency_id': company_currency <> current_currency and current_currency or False,
+                    'currency_id': company_currency <> inv.currency_id.id and inv.currency_id.id or False,
                     'analytic_account_id': line.account_analytic_id and line.account_analytic_id.id or False,
                     'quantity': 1,
                     'credit': 0.0,
@@ -516,7 +521,7 @@ class account_voucher(osv.osv):
                     if not (tax_data.base_code_id and tax_data.tax_code_id):
                         raise osv.except_osv(_('No Account Base Code and Account Tax Code!'),_("You have to configure account base code and account tax code on the '%s' tax!") % (tax_data.name))
                 sign = (move_line['debit'] - move_line['credit']) < 0 and -1 or 1
-                move_line['amount_currency'] = company_currency <> current_currency and sign * line.amount or 0.0
+                move_line['amount_currency'] = company_currency <> inv.currency_id.id and sign * line.amount or 0.0
                 voucher_line = move_line_pool.create(cr, uid, move_line)
                 if line.move_line_id.id:
                     rec_ids = [voucher_line, line.move_line_id.id]
@@ -570,9 +575,14 @@ class account_voucher(osv.osv):
         return True
 
     def create(self, cr, uid, vals, context=None):
-        res = self._get_payment_lines_default(cr, uid, context)
-        payment_lines = [(0, 0, values) for values in res]
-        vals['payment_line_ids'] = payment_lines
+        # Si no hay ninguna payment_line para crear, creamos las por defecto
+        # Esto sirve para cuando creamos un voucher desde codigo que no necesitamos
+        # las payment_lines por defecto, asi que tenemos que incluir
+        # las que querramos en vals
+        if 'payment_line_ids' not in vals or vals['payment_line_ids'] == []:
+            res = self._get_payment_lines_default(cr, uid, context)
+            payment_lines = [(0, 0, values) for values in res]
+            vals['payment_line_ids'] = payment_lines
 
         return super(account_voucher, self).create(cr, uid, vals, context=context)
 
