@@ -54,7 +54,7 @@ class account_voucher(osv.osv):
             'voucher_id', 'Third Checks', required=False),
         'third_check_ids': fields.many2many('account.third.check',
             'third_check_voucher_rel', 'voucher_id', 'third_check_id',
-            'Third Checks', domain=[('state', '=', 'C')]),
+            'Third Checks'),
         'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
     }
 
@@ -109,7 +109,6 @@ class account_voucher(osv.osv):
                                 journal_id, partner_id, currency_id, type, date, context=None):
     
         amount = 0.00
-        issued_check_pool = self.pool.get('account.issued.check')
         
         if len(ids) < 1:
             raise osv.except_osv(_('ATENTION !'),
@@ -146,17 +145,13 @@ class account_voucher(osv.osv):
         data['amount'] = 0.0
        
         third_check_ids = third_check_ids[0][2]
-        voucher_id = ids[0]
 
         if not len(third_check_ids):
             return {'value': data}
 
-        # Borramos todas las referencias de los cheques al voucher
-        cr.execute("DELETE FROM third_check_voucher_rel WHERE voucher_id=%s", (voucher_id,))
-
-        for check_id in third_check_ids:
-            # Insertamos los nuevos cheques
-            res = cr.execute("INSERT INTO third_check_voucher_rel (third_check_id, voucher_id) values (%s, %s)", (check_id, voucher_id,))
+        for check_id in self.pool.get('account.third.check').browse(cr, uid, third_check_ids):
+            amount += check_id.amount
+        data['amount'] = amount
 
         return {'value': data}
 
@@ -171,8 +166,7 @@ class account_voucher(osv.osv):
                         'receiving_partner_id': voucher_obj.partner_id.id,
                         'date_out': voucher_obj.date,
                     })
-            else:
-                if voucher_obj.third_check_ids:
+            if voucher_obj.third_check_ids:
                     for check in voucher_obj.third_check_ids:
                         check.write({
                             'destiny_partner_id': voucher_obj.partner_id.id,
@@ -228,9 +222,9 @@ class account_voucher(osv.osv):
     def call_issued_checks(self, cr , uid , ids , context=None):
 
         context['active_ids'] = ids[0]
-        view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.add.issued.checks.wizard.form')])
+        #view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.add.issued.checks.wizard.form')])
         return {
-            'name':_("Add Check aaa"),
+            'name':_("Add Check"),
             'type': 'ir.actions.act_window',
             'res_model': 'account.add.issued.check',
             'src_model': 'account.add.issued.check',
@@ -246,9 +240,9 @@ class account_voucher(osv.osv):
     def call_third_checks(self, cr , uid , ids , context=None):
 
         context['active_ids'] = ids[0]
-        view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.add.third.checks.wizard.form')])
+        #view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.add.third.checks.wizard.form')])
         return {
-            'name':_("Add Check aaa"),
+            'name':_("Add Check"),
             'type': 'ir.actions.act_window',
             'res_model': 'account.add.third.check',
             'src_model': 'account.add.third.check',
