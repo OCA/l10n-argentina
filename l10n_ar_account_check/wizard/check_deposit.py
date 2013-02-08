@@ -17,6 +17,7 @@
 
 from osv import osv, fields
 from tools.translate import _
+import time
 import netsvc
 
 
@@ -29,6 +30,24 @@ class account_check_deposit(osv.osv_memory):
         'date': fields.date('Deposit Date'),
     }
 
+    # TODO: Esto deberiamos obtenerlo del anterior asiento contable. Tenemos
+    # que guardar una referencia a los asientos contables de los cheques.
+    # Por ahora, la cuenta contable de donde sacar el cheque la obtenemos de
+    # la configuracion por compania
+    def _get_source_account_check(self, cr, uid, company_id):
+        check_config_obj = self.pool.get('account.check.config')
+
+        # Obtenemos la configuracion
+        res = check_config_obj.search(cr, uid, [('company_id', '=', company_id)])
+        if not len(res):
+            raise osv.except_osv(_('Error!'), _('There is no check configuration for this Company!'))
+
+        src_account = check_config_obj.read(cr, uid, res[0], ['account_id'])
+        if 'account_id' in src_account:
+            return src_account['account_id'][0]
+
+        raise osv.except_osv(_('Error!'), _('Bad Treasury configuration for this Company!'))
+
     def action_deposit(self, cr, uid, ids, context=None):
         third_check = self.pool.get('account.third.check')
         wf_service = netsvc.LocalService('workflow')
@@ -38,10 +57,12 @@ class account_check_deposit(osv.osv_memory):
         wizard = self.browse(cr, uid, ids[0], context=context)
 
         period_id = self.pool.get('account.period').find(cr, uid, wizard.date)[0]
+        deposit_date = wizard.date or time.strftime('%Y-%m-%d')
 
         if context is None:
             context = {}
         record_ids = context.get('active_ids', [])
+        company_id = context.get('company_id', False)
 
         check_objs = third_check.browse(cr, uid, record_ids, context=context)
 
@@ -53,6 +74,10 @@ class account_check_deposit(osv.osv_memory):
                 )
 
             else:
+
+                company_id = check.voucher_id.journal_id.company_id.id
+                account_check_id = self._get_source_account_check(cr, uid, company_id)
+
                 name = self.pool.get('ir.sequence').get_id(cr, uid,
                         check.voucher_id.journal_id.id)
                 move_id = self.pool.get('account.move').create(cr, uid, {
@@ -60,7 +85,7 @@ class account_check_deposit(osv.osv_memory):
                     'journal_id': check.voucher_id.journal_id.id,
                     'state': 'draft',
                     'period_id': period_id,
-                    'date': wizard.date,
+                    'date': deposit_date,
                     'ref': 'Check Deposit Nr. ' + check.number,
                 })
 
@@ -81,7 +106,8 @@ class account_check_deposit(osv.osv_memory):
                 move_line.create(cr, uid, {
                     'name': name,
                     'centralisation': 'normal',
-                    'account_id': check.voucher_id.journal_id.default_credit_account_id.id,
+                    'account_id': account_check_id,
+                    #'account_id': check.voucher_id.journal_id.default_credit_account_id.id,
                     'move_id': move_id,
                     'journal_id': check.voucher_id.journal_id.id,
                     'period_id': period_id,
