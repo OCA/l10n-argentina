@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_wizard_create_check" model="ir.ui.view">
+            <field name="name">wizard.create.check.form</field>
+            <field name="model">wizard.create.check</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create checkbooks">
+                    <group colspan="2" width="300">
+                        <field name="bank_id"/>
+                        <newline/>
+                        <field name="checkbook_num"/>
+                        <newline/>
+                        <field name="start_num"/>
+                        <newline/>
+                        <field name="end_num"/>
+                    </group>
+                    <separator string="" colspan="4" />
+                    <group colspan="4" col="6">
+                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button  icon="gtk-execute" string="Create" name="create_checkbook" type="object"/>
+                   </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_wizard_create_check" model="ir.actions.act_window">
+            <field name="name">Create checkbook</field>
+            <field name="res_model">wizard.create.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_wizard_create_check"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem
+            action="action_wizard_create_check"
+            id="menu_wizard_create_check"
+            name="Create checkbook"
+            parent="l10n_ar_account_check.menu_treasury_configuration"
+        />
+
+    </data>
+</openerp>
