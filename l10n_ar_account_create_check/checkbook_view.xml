@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="1">
+
+    <record model="ir.ui.view" id="view_account_issued_check_form1">
+        <field name="name">account.issued.check.form1</field>
+        <field name="model">account.issued.check</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_form"/>
+        <field name="arch" type="xml">
+			<field name="receiving_partner_id" position="before">
+				<field name="check_id" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
+			</field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_account_issued_check_form2">
+        <field name="name">account.issued.check.form2</field>
+        <field name="model">account.issued.check</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_form"/>
+        <field name="arch" type="xml">
+            <field name="number" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_account_issued_check_tree1">
+        <field name="name">account.issued.check.tree1</field>
+        <field name="model">account.issued.check</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_tree"/>
+        <field name="arch" type="xml">
+			<field name="receiving_partner_id" position="before">
+				<field name="check_id"/>
+			</field>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_account_issued_check_tree2">
+        <field name="name">account.issued.check.tree2</field>
+        <field name="model">account.issued.check</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_tree"/>
+        <field name="arch" type="xml">
+			<field name="number" position="replace"></field>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_checkbook_tree">
+		<field name="name">checkbook.tree</field>
+		<field name="model">checkbook</field>
+		<field name="type">tree</field>
+		<field name="arch" type="xml">
+			<tree string="Checkbooks">
+				<field name="bank_id"/>
+				<field name="name"/>
+				<field name="checkbook_num"/>
+				<field name="state"/>
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="view_checkbook_form">
+		<field name="name">checkbook.form</field>
+		<field name="model">checkbook</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<form string="Checkbooks">
+				<separator string="Configuration" colspan="4" />
+				<field name="bank_id"/>
+				<field name="name"/>
+				<field name="checkbook_num"/>
+				<field name="state"/>
+			</form>
+		</field>
+	</record>
+	
+	<record id="view_checkbook_search" model="ir.ui.view">
+		<field name="name">checkbook.search</field>
+		<field name="model">checkbook</field>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+			<search string="Checkbook">
+				<group colspan='4'>
+					<field name="bank_id"/>
+					<field name="name"/>
+					<field name="checkbook_num"/>
+					<field name="state"/>
+				</group>
+<!--
+				<group expand="0" string="Group By..." colspan="4"
+					groups="base.group_extended">
+					<filter string="Partner" icon="terp-gtk-jump-to-rtl"
+						domain="[]" context="{'group_by':'receiving_partner_id'}"/>
+					<filter string="Date" icon="terp-gtk-jump-to-rtl"
+						domain="[]" context="{'group_by':'date'}"/>
+				</group>
+-->
+			</search>
+		</field>
+	</record>
+
+	<record model="ir.actions.act_window" id="action_checkbook">
+		<field name="name">Checkbooks</field>
+		<field name="res_model">checkbook</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+	<menuitem
+		action="action_checkbook"
+		id="menu_checkbook"
+		name="Checkbooks"
+		parent="l10n_ar_account_check.menu_treasury_configuration"
+	/>
+
+</data>
+</openerp>
