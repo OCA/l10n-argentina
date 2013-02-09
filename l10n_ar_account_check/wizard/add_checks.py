@@ -26,7 +26,7 @@ class account_add_issued_check(osv.osv_memory):
     _columns = {
         'number': fields.char('Check Number', size=20, required=True),
         'amount': fields.float('Amount Check', required=True),
-        'date_out': fields.date('Date In', required=True),
+        'date_out': fields.date('Date Issued', required=True),
         'date': fields.date('Date', required=True),
         'debit_date': fields.date('Date Out', readonly=True),
         'date_changed': fields.date('Date Changed', readonly=True),

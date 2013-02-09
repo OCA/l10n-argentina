@@ -45,35 +45,35 @@ class account_issued_check(osv.osv):
     Account Issued Check
     '''
     _name = 'account.issued.check'
-    _description = 'Manage Checks'
+    _description = 'Issued Checks'
     _rec_name = 'number'
 
     _columns = {
         'number': fields.char('Check Number', size=20, required=True),
         'amount': fields.float('Amount Check', required=True),
-        'date_out': fields.date('Date In', required=True),
-        'date': fields.date('Date', required=True),
-        'debit_date': fields.date('Date Out', readonly=True),
-        'date_changed': fields.date('Date Changed', readonly=True),
+        'issue_date': fields.date('Issue Date', required=True),
+        'payment_date': fields.date('Payment Date', help="Only if this check is post dated"),
         'receiving_partner_id': fields.many2one('res.partner',
             'Receiving Entity', required=False, readonly=True),
         'bank_id': fields.many2one('res.bank', 'Bank', required=True),
-        'on_order': fields.char('On Order', size=64),
+        #'on_order': fields.char('On Order', size=64),
         'signatory': fields.char('Signatory', size=64),
         'clearing': fields.selection((
                 ('24', '24 hs'),
                 ('48', '48 hs'),
                 ('72', '72 hs'),
             ), 'Clearing'),
-        'origin': fields.char('Origin', size=64),
         'account_bank_id': fields.many2one('res.partner.bank',
             'Destiny Account'),
         'voucher_id': fields.many2one('account.voucher', 'Voucher'),
         'issued': fields.boolean('Issued'),
+        'type': fields.selection([('common', 'Common'),('posdated', 'Post-dated')], 'Check Type',
+            help="If common, checks only have issued_date. If post-dated they also have payment date"),
     }
 
     _defaults = {
         'clearing': lambda *a: '24',
+        'type': 'common',
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
@@ -86,6 +86,8 @@ class account_issued_check(osv.osv):
         # Esta cuenta se corresponde con la cuenta de banco de donde
         # pertenece el cheque
         account_id = check.account_bank_id.account_id.id
+        if not account_id:
+            raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.journal_id.company_id.currency_id.id

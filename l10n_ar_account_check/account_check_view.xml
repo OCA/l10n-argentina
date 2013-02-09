@@ -57,13 +57,13 @@
                 <tree string="Issued Checks">
                     <field name="number"/>
                     <field name="receiving_partner_id"/>
-                    <field name="date_out"/>
-                    <field name="date"/>
-                    <field name="debit_date"/>
-                    <field name="bank_id"/>
+                    <field name="issue_date"/>
+                    <field name="payment_date"/>
                     <field name="account_bank_id" />
+                    <field name="bank_id"/>
                     <field name="issued"/>
                     <field name="amount"/>
+                    <field name="type" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -74,13 +74,18 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Issued Checks">
+                    <field name="receiving_partner_id" invisible="1"/>
                     <field name="number"/>
-                    <field name="receiving_partner_id"/>
-                    <field name="date_out"/>
-                    <field name="date"/>
-                    <field name="debit_date"/>
-                    <field name="bank_id"/>
-                    <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
+                    <field name="type"/>
+                    <group colspan="4" col="6">
+                        <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
+                        <field name="bank_id"/>
+                        <field name="clearing"/>
+                    </group>
+                    <separator colspan="4" string="Check Information"/>
+                    <field name="issue_date"/>
+                    <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')]}"/>
+                    <newline/>
                     <field name="amount"/>
                 </form>
             </field>
