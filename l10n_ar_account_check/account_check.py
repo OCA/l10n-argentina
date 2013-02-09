@@ -141,24 +141,23 @@ class account_third_check(osv.osv):
     _columns = {
         'number': fields.char('Check Number', size=20, required=True),
         'amount': fields.float('Check Amount', required=True),
-        'date_in': fields.date('Date In', required=True),
-        'date': fields.date('Check Date', required=True),
-        'date_out': fields.date('Date Out', readonly=True),
+        'date_in': fields.date('Receipt Date', required=True), # Fecha de ingreso
+        'issue_date': fields.date('Issue Date', required=True), # Fecha de emision
+        'payment_date': fields.date('Payment Date'), # Fecha de pago diferido
+        'endorsement_date': fields.date('Endorsement Date', readonly=True), # Fecha de Endoso
         'source_partner_id': fields.many2one('res.partner', 'Source Partner',
             required=False, readonly=True),
-        'destiny_partner_id': fields.many2one('res.partner', 'Destiny Partner',
-            readonly=False, required=False,
-            states={'delivered': [('required', True)]}),
+        'destiny_partner_id': fields.many2one('res.partner', 'Destiny Partner', states={'delivered': [('required', True)]}),
         'state': fields.selection((
                 ('draft', 'Draft'),
-                ('C', 'En Cartera'),
+                ('wallet', 'In Wallet'),
                 ('deposited', 'Deposited'),
                 ('delivered', 'Delivered'),
                 ('rejected', 'Rejected'),
             ), 'State', required=True),
         'bank_id': fields.many2one('res.bank', 'Bank', required=True),
-        'vat': fields.char('Vat', size=15, required=True),
-        'on_order': fields.char('On Order', size=64),
+        #'vat': fields.char('Vat', size=15, required=True),
+        #'on_order': fields.char('On Order', size=64),
         'signatory': fields.char('Signatory', size=64),
         'clearing': fields.selection((
                 ('24', '24 hs'),
@@ -166,11 +165,11 @@ class account_third_check(osv.osv):
                 ('72', '72 hs'),
             ), 'Clearing'),
         'origin': fields.char('Origen', size=64),
-        'account_bank_id': fields.many2one('res.partner.bank',
-            'Destiny Account'),
-        'voucher_id': fields.many2one('account.voucher', 'Voucher'),
-        'reject_debit_note': fields.many2one('account.invoice',
-            'Reject Debit Note'),
+        'deposit_bank_id': fields.many2one('res.partner.bank',
+            'Deposit Account'),
+        'voucher_id': fields.many2one('account.voucher', 'Source Voucher'),
+        #'reject_debit_note': fields.many2one('account.invoice',
+            #'Reject Debit Note'),
     }
 
     _defaults = {

@@ -62,7 +62,7 @@
                     <field name="account_bank_id" />
                     <field name="bank_id"/>
                     <field name="issued"/>
-                    <field name="amount"/>
+                    <field name="amount" sum="Total Amount" />
                     <field name="type" invisible="1"/>
                 </tree>
             </field>
@@ -91,14 +91,62 @@
             </field>
         </record>
 
+        <record id="view_account_issued_check_filter" model="ir.ui.view">
+            <field name="name">account.issued.check.select</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Issued Checks">
+                   <group col='10' colspan='4'>
+                       <filter icon="terp-check" string="Issued" name="issued"
+                           domain="[('issued','=',True)]"/>
+                       <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+                           domain="[('type','=', 'postdated')]"/>
+                       <separator orientation="vertical"/>
+                       <field name="number"/>
+                       <field name="issue_date"/>
+                       <field name="receiving_partner_id"/>
+                       <newline/>
+                       <group expand="0" string="Extended Filters" colspan="10" col="6" groups="base.group_extended">
+                           <field name="payment_date"/>
+                           <field name="bank_id"/>
+                           <field name="amount"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By..." colspan="10" col="8" groups="base.group_extended">
+                        <filter string="Bank Account" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'account_bank_id'}"/>
+                        <filter string="Payment Date" icon="terp-go-month" domain="[]" context="{'group_by':'payment_date'}" help="Payment Date"/>
+                        <filter string="Receiving Partner" icon="terp-personal" domain="[]" context="{'group_by':'receiving_partner_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="view_account_issued_check_issued_calendar" model="ir.ui.view">
+            <field name="name">account.issued.check.issued.calendar</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">calendar</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="issue_date" string="Issued Checks">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+
     <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
         <record model="ir.actions.act_window" id="action_issued_check">
             <field name="name">Issued Checks</field>
             <field name="res_model">account.issued.check</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="view_account_issued_check_filter"/>
         </record>
+
         <menuitem
             action="action_issued_check"
             id="menu_treasury_issued_check"
@@ -116,16 +164,14 @@
                 <tree string="Third Checks">
                     <field name="number"/>
                     <field name="source_partner_id"/>
-                    <field name="destiny_partner_id"/>
-                    <field name="reject_debit_note"/>
-                    <field name="amount"/>
+                    <field name="issue_date"/>
                     <field name="date_in"/>
-                    <field name="date"/>
-                    <field name="date_out"/>
-                    <field name="vat"/>
+                    <field name="payment_date"/>
+                    <field name="destiny_partner_id"/>
+                    <field name="endorsement_date"/>
                     <field name="bank_id"/>
-                    <field name="clearing"/>
-                    <field name="account_bank_id"/>
+                    <field name="amount"/>
+                    <field name="deposit_bank_id"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -148,26 +194,6 @@
                     <field name="clearing"/>
                     <field name="account_bank_id"/>
                 </form>
-            </field>
-        </record>
-
-        <record id="view_issued_checks_search" model="ir.ui.view">
-            <field name="name">issued.check.search</field>
-            <field name="model">account.issued.check</field>
-            <field name="type">search</field>
-            <field name="arch" type="xml">
-                <search string="Issued Checks...">
-                    <group colspan='4'>
-                        <field name="number" select="1" string="Check Number"/>
-                    </group>
-                    <group expand="0" string="Group By..." colspan="4"
-                        groups="base.group_extended">
-                        <filter string="Partner" icon="terp-gtk-jump-to-rtl"
-                            domain="[]" context="{'group_by':'receiving_partner_id'}"/>
-                        <filter string="Date" icon="terp-gtk-jump-to-rtl"
-                            domain="[]" context="{'group_by':'date'}"/>
-                    </group>
-                </search>
             </field>
         </record>
 
