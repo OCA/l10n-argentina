@@ -10,7 +10,7 @@
         <field name="arch" type="xml">
             <data>
                 <field name="receiving_partner_id" position="before">
-                    <field name="check_id" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
+                    <field name="check_id" attrs="{'readonly': [('issued','=',True)]}" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
                     <field name="checkbook_id" invisible="1"/>
                 </field>
                 <field name="number" position="attributes">
@@ -42,8 +42,9 @@
 		<field name="arch" type="xml">
 			<tree string="Checkbooks">
 				<field name="name"/>
-				<field name="bank_id"/>
 				<field name="bank_account_id"/>
+				<field name="bank_id"/>
+				<field name="type"/>
 				<field name="account_check_id"/>
 			</tree>
 		</field>
@@ -57,10 +58,11 @@
 			<form string="Checkbook">
 				<separator string="Configuration" colspan="4" />
 				<field name="name"/>
-				<field name="account_check_id"/>
+				<field name="bank_account_id" on_change="onchange_bank_account(bank_account_id)" domain="[('partner_id','=',partner_id)]"/>
 				<field name="bank_id"/>
 				<field name="partner_id" invisible="1"/>
-				<field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
+				<field name="type"/>
+				<field name="account_check_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
 				<separator string="Checks" colspan="4" />
                 <group colspan="4" col="6">

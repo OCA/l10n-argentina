@@ -36,12 +36,29 @@ class account_checkbook(osv.osv):
         'issued_check_ids': fields.one2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True),
         'partner_id': fields.related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
+        'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date"),
     }
 
     _defaults = {
         'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
         'partner_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.partner_id.id,
+        'type': 'common',
         }
+
+    def onchange_bank_account(self, cr, uid, ids, bank_account_id, context=None):
+        vals = {}
+        if context is None:
+            context = {}
+
+        if not bank_account_id:
+            return {'value': vals}
+
+        bank_id = self.pool.get('res.partner.bank').read(cr, uid, bank_account_id, ['bank'], context)['bank']
+        if bank_id:
+            vals['bank_id'] = bank_id[0]
+
+        return {'value': vals}
+
 
 account_checkbook()
 
@@ -84,7 +101,9 @@ class account_issued_check(osv.osv):
 
         check = self.pool.get('account.checkbook.check').browse(cr, uid, check_id, context=context)
         checkbook = check.checkbook_id
-        return {'value':{'account_bank_id': checkbook.bank_account_id.id, 'checkbook_id': checkbook.id, 'bank_id': checkbook.bank_id.id, 'number': check.name}}
+
+        return {'value':{'account_bank_id': checkbook.bank_account_id.id, 'checkbook_id': checkbook.id,
+                         'bank_id': checkbook.bank_id.id, 'number': check.name, 'type': checkbook.type}}
         
     def write(self, cr, uid, ids, vals, context=None):
         a = vals.get('check_id', False)
