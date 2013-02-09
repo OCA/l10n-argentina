@@ -63,11 +63,10 @@ class account_issued_check(osv.osv):
                 ('48', '48 hs'),
                 ('72', '72 hs'),
             ), 'Clearing'),
-        'account_bank_id': fields.many2one('res.partner.bank',
-            'Destiny Account'),
+        'account_bank_id': fields.many2one('res.partner.bank', 'Bank Account'),
         'voucher_id': fields.many2one('account.voucher', 'Voucher'),
         'issued': fields.boolean('Issued'),
-        'type': fields.selection([('common', 'Common'),('posdated', 'Post-dated')], 'Check Type',
+        'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
             help="If common, checks only have issued_date. If post-dated they also have payment date"),
     }
 

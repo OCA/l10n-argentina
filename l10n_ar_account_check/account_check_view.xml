@@ -75,18 +75,18 @@
             <field name="arch" type="xml">
                 <form string="Issued Checks">
                     <field name="receiving_partner_id" invisible="1"/>
-                    <field name="number"/>
-                    <field name="type"/>
+                    <field name="number" attrs="{'readonly': [('issued','=',True)]}"/>
+                    <field name="type" attrs="{'readonly': [('issued','=',True)]}"/>
                     <group colspan="4" col="6">
-                        <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
-                        <field name="bank_id"/>
-                        <field name="clearing"/>
+                        <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1" attrs="{'readonly': [('issued','=',True)]}"/>
+                        <field name="bank_id" attrs="{'readonly': [('issued','=',True)]}"/>
+                        <field name="clearing" attrs="{'readonly': [('issued','=',True)]}"/>
                     </group>
                     <separator colspan="4" string="Check Information"/>
-                    <field name="issue_date"/>
-                    <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')]}"/>
+                    <field name="issue_date" attrs="{'readonly': [('issued','=',True)]}"/>
+                    <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')], 'readonly': [('issued','=',True)]}"/>
                     <newline/>
-                    <field name="amount"/>
+                    <field name="amount" attrs="{'readonly': [('issued','=',True)]}"/>
                 </form>
             </field>
         </record>
