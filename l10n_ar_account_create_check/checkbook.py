@@ -67,31 +67,11 @@ class checkbook_check(osv.osv):
 checkbook_check()
 
 
-
-
-# TODO: BORRAR ESTA CLASE
-class checkbook(osv.osv):
-    _name = "checkbook"
-    _description = "checkbook"
-
-    _columns = {
-        'bank_id': fields.many2one('res.partner.bank','Bank', required=True),
-        'name': fields.char('Number of check', size=20, required=True),
-        'checkbook_num': fields.char('Checkbook number', size=20, required=True),
-        'state': fields.char('State', size=40, required=True),
-    }
-    
-    _defaults = {
-		'state': 'draft'
-    }
-checkbook()
-
-
 class account_issued_check(osv.osv):
     _inherit = 'account.issued.check'
 
     _columns = {
-        'check_id': fields.many2one('checkbook', 'Check'),
+        'check_id': fields.many2one('account.checkbook.check', 'Check'),
         'checkbook_id': fields.many2one('account.checkbook', 'Checkbook'),
         'number': fields.char('Check Number', size=20),
         }
@@ -102,30 +82,31 @@ class account_issued_check(osv.osv):
         if not check_id:
             return {'value':{}}
 
-        check = self.pool.get('checkbook').browse(cr, uid, check_id, context=context)
-        return {'value':{'account_bank_id': check.bank_id.id, 'bank_id': check.bank_id.bank.id, 'number': check.name}}
+        check = self.pool.get('account.checkbook.check').browse(cr, uid, check_id, context=context)
+        checkbook = check.checkbook_id
+        return {'value':{'account_bank_id': checkbook.bank_account_id.id, 'checkbook_id': checkbook.id, 'bank_id': checkbook.bank_id.id, 'number': check.name}}
         
     def write(self, cr, uid, ids, vals, context=None):
-		a = vals.get('check_id', False)
-		if a:
-			sql = 'select check_id from account_issued_check where id = ' + str(ids[0])
-			cr.execute(sql)
-			aux_check_id = cr.fetchone()
-			self.pool.get('checkbook').write(cr, uid, aux_check_id, {'state': 'draft'})
-			self.pool.get('checkbook').write(cr, uid, a, {'state': 'done'})
-		return super(account_issued_check, self).write(cr, uid, ids, vals, context=context)
+        a = vals.get('check_id', False)
+        if a:
+            sql = 'select check_id from account_issued_check where id = ' + str(ids[0])
+            cr.execute(sql)
+            aux_check_id = cr.fetchone()
+            self.pool.get('account.checkbook.check').write(cr, uid, aux_check_id, {'state': 'draft'})
+            self.pool.get('account.checkbook.check').write(cr, uid, a, {'state': 'done'})
+        return super(account_issued_check, self).write(cr, uid, ids, vals, context=context)
 
     def create(self, cr, uid, vals, context=None):
-		a = vals.get('check_id', False)
-		if a:
-			self.pool.get('checkbook').write(cr, uid, a, {'state': 'done'})
-		return super(account_issued_check, self).create(cr, uid, vals, context=context)
-		
+        a = vals.get('check_id', False)
+        if a:
+            self.pool.get('account.checkbook.check').write(cr, uid, a, {'state': 'done'})
+        return super(account_issued_check, self).create(cr, uid, vals, context=context)
+
     def unlink(self, cr, uid, ids, context=None):
-		sql = 'select check_id from account_issued_check where id = ' + str(ids[0])
-		cr.execute(sql)
-		aux_check_id = cr.fetchone()
-		self.pool.get('checkbook').write(cr, uid, aux_check_id, {'state': 'draft'})
-		return super(account_issued_check, self).unlink(cr, uid, ids, context=context)
+        sql = 'select check_id from account_issued_check where id = ' + str(ids[0])
+        cr.execute(sql)
+        aux_check_id = cr.fetchone()
+        self.pool.get('account.checkbook.check').write(cr, uid, aux_check_id, {'state': 'draft'})
+        return super(account_issued_check, self).unlink(cr, uid, ids, context=context)
         
 account_issued_check()

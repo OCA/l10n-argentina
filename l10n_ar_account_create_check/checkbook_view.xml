@@ -2,52 +2,39 @@
 <openerp>
 <data noupdate="0">
 
-    <record model="ir.ui.view" id="view_account_issued_check_form1">
-        <field name="name">account.issued.check.form1</field>
+    <record model="ir.ui.view" id="view_account_issued_check_checkbook_form">
+        <field name="name">account.issued.check.checkbook.form</field>
         <field name="model">account.issued.check</field>
         <field name="type">form</field>
         <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_form"/>
         <field name="arch" type="xml">
-			<field name="receiving_partner_id" position="before">
-				<field name="check_id" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
-			</field>
+            <data>
+                <field name="receiving_partner_id" position="before">
+                    <field name="check_id" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
+                    <field name="checkbook_id" invisible="1"/>
+                </field>
+                <field name="number" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+             </data>
         </field>
     </record>
 
-    <record model="ir.ui.view" id="view_account_issued_check_form2">
-        <field name="name">account.issued.check.form2</field>
-        <field name="model">account.issued.check</field>
-        <field name="type">form</field>
-        <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_form"/>
-        <field name="arch" type="xml">
-            <field name="number" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
-        </field>
-    </record>
-    
-    <record model="ir.ui.view" id="view_account_issued_check_tree1">
-        <field name="name">account.issued.check.tree1</field>
+    <record model="ir.ui.view" id="view_account_issued_check_checkbook_tree">
+        <field name="name">account.issued.check.checkbook.tree</field>
         <field name="model">account.issued.check</field>
         <field name="type">form</field>
         <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_tree"/>
         <field name="arch" type="xml">
-			<field name="receiving_partner_id" position="before">
-				<field name="check_id"/>
-			</field>
+            <data>
+                <field name="receiving_partner_id" position="before">
+                    <field name="check_id"/>
+                </field>
+                <field name="number" position="replace"></field>
+            </data>
         </field>
     </record>
-    
-    <record model="ir.ui.view" id="view_account_issued_check_tree2">
-        <field name="name">account.issued.check.tree2</field>
-        <field name="model">account.issued.check</field>
-        <field name="type">form</field>
-        <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_tree"/>
-        <field name="arch" type="xml">
-			<field name="number" position="replace"></field>
-        </field>
-    </record>
-    
+
     <record model="ir.ui.view" id="view_account_checkbook_tree">
 		<field name="name">account_checkbook.tree</field>
 		<field name="model">account.checkbook</field>
