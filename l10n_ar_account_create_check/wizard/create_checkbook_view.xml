@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <form string="Create checkbooks">
                     <group colspan="2" width="300">
-                        <field name="bank_id"/>
+                        <field name="bank_account_id"/>
                         <newline/>
                         <field name="checkbook_num"/>
                         <newline/>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<data noupdate="1">
+<data noupdate="0">
 
     <record model="ir.ui.view" id="view_account_issued_check_form1">
         <field name="name">account.issued.check.form1</field>
@@ -57,6 +57,7 @@
 				<field name="name"/>
 				<field name="bank_id"/>
 				<field name="bank_account_id"/>
+				<field name="account_check_id"/>
 			</tree>
 		</field>
 	</record>
@@ -69,10 +70,20 @@
 			<form string="Checkbook">
 				<separator string="Configuration" colspan="4" />
 				<field name="name"/>
+				<field name="account_check_id"/>
 				<field name="bank_id"/>
-				<field name="bank_account_id"/>
-				<field name="check_ids" nolabel="1" colspan="4"/>
-				<field name="issued_check_ids" nolabel="1" colspan="4"/>
+				<field name="partner_id" invisible="1"/>
+				<field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+				<separator string="Checks" colspan="4" />
+                <group colspan="4" col="6">
+                    <field name="check_ids" nolabel="1" colspan="2">
+                        <tree string="Available Checks">
+                            <field name="name"/>
+                        </tree>
+                    </field>
+                    <field name="issued_check_ids" nolabel="1" colspan="4"/>
+                </group>
 			</form>
 		</field>
 	</record>

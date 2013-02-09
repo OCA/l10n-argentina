@@ -21,40 +21,45 @@
 
 from osv import fields, osv
 from tools.translate import _
-import string
 
 class wizard_create_check(osv.osv_memory):
     _name = "wizard.create.check"
     _description = "wizard create check"
 
     _columns = {
-        'bank_id': fields.many2one('res.partner.bank','Bank'),
+        'bank_account_id': fields.many2one('res.partner.bank','Bank'),
         'start_num': fields.char('Start number of check',size=20),
         'end_num': fields.char('End number of check',size=20),
         'checkbook_num': fields.char('Checkbook number',size=20),
     }
 
     def create_checkbook(self, cr, uid, ids, context=None):
+        checkbook_obj = self.pool.get('account.checkbook')
+
         if context is None:
             context = {}
         for form in self.browse(cr, uid, ids, context=context):
-			min = int(form.start_num)
-			max = int(form.end_num)
-			print min
-			print max
-			if min < max:
-				for n in range(min, max+1):
-					print n
-					id_prestacion = self.pool.get('checkbook').create(cr, uid, {
-						'name': str(n),
-						'bank_id': form.bank_id.id,
-						'checkbook_num': form.checkbook_num
-						})
-			else:
-				su='El numero final de la chequera debe ser mayor al inicial'
-				raise osv.except_osv(('Error 701'),(su))
+            start_num = int(form.start_num)
+            end_num = int(form.end_num)
+            if start_num > end_num:
+				raise osv.except_osv(_('Error creating Checkbook'), _("End number cannot be lower than Start number"))
+
+            # Creamos los cheques numerados
+            checks = []
+            for n in range(start_num, end_num+1):
+                check_vals = {'name': str(n)}
+                checks.append((0,0,check_vals))
+
+            # Creamos la chequera
+            checkbook_vals = {
+                    'name': form.checkbook_num,
+                    'bank_id': form.bank_account_id.bank.id,
+                    'bank_account_id': form.bank_account_id.id,
+                    'check_ids': checks
+                    }
+
+            checkbook_obj.create(cr, uid, checkbook_vals, context)
         
         return { 'type': 'ir.actions.act_window_close' }
-
 
 wizard_create_check()

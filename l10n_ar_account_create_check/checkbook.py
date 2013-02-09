@@ -30,11 +30,18 @@ class account_checkbook(osv.osv):
     _columns = {
         'name': fields.char('Checkbook Number', size=32, required=True),
         'bank_id': fields.many2one('res.bank','Bank', required=True),
-        'bank_account_id': fields.many2one('res.partner.bank','Bank', required=True),
-        'check_ids': fields.one2many('account.checkbook.check', 'checkbook_id', 'Available Checks',
-                                     domain="[('state','=','draft')]", readonly=True),
+        'bank_account_id': fields.many2one('res.partner.bank','Bank Account', required=True),
+        'account_check_id': fields.many2one('account.account', 'Check Account', help="Account used for account moves with checks. If not set, account in treasury configuration is used."),
+        'check_ids': fields.one2many('account.checkbook.check', 'checkbook_id', 'Available Checks', domain=[('state','=','draft')], readonly=True),
         'issued_check_ids': fields.one2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True),
+        'partner_id': fields.related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
     }
+
+    _defaults = {
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+        'partner_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.partner_id.id,
+        }
 
 account_checkbook()
 
@@ -46,6 +53,8 @@ class checkbook_check(osv.osv):
     _columns = {
         'name': fields.char('Check Number', size=20, required=True),
         'checkbook_id': fields.many2one('account.checkbook', 'Checkbook number', required=True),
+        # Para tener una referencia a que cheque se convirtio
+        #'issued_check_id': fields.many2one('account.issued.check', 'Issued Check', readonly=True),
         'state': fields.selection([
             ('draft', 'Draft'),
             ('done', 'Used')
@@ -59,6 +68,8 @@ checkbook_check()
 
 
 
+
+# TODO: BORRAR ESTA CLASE
 class checkbook(osv.osv):
     _name = "checkbook"
     _description = "checkbook"
