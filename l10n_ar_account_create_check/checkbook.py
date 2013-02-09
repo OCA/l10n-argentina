@@ -23,6 +23,42 @@
 
 from osv import osv, fields
 
+class account_checkbook(osv.osv):
+    _name = "account.checkbook"
+    _description = "Checkbook"
+
+    _columns = {
+        'name': fields.char('Checkbook Number', size=32, required=True),
+        'bank_id': fields.many2one('res.bank','Bank', required=True),
+        'bank_account_id': fields.many2one('res.partner.bank','Bank', required=True),
+        'check_ids': fields.one2many('account.checkbook.check', 'checkbook_id', 'Available Checks',
+                                     domain="[('state','=','draft')]", readonly=True),
+        'issued_check_ids': fields.one2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True),
+    }
+
+account_checkbook()
+
+class checkbook_check(osv.osv):
+    """Relacion entre Chequera y cheques por nro de cheque"""
+    _name = "account.checkbook.check"
+    _description = "Checkbook Check"
+
+    _columns = {
+        'name': fields.char('Check Number', size=20, required=True),
+        'checkbook_id': fields.many2one('account.checkbook', 'Checkbook number', required=True),
+        'state': fields.selection([
+            ('draft', 'Draft'),
+            ('done', 'Used')
+            ], 'State', readonly=True),
+    }
+
+    _defaults = {
+		'state': 'draft'
+    }
+checkbook_check()
+
+
+
 class checkbook(osv.osv):
     _name = "checkbook"
     _description = "checkbook"
@@ -39,11 +75,13 @@ class checkbook(osv.osv):
     }
 checkbook()
 
+
 class account_issued_check(osv.osv):
     _inherit = 'account.issued.check'
 
     _columns = {
         'check_id': fields.many2one('checkbook', 'Check'),
+        'checkbook_id': fields.many2one('account.checkbook', 'Checkbook'),
         'number': fields.char('Check Number', size=20),
         }
         
