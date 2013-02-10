@@ -129,13 +129,25 @@
             <field name="type">calendar</field>
             <field eval="2" name="priority"/>
             <field name="arch" type="xml">
-                <calendar color="bank_id" date_start="issue_date" string="Issued Checks">
+                <calendar color="bank_id" date_start="issue_date" string="Issued Checks by Issue Date">
                     <field name="number"/>
                     <field name="amount"/>
                 </calendar>
             </field>
         </record>
 
+        <record id="view_account_issued_check_payment_calendar" model="ir.ui.view">
+            <field name="name">account.issued.check.payment.calendar</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">calendar</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="payment_date" string="Issued Checks by Payment Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
 
     <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
@@ -147,11 +159,45 @@
             <field name="search_view_id" ref="view_account_issued_check_filter"/>
         </record>
 
+        <record model="ir.actions.act_window" id="action_issued_check_calendar_payment_date">
+            <field name="name">Issued Checks by Payment Date</field>
+            <field name="res_model">account.issued.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_issued_check_payment_calendar"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_issued_check_calendar_issued_date">
+            <field name="name">Issued Checks by Issue Date</field>
+            <field name="res_model">account.issued.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_issued_check_issued_calendar"/>
+        </record>
+
+        <menuitem
+            id="menu_treasury_issued_check_menu"
+            name="Issued Checks"
+            parent="menu_treasury_check"
+        />
+
         <menuitem
             action="action_issued_check"
             id="menu_treasury_issued_check"
             name="Issued Checks"
-            parent="menu_treasury_check"
+            parent="menu_treasury_issued_check_menu"
+        />
+
+        <menuitem
+            action="action_issued_check_calendar_payment_date"
+            id="menu_treasury_issued_check_calendar_payment"
+            name="Calendar By Payment Date"
+            parent="menu_treasury_issued_check_menu"
+        />
+
+        <menuitem
+            action="action_issued_check_calendar_issued_date"
+            id="menu_treasury_issued_check_calendar_issued"
+            name="Calendar By Issue Date"
+            parent="menu_treasury_issued_check_menu"
         />
 
     <!-- Third Checks -->
@@ -271,6 +317,47 @@
             </field>
         </record>
 
+        <record id="view_account_third_check_issued_calendar" model="ir.ui.view">
+            <field name="name">account.third.check.issued.calendar</field>
+            <field name="model">account.third.check</field>
+            <field name="type">calendar</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="issue_date" string="Third Checks by Issue Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_account_third_check_payment_calendar" model="ir.ui.view">
+            <field name="name">account.third.check.payment.calendar</field>
+            <field name="model">account.third.check</field>
+            <field name="type">calendar</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="payment_date" string="Third Checks by Payment Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_account_third_check_endorsement_calendar" model="ir.ui.view">
+            <field name="name">account.third.check.endorsement.calendar</field>
+            <field name="model">account.third.check</field>
+            <field name="type">calendar</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="endorsement_date" string="Third Checks by Endorsement Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+
+
     <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
         <record model="ir.actions.act_window" id="action_third_check">
@@ -279,11 +366,64 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <record model="ir.actions.act_window" id="action_third_check_calendar_payment_date">
+            <field name="name">Third Checks by Payment Date</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_third_check_payment_calendar"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_third_check_calendar_issued_date">
+            <field name="name">Third Checks by Issue Date</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_third_check_issued_calendar"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_third_check_calendar_endorsement_date">
+            <field name="name">Third Checks by Endorsement Date</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_third_check_endorsement_calendar"/>
+            <field name="domain">[('endorsement_date','!=',False)]</field>
+        </record>
+
+
+
+        <menuitem
+            id="menu_treasury_third_check_menu"
+            name="Third Checks"
+            parent="menu_treasury_check"
+        />
+
         <menuitem
             action="action_third_check"
             id="menu_treasury_third_check"
             name="Third Checks"
-            parent="menu_treasury_check"
+            parent="menu_treasury_third_check_menu"
+        />
+
+
+        <menuitem
+            action="action_third_check_calendar_payment_date"
+            id="menu_treasury_issued_check_calendar_payment"
+            name="Calendar By Payment Date"
+            parent="menu_treasury_third_check_menu"
+        />
+
+        <menuitem
+            action="action_third_check_calendar_issued_date"
+            id="menu_treasury_third_check_calendar_issued"
+            name="Calendar By Issue Date"
+            parent="menu_treasury_third_check_menu"
+        />
+
+        <menuitem
+            action="action_third_check_calendar_endorsement_date"
+            id="menu_treasury_third_check_calendar_endorsement"
+            name="Calendar By Endorsement Date"
+            parent="menu_treasury_third_check_menu"
         />
 
     </data>
