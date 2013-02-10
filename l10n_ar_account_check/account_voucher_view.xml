@@ -5,7 +5,7 @@
     <!-- Payment -->
 
         <record id="view_voucher_check_form" model="ir.ui.view">
-            <field name="name">account.voucher.form.inherit</field>
+            <field name="name">account.voucher.check.form.inherit</field>
             <field name="model">account.voucher</field>
             <field name="type">form</field>
             <field name="inherit_id" ref="account_voucher.view_vendor_payment_form"/>
@@ -21,15 +21,23 @@
                             nolabel="1" colspan="4"
                             on_change="onchange_pay_amount(payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                         journal_id, partner_id, currency_id, type, date ,context)"/>
-                        <group col="24">
-                            <button name="call_issued_checks" colspan="1" string="Add Check21" type="object" target="new" icon="gtk-go-back"/>
-                            <separator string="" colspan="23"/>
-                        </group>
                         <separator string="Third Checks" colspan="4"/>
+
+
                         <field name="third_check_ids" 
-                            string="Third Checks" nolabel="1" colspan="4" domain="[('state', '=', 'C')]"
+                            string="Third Checks" nolabel="1" colspan="4" domain="[('state', '=', 'wallet')]"
                             on_change="onchange_pay_amount(payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
-                                        journal_id, partner_id, currency_id, type, date ,context)"/>
+                                        journal_id, partner_id, currency_id, type, date ,context)">
+                           <tree string="Third Checks">
+                                <field name="number"/>
+                                <field name="source_partner_id"/>
+                                <field name="issue_date"/>
+                                <field name="payment_date"/>
+                                <field name="bank_id"/>
+                                <field name="origin"/>
+                                <field name="amount"/>
+                            </tree>
+                         </field>
                     </page>
                 </page>
             </field>

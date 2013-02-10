@@ -24,11 +24,32 @@ import netsvc
 class account_check_deposit(osv.osv_memory):
     _name = 'account.check.deposit'
 
+    def _get_company_partner(self, cr, uid, context=None):
+        company_obj = self.pool.get('res.company')
+        company_id =  company_obj._company_default_get(cr, uid, False, context=context)
+        partner_id = company_obj.read(cr, uid, company_id, ['partner_id'], context)['partner_id'][0]
+        return partner_id
+
     _columns = {
         'bank_account_id': fields.many2one('res.partner.bank', 'Bank Account',
             required=True),
-        'date': fields.date('Deposit Date'),
+        'date': fields.date('Deposit Date', required=True),
+        'partner_id': fields.many2one("res.partner"),
     }
+
+    _defaults = {
+        'date': lambda *a: time.strftime('%Y-%m-%d'),
+        'partner_id': _get_company_partner,
+    }
+
+    def view_init(self, cr , uid , fields_list, context=None):
+        check_obj = self.pool.get('account.third.check')
+        if context is None:
+            context = {}
+        for check in check_obj.browse(cr, uid, context.get('active_ids', []), context):
+            if check.state != 'wallet':
+                raise osv.except_osv(_("Error"), _("The selected checks must to be in cartera.\nCheck %s is not in wallet") % (check.number))
+        pass
 
     # TODO: Esto deberiamos obtenerlo del anterior asiento contable. Tenemos
     # que guardar una referencia a los asientos contables de los cheques.
@@ -48,6 +69,10 @@ class account_check_deposit(osv.osv_memory):
 
         raise osv.except_osv(_('Error!'), _('Bad Treasury configuration for this Company!'))
 
+    # TODO: Hacer un refactoring para poder depositar varios al mismo tiempo,
+    # pero antes averiguar si se tiene que hacer un asiento por cada uno o
+    # todo en un asiento por cuenta bancaria. Por ahora, esta hecho para
+    # uno por asiento.
     def action_deposit(self, cr, uid, ids, context=None):
         third_check = self.pool.get('account.third.check')
         wf_service = netsvc.LocalService('workflow')
@@ -67,66 +92,66 @@ class account_check_deposit(osv.osv_memory):
         check_objs = third_check.browse(cr, uid, record_ids, context=context)
 
         for check in check_objs:
-            if check.state != 'C':
-                raise osv.except_osv(
-                    'Check %s is not in cartera?? !' % (check.number),
-                    'The selected checks must to be in cartera.'
-                )
+            if check.state != 'wallet':
+                raise osv.except_osv(_("Error"), _("The selected checks must to be in cartera.\nCheck %s is not in wallet") % (check.number))
 
-            else:
+            if check.payment_date > deposit_date:
+                raise osv.except_osv(_("Cannot deposit"), _("You cannot deposit check %s because Payment Date is greater than Deposit Date.") % (check.number))
 
-                company_id = check.voucher_id.journal_id.company_id.id
-                account_check_id = self._get_source_account_check(cr, uid, company_id)
+            company_id = check.voucher_id.journal_id.company_id.id
+            account_check_id = self._get_source_account_check(cr, uid, company_id)
 
-                name = self.pool.get('ir.sequence').get_id(cr, uid,
-                        check.voucher_id.journal_id.id)
-                move_id = self.pool.get('account.move').create(cr, uid, {
-                    'name': name,
-                    'journal_id': check.voucher_id.journal_id.id,
-                    'state': 'draft',
-                    'period_id': period_id,
-                    'date': deposit_date,
-                    'ref': 'Check Deposit Nr. ' + check.number,
-                })
+            #name = self.pool.get('ir.sequence').get_id(cr, uid,
+                    #check.voucher_id.journal_id.id)
 
-                move_line.create(cr, uid, {
-                    'name': name,
-                    'centralisation': 'normal',
-                    'account_id': wizard.bank_account_id.account_id.id,
-                    'move_id': move_id,
-                    'journal_id': check.voucher_id.journal_id.id,
-                    'period_id': period_id,
-                    'date': check.date,
-                    'debit': check.amount,
-                    'credit': 0.0,
-                    'ref': 'Check Deposit Nro. ' + check.number,
-                    'state': 'valid',
-                })
-
-                move_line.create(cr, uid, {
-                    'name': name,
-                    'centralisation': 'normal',
-                    'account_id': account_check_id,
-                    #'account_id': check.voucher_id.journal_id.default_credit_account_id.id,
-                    'move_id': move_id,
-                    'journal_id': check.voucher_id.journal_id.id,
-                    'period_id': period_id,
-                    'date': check.date,
-                    'debit': 0.0,
-                    'credit': check.amount,
-                    'ref': 'Check Deposit' + check.number,
-                    'state': 'valid',
-                })
-                check.write({
-                    'account_bank_id': wizard.bank_account_id.id
-                })
-                wf_service.trg_validate(uid, 'account.third.check', check.id,
-                        'cartera_deposited', cr)
-
-            self.pool.get('account.move').write(cr, uid, [move_id], {
-                'state': 'posted',
+            move_id = self.pool.get('account.move').create(cr, uid, {
+                'name': '/',
+                'journal_id': check.voucher_id.journal_id.id,
+                'state': 'draft',
+                'period_id': period_id,
+                'date': deposit_date,
+                #'to_check': True,
+                'ref': _('Deposit Check %s') % check.number,
             })
 
-        return {}
+            move_line.create(cr, uid, {
+                'name': _('Check Deposit'),
+                #'centralisation': 'normal',
+                'account_id': wizard.bank_account_id.account_id.id,
+                'move_id': move_id,
+                'journal_id': check.voucher_id.journal_id.id,
+                'period_id': period_id,
+                'date': deposit_date,
+                'debit': check.amount,
+                'credit': 0.0,
+                'ref': _('Deposit Check %s on %s') % (check.number, wizard.bank_account_id.acc_number),
+                'state': 'valid',
+            })
+
+            move_line.create(cr, uid, {
+                'name': _('Check Deposit'),
+                'centralisation': 'normal',
+                'account_id': account_check_id,
+                'move_id': move_id,
+                'journal_id': check.voucher_id.journal_id.id,
+                'period_id': period_id,
+                'date': deposit_date,
+                'debit': 0.0,
+                'credit': check.amount,
+                'ref': _('Deposit Check %s') % check.number,
+                'state': 'valid',
+            })
+
+            check_vals = {'deposit_bank_id': wizard.bank_account_id.id, 'deposit_date': deposit_date}
+            check.write(check_vals)
+
+            wf_service.trg_validate(uid, 'account.third.check', check.id, 'cartera_deposited', cr)
+
+            # Se postea el asiento llamando a la funcion post de account_move.
+            # TODO: Se podria poner un check en el wizard para que elijan si postear
+            # el asiento o no.
+            self.pool.get('account.move').post(cr, uid, [move_id], context=context)
+
+        return { 'type': 'ir.actions.act_window_close' }
 
 account_check_deposit()

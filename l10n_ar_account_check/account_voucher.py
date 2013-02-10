@@ -161,11 +161,11 @@ class account_voucher(osv.osv):
         if voucher_obj.type == 'payment':
             if voucher_obj.issued_check_ids:
                 for check in voucher_obj.issued_check_ids:
-                    check.write({
-                        'issued': True,
-                        'receiving_partner_id': voucher_obj.partner_id.id,
-                        'date_out': voucher_obj.date,
-                    })
+                    vals = {'issued': True, 'receiving_partner_id': voucher_obj.partner_id.id}
+                    if not check.issue_date:
+                        vals['issue_date'] = voucher_obj.date
+                    check.write(vals)
+
             if voucher_obj.third_check_ids:
                     for check in voucher_obj.third_check_ids:
                         check.write({
@@ -177,6 +177,7 @@ class account_voucher(osv.osv):
             voucher_obj = self.pool.get('account.voucher').browse(cr, uid, ids)[0]
             for check in voucher_obj.third_check_receipt_ids:
                 wf_service.trg_validate(uid, 'account.third.check', check.id, 'draft_cartera', cr)
+
         return super(account_voucher, self).action_move_line_create(cr, uid, ids, context=None)
 
 

@@ -98,8 +98,8 @@
             <field name="arch" type="xml">
                 <search string="Search Issued Checks">
                    <group col='10' colspan='4'>
-                       <filter icon="terp-check" string="Issued" name="issued"
-                           domain="[('issued','=',True)]"/>
+                       <filter icon="terp-check" string="Common" name="common"
+                           domain="[('type','=', 'common')]"/>
                        <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
                            domain="[('type','=', 'postdated')]"/>
                        <separator orientation="vertical"/>
@@ -107,7 +107,7 @@
                        <field name="issue_date"/>
                        <field name="receiving_partner_id"/>
                        <newline/>
-                       <group expand="0" string="Extended Filters" colspan="10" col="6" groups="base.group_extended">
+                       <group expand="0" string="Extended Filters" colspan="10" col="6">
                            <field name="payment_date"/>
                            <field name="bank_id"/>
                            <field name="amount"/>
@@ -172,6 +172,7 @@
                     <field name="bank_id"/>
                     <field name="amount"/>
                     <field name="deposit_bank_id"/>
+                    <field name="type"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -181,22 +182,35 @@
             <field name="name">account.third.check.form</field>
             <field name="model">account.third.check</field>
             <field name="type">form</field>
+            <field name="priority">10</field>
             <field name="arch" type="xml">
-                <form string="Third Checks">
+               <form string="Third Checks">
                     <field name="number"/>
+                    <field name="type"/>
                     <field name="source_partner_id"/>
-                    <field name="destiny_partner_id"/>
-                    <field name="amount"/>
-                    <field name="receipt_date"/>
-                    <field name="issue_date"/>
-                    <field name="payment_date"/>
-                    <field name="endorsement_date"/>
-                    <field name="bank_id"/>
-                    <field name="signatory"/>
-                    <field name="clearing"/>
-                    <field name="origin"/>
-                    <field name="deposit_bank_id"/>
-                    <field name="state"/>
+                    <field name="destiny_partner_id" attrs="{'invisible': [('state', 'not in', ('delivered', 'rejected'))]}"/>
+                    <group colspan="4" col="6">
+                        <group colspan="4" col="4">
+                            <separator colspan="4" string="Check Information"/>
+                            <field name="bank_id"/>
+                            <field name="amount"/>
+                            <field name="receipt_date"/>
+                            <field name="issue_date"/>
+                            <field name="endorsement_date" attrs="{'invisible': [('state', 'not in', ('wallet', 'delivered', 'rejected'))]}"/>
+                            <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
+                                                               'required': [('type','=','postdated')]}"/>
+                            <field name="deposit_date" attrs="{'invisible': [('deposit_date', '!=', False)]"/>
+                        </group>
+                        <group colspan="2" col="2">
+                            <separator string="Other Information" colspan="2"/>
+                            <field name="clearing"/>
+                            <field name="signatory"/>
+                            <field name="origin"/>
+                            <field name="deposit_bank_id" attrs="{'invisible': [('state', 'not in', ('deposited', 'rejected'))]}" />
+                        </group>
+                    </group>
+                    <separator string="State" colspan="4"/>
+                    <field name="state" colspan="4"/>
                 </form>
             </field>
         </record>
@@ -207,17 +221,51 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Third Checks...">
-                    <group colspan='4'>
-                        <filter icon="terp-document-new" name="cartera"
-                            string="En Cartera" domain="[('state','=','C')]"/>
-                        <field name="number" select="1" string="Check Number"/>
+                    <group>
+                        <filter icon="terp-folder-green" name="cartera"
+                            string="In Wallet" domain="[('state','=','wallet')]"/>
+                        <filter icon="gtk-go-forward" name="delivered"
+                            string="Delivered" domain="[('state','=','delivered')]"/>
+                        <filter icon="gtk-jump-to" name="deposit"
+                            string="Deposited" domain="[('state','=','deposit')]"/>
+                        <filter icon="gtk-cancel" name="rejected"
+                            string="Rejected" domain="[('state','=','rejected')]"/>
+                       <separator orientation="vertical"/>
+                       <filter icon="terp-check" string="Common" name="common"
+                           domain="[('type','=', 'common')]"/>
+                       <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+                           domain="[('type','=', 'postdated')]"/>
+                    <field name="number" select="1" string="Check Number"/>
+                    <field name="issue_date"/>
+                    <newline/>
+                    <field name="origin"/>
+                    <field name="source_partner_id"/>
+                        <field name="payment_date"/>
+                        <field name="receipt_date"/>
                     </group>
-                    <group expand="0" string="Group By..." colspan="4"
-                        groups="base.group_extended">
-                        <filter string="Source Partner" icon="terp-gtk-jump-to-rtl"
+                    <newline/>
+                    <group expand="0" string="Extended Filters">
+                        <field name="endorsement_date"/>
+                        <field name="destiny_partner_id"/>
+                        <field name="bank_id"/>
+                        <field name="amount"/>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By..." colspan="4">
+                        <filter string="Source Partner" icon="terp-partner"
                             domain="[]" context="{'group_by':'source_partner_id'}"/>
-                        <filter string="Destiny Partner" icon="terp-gtk-jump-to-rtl"
-                            domain="[]" context="{'group_by':'destiny_partner_id'}"/>
+                        <filter string="Destiny Partner" icon="terp-partner"
+                            domain="[('state','not in', ('draft', 'wallet', 'deposited')), ('endorsement_date','!=',False)]"
+                            context="{'group_by':'destiny_partner_id'}"/>
+                        <filter string="Payment Date" icon="terp-go-month" domain="[]"
+                            context="{'group_by':'payment_date'}" help="Payment Date"/>
+                        <filter string="Endorsement Date" icon="terp-go-month" domain="[('endorsement_date','!=',False)]"
+                            context="{'group_by':'endorsement_date'}" help="Endorsement Date"/>
+                       <separator orientation="vertical"/>
+                        <filter string="Bank" icon="terp-accessories-archiver" domain="[('state','!=','draft')]"
+                            context="{'group_by':'bank_id'}"/>
+                        <filter string="State" icon="terp-stock_effects-object-colorize" domain="[]"
+                            context="{'group_by':'state'}"/>
                     </group>
                 </search>
             </field>

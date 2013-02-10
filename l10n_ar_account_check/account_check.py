@@ -143,10 +143,10 @@ class account_third_check(osv.osv):
         'amount': fields.float('Check Amount', readonly=True, required=True, states={'draft': [('readonly', False)]}),
         'receipt_date': fields.date('Receipt Date', readonly=True, required=True, states={'draft': [('readonly', False)]}), # Fecha de ingreso
         'issue_date': fields.date('Issue Date', readonly=True, required=True, states={'draft': [('readonly', False)]}), # Fecha de emision
-        'payment_date': fields.date('Payment Date'), # Fecha de pago diferido
-        'endorsement_date': fields.date('Endorsement Date', readonly=True), # Fecha de Endoso
-        'source_partner_id': fields.many2one('res.partner', 'Source Partner',
-            required=False, readonly=True),
+        'payment_date': fields.date('Payment Date', readonly=True, states={'draft': [('readonly', False)]}), # Fecha de pago diferido
+        'endorsement_date': fields.date('Endorsement Date', readonly=True, states={'wallet': [('readonly', False)]}), # Fecha de Endoso
+        'deposit_date': fields.date('Deposit Date', readonly=True, states={'wallet': [('readonly', False)]}), # Fecha de Deposito
+        'source_partner_id': fields.many2one('res.partner', 'Source Partner', required=False, readonly=True),
         'destiny_partner_id': fields.many2one('res.partner', 'Destiny Partner', states={'delivered': [('required', True)]}),
         'state': fields.selection((
                 ('draft', 'Draft'),
@@ -155,7 +155,7 @@ class account_third_check(osv.osv):
                 ('delivered', 'Delivered'),
                 ('rejected', 'Rejected'),
             ), 'State', readonly=True),
-        'bank_id': fields.many2one('res.bank', 'Bank', required=True),
+        'bank_id': fields.many2one('res.bank', 'Bank', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         #'vat': fields.char('Vat', size=15, required=True),
         #'on_order': fields.char('On Order', size=64),
         'signatory': fields.char('Signatory', size=64),
@@ -164,17 +164,19 @@ class account_third_check(osv.osv):
                 ('48', '48 hs'),
                 ('72', '72 hs'),
             ), 'Clearing'),
-        'origin': fields.char('Origen', size=64),
+        'origin': fields.char('Origin', size=64),
         'deposit_bank_id': fields.many2one('res.partner.bank',
             'Deposit Account'),
         'voucher_id': fields.many2one('account.voucher', 'Source Voucher'),
         'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
+            readonly=True, states={'draft': [('readonly', False)]},
             help="If common, checks only have issued_date. If post-dated they also have payment date"),
     }
 
     _defaults = {
         'receipt_date': lambda *a: time.strftime('%Y-%m-%d'),
         'state': lambda *a: 'draft',
+        'type': lambda *a: 'common',
         'clearing': lambda *a: '24',
     }
 
@@ -232,23 +234,35 @@ class account_third_check(osv.osv):
         # Transicion efectuada al validar un pago de cliente que contenga
         # cheques
         for check in self.browse(cr, uid, ids):
+            # TODO: Si no tiene voucher, deberia lanzar una excepcion
             if check.voucher_id:
                 source_partner_id = check.voucher_id.partner_id.id
             else:
                 source_partner_id = None
-            check.write({
-                'state': 'C',
-                'source_partner_id': source_partner_id,
-            })
+
+            vals = {}
+            vals['source_partner_id'] = source_partner_id
+            if not check.origin:
+                vals['origin'] = check.voucher_id.number
+            vals['state'] = 'wallet'
+
+            # Si es cheque comun tomamos la fecha de emision
+            # como feche de pago tambien porque seria un cheque al dia
+            if check.type == 'common':
+                vals['payment_date'] = check.issue_date
+
+            check.write(vals)
         return True
 
     def wkf_delivered(self, cr, uid, ids, context=None):
         # Transicion efectuada al validar un pago a proveedores que entregue
         # cheques de terceros
+        vals = {'state': 'delivered'}
         for check in self.browse(cr, uid, ids):
-            check.write({
-                'state': 'delivered',
-            })
+            if not check.endorsement_date:
+                vals['endorsement_date'] = time.strftime('%Y-%m-%d')
+
+            check.write(vals)
         return True
 
     def wkf_deposited(self, cr, uid, ids, context=None):
