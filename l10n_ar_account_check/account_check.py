@@ -139,10 +139,10 @@ class account_third_check(osv.osv):
     _rec_name = 'number'
 
     _columns = {
-        'number': fields.char('Check Number', size=20, required=True),
-        'amount': fields.float('Check Amount', required=True),
-        'date_in': fields.date('Receipt Date', required=True), # Fecha de ingreso
-        'issue_date': fields.date('Issue Date', required=True), # Fecha de emision
+        'number': fields.char('Check Number', size=20, readonly=True, required=True, states={'draft': [('readonly', False)]}),
+        'amount': fields.float('Check Amount', readonly=True, required=True, states={'draft': [('readonly', False)]}),
+        'receipt_date': fields.date('Receipt Date', readonly=True, required=True, states={'draft': [('readonly', False)]}), # Fecha de ingreso
+        'issue_date': fields.date('Issue Date', readonly=True, required=True, states={'draft': [('readonly', False)]}), # Fecha de emision
         'payment_date': fields.date('Payment Date'), # Fecha de pago diferido
         'endorsement_date': fields.date('Endorsement Date', readonly=True), # Fecha de Endoso
         'source_partner_id': fields.many2one('res.partner', 'Source Partner',
@@ -154,7 +154,7 @@ class account_third_check(osv.osv):
                 ('deposited', 'Deposited'),
                 ('delivered', 'Delivered'),
                 ('rejected', 'Rejected'),
-            ), 'State', required=True),
+            ), 'State', readonly=True),
         'bank_id': fields.many2one('res.bank', 'Bank', required=True),
         #'vat': fields.char('Vat', size=15, required=True),
         #'on_order': fields.char('On Order', size=64),
@@ -168,12 +168,12 @@ class account_third_check(osv.osv):
         'deposit_bank_id': fields.many2one('res.partner.bank',
             'Deposit Account'),
         'voucher_id': fields.many2one('account.voucher', 'Source Voucher'),
-        #'reject_debit_note': fields.many2one('account.invoice',
-            #'Reject Debit Note'),
+        'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
+            help="If common, checks only have issued_date. If post-dated they also have payment date"),
     }
 
     _defaults = {
-        'date_in': lambda *a: time.strftime('%Y-%m-%d'),
+        'receipt_date': lambda *a: time.strftime('%Y-%m-%d'),
         'state': lambda *a: 'draft',
         'clearing': lambda *a: '24',
     }

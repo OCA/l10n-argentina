@@ -165,7 +165,7 @@
                     <field name="number"/>
                     <field name="source_partner_id"/>
                     <field name="issue_date"/>
-                    <field name="date_in"/>
+                    <field name="receipt_date"/>
                     <field name="payment_date"/>
                     <field name="destiny_partner_id"/>
                     <field name="endorsement_date"/>
@@ -185,14 +185,18 @@
                 <form string="Third Checks">
                     <field name="number"/>
                     <field name="source_partner_id"/>
+                    <field name="destiny_partner_id"/>
                     <field name="amount"/>
-                    <field name="date_in"/>
-                    <field name="date"/>
-                    <field name="date_out"/>
-                    <field name="vat"/>
+                    <field name="receipt_date"/>
+                    <field name="issue_date"/>
+                    <field name="payment_date"/>
+                    <field name="endorsement_date"/>
                     <field name="bank_id"/>
+                    <field name="signatory"/>
                     <field name="clearing"/>
-                    <field name="account_bank_id"/>
+                    <field name="origin"/>
+                    <field name="deposit_bank_id"/>
+                    <field name="state"/>
                 </form>
             </field>
         </record>

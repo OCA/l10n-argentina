@@ -36,29 +36,53 @@
         </record>
 
    <!-- Receipt -->
-
         <record id="view_vendor_receipt_check_form" model="ir.ui.view">
             <field name="name">account.voucher.form.receipt.inherit</field>
             <field name="model">account.voucher</field>
             <field name="type">form</field>
             <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
             <field name="arch" type="xml">
-<!--
-                <field name="amount" position="after">
-                    <separator string="Metodos de Cobro" colspan="8"/>
-                </field>
--->
                 <page string="Payment Information" position="after">
                     <page string="Checks">
                         <field name="third_check_receipt_ids"
                             string="Third Checks" nolabel="1" colspan="4"
                             on_change="onchange_pay_amount(payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
-                                        journal_id, partner_id, currency_id, type, date ,context)"/>
-                        <group col="24">
-                            <button name="call_third_checks" colspan="1" string="Add Check" type="object" target="new" icon="gtk-go-back"/>
-                            <separator string="" colspan="23"/>
-                        </group>
-                    </page>
+                                        journal_id, partner_id, currency_id, type, date ,context)">
+                            <tree string="Third Checks">
+                                <field name="number"/>
+                                <field name="receipt_date"/>
+                                <field name="issue_date"/>
+                                <field name="payment_date"/>
+                                <field name="bank_id"/>
+                                <field name="type"/>
+                                <field name="amount"/>
+                                <field name="state"/>
+                            </tree>
+                            <form string="Third Checks">
+                                <field name="source_partner_id" invisible="1"/>
+                                <field name="number"/>
+                                <field name="type"/>
+                                <group colspan="4" col="6">
+                                    <group colspan="4" col="4">
+                                        <separator colspan="4" string="Check Information"/>
+                                        <field name="bank_id"/>
+                                        <field name="amount"/>
+                                        <field name="receipt_date"/>
+                                        <field name="issue_date"/>
+                                        <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
+                                                                           'required': [('type','=','postdated')]}"/>
+                                    </group>
+                                    <group colspan="2" col="2">
+                                        <separator string="Other Information" colspan="2"/>
+                                        <field name="clearing"/>
+                                        <field name="signatory"/>
+                                    </group>
+                                </group>
+                                <separator string="State" colspan="4"/>
+                                <field name="state" colspan="4"/>
+                            </form>
+                        </field> 
+                   </page>
                 </page>
             </field>
         </record>
