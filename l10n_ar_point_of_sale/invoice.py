@@ -42,8 +42,8 @@ class invoice(osv.osv):
 
     def _check_fiscal_values(self, cr, uid, inv):
         # Si es factura de cliente
+        denomination_id = inv.denomination_id and inv.denomination_id.id
         if inv.type in ('out_invoice', 'out_refund', 'out_debit'):
-            denomination_id = inv.denomination_id and inv.denomination_id.id 
 
             if not denomination_id:
                 raise osv.except_osv(_('Error!'), _('Denomination not set in invoice'))
