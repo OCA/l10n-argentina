@@ -26,7 +26,7 @@ class res_currency(osv.osv):
     _description = ""
 
     _columns = {
-        'afip_code' : fields.char('AFIP Code', size=3),
+        'afip_code' : fields.char('AFIP Code', size=3, help="Codification of the currency given by AFIP"),
     }
 
 res_currency()

@@ -19,5 +19,6 @@
 #
 ##############################################################################
 import partner
+import product
 import res_currency
 import wizard

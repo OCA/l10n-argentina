@@ -177,8 +177,7 @@ class create_sired_files(osv.osv_memory):
             else:
                 raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s-%s because amount total is greater than 1000 and partner has not got document identification') % (invoice.denomination_id.name, invoice.pos_ar_id.name, invoice.internal_number))
 
-
-    def _generate_head_file(self, cr, uid, invoice_ids, context):
+    def _generate_head_file(self, cr, uid, company, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
 
         importe_total_reg1 = 0.0
@@ -272,9 +271,7 @@ class create_sired_files(osv.osv_memory):
 
 
         # Creacion del registro tipo 2 (Totales)
-        period_split = invoice.period_id.code.split('/')
-        period_name = period_split[1]+period_split[0]
-        company_cuit = invoice.company_id.partner_id.vat
+        company_cuit = company.partner_id.vat
 
         # head_type2_regs
         type2_reg = []
@@ -331,7 +328,7 @@ class create_sired_files(osv.osv_memory):
 
         f = open(head_filename, 'r')
 
-        name = 'CABECERA_%s' % period_name
+        name = 'CABECERA_%s.txt' % period_name
 
         data_attach = {
             'name': name,
@@ -346,6 +343,107 @@ class create_sired_files(osv.osv_memory):
 
         return head_regs
 
+    def _get_vat_tax_and_exempt_indicator(self, cr, uid, ei_config, line_taxes):
+
+        # Tomamos la primer tax que encontremos en la configuracion
+        # Evidentemente AFIP solo espera un IVA por linea por eso apenas
+        # encontramos una que tenga codificacion, retornamos
+        # TODO: Mejorar toda esta parte de impuestos de AFIP
+        for tax in line_taxes:
+            for eitax in ei_config.vat_tax_ids+ei_config.exempt_operations_tax_ids:
+                if eitax.tax_code_id.id == tax.tax_code_id.id:
+                    if eitax.exempt_operations:
+                        return '0', 'E'
+                    else:
+                        return tax.amount*100, 'G'
+
+    def _generate_detail_file(self, cr, uid, company, period_name, invoice_ids, context):
+        invoice_obj = self.pool.get('account.invoice')
+
+        ei_config_obj = self.pool.get('electronic.invoice.config')
+        res = ei_config_obj.search(cr, uid, [('company_id', '=', company.id)])
+        if not len(res):
+            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
+
+        ei_config = ei_config_obj.browse(cr, uid, res[0])
+
+        detail_regs = []
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
+            # Conversiones varias
+            date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
+            date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
+
+            for line in invoice.invoice_line:
+                reg = []
+                # 'tipo_comprobante'
+                reg.append(self._get_voucher_type(cr, uid, invoice))
+                # 'controlador'
+                reg.append(' ')
+                # 'fecha_comprobante'
+                reg.append(date_invoice)
+                # 'punto_venta'
+                reg.append(invoice.pos_ar_id.name)
+                # 'numero_comprobante'
+                reg.append(invoice.internal_number)
+                # 'numero_comprobante_reg'
+                reg.append(invoice.internal_number)
+                # Cantidad
+                reg.append(moneyfmt(Decimal(line.quantity), places=5, ndigits=12, dp='', sep=''))
+                # Unidad de Medida
+                reg.append(line.uos_id.afip_code)
+                # Precio Unitario
+                reg.append(moneyfmt(Decimal(line.price_unit), places=3, ndigits=16, dp='', sep=''))
+                # Importe de Bonificacion
+                # TODO: Tener en cuenta los descuentos
+                reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+                # Importe de ajuste
+                reg.append(moneyfmt(Decimal(0.0), places=3, ndigits=16, dp='', sep=''))
+                # Subtotal por registro
+                reg.append(moneyfmt(Decimal(line.price_subtotal), places=3, ndigits=16, dp='', sep=''))
+                # Alicuota de IVA
+                iva, exempt_indicator = self._get_vat_tax_and_exempt_indicator(cr, uid, ei_config, line.invoice_line_tax_id)
+                reg.append(moneyfmt(Decimal(iva), places=2, ndigits=4, dp='', sep=''))
+                # Indicacion de Exento, Gravado o No Gravado
+                # TODO: Tenemos que tener en cuenta los casos en que son exentos
+                reg.append('G')
+                # Indicacion de Anulacion
+                reg.append(' ')
+                # Disenio Libre
+                product_name = ustr('%-75s') % line.name
+
+                reg.append(product_name)
+                #reg.append("\r\n")
+                # Apendeamos el registro
+                detail_regs.append(reg)
+
+
+        detail_filename = tempfile.mkstemp(suffix='.sireddetail')[1]
+        f = open(detail_filename, 'w')
+
+        for r in detail_regs:
+            # TODO: Quitar esto. Si lo hacemos en el append de mas arriba
+            # no funciona. Aca si, averiguar por que
+            r2 = [a.encode('utf-8') for a in r]
+            f.write(''.join(r2))
+            f.write('\r\n')
+
+        f.close()
+
+        f = open(detail_filename, 'r')
+        name = 'DETALLE_%s.txt' % period_name
+        data_attach = {
+            'name': name,
+            'datas':binascii.b2a_base64(f.read()),
+            'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
+            #'description': '',
+            'res_model': 'account.period',
+            'res_id': invoice.period_id.id,
+        }
+        self.pool.get('ir.attachment').create(cr, uid, data_attach, context=context)
+        f.close()
+
+        return detail_regs
+
     def create_files(self, cr, uid, ids, context=None):
         """
         @param self: The object pointer.
@@ -357,12 +455,34 @@ class create_sired_files(osv.osv_memory):
         data = self.browse(cr, uid, ids, context)[0]
 
         period = data.period_id
+        company = period.company_id
 
         # Buscamos las facturas del periodo pedido
-        invoice_ids = self.pool.get('account.invoice').search(cr, uid, [('period_id','=',period.id), ('state','in', ('open', 'paid'))], context=context)
+        # ordenados segun lo escrito en la RG1361/1492
+        #invoice_ids = self.pool.get('account.invoice').search(cr, uid, [('period_id','=',period.id), ('state','in', ('open', 'paid'))], context=context)
         
+        invoice_query = "SELECT i.id " \
+        "FROM account_invoice i " \
+        "JOIN account_period p on p.id=i.period_id " \
+        "JOIN invoice_denomination d on d.id=i.denomination_id " \
+        "JOIN pos_ar pos on pos.id=i.pos_ar_id " \
+        "JOIN res_partner par on par.id=i.partner_id, electronic_invoice_voucher_type evt " \
+        "WHERE p.id=%(period)s AND evt.denomination_id=i.denomination_id " \
+        "AND i.state in %(state)s AND evt.document_type=i.type " \
+        "ORDER BY i.date_invoice, evt.code, pos.name, i.internal_number "
+
+        cr.execute(invoice_query, {'period': period.id, 'state': ('open', 'paid',)})
+        res = cr.fetchall()
+        invoice_ids = [ids[0] for ids in res]
+
+        period_split = period.code.split('/')
+        period_name = period_split[1]+period_split[0]
+
         # Generamos los registros de Cabecera Tipo 1 y Tipo 2
-        reg1 = self._generate_head_file(cr, uid, invoice_ids, context)
+        self._generate_head_file(cr, uid, company, period_name, invoice_ids, context)
+
+        # Generamos los registros de Detalle Tipo 1
+        self._generate_detail_file(cr, uid, company, period_name, invoice_ids, context)
 
         return {'type': 'ir.actions.act_window_close'}
 
