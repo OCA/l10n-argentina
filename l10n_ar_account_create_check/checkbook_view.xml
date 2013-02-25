@@ -13,9 +13,6 @@
                     <field name="check_id" attrs="{'readonly': [('issued','=',True)]}" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
                     <field name="checkbook_id" invisible="1"/>
                 </field>
-                <field name="number" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
              </data>
         </field>
     </record>
@@ -30,7 +27,6 @@
                 <field name="receiving_partner_id" position="before">
                     <field name="check_id"/>
                 </field>
-                <field name="number" position="replace"></field>
             </data>
         </field>
     </record>
