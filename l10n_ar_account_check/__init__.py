@@ -1,6 +1,7 @@
 # coding=utf-8
 
-#    Copyright (C) 2008-2011  Thymbra
+#    Copyright (C) 2004-2010 Tiny SPRL (http://tiny.be). All Rights Reserved
+#    Copyright (C) 2012-2013 E-MIPS (http://www.e-mips.com.ar)
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
