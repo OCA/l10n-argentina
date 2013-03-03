@@ -112,10 +112,14 @@ class create_sired_files(osv.osv_memory):
         if invoice.fiscal_position.name == 'Consumidor Final':
             if invoice.amount_total <= 1000.0:
                 return ustr('%-30s') % 'CONSUMIDOR FINAL'
+            elif invoice.partner_id.vat:
+                val = ustr('%-30s') % invoice.partner_id.name
+                partner_name = val[0:30]
+                return partner_name
             else:
                 raise osv.except_osv(_('Error!'), _('Cannot get identifier document for partner %s') % invoice.partner_id.name)
 
-        val = ustr('-%30s') % invoice.partner_id.name
+        val = ustr('%-30s') % invoice.partner_id.name
         partner_name = val[0:30]
         return partner_name
 
@@ -147,7 +151,7 @@ class create_sired_files(osv.osv_memory):
                     else:
                         importe_iva += tax.amount
                         importe_neto += tax.base
-                        iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
+                        iva2 = {'Id': int(eitax.code), 'IVA': eitax.tax_id.amount, 'BaseImp': tax.base, 'Importe': tax.amount}
                         iva_array.append(iva2)
 
         importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva
@@ -177,7 +181,7 @@ class create_sired_files(osv.osv_memory):
             else:
                 raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s-%s because amount total is greater than 1000 and partner has not got document identification') % (invoice.denomination_id.name, invoice.pos_ar_id.name, invoice.internal_number))
 
-    def _generate_head_file(self, cr, uid, company, period_name, invoice_ids, context):
+    def _generate_head_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
 
         importe_total_reg1 = 0.0
@@ -228,33 +232,33 @@ class create_sired_files(osv.osv_memory):
             # 'apenom_comprador'
             type1_reg.append(self._get_partner_name(invoice))
             # 'importe_total'
-            type1_reg.append(moneyfmt(Decimal(importe_total), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(importe_total)), places=2, ndigits=15, dp='', sep=''))
             # 'neto_no_gravado'
-            type1_reg.append(moneyfmt(Decimal(importe_neto_no_gravado), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(importe_neto_no_gravado)), places=2, ndigits=15, dp='', sep=''))
             # 'neto_gravado'
-            type1_reg.append(moneyfmt(Decimal(importe_neto), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(importe_neto)), places=2, ndigits=15, dp='', sep=''))
             # 'impuesto_liquidado'
-            type1_reg.append(moneyfmt(Decimal(importe_iva), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(importe_iva)), places=2, ndigits=15, dp='', sep=''))
             # 'impuesto_rni'
-            type1_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'impuesto_op_exentas'
-            type1_reg.append(moneyfmt(Decimal(importe_operaciones_exentas), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(importe_operaciones_exentas)), places=2, ndigits=15, dp='', sep=''))
             # 'percep_imp_nacionales'
-            type1_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'percep_iibb'
-            type1_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'percep_municipales'
-            type1_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'impuestos_internos'
-            type1_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'transporte'
-            type1_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'tipo_responsable'
             type1_reg.append(invoice.fiscal_position.afip_code)
             # 'codigo_moneda'
             type1_reg.append(invoice.currency_id.afip_code)
             # 'tipo_cambio'
-            type1_reg.append(moneyfmt(Decimal(1.0), places=6, ndigits=10, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal('1.0'), places=6, ndigits=10, dp='', sep=''))
             # 'cant_alicuotas_iva'
             type1_reg.append(len(iva_array) and str(len(iva_array)) or '1')
             # 'codigo_operacion'
@@ -291,25 +295,25 @@ class create_sired_files(osv.osv_memory):
         # 'relleno'
         type2_reg.append(' '*22)
         # Importe total de la operacion
-        type2_reg.append(moneyfmt(Decimal(importe_total_reg1), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal(str(importe_total_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total neto no gravado
-        type2_reg.append(moneyfmt(Decimal(importe_total_neto_no_gravado_reg1), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal(str(importe_total_neto_no_gravado_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total neto gravado
-        type2_reg.append(moneyfmt(Decimal(importe_total_neto_reg1), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal(str(importe_total_neto_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total impuesto liquidado
-        type2_reg.append(moneyfmt(Decimal(importe_total_iva_reg1), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal(str(importe_total_iva_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total impuesto liquidado RNI
-        type2_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total operaciones exentas
-        type2_reg.append(moneyfmt(Decimal(importe_total_operaciones_exentas_reg1), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal(str(importe_total_operaciones_exentas_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total percepciones nacionales
-        type2_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total percepciones iibb
-        type2_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total percepciones municipales
-        type2_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total impuestos internos
-        type2_reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # 'relleno'
         type2_reg.append(' '*62)
 
@@ -321,7 +325,12 @@ class create_sired_files(osv.osv_memory):
         f = open(head_filename, 'w')
 
         for r in head_regs:
-            f.write(''.join(r))
+            r2 = [a.encode('utf-8') for a in r]
+            try:
+                f.write(''.join(r2))
+            except Exception, e:
+                print r
+                raise e
             f.write('\r\n')
 
         f.close()
@@ -336,7 +345,7 @@ class create_sired_files(osv.osv_memory):
             'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
             #'description': '',
             'res_model': 'account.period',
-            'res_id': invoice.period_id.id,
+            'res_id': period_id,
         }
         self.pool.get('ir.attachment').create(cr, uid, data_attach, context=context)
         f.close()
@@ -357,7 +366,7 @@ class create_sired_files(osv.osv_memory):
                     else:
                         return tax.amount*100, 'G'
 
-    def _generate_detail_file(self, cr, uid, company, period_name, invoice_ids, context):
+    def _generate_detail_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
 
         ei_config_obj = self.pool.get('electronic.invoice.config')
@@ -388,21 +397,21 @@ class create_sired_files(osv.osv_memory):
                 # 'numero_comprobante_reg'
                 reg.append(invoice.internal_number)
                 # Cantidad
-                reg.append(moneyfmt(Decimal(line.quantity), places=5, ndigits=12, dp='', sep=''))
+                reg.append(moneyfmt(Decimal(str(line.quantity)), places=5, ndigits=12, dp='', sep=''))
                 # Unidad de Medida
                 reg.append(line.uos_id.afip_code)
                 # Precio Unitario
-                reg.append(moneyfmt(Decimal(line.price_unit), places=3, ndigits=16, dp='', sep=''))
+                reg.append(moneyfmt(Decimal(str(line.price_unit)), places=3, ndigits=16, dp='', sep=''))
                 # Importe de Bonificacion
                 # TODO: Tener en cuenta los descuentos
-                reg.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+                reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
                 # Importe de ajuste
-                reg.append(moneyfmt(Decimal(0.0), places=3, ndigits=16, dp='', sep=''))
+                reg.append(moneyfmt(Decimal('0.0'), places=3, ndigits=16, dp='', sep=''))
                 # Subtotal por registro
-                reg.append(moneyfmt(Decimal(line.price_subtotal), places=3, ndigits=16, dp='', sep=''))
+                reg.append(moneyfmt(Decimal(str(line.price_subtotal)), places=3, ndigits=16, dp='', sep=''))
                 # Alicuota de IVA
                 iva, exempt_indicator = self._get_vat_tax_and_exempt_indicator(cr, uid, ei_config, line.invoice_line_tax_id)
-                reg.append(moneyfmt(Decimal(iva), places=2, ndigits=4, dp='', sep=''))
+                reg.append(moneyfmt(Decimal(str(iva)), places=2, ndigits=4, dp='', sep=''))
                 # Indicacion de Exento, Gravado o No Gravado
                 # TODO: Tenemos que tener en cuenta los casos en que son exentos
                 reg.append('G')
@@ -437,7 +446,7 @@ class create_sired_files(osv.osv_memory):
             'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
             #'description': '',
             'res_model': 'account.period',
-            'res_id': invoice.period_id.id,
+            'res_id': period_id,
         }
         self.pool.get('ir.attachment').create(cr, uid, data_attach, context=context)
         f.close()
@@ -479,10 +488,13 @@ class create_sired_files(osv.osv_memory):
         period_name = period_split[1]+period_split[0]
 
         # Generamos los registros de Cabecera Tipo 1 y Tipo 2
-        self._generate_head_file(cr, uid, company, period_name, invoice_ids, context)
+        self._generate_head_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Detalle Tipo 1
-        self._generate_detail_file(cr, uid, company, period_name, invoice_ids, context)
+        self._generate_detail_file(cr, uid, company, period.id, period_name, invoice_ids, context)
+
+        # Generamos los registros de Ventas Tipo 1 y Tipo 2
+        #self._generate_sales_file(cr, uid, company, period_name, invoice_ids, context)
 
         return {'type': 'ir.actions.act_window_close'}
 
