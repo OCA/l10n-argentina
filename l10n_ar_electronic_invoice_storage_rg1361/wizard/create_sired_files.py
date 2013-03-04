@@ -165,7 +165,8 @@ class create_sired_files(osv.osv_memory):
     def _get_voucher_type(self, cr, uid, invoice):
         eivoucher_obj = self.pool.get('electronic.invoice.voucher_type')
         denomination_id = invoice.denomination_id and invoice.denomination_id.id
-        res = eivoucher_obj.search(cr, uid, [('document_type', '=', invoice.type), ('denomination_id', '=', denomination_id)])[0]
+        inv_type = invoice.type.split('_')[1]
+        res = eivoucher_obj.search(cr, uid, [('document_type', 'like', inv_type), ('denomination_id', '=', denomination_id)])[0]
         ei_voucher_type = eivoucher_obj.browse(cr, uid, res)
         voucher_type = ei_voucher_type.code
         return voucher_type
@@ -595,27 +596,27 @@ class create_sired_files(osv.osv_memory):
         # 'relleno'
         sale_reg_type2.append(' '*30)
         # Importe total de la operacion
-        sale_reg_type2.append(moneyfmt(Decimal(importe_total_reg1), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total neto no gravado
-        sale_reg_type2.append(moneyfmt(Decimal(importe_total_neto_no_gravado_reg1), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_no_gravado_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total neto gravado
-        sale_reg_type2.append(moneyfmt(Decimal(importe_total_neto_reg1), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_reg1)), places=2, ndigits=15, dp='', sep=''))
         # 'relleno'
         sale_reg_type2.append(' '*4)
         # Importe total impuesto liquidado
-        sale_reg_type2.append(moneyfmt(Decimal(importe_total_iva_reg1), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_iva_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total impuesto liquidado RNI
-        sale_reg_type2.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total operaciones exentas
-        sale_reg_type2.append(moneyfmt(Decimal(importe_total_operaciones_exentas_reg1), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_operaciones_exentas_reg1)), places=2, ndigits=15, dp='', sep=''))
         # Importe total percepciones nacionales
-        sale_reg_type2.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total percepciones iibb
-        sale_reg_type2.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total percepciones municipales
-        sale_reg_type2.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # Importe total impuestos internos
-        sale_reg_type2.append(moneyfmt(Decimal(0.0), places=2, ndigits=15, dp='', sep=''))
+        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
         # 'relleno'
         sale_reg_type2.append(' '*122)
 
@@ -650,6 +651,204 @@ class create_sired_files(osv.osv_memory):
         return sale_regs
 
 
+    def _generate_purchase_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
+        invoice_obj = self.pool.get('account.invoice')
+        ei_config_obj = self.pool.get('electronic.invoice.config')
+
+        res = ei_config_obj.search(cr, uid, [('company_id', '=', company.id)])
+        if not len(res):
+            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
+
+        ei_config = ei_config_obj.browse(cr, uid, res[0])
+
+        importe_total_reg1 = 0.0
+        importe_total_neto_no_gravado_reg1 = 0.0
+        importe_total_neto_reg1 = 0.0
+        importe_total_iva_reg1 = 0.0
+        importe_total_operaciones_exentas_reg1 = 0.0
+
+        purchase_regs = []
+        for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
+
+            # Conversiones varias
+            date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
+            date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
+
+            cae_due_date = '2013-01-01'
+            #cae_due_date_val = time.strptime(invoice.cae_due_date, '%Y-%m-%d')
+            #cae_due_date = time.strftime('%Y%m%d', cae_due_date_val) # AAAAMMDD
+
+            code, number = self._get_identifier_document_code_and_number(cr, uid, invoice)
+
+            pos, invoice_number = invoice.internal_number.split('-')
+
+            importe_total, importe_neto, importe_neto_no_gravado, importe_operaciones_exentas, importe_iva, iva_array = self._get_amounts_and_vat_taxes(cr, uid, invoice, ei_config)
+
+            # Importe total de todos los registros 1
+            importe_total_reg1 += importe_total
+            importe_total_neto_no_gravado_reg1 += importe_neto_no_gravado
+            importe_total_neto_reg1 += importe_neto
+            importe_total_iva_reg1 += importe_iva
+            importe_total_operaciones_exentas_reg1 += importe_operaciones_exentas
+
+            for alic_iva in iva_array:
+                purchase_reg_type1 = []
+
+                # 'tipo_registro' (1)
+                purchase_reg_type1.append('1')
+                # 'fecha_comprobante' (2)
+                purchase_reg_type1.append(date_invoice)
+                # 'tipo_comprobante' (3)
+                purchase_reg_type1.append(self._get_voucher_type(cr, uid, invoice))
+                # 'controlador' (4)
+                purchase_reg_type1.append(' ')
+                # 'punto_venta' (5)
+                purchase_reg_type1.append(pos)
+                # 'numero_comprobante' (6)
+                purchase_reg_type1.append(invoice_number)
+                # 'Fecha de Registracion Contable' (7)
+                # TODO: Por ahora es date_invoice, despues lo cambiaremos
+                purchase_reg_type1.append(date_invoice)
+                # 'Codigo de Aduana' (8)
+                purchase_reg_type1.append(' '*3)
+                # 'Codigo de Destinacion' (9)
+                purchase_reg_type1.append(' '*4)
+                # 'Numero de despacho' (10)
+                purchase_reg_type1.append(' '*6)
+                # 'Digito verificador del numero de despacho' (11)
+                purchase_reg_type1.append(' ')
+                # 'Codigo de documento identificatorio del Vendedor' (12)
+                purchase_reg_type1.append(code)
+                # 'Numero identificatorio Vendedor' (13)
+                purchase_reg_type1.append(number)
+                # 'Apellido y nombre del Vendedor' (14)
+                purchase_reg_type1.append(self._get_partner_name(invoice))
+                # 'importe_total' (15)
+                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+                # 'neto_no_gravado' (16)
+                purchase_reg_type1.append(moneyfmt(Decimal(str(importe_neto_no_gravado)), places=2, ndigits=15, dp='', sep=''))
+                # 'neto_gravado' (17)
+                purchase_reg_type1.append(moneyfmt(Decimal(str(alic_iva['BaseImp'])), places=2, ndigits=15, dp='', sep=''))
+                # Alicuota de IVA (18)
+                purchase_reg_type1.append(str(alic_iva['Id']))
+                # 'impuesto_liquidado' (19)
+                purchase_reg_type1.append(moneyfmt(Decimal(str(alic_iva['Importe'])), places=2, ndigits=15, dp='', sep=''))
+                # 'Importe de Operaciones Exentas' (20)
+                purchase_reg_type1.append(moneyfmt(Decimal(str(importe_operaciones_exentas)), places=2, ndigits=15, dp='', sep=''))
+                # 'Importe de percepciones o pagos a cuenta del IVA' (21)
+                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+                # 'Importe de percepciones o pagos a cuenta de otros impuestos nacionales' (22)
+                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+                # 'Importe de percepciones de IIBB' (23)
+                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+                # 'Importe de percepciones de Impuestos Municipales' (24)
+                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+                # 'Importe de Impuestos Internos' (25)
+                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+                # 'tipo_responsable' (26)
+                purchase_reg_type1.append(invoice.fiscal_position.afip_code)
+                # 'codigo_moneda' (27)
+                purchase_reg_type1.append(invoice.currency_id.afip_code)
+                # 'tipo_cambio' (28)
+                purchase_reg_type1.append(moneyfmt(Decimal('1.0'), places=6, ndigits=10, dp='', sep=''))
+                # 'cant_alicuotas_iva' (29)
+                purchase_reg_type1.append(len(iva_array) and str(len(iva_array)) or '1')
+                # 'codigo_operacion' (30)
+                purchase_reg_type1.append(self._get_operation_code(cr,uid, importe_iva, importe_neto_no_gravado, invoice))
+                # 'cae' (31)
+                purchase_reg_type1.append(invoice.cae or '123123123123')
+                # 'fecha_vencimiento' (32)
+                purchase_reg_type1.append(cae_due_date)
+                # 'Informacion Adicional' (33)
+                # TODO: Ibamos a poner los comentarios de la Factura, pero son mas internos
+                purchase_reg_type1.append(' '*75)
+
+                # Apendeamos el registro
+                purchase_regs.append(purchase_reg_type1)
+
+            # En el ultimo reg1 consignamos valores totales segun la RG
+            # TODO: Agregar los de percepciones que tambien todos se consignan en el ultimo de los registros
+            purchase_reg_type1[10] = moneyfmt(Decimal(str(importe_total)), places=2, ndigits=15, dp='', sep='')
+
+
+        # Creacion del registro tipo 2 (Totales)
+        company_cuit = company.partner_id.vat
+
+        # Registros de Ventas Tipo 2
+        purchase_reg_type2 = []
+
+        # 'Tipo de Registro' (1)
+        purchase_reg_type2.append('2')
+        # 'Periodo' (2)
+        purchase_reg_type2.append(period_name)
+        # 'Relleno' (3)
+        purchase_reg_type2.append(' '*29)
+        # Cantidad de registros tipo1 (4)
+        purchase_reg_type2.append('%012d' % len(purchase_regs))
+        # 'relleno' (5)
+        purchase_reg_type2.append(' '*31)
+        # 'CUIT del Informante' (6)
+        purchase_reg_type2.append(company_cuit)
+        # 'relleno' (7)
+        purchase_reg_type2.append(' '*30)
+        # Importe total de la operacion (8)
+        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_reg1)), places=2, ndigits=15, dp='', sep=''))
+        # Importe total neto no gravado (9)
+        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_no_gravado_reg1)), places=2, ndigits=15, dp='', sep=''))
+        # Importe total neto gravado (10)
+        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_reg1)), places=2, ndigits=15, dp='', sep=''))
+        # 'relleno' (11)
+        purchase_reg_type2.append(' '*4)
+        # Importe total impuesto liquidado (12)
+        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_iva_reg1)), places=2, ndigits=15, dp='', sep=''))
+        # Importe total operaciones exentas (13)
+        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_operaciones_exentas_reg1)), places=2, ndigits=15, dp='', sep=''))
+        # Importe total percepciones o pagos a cuenta del IVA (14)
+        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+        # Importe total percepciones o pagos a cuenta de otros impuestos nacionales (15)
+        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+        # Importe total percepciones de IIBB (16)
+        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+        # Importe total percepciones de impuestos internos (17)
+        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+        # Importe total impuestos internos (17)
+        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
+        # 'relleno' (19)
+        purchase_reg_type2.append(' '*114)
+
+        # Apendeamos el registro
+        purchase_regs.append(purchase_reg_type2)
+
+        purchase_filename = tempfile.mkstemp(suffix='.siredpurchase')[1]
+        f = open(purchase_filename, 'w')
+
+        for r in purchase_regs:
+            # TODO: Quitar esto. Si lo hacemos en el append de mas arriba
+            # no funciona. Aca si, averiguar por que
+            r2 = [a.encode('utf-8') for a in r]
+            f.write(''.join(r2))
+            f.write('\r\n')
+
+        f.close()
+
+        f = open(purchase_filename, 'r')
+        name = 'COMPRAS_%s.txt' % period_name
+        data_attach = {
+            'name': name,
+            'datas':binascii.b2a_base64(f.read()),
+            'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
+            #'description': '',
+            'res_model': 'account.period',
+            'res_id': period_id,
+        }
+        self.pool.get('ir.attachment').create(cr, uid, data_attach, context=context)
+        f.close()
+
+        return purchase_regs
+
+
+
+
     def create_files(self, cr, uid, ids, context=None):
         """
         @param self: The object pointer.
@@ -675,9 +874,10 @@ class create_sired_files(osv.osv_memory):
         "JOIN res_partner par on par.id=i.partner_id, electronic_invoice_voucher_type evt " \
         "WHERE p.id=%(period)s AND evt.denomination_id=i.denomination_id " \
         "AND i.state in %(state)s AND evt.document_type=i.type " \
+        "AND i.type in %(invoice_types)s " \
         "ORDER BY i.date_invoice, evt.code, pos.name, i.internal_number "
 
-        cr.execute(invoice_query, {'period': period.id, 'state': ('open', 'paid',)})
+        cr.execute(invoice_query, {'period': period.id, 'state': ('open', 'paid',), 'invoice_types': ('out_invoice', 'out_refund',)})
         res = cr.fetchall()
         invoice_ids = [ids[0] for ids in res]
 
@@ -692,6 +892,25 @@ class create_sired_files(osv.osv_memory):
 
         # Generamos los registros de Ventas Tipo 1 y Tipo 2
         self._generate_sales_file(cr, uid, company, period.id, period_name, invoice_ids, context)
+
+#        # Generamos los registros de Compras Tipo 1 y Tipo 2
+#        purchase_invoice_query = "SELECT i.id " \
+#        "FROM account_invoice i " \
+#        "JOIN account_period p on p.id=i.period_id " \
+#        "JOIN invoice_denomination d on d.id=i.denomination_id " \
+#        "JOIN res_partner par on par.id=i.partner_id, electronic_invoice_voucher_type evt " \
+#        "WHERE p.id=%(period)s AND evt.denomination_id=i.denomination_id " \
+#        "AND i.state in %(state)s " \
+#        "AND i.type in %(invoice_types)s " \
+#        "ORDER BY i.date_invoice, i.internal_number "
+#
+#        cr.execute(purchase_invoice_query, {'period': period.id, 'state': ('open', 'paid',), 'invoice_types': ('in_invoice', 'in_refund',)})
+#        res = cr.fetchall()
+#        invoice_ids = [ids[0] for ids in res]
+#
+#        # Generamos los registros de Compras
+#        self._generate_purchase_file(cr, uid, company, period.id, period_name, invoice_ids, context)
+
 
         return {'type': 'ir.actions.act_window_close'}
 
