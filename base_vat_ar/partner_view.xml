@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+    
+    <record id="view_partner_document_type_form" model="ir.ui.view">
+      <field name="name">res.partner.document.type.inherit</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base_vat.view_partner_form"/>
+      <field name="arch" type="xml">
+        <field name="vat" position="before">
+            <group colspan="2" col="6">
+              <field name="document_type_id" widget="selection"/>
+            </group>
+        </field>
+      </field>
+    </record>
+    
+    
+    <record model="ir.ui.view" id="view_res_document_type_form">
+        <field name="name">res.document.type.form</field>
+        <field name="model">res.document.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Document type">
+                <field name="name" select="1"/>
+                <field name="afip_code" select="1"/>
+                <field name="verification_required"/>
+            </form>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_res_document_type_tree">
+        <field name="name">res.document.type.tree</field>
+        <field name="model">res.document.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Document type">
+                <field name="name"/>
+                <field name="afip_code"/>
+                <field name="verification_required"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="action_res_document_type">
+        <field name="name">Document type</field>
+        <field name="res_model">res.document.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem name="Document type" id="menu_document_type" action="action_res_document_type" parent="base.menu_config_address_book"/>
+    
+</data>
+</openerp>

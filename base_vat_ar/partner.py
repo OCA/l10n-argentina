@@ -24,8 +24,23 @@ from tools.translate import _
  
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>, Anibal Alejandro Guanca <aguanca@e-mips.com.ar>"
 
+class res_document_type(osv.osv):
+	_name = 'res.document.type'
+	_description = 'Document type'
+	
+	_columns = {
+		'name': fields.char('Document type', size=40),
+		'afip_code': fields.char('Afip code', size=10),
+		'verification_required': fields.boolean('Verification required'),
+	}
+res_document_type()
+	
 class res_partner(osv.osv):
     _inherit = 'res.partner'
+    
+    _columns = {
+		'document_type_id': fields.many2one('res.document.type', 'Document type'),
+	}
 
     def check_vat(self, cr, uid, ids, context=None):
         '''
@@ -42,9 +57,10 @@ class res_partner(osv.osv):
                 vat_country, vat_number = partner.vat[:2].lower(), partner.vat[2:].replace(' ', '')
             if not hasattr(self, 'check_vat_' + vat_country):
                 return False
-            check = getattr(self, 'check_vat_' + vat_country)
-            if not check(vat_number):
-                return False
+            if partner.document_type_id and partner.document_type_id.verification_required:
+                check = getattr(self, 'check_vat_' + vat_country)
+                if not check(vat_number):
+                    return False
         return True
 
     _constraints = [(check_vat, _('The Vat does not seems to be correct.'), ["vat"])]
@@ -53,6 +69,7 @@ class res_partner(osv.osv):
         """
         Check VAT Routine for Argentina.
         """
+        print "chequeando CUIT de Argentina...."
         if len(vat) != 11: return False
         try: 
             int(vat)

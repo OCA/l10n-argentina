@@ -36,7 +36,7 @@
         to be well defined) and if this is not defined, the original routine is executed.
     """,
     "init_xml": [],
-    'update_xml': [],
+    'update_xml': ['partner_view.xml',],
     'demo_xml': [],
     'installable': True,
     'active': False,
