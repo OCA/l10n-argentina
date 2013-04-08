@@ -26,6 +26,49 @@ class invoice(osv.osv):
     _inherit = "account.invoice"
     _order = "internal_number desc"
 
+    def name_get(self, cr, uid, ids, context=None):
+
+        if not ids:
+            return []
+
+        res = []
+        types = {
+                'out_invoice': _('CI: '),
+                'in_invoice': _('SI: '),
+                'out_refund': _('OR: '),
+                'in_refund': _('SR: '),
+                }
+
+        if not context.get('use_internal_number', False):
+            res = super(invoice, self).name_get( cr, uid, ids, context=context)
+        else:
+            reads = self.read(cr, uid, ids, ['pos_ar_id', 'type', 'internal_number', 'denomination_id'], context=context)
+            for record in reads:
+                if record['type'] in ('out_invoice', 'out_refund'):
+                    name = types[record['type']] + record['pos_ar_id'][1] + '-' + record['internal_number']
+                else:
+                    name = types[record['type']] + record['denomination_id'][1] + ' ' + record['internal_number']
+                res.append((record['id'], name))
+
+        return res
+
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        ids = []
+
+        if not context.get('use_internal_number', False):
+            return super(invoice, self).name_search( cr, user, name, args, operator, context=context, limit=limit)
+        else:
+            if name:
+                ids = self.search(cr, user, [('internal_number','=',name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('internal_number',operator,name)] + args, limit=limit, context=context)
+
+        return self.name_get(cr, user, ids, context)
+
     _columns = {
         'type': fields.selection([
             ('out_invoice','Customer Invoice'),
