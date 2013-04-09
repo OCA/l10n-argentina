@@ -36,6 +36,7 @@
         'sale_view.xml',
         'account_invoice_view.xml',
         'partner_view.xml',
+        'account_view.xml',
         'security/ir.model.access.csv',
     ],
     'demo_xml': [],

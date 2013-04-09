@@ -23,7 +23,17 @@
                     <xpath expr="//button[@string='Refund']" position="replace" >
                       <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
                         states='open,paid' icon="gtk-execute" attrs="{'invisible':[('type','=','out_refund')]}"/>
-                  </xpath>
+                    </xpath>
+                    <field name="amount_untaxed" position="before">
+                        <field name="amount_no_taxed"/>
+                        <label string="" colspan="2"/>
+                        <field name="amount_taxed"/>
+                        <label string="" colspan="2"/>
+                        <field name="amount_exempt"/>
+                        <label string="" colspan="2"/>
+                        <separator colspan="2"/>
+                        <label string="" colspan="2"/>
+                    </field>
                 </data>
             </field>
         </record>

@@ -19,6 +19,8 @@
 ##############################################################################
 from osv import osv, fields
 from tools.translate import _
+import decimal_precision as dp
+import time
 import re
 
 class invoice(osv.osv):
@@ -69,6 +71,50 @@ class invoice(osv.osv):
 
         return self.name_get(cr, user, ids, context)
 
+    def _amount_all_ar(self, cr, uid, ids, name, args, context=None):
+        res = {}
+
+        for invoice in self.browse(cr, uid, ids, context=context):
+            res[invoice.id] = {
+                'amount_untaxed': 0.0,
+                'amount_tax': 0.0,
+                'amount_total': 0.0,
+                'amount_taxed': 0.0,
+                'amount_no_taxed': 0.0,
+                'amount_exempt': 0.0
+            }
+
+            amount_base = 0.0
+            amount_exempt = 0.0
+
+            for line in invoice.invoice_line:
+                res[invoice.id]['amount_untaxed'] += line.price_subtotal
+            for line in invoice.tax_line:
+                if line.is_exempt:
+                    amount_exempt += line.base
+                else:
+                    amount_base += line.base
+
+                res[invoice.id]['amount_tax'] += line.amount
+
+            res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed']
+            res[invoice.id]['amount_no_taxed'] = res[invoice.id]['amount_untaxed'] - amount_base - amount_exempt
+            res[invoice.id]['amount_taxed'] = amount_base
+            res[invoice.id]['amount_exempt'] = amount_exempt
+        return res
+
+    def _get_invoice_line(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('account.invoice.line').browse(cr, uid, ids, context=context):
+            result[line.invoice_id.id] = True
+        return result.keys()
+
+    def _get_invoice_tax(self, cr, uid, ids, context=None):
+        result = {}
+        for tax in self.pool.get('account.invoice.tax').browse(cr, uid, ids, context=context):
+            result[tax.invoice_id.id] = True
+        return result.keys()
+
     _columns = {
         'type': fields.selection([
             ('out_invoice','Customer Invoice'),
@@ -81,6 +127,48 @@ class invoice(osv.osv):
         'pos_ar_id' : fields.many2one('pos.ar','Point of Sale'),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
         'internal_number': fields.char('Invoice Number', size=32, help="Unique number of the invoice, computed automatically when the invoice is created."),
+        'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice.tax': (_get_invoice_tax, None, 20),
+                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
+            },
+            multi='all'),
+        'amount_no_taxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='No Taxed',
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice.tax': (_get_invoice_tax, None, 20),
+                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
+            },
+            multi='all'),
+        'amount_taxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Taxed',
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice.tax': (_get_invoice_tax, None, 20),
+                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
+            },
+            multi='all'),
+        'amount_untaxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Untaxed',
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice.tax': (_get_invoice_tax, None, 20),
+                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
+            },
+            multi='all'),
+        'amount_tax': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Tax',
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice.tax': (_get_invoice_tax, None, 20),
+                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
+            },
+            multi='all'),
+        'amount_total': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Total',
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice.tax': (_get_invoice_tax, None, 20),
+                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
+            },
+            multi='all'),
     }
 
     def _check_fiscal_values(self, cr, uid, inv):
@@ -287,5 +375,69 @@ class invoice(osv.osv):
 
         return res
 
-
 invoice()
+
+
+class account_invoice_tax(osv.osv):
+    _name = "account.invoice.tax"
+    _inherit = "account.invoice.tax"
+
+    _columns = {
+        'is_exempt': fields.boolean('Is Exempt', readonly=True),
+            }
+
+    def compute(self, cr, uid, invoice_id, context=None):
+
+        tax_grouped = {}
+        tax_obj = self.pool.get('account.tax')
+        cur_obj = self.pool.get('res.currency')
+        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
+        cur = inv.currency_id
+        company_currency = inv.company_id.currency_id.id
+
+        for line in inv.invoice_line:
+            for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, (line.price_unit* (1-(line.discount or 0.0)/100.0)), line.quantity, inv.address_invoice_id.id, line.product_id, inv.partner_id)['taxes']:
+                val={}
+                # TODO: Tal vez se pueda cambiar el boolean is_exempt por un type (selection)
+                # para despues incluir impuestos internos, retenciones, percepciones, o sea,
+                # distintos tipos de impuestos
+                is_exempt = tax_obj.read(cr, uid, tax['id'], ['is_exempt'], context)['is_exempt']
+                val['invoice_id'] = inv.id
+                val['name'] = tax['name']
+                val['amount'] = tax['amount']
+                val['manual'] = False
+                val['sequence'] = tax['sequence']
+                val['is_exempt'] = is_exempt
+                val['base'] = tax['price_unit'] * line['quantity']
+                val['tax_id'] = tax['id']
+
+                if inv.type in ('out_invoice','in_invoice'):
+                    val['base_code_id'] = tax['base_code_id']
+                    val['tax_code_id'] = tax['tax_code_id']
+                    val['base_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['base'] * tax['base_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+                    val['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['amount'] * tax['tax_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+                    val['account_id'] = tax['account_collected_id'] or line.account_id.id
+                else:
+                    val['base_code_id'] = tax['ref_base_code_id']
+                    val['tax_code_id'] = tax['ref_tax_code_id']
+                    val['base_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['base'] * tax['ref_base_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+                    val['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['amount'] * tax['ref_tax_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+                    val['account_id'] = tax['account_paid_id'] or line.account_id.id
+
+                key = (val['tax_code_id'], val['base_code_id'], val['account_id'], val['is_exempt'])
+                if not key in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['base'] += val['base']
+                    tax_grouped[key]['base_amount'] += val['base_amount']
+                    tax_grouped[key]['tax_amount'] += val['tax_amount']
+
+        for t in tax_grouped.values():
+            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
+            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
+            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
+            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+        return tax_grouped
+
+account_invoice_tax()
