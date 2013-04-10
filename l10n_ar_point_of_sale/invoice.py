@@ -90,10 +90,11 @@ class invoice(osv.osv):
             for line in invoice.invoice_line:
                 res[invoice.id]['amount_untaxed'] += line.price_subtotal
             for line in invoice.tax_line:
-                if line.is_exempt:
-                    amount_exempt += line.base
-                else:
-                    amount_base += line.base
+                if line.tax_id.tax_group == 'vat':
+                    if line.is_exempt:
+                        amount_exempt += line.base
+                    else:
+                        amount_base += line.base
 
                 res[invoice.id]['amount_tax'] += line.amount
 
@@ -383,6 +384,7 @@ class account_invoice_tax(osv.osv):
     _inherit = "account.invoice.tax"
 
     _columns = {
+        'tax_id': fields.many2one('account.tax', 'Account Tax', readonly=True),
         'is_exempt': fields.boolean('Is Exempt', readonly=True),
             }
 

@@ -24,11 +24,15 @@ class account_tax(osv.osv):
     _inherit = 'account.tax'
     _description = 'Tax'
     _columns = {
+        'tax_group': fields.selection( [('vat','VAT'), ('perception','Perception'), ('retention','Retention'), ('internal','Internal Tax'), ('other','Other')], 'Tax Group', required=True,
+            help="This is tax categorization."),
+        'other_group': fields.char('Other Group', size=64),
         'is_exempt': fields.boolean('Exempt', help="Check this if this Tax represent Tax Exempts"),
         }
 
     _defaults = {
             'is_exempt': False,
+            'tax_group': 'vat',
             }
 
 account_tax()

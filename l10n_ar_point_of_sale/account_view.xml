@@ -8,11 +8,41 @@
       <field name="type">form</field>
       <field name="inherit_id" ref="account.view_tax_form"/>
       <field name="arch" type="xml">
-          <field name="amount" position="before">
+          <field name="amount" position="after">
+              <field name="is_exempt"/>
+              <newline/>
+              <field name="tax_group"/>
+              <field name="other_group" attrs="{'invisible': [('tax_group','!=','other')], 'required': [('tax_group','=','other')]}"/>
+          </field>
+      </field>
+    </record>
+
+    <record id="view_tax_exempt_tree" model="ir.ui.view">
+      <field name="name">account.tax.exempt.tree</field>
+      <field name="model">account.tax</field>
+      <field name="type">tree</field>
+      <field name="inherit_id" ref="account.view_tax_tree"/>
+      <field name="arch" type="xml">
+          <field name="price_include" position="after">
+              <field name="tax_group"/>
               <field name="is_exempt"/>
           </field>
       </field>
     </record>
+
+    <record id="view_tax_exempt_search" model="ir.ui.view">
+      <field name="name">account.tax.exempt.search</field>
+      <field name="model">account.tax</field>
+      <field name="type">search</field>
+      <field name="inherit_id" ref="account.view_account_tax_search"/>
+      <field name="arch" type="xml">
+          <field name="description" position="after">
+              <field name="tax_group"/>
+              <field name="is_exempt"/>
+          </field>
+      </field>
+    </record>
+
 
   </data>
 </openerp>

@@ -25,9 +25,9 @@
                         states='open,paid' icon="gtk-execute" attrs="{'invisible':[('type','=','out_refund')]}"/>
                     </xpath>
                     <field name="amount_untaxed" position="before">
-                        <field name="amount_no_taxed"/>
-                        <label string="" colspan="2"/>
                         <field name="amount_taxed"/>
+                        <label string="" colspan="2"/>
+                        <field name="amount_no_taxed"/>
                         <label string="" colspan="2"/>
                         <field name="amount_exempt"/>
                         <label string="" colspan="2"/>
