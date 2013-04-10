@@ -50,7 +50,6 @@ class perception_tax_line(osv.osv):
     def onchange_perception(self, cr, uid, ids, perception_id, context):
         if not perception_id:
             return {}
-        print 'onchange_perception'
         perception_obj = self.pool.get('perception.perception')
         perception = perception_obj.browse(cr, uid, perception_id)
         vals = {}
@@ -106,6 +105,8 @@ class perception_tax_line(osv.osv):
         # Computamos tax_amount y base_amount
         tax_amount, base_amount = self._compute(cr, uid, vals['perception_id'], vals['invoice_id'], vals['base'], vals['amount'], context)
 
+        manual = context.get('manual', True)
+
         # Creamos la account_invoice_tax
         ait_vals = {
                 'invoice_id': vals['invoice_id'],
@@ -118,6 +119,7 @@ class perception_tax_line(osv.osv):
                 'tax_code_id': vals['tax_code_id'],
                 'base_amount': base_amount,
                 'tax_amount': tax_amount,
+                'manual': manual,
                 }
 
         # Creamos el account.invoice.tax y dejamos una referencia en

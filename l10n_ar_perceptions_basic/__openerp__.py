@@ -19,7 +19,7 @@
 #
 ##############################################################################
 {
-    "name": "Perceptions for ARGENTINA (Percepciones)",
+    "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
     "version": "1.0",
     "depends": ["base", "account" , "account_accountant", "sale" ,"purchase"],
     "author": "E-MIPS",
@@ -33,6 +33,7 @@
     """,
     "init_xml": ["perception_data.xml"],
     'update_xml': [
+        'security/ir.model.access.csv',
         'perception_view.xml',
         'account_invoice_view.xml',
     ],
