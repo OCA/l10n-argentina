@@ -388,6 +388,9 @@ class account_invoice_tax(osv.osv):
         'is_exempt': fields.boolean('Is Exempt', readonly=True),
             }
 
+    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
+        return tax_grouped
+
     def compute(self, cr, uid, invoice_id, context=None):
 
         tax_grouped = {}
@@ -440,6 +443,10 @@ class account_invoice_tax(osv.osv):
             t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
             t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
             t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+
+        # Agregamos un hook por si otros modulos quieren agregar sus taxes
+        tax_grouped = self.hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+
         return tax_grouped
 
 account_invoice_tax()
