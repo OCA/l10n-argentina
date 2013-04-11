@@ -13,15 +13,21 @@
             <separator string="Applied Perceptions"/>
             <field name="perception_ids" nolabel="1" colspan="4">
               <tree string="Perception Lines">
+                <field name="date" />
                 <field name="perception_id" string="Perception Type"/>
                 <field name="base" />
                 <field name="amount" />
+                <field name="state_id" />
               </tree>
               <form string="Perception Lines">
+                <field name="date" />
+                <label string="Keep it empty if the date is the same as the invoice." />
+                <newline/>
                 <field name="name" />
                 <field name="perception_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
                 <field name="base" />
                 <field name="amount" />
+                <field name="state_id" />
                 <field name="account_id" invisible="1" />
                 <field name="base_code_id" invisible="1" />
                 <field name="tax_code_id" invisible="1" />

@@ -30,6 +30,7 @@ class perception_tax_line(osv.osv):
     #TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
     _columns = {
         'name': fields.char('Perception', required=True, size=64),
+        'date': fields.date('Date', select=True),
         'invoice_id': fields.many2one('account.invoice', 'Invoice', ondelete='cascade'),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
                                       domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
@@ -42,8 +43,9 @@ class perception_tax_line(osv.osv):
         'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
         'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        #'factor_base': fields.function(_count_factor, method=True, string='Multipication factor for Base code', type='float', multi="all"),
-        #'factor_tax': fields.function(_count_factor, method=True, string='Multipication factor Tax code', type='float', multi="all")
+        'partner_id': fields.related('invoice_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
+        'vat': fields.related('voucher_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
+        'state_id': fields.many2one('res.country.state', string="State/Province"),
         'ait_id': fields.many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade'),
     }
 
@@ -57,6 +59,7 @@ class perception_tax_line(osv.osv):
         vals['account_id'] = perception.tax_id.account_collected_id.id
         vals['base_code_id'] = perception.tax_id.base_code_id.id
         vals['tax_code_id'] = perception.tax_id.tax_code_id.id
+        vals['state_id'] = perception.state_id.id
         return {'value': vals}
 
     def _compute(self, cr, uid, perception_id, invoice_id, base, amount, context={}):
@@ -184,6 +187,10 @@ class account_invoice(osv.osv):
                 'date': invoice_browse.date_invoice or time.strftime('%Y-%m-%d'),
                 'date_maturity': invoice_browse.date_due or False,
             }
+
+            # Si no tenemos seteada la fecha, escribimos la misma que la de la factura
+            if not p.date:
+                plt_obj.write(cr, uid, p.id, {'date': move_line['date']})
 
             move_lines.insert(len(move_lines)-1, (0, 0, move_line))
         return move_lines
