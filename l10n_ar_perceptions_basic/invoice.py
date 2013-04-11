@@ -79,67 +79,6 @@ class perception_tax_line(osv.osv):
         tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
         return (tax_amount, base_amount)
 
-    def write(self, cr, uid, ids, vals, context={}):
-        ait_obj = self.pool.get('account.invoice.tax')
-        res = self.browse(cr, uid, ids, context)[0]
-        invoice_id = res.invoice_id.id
-
-        # Posible valores que pueden cambiar
-        possible_keys = ['name', 'account_id', 'base', 'amount', 'sequence', 'base_code_id', 'tax_code_id']
-
-        ait_vals = {}
-        for plt in self.browse(cr, uid, ids):
-            if plt.ait_id and plt.ait_id.id:
-                for k in possible_keys:
-                    if k in vals:
-                        ait_vals[k] = vals[k]
-
-                # Computamos tax_amount y base_amount
-                tax_amount, base_amount = self._compute(cr, uid, vals['perception_id'], invoice_id, vals['base'], vals['amount'], context)
-                ait_vals['tax_amount'] = tax_amount
-                ait_vals['base_amount'] = base_amount
-                ait_obj.write(cr, uid, plt.ait_id.id, ait_vals)
-
-        return super(perception_tax_line, self).write(cr, uid, ids, vals, context=context)
-
-    def create(self, cr, uid, vals, context={}):
-        ait_obj = self.pool.get('account.invoice.tax')
-
-        # Computamos tax_amount y base_amount
-        tax_amount, base_amount = self._compute(cr, uid, vals['perception_id'], vals['invoice_id'], vals['base'], vals['amount'], context)
-
-        manual = context.get('manual', True)
-
-        # Creamos la account_invoice_tax
-        ait_vals = {
-                'invoice_id': vals['invoice_id'],
-                'name': vals['name'],
-                'account_id': vals['account_id'],
-                'base': vals['base'],
-                'amount': vals['amount'],
-                'sequence': 10,
-                'base_code_id': vals['base_code_id'],
-                'tax_code_id': vals['tax_code_id'],
-                'base_amount': base_amount,
-                'tax_amount': tax_amount,
-                'manual': manual,
-                }
-
-        # Creamos el account.invoice.tax y dejamos una referencia en
-        # el objeto perception.line.tax
-        id = ait_obj.create(cr, uid, ait_vals)
-        vals['ait_id'] = id
-        return super(perception_tax_line, self).create(cr, uid, vals, context=context)
-
-    def unlink(self, cr, uid, ids, context={}):
-        ait_obj = self.pool.get('account.invoice.tax')
-
-        for plt in self.browse(cr, uid, ids):
-            if plt.ait_id and plt.ait_id.id:
-                ait_obj.unlink(cr, uid, plt.ait_id.id, context)
-
-        return super(perception_tax_line, self).unlink(cr, uid, ids, context=context)
-
 perception_tax_line()
 
 
@@ -196,3 +135,65 @@ class account_invoice(osv.osv):
         return move_lines
 
 account_invoice()
+
+
+class account_invoice_tax(osv.osv):
+    _name = "account.invoice.tax"
+    _inherit = "account.invoice.tax"
+
+    # Aca le agregamos las account_invoice_taxes pertenecientes a las Percepciones
+    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
+
+        percep_tax_line_obj = self.pool.get('perception.tax.line')
+        cur_obj = self.pool.get('res.currency')
+        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
+        cur = inv.currency_id
+
+        # Recorremos las percepciones y las computamos como account.invoice.tax
+        for line in inv.perception_ids:
+            val={}
+            tax = line.perception_id.tax_id
+            val['invoice_id'] = inv.id
+            val['name'] = line.name
+            val['amount'] = line.amount
+            val['manual'] = False
+            val['sequence'] = 10
+            val['is_exempt'] = False
+            val['base'] = line.base
+            val['tax_id'] = tax.id
+
+            # Computamos tax_amount y base_amount
+            tax_amount, base_amount = percep_tax_line_obj._compute(cr, uid, line.perception_id.id, invoice_id,
+                                                                   val['base'], val['amount'], context)
+
+            if inv.type in ('out_invoice','in_invoice'):
+                val['base_code_id'] = line.base_code_id.id
+                val['tax_code_id'] = line.tax_code_id.id
+                val['base_amount'] = base_amount
+                val['tax_amount'] = tax_amount
+                val['account_id'] = tax.account_collected_id.id
+            else:
+                val['base_code_id'] = tax.ref_base_code_id
+                val['tax_code_id'] = tax.ref_tax_code_id
+                val['base_amount'] = base_amount
+                val['tax_amount'] = tax_amount
+                val['account_id'] = tax.account_paid_id.id
+
+            key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
+            if not key in tax_grouped:
+                tax_grouped[key] = val
+            else:
+                tax_grouped[key]['amount'] += val['amount']
+                tax_grouped[key]['base'] += val['base']
+                tax_grouped[key]['base_amount'] += val['base_amount']
+                tax_grouped[key]['tax_amount'] += val['tax_amount']
+
+        for t in tax_grouped.values():
+            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
+            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
+            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
+            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+
+        return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+
+account_invoice_tax()
