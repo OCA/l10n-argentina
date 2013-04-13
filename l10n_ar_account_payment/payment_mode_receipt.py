@@ -63,8 +63,7 @@ class payment_mode_receipt_line(osv.osv):
             if order.date_prefered == 'fixed':
                 date = order.date_scheduled
         return date
-        
-    
+
     _columns= {
         'name': fields.char('Mode', size=64, required=True, readonly=True, help='Payment reference'),
         'payment_mode_id': fields.many2one('payment.mode.receipt', 'Payment Mode Receipt', required=False, select=True),

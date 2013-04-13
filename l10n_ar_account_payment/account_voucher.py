@@ -532,6 +532,7 @@ class account_voucher(osv.osv):
             inv_currency_id = inv.currency_id or inv.journal_id.currency or inv.journal_id.company_id.currency_id
             if not currency_pool.is_zero(cr, uid, inv_currency_id, line_total):
                 diff = line_total
+                current_currency = inv_currency_id.id
 
                 account_id = False
                 with_writeoff = False
@@ -558,13 +559,13 @@ class account_voucher(osv.osv):
                     'date': inv.date,
                     'credit': diff > 0 and diff or 0.0,
                     'debit': diff < 0 and -diff or 0.0,
-                    #'amount_currency': company_currency <> current_currency and currency_pool.compute(cr, uid, company_currency, current_currency, diff * -1, context=context_multi_currency) or 0.0,
-                    #'currency_id': company_currency <> current_currency and current_currency or False,
+                    'amount_currency': company_currency <> current_currency and currency_pool.compute(cr, uid, company_currency, current_currency, diff * -1, context=context_multi_currency) or 0.0,
+                    'currency_id': company_currency <> current_currency and current_currency or False,
                 }
                 move_line_pool.create(cr, uid, move_line)
             self.write(cr, uid, [inv.id], {
                 'move_id': move_id,
-                'state': 'posted',
+                'state': 'posted', #TODO: Quitar este state=posted ya que el move_pool.post de mas abajo ya lo pasa a ese estado.
                 'number': name,
             })
             move_pool.post(cr, uid, [move_id], context={})
