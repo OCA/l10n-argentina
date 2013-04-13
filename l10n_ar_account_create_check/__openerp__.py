@@ -30,6 +30,7 @@
     "depends" : ["base","l10n_ar_account_check"],
     "init_xml" : [],
     "update_xml" : [
+        "security/ir.model.access.csv",
         "checkbook_view.xml",
         "wizard/create_checkbook_view.xml"
         ],
