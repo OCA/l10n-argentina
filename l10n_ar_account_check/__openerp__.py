@@ -32,6 +32,7 @@
     'init_xml': [],
     'demo_xml': [],
     'update_xml': [
+        'security/ir.model.access.csv',
         'wizard/add_checks_view.xml',
         'account_check_view.xml',
         'account_voucher_view.xml',

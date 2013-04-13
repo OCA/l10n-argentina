@@ -135,7 +135,7 @@ class account_third_check(osv.osv):
     Account Third Check
     '''
     _name = 'account.third.check'
-    _description = 'Manage Checks'
+    _description = 'Third Checks'
     _rec_name = 'number'
 
     _columns = {
