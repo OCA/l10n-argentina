@@ -35,6 +35,7 @@
         #'retention_data.xml',
         ],
     'update_xml': [
+        'security/ir.model.access.csv',
         'retention_view.xml',
         'voucher_payment_receipt_view.xml',
     ],
