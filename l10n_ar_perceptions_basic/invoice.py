@@ -44,7 +44,7 @@ class perception_tax_line(osv.osv):
         'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
         'partner_id': fields.related('invoice_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
-        'vat': fields.related('voucher_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
+        'vat': fields.related('invoice_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
         'state_id': fields.many2one('res.country.state', string="State/Province"),
         'ait_id': fields.many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade'),
     }
