@@ -33,6 +33,9 @@ class invoice(osv.osv):
         if not ids:
             return []
 
+        if not context:
+            context = {}
+
         res = []
         types = {
                 'out_invoice': _('CI: '),
