@@ -113,6 +113,7 @@
       <field name="view_type">form</field>
       <field name="view_id" ref="view_retention_tax_line_tree"/>
       <field name="context">{"search_default_applied":1}</field>
+      <field name="domain">[('voucher_id.state','in',['posted'])]</field>
       <field name="search_view_id" ref="view_retention_tax_line_search" />
       <field name="help">Ayuda</field>
   </record>
@@ -124,6 +125,7 @@
       <field name="view_type">form</field>
       <field name="view_id" ref="view_retention_tax_line_tree"/>
       <field name="context">{"search_default_supported":1}</field>
+      <field name="domain">[('voucher_id.state','in',['posted'])]</field>
       <field name="search_view_id" ref="view_retention_tax_line_search" />
       <field name="help">Ayuda</field>
   </record>
