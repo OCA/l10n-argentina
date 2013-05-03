@@ -97,22 +97,20 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Issued Checks">
-                   <group col='10' colspan='4'>
-                       <filter icon="terp-check" string="Common" name="common"
-                           domain="[('type','=', 'common')]"/>
-                       <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
-                           domain="[('type','=', 'postdated')]"/>
-                       <separator orientation="vertical"/>
-                       <field name="number"/>
-                       <field name="issue_date"/>
-                       <field name="receiving_partner_id"/>
-                       <newline/>
-                       <group expand="0" string="Extended Filters" colspan="10" col="6">
-                           <field name="payment_date"/>
-                           <field name="bank_id"/>
-                           <field name="amount"/>
-                        </group>
-                    </group>
+				   <filter icon="terp-check" string="Common" name="common"
+					   domain="[('type','=', 'common')]"/>
+				   <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+					   domain="[('type','=', 'postdated')]"/>
+				   <separator orientation="vertical"/>
+				   <field name="number"/>
+				   <field name="issue_date"/>
+				   <field name="receiving_partner_id"/>
+				   <newline/>
+				   <group expand="0" string="Extended Filters" colspan="10" col="6">
+					   <field name="payment_date"/>
+					   <field name="bank_id"/>
+					   <field name="amount"/>
+					</group>
                     <newline/>
                     <group expand="0" string="Group By..." colspan="10" col="8" groups="base.group_extended">
                         <filter string="Bank Account" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'account_bank_id'}"/>
