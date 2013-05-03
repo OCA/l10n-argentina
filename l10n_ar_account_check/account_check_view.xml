@@ -407,7 +407,7 @@
 
         <menuitem
             action="action_third_check_calendar_payment_date"
-            id="menu_treasury_issued_check_calendar_payment"
+            id="menu_treasury_third_check_calendar_payment"
             name="Calendar By Payment Date"
             parent="menu_treasury_third_check_menu"
         />
