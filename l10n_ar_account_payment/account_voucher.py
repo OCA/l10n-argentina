@@ -113,14 +113,17 @@ class account_voucher(osv.osv):
 
         #pay_mod_line_pool = self.pool.get('payment.mode.receipt.line')
         res={'value':{'amount':0.0}}
+        amount = 0.0
         #if context is None:
         #    context = {}
-        #lines= [(x[1] , x[2]['amount']) for x in payment_lines]
+        lines= [(x[1] , x[2]['amount']) for x in payment_lines]
 #
-#        for line in lines:
-#            print 'Write Lines: ', lines
+        for line in lines:
+            print 'Write Lines: ', lines
 #            pay_mod_line_pool.write(cr, uid, line[0], {'amount':line[1]})
+            amount += line[1]
 #
+        res['value']['amount'] = amount
         return res
 
     def get_invoices_and_credits(self, cr, uid, ids, context):
@@ -173,11 +176,19 @@ class account_voucher(osv.osv):
 
         if not context.get('move_line_ids', False):
             domain = [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', v.partner_id.id)]
+
+            invoice_ids = []
             if 'invoice_id' in context:
+                invoice_ids.append(context['invoice_id'])
+
+            if 'invoice_ids' in context:
+                invoice_ids += context['invoice_ids']
+
+            if invoice_ids:
                 if ttype == 'payment':
-                    domain += ['|', ('invoice','=',context['invoice_id']), ('debit','!=',0.0)]
+                    domain += ['|', ('invoice','in',invoice_ids), ('debit','!=',0.0)]
                 else:
-                    domain += ['|', ('invoice','=',context['invoice_id']), ('credit','!=',0.0)]
+                    domain += ['|', ('invoice','in',invoice_ids), ('credit','!=',0.0)]
             ids = move_line_pool.search(cr, uid, domain, context=context)
         else:
             ids = context['move_line_ids']
