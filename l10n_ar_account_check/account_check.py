@@ -146,7 +146,7 @@ class account_third_check(osv.osv):
         'payment_date': fields.date('Payment Date', readonly=True, states={'draft': [('readonly', False)]}), # Fecha de pago diferido
         'endorsement_date': fields.date('Endorsement Date', readonly=True, states={'wallet': [('readonly', False)]}), # Fecha de Endoso
         'deposit_date': fields.date('Deposit Date', readonly=True, states={'wallet': [('readonly', False)]}), # Fecha de Deposito
-        'source_partner_id': fields.many2one('res.partner', 'Source Partner', required=False, readonly=True),
+        'source_partner_id': fields.many2one('res.partner', 'Source Partner', required=False, readonly=True, states={'draft': [('readonly', False)]}),
         'destiny_partner_id': fields.many2one('res.partner', 'Destiny Partner', states={'delivered': [('required', True)]}),
         'state': fields.selection((
                 ('draft', 'Draft'),

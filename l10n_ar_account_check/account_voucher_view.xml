@@ -90,6 +90,8 @@
                                 <field name="state" colspan="4"/>
                             </form>
                         </field> 
+                        <button name="add_precreated_check"
+                            string="Add Pre-created" type="object" icon="terp-folder-orange"/>
                    </page>
                 </page>
             </field>

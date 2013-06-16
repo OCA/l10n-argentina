@@ -243,7 +243,7 @@
                             <field name="endorsement_date" attrs="{'invisible': [('state', 'not in', ('wallet', 'delivered', 'rejected'))]}"/>
                             <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
                                                                'required': [('type','=','postdated')]}"/>
-                            <field name="deposit_date" attrs="{'invisible': [('deposit_date', '!=', False)]"/>
+                            <field name="deposit_date" attrs="{'invisible': [('deposit_date', '!=', False)]}"/>
                         </group>
                         <group colspan="2" col="2">
                             <separator string="Other Information" colspan="2"/>
@@ -363,6 +363,8 @@
             <field name="res_model">account.third.check</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="view_account_third_check_tree"/>
+            <field name="search_view_id" ref="view_third_checks_search"/>
         </record>
 
         <record model="ir.actions.act_window" id="action_third_check_calendar_payment_date">

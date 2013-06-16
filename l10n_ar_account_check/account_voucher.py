@@ -220,6 +220,19 @@ class account_voucher(osv.osv):
 
         return move_lines
 
+    def add_precreated_check(self, cr, uid, ids, context=None):
+        third_obj = self.pool.get('account.third.check')
+
+        partner_id = self.read(cr, uid, ids[0], ['partner_id'], context)['partner_id'][0]
+        # Buscamos todos los cheques de terceros del partner del voucher
+        # y que esten en estado 'draft'
+        check_ids = third_obj.search(cr, uid, [('source_partner_id','=',partner_id), ('state','=','draft'),('voucher_id','=',False)], context=context)
+
+        if check_ids:
+            third_obj.write(cr, uid, check_ids, {'voucher_id': ids[0]}, context)
+
+        return True
+
     def call_issued_checks(self, cr , uid , ids , context=None):
 
         context['active_ids'] = ids[0]
