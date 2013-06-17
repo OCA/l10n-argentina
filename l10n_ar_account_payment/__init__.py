@@ -24,6 +24,7 @@
 import account_payment
 import account_voucher
 import payment_mode_receipt
+import invoice
 
 
 

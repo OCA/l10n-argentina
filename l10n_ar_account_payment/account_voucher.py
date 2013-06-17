@@ -21,8 +21,44 @@
 
 from osv import osv, fields
 from tools.translate import _
+import decimal_precision as dp
 
 class account_voucher(osv.osv):
+
+    def _amount_all(self, cr, uid, ids, name, args, context=None):
+        res = {}
+
+        for v in self.browse(cr, uid , ids, context):
+            res[v.id] = {
+                'total_invoices': 0.0,
+                'total_credits': 0.0,
+                'credit_balance': 0.0,
+            }
+
+            amount_credit = 0.0
+            amount_debit = 0.0
+            for line in v.line_dr_ids:
+                if line.state == 'not_included' or not line.amount:
+                    continue
+                amount_credit += line.amount
+
+
+            for line in v.line_cr_ids:
+                if line.state == 'not_included' or not line.amount:
+                    continue
+                amount_debit += line.amount
+
+            if v.type == 'payment':
+                res[v.id]['total_credits'] = amount_debit
+                res[v.id]['total_invoices'] = amount_credit
+            else:
+                res[v.id]['total_credits'] = amount_credit
+                res[v.id]['total_invoices'] = amount_debit
+
+            res[v.id]['credit_balance'] = v.amount - res[v.id]['total_invoices'] + res[v.id]['total_credits']
+
+        return res
+
 
     def _total_amount(self, cr, uid, ids, name, arg, context=None):
 
@@ -43,6 +79,9 @@ class account_voucher(osv.osv):
     _columns = {
       'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
       'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
+      'total_invoices': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Account'), type='float',  string='Total Invoices', multi='all'),
+      'total_credits': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Account'), type='float',  string='Total Credits', multi='all'),
+      'credit_balance': fields.function(_amount_all, method=True, digits_compute=dp.get_precision('Account'), type='float',  string='Credit Balance', multi='all'),
     }
 
     def _get_payment_lines_default(self, cr, uid, context=None):
@@ -119,7 +158,6 @@ class account_voucher(osv.osv):
         lines= [(x[1] , x[2]['amount']) for x in payment_lines]
 #
         for line in lines:
-            print 'Write Lines: ', lines
 #            pay_mod_line_pool.write(cr, uid, line[0], {'amount':line[1]})
             amount += line[1]
 #
@@ -300,6 +338,23 @@ class account_voucher(osv.osv):
         return True
 
     def onchange_line_ids(self, cr, uid, ids, line_dr_ids, line_cr_ids, amount):
+
+        included_dr = [l[2] for l in line_dr_ids if l[2]['state'] == 'included']
+        included_cr = [l[2] for l in line_cr_ids if l[2]['state'] == 'included']
+
+        total_debits = 0.0
+        total_credits = 0.0
+        for line in included_dr:
+            print line['amount_unreconciled'], line['amount']
+            total_debits += line['amount']
+
+        for line in included_cr:
+            print line['amount_unreconciled'], line['amount']
+            total_credits += line['amount']
+
+        print 'Total Debits: ', total_debits
+        print 'Total Credits: ', total_credits
+
         return {'value':{}}
 
     def onchange_journal_id(self, cr, uid, ids, context=None):
@@ -354,14 +409,19 @@ class account_voucher(osv.osv):
         lines_to_post = []
         if not context:
             context = {}
-        for voucher_id in ids:
-            ttype = self.browse(cr, uid, voucher_id).type
+        for voucher in self.browse(cr, uid, ids, context):
+            ttype = self.browse(cr, uid, voucher.id).type
             context.update({'type':ttype})
-            self.compute(cr, uid, ids, context)
+            #self.compute(cr, uid, ids, context)
+
+            # Chequeamos si estamos usando mas dinero del que tenemos
+            if voucher.credit_balance < 0.0:
+                raise osv.except_osv(_('Error'), _('Credit balance of the voucher cannot negative'))
+
             self.clean(cr, uid, ids, context)
-            lines_to_post = line_pool.search(cr , uid , [('voucher_id' , '=' , voucher_id) , ('state' , '=' ,'included')] )
+            lines_to_post = line_pool.search(cr , uid , [('voucher_id' , '=' , voucher.id) , ('state' , '=' ,'included')] )
             line_pool.post_voucher_lines(cr, uid, lines_to_post, context=context)
-            self.action_move_line_create(cr, uid, ids, context=context)
+            self.action_move_line_create(cr, uid, [voucher.id], context=context)
 
         return True
 
