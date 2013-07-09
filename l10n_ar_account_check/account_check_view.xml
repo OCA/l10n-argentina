@@ -75,6 +75,7 @@
             <field name="arch" type="xml">
                 <form string="Issued Checks">
                     <field name="receiving_partner_id" invisible="1"/>
+                    <field name="issued" invisible="1"/>
                     <field name="number" attrs="{'readonly': [('issued','=',True)]}"/>
                     <field name="type" attrs="{'readonly': [('issued','=',True)]}"/>
                     <group colspan="4" col="6">
