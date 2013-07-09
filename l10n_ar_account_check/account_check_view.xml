@@ -2,7 +2,9 @@
 <openerp>
     <data>
 
-        <menuitem id="menu_treasury_root" name="Treasury"/>
+        <menuitem id="menu_treasury_root" name="Treasury"
+                  web_icon="images/treasury.png"
+                  web_icon_hover="images/treasury-hover.png"/>
         <menuitem id="menu_treasury_check" name="Checks" parent="menu_treasury_root"/>
         <menuitem id="menu_treasury_configuration" name="Configuration" parent="menu_treasury_root"/>
 
