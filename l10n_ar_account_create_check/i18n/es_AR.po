@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.0.3\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-02-10 23:01+0000\n"
-"PO-Revision-Date: 2013-02-10 20:06-0300\n"
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-18 03:03+0000\n"
+"PO-Revision-Date: 2013-06-18 00:05-0300\n"
 "Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
 "Language-Team: Spanish; Castilian <>\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,6 @@ msgstr "El número de cheque final no puede ser menor al número de comienzo."
 
 #. module: l10n_ar_account_create_check
 #: view:account.checkbook:0 field:account.issued.check,checkbook_id:0
-#: view:checkbook:0
 #: model:ir.model,name:l10n_ar_account_create_check.model_account_checkbook
 msgid "Checkbook"
 msgstr "Chequera"
@@ -111,17 +110,13 @@ msgid "Available Checks"
 msgstr "Cheques Disponibles"
 
 #. module: l10n_ar_account_create_check
-#: model:ir.model,name:l10n_ar_account_create_check.model_checkbook
-msgid "checkbook"
-msgstr "Chequera"
-
-#. module: l10n_ar_account_create_check
 #: field:account.checkbook,issued_check_ids:0
+#: model:ir.model,name:l10n_ar_account_create_check.model_account_issued_check
 msgid "Issued Checks"
-msgstr "Cheques Propiod"
+msgstr "Cheques Propios"
 
 #. module: l10n_ar_account_create_check
-#: view:account.checkbook:0 view:checkbook:0
+#: view:account.checkbook:0
 msgid "Configuration"
 msgstr "Configuración"
 
@@ -140,12 +135,12 @@ msgstr "Cuenta Bancaria"
 #: field:account.checkbook.check,checkbook_id:0
 #: field:wizard.create.check,checkbook_num:0
 msgid "Checkbook number"
-msgstr "Checkbook number"
+msgstr "Número de Chequera"
 
 #. module: l10n_ar_account_create_check
 #: selection:account.checkbook,type:0
 msgid "Common"
-msgstr "Common"
+msgstr "Común"
 
 #. module: l10n_ar_account_create_check
 #: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_wizard_create_check
@@ -154,12 +149,11 @@ msgid "Create checkbook"
 msgstr "Crear chequera"
 
 #. module: l10n_ar_account_create_check
-#: view:account.checkbook:0 view:checkbook:0
+#: view:account.checkbook:0
 #: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_account_checkbook
-#: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_checkbook
 #: model:ir.ui.menu,name:l10n_ar_account_create_check.menu_checkbook
 msgid "Checkbooks"
-msgstr "Checkbooks"
+msgstr "Chequeras"
 
 #. module: l10n_ar_account_create_check
 #: field:wizard.create.check,start_num:0
@@ -167,24 +161,19 @@ msgid "Start number of check"
 msgstr "Número inicial de la chequera"
 
 #. module: l10n_ar_account_create_check
-#: model:ir.model,name:l10n_ar_account_create_check.model_account_issued_check
-msgid "Manage Checks"
-msgstr "Administrar Cheques"
-
-#. module: l10n_ar_account_create_check
 #: field:account.checkbook,type:0
 msgid "Checkbook Type"
-msgstr "Checkbook Type"
+msgstr "Tipo de Chequera"
 
 #. module: l10n_ar_account_create_check
 #: field:account.checkbook,account_check_id:0
 msgid "Check Account"
-msgstr "Check Account"
+msgstr "Cuenta Contable de Cheques"
 
 #. module: l10n_ar_account_create_check
 #: field:account.checkbook,name:0
 msgid "Checkbook Number"
-msgstr "Checkbook Number"
+msgstr "Número de Chequera"
 
 #. module: l10n_ar_account_create_check
 #: view:wizard.create.check:0
