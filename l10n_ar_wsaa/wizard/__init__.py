@@ -18,31 +18,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-{
-    "name": "WSAA",
-    "version": "1.0",
-    "depends": ["base"],
-    "author": "E-MIPS",
-    "website": "http://e-mips.com.ar",
-    "license": "GPL-3",
-    "category": "Argentina Localization",
-    "description": """
-        WSAA (Web Service de Autenticación y Autorización).
-        Este módulo nos permite el uso del WSAA para utilizar luego los demás
-        servicios disponibles por la AFIP. Este módulo es dependencia de los
-        demás módulos de Servicios Web de AFIP.
-
-        Dependencias Python:
-        *******************
-        python-m2crypto
-    """,
-    "init_xml": [],
-    'update_xml': [
-        'wizard/wsaa_load_config_view.xml',
-        'wsaa_view.xml',
-    ],
-    'demo_xml': [],
-    'installable': True,
-    'active': False,
-}
+import wsaa_load_config

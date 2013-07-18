@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>	
+
+        <record id="wsaa_load_config_view_form" model="ir.ui.view">
+            <field name="name">wsaa.load.config.view</field>
+            <field name="model">wsaa.load.config</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.res_config_view_base"/>
+            <field name="arch" type="xml">
+                <data>
+                    <form position="attributes">
+                        <attribute name="string">Configure WS Authentication Authorization</attribute>
+                    </form>
+                    <separator string="title" position="attributes">
+                        <attribute name="string">Complete details of your company</attribute>
+                    </separator>
+                    <xpath expr='//separator[@string="vsep"]' position="attributes">
+                        <attribute name='string'></attribute>
+                    </xpath>                   
+                    <xpath expr="//label[@string='description']" position="attributes">
+                        <attribute name="string">OpenERP connect with the AFIP through Web Services. This Configuration is for Authentication and Authorization Web Service</attribute>
+                    </xpath>
+                    <group string="res_config_contents" position="replace">
+                        <field name="company_id" colspan="2"/>
+                        <separator string="Enter your files from the AFIP" colspan="4"/>
+                        <field name="certificate" colspan="4"/>
+                        <field name="key" colspan="4"/>
+                        <separator string="Approval URLs" colspan="4"/>
+                        <field name="wsaa" colspan="4"/>
+                    </group>
+                </data>
+            </field>
+        </record>
+        
+        <record id="action_wsaa_load_config" model="ir.actions.act_window">
+            <field name="name">Configure WSAA</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wsaa.load.config</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="wsaa_load_config_view_form"/>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="wsaa_load_config_step" model="ir.actions.todo">
+            <field name="action_id" ref="action_wsaa_load_config"/>
+        </record>
+
+    </data>
+</openerp>
+
