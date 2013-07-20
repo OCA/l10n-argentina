@@ -20,6 +20,9 @@
 ##############################################################################
 
 from osv import osv, fields
+from tools.translate import _
+from datetime import datetime, timedelta
+from wsaa_suds import WSAA as wsaa
 
 class wsaa_config(osv.osv):
     _name = "wsaa.config"
@@ -65,8 +68,8 @@ class wsaa_ta(osv.osv):
 
     _columns = {
         'name': fields.many2one('afipws.service', 'Service'),
-        'token': fields.char('Token', size=256),
-        'sign': fields.char('Sign', size=256),
+        'token': fields.text('Token', readonly=True),
+        'sign': fields.text('Sign', readonly=True),
         'expiration_time': fields.char('Expiration Time', size=256),
         'config_id' : fields.many2one('wsaa.config'),
         'company_id' : fields.many2one('res.company', 'Company Name'),
@@ -75,5 +78,50 @@ class wsaa_ta(osv.osv):
     _sql_constraints = [
         ('company_name_uniq', 'unique (name, company_id)', 'The service must be unique per company!')
     ]
+
+    def _renew_ticket(self, cr, uid, wsaa_config, service, context=None):
+
+        try:
+            _wsaa = wsaa(wsaa_config.certificate, wsaa_config.key, wsaa_config.url, service)
+            _wsaa.get_token_and_sign(wsaa_config.certificate, wsaa_config.key)
+        except Exception, e:
+            raise osv.except_osv(_('WSAA Error!'), e)
+
+        vals = {
+            'token': _wsaa.token,
+            'sign': _wsaa.sign,
+            'expiration_time' : _wsaa.expiration_time.strftime('%Y-%m-%d %H:%M:%S'),
+            }
+
+        return vals
+
+    def get_token_sign(self, cr, uid, ids, context=None):
+
+        ticket = self.browse(cr, uid, ids, context=context)[0]
+        force = context.get('force_renew', False)
+
+        if not force:
+            if ticket.expiration_time:
+                expiration_time = datetime.strptime(ticket.expiration_time, '%Y-%m-%d %H:%M:%S')
+                # Primero chequemos si tenemos ya un ticket expirado
+                # Si ahora+10 minutos es mayor al momento de expiracion
+                # debemos renovar el ticket.
+                if datetime.now()+timedelta(minutes=10) < expiration_time:
+                    return ticket.token, ticket.sign
+
+        service = ticket.name.name
+        vals = self._renew_ticket(cr, uid, ticket.config_id, service, context=context)
+        self.write(cr, uid, ticket.id, vals, context=context)
+        return vals['token'], vals['sign']
+
+    def action_renew(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+
+        context['force_renew'] = True
+        self.get_token_sign(cr, uid, ids, context=context)
+        return True
+
+
 
 wsaa_ta()

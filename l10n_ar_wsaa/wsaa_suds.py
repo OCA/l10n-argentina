@@ -6,24 +6,16 @@ import email
 import urllib2
 from M2Crypto import BIO, SMIME
 from suds.client import Client
+from xml.sax import SAXParseException
 import logging
 
 ## Configuracion del logger
 logger = logging.getLogger('afipws')
-#logger2 = logging.getLogger('suds.client')
 logger.setLevel(logging.DEBUG)
-#logger2.setLevel(logging.DEBUG)
-#formatter = logging.Formatter("%(asctime)s-%(name)s-%(levelname)s-%(message)s")
-#ch = logging.FileHandler('afipws.log')
-#ch.setLevel(logging.DEBUG) #>desde config
-#ch.setFormatter(formatter)
-streamH = logging.StreamHandler(sys.stdout)
-streamH.setLevel(logging.DEBUG)
+#streamH = logging.StreamHandler(sys.stdout)
+#streamH.setLevel(logging.DEBUG)
 #streamH.setFormatter(formatter)
-#
-#logger.addHandler(ch)
-logger.addHandler(streamH)
-#logger2.addHandler(streamH)
+#logger.addHandler(streamH)
 
 
 class WSAA:
@@ -31,8 +23,6 @@ class WSAA:
         """Init."""
         self.token = None
         self.sign = None
-        self.cert = cert
-        self.private_key = private_key
         self.wsaaurl = wsaaurl
         self.service = service
         self.expiration_time = None
@@ -42,8 +32,13 @@ class WSAA:
         try:
             self._create_client()
         except urllib2.URLError, e:
-            logger.warning("No hay conexion disponible")
+            logger.error("No hay conexion disponible")
             self.connected = False
+            raise Exception, 'No se puede conectar con AFIP: %s' % str(e)
+        except SAXParseException, e:
+            raise Exception, 'WSAA URL malformada: %s' % e.getMessage()
+        except Exception, e:
+            raise Exception, 'Unknown Error: %s' % e
 
     def _create_client(self):
         # Creamos el cliente contra la URL
@@ -79,26 +74,28 @@ class WSAA:
         serv = etree.SubElement(root, 'service')
         serv.text = self.service
         
-        try:
-            f = open('tra.xml', 'w')
-            doc.write(f, xml_declaration=True, encoding='UTF-8', pretty_print=True)
-        except Exception, e:
-            print 'No se puede grabar el archivo: %s' % e
-            return None
+#        try:
+#            f = open('tra.xml', 'w')
+#            doc.write(f, xml_declaration=True, encoding='UTF-8', pretty_print=True)
+#        except Exception, e:
+#            print 'No se puede grabar el archivo: %s' % e
+#            return None
 
         logger.debug("TRA Creado")
         return etree.tostring(doc)
 
 
-    def _sign_tra(self, tra):
+    def _sign_tra(self, tra, cert, key):
         """Funcion que firma el tra."""
-        print tra
+
         # Creamos un buffer a partir del TRA
         buf = BIO.MemoryBuffer(tra)
+        key_bio = BIO.MemoryBuffer(key.encode('ascii'))
+        cert_bio = BIO.MemoryBuffer(cert.encode('ascii'))
 
         # Firmamos el TRA
         s = SMIME.SMIME()
-        s.load_key(self.private_key, self.cert)
+        s.load_key_bio(key_bio, cert_bio)
         p7 = s.sign(buf, 0)
         out = BIO.MemoryBuffer()
         s.write(out, p7)
@@ -107,7 +104,6 @@ class WSAA:
         msg = email.message_from_string(out.read())
         for part in msg.walk():
             filename = part.get_filename()
-            print filename
             if filename == "smime.p7m":
                 logger.debug("TRA Firmado")
                 return part.get_payload(decode=False)
@@ -123,7 +119,7 @@ class WSAA:
             except urllib2.URLError, e:
                 logger.warning("No hay conexion disponible")
                 self.connected = False
-                return None
+                raise Exception, 'No hay conexion: %s' % e
 
         # Llamamos a loginCms y obtenemos el resultado
         logger.debug("Llamando a loginCms:\n%s", cms)
@@ -131,7 +127,7 @@ class WSAA:
             result = self.client.service.loginCms(cms)
         except Exception, e:
             logger.exception("Excepcion al llamar a loginCms")
-            return None
+            raise Exception, 'Exception al autenticar: %s' % e
 
         self.ta = result
         return result
@@ -165,19 +161,23 @@ class WSAA:
 
     # TODO: Agregar una flag de force para tomarlo igual
     # TODO: Hacer chequeo de errores
-    def get_token_and_sign(self):
+    def get_token_and_sign(self, cert, key, force=True):
         # Primero chequeamos si ya tenemos un token
-        if self.ta and self.expiration_time and self.token and self.sign:
-            # Si todavia no expiro el que tenemos, lo retornamos
-            if datetime.now() < self.expiration_time:
-                return self.token, self.sign
+        if not force:
+            if self.ta and self.expiration_time and self.token and self.sign:
+                # Si todavia no expiro el que tenemos, lo retornamos
+                if datetime.now() < self.expiration_time:
+                    return self.token, self.sign
 
-        # Si expiro el archivo o no existe, volvemos a pedirlo
-        logger.debug("El archivo no existe o expiro...obtenemos nuevamente")
         tra = self._create_tra()
-        cms = self._sign_tra(tra)
-        self._call_wsaa(cms)
+        cms = self._sign_tra(tra, cert, key)
+        try:
+            self._call_wsaa(cms)
+        except Exception, e:
+            raise e
+
         self.parse_ta(self.ta)
+        return True
 
 CERT = "/home/skennedy/proyectos/afipws/certs2012/eynes/cert_eynes.crt"        # El certificado X.509 obtenido de Seg. Inf.
 PRIVATEKEY = "/home/skennedy/proyectos/afipws/certs2012/eynes/privada_eynes.key"  # La clave privada del certificado CERT
