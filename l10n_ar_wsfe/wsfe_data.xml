@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="afipws_service_wsfe" model="afipws.service">
+            <field name="name">wsfe</field>
+            <field name="code">Web Service de Factura Electrónica</field>
+        </record>
+
+    </data>
+</openerp>

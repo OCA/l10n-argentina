@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+  <!-- **********************-->
+  <!-- * WSFE Configuration *-->
+  <!-- **********************-->
+  <!-- Form View for wsfe.config -->
+  <record id="view_wsfe_config_form" model="ir.ui.view">
+    <field name="name">wsfe.config.form</field>
+    <field name="model">wsfe.config</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Config Electronic Invoice">
+        <group colspan="4">
+          <separator colspan="4" string="Configuration"/>
+          <field name="company_id" colspan="2" select="1"/>
+          <field name="cuit" colspan="2" select="1"/>
+          <field name="url" select="1" colspan="4"/>
+          <notebook colspan="4">
+            <page string="Points Of Sale">
+              <field name="point_of_sale_ids" nolabel="1"/>
+            </page>
+            <page string="VAT Taxes">
+              <field name="vat_tax_ids" nolabel="1">
+                <tree string="Vat Taxes Mapping" editable="bottom">
+                  <field name="code"/>
+                  <field name="name"/>
+                  <field name="to_date"/>
+                  <field name="from_date"/>
+                  <field name="tax_id"/>
+                  <field name="tax_code_id"/>
+                  <field name="from_afip" readonly="True"/>
+                </tree>
+                <form string="Vat Taxes Mapping">
+                  <field name="code"/>
+                  <field name="name"/>
+                  <field name="to_date"/>
+                  <field name="from_date"/>
+                  <field name="tax_id"/>
+                  <field name="tax_code_id"/>
+                  <field name="from_afip" readonly="True"/>
+                  <field name="exempt_operations" attrs="{'readonly': [('from_afip', '=', True)]}"/>
+                </form>
+              </field>
+              <field name="exempt_operations_tax_ids"  context="{'default_exempt_operations': True}" nolabel="1">
+                <tree string="Exempt Operations Taxes Mapping" editable="bottom">
+                  <field name="name"/>
+                  <field name="tax_id"/>
+                  <field name="tax_code_id"/>
+                  <field name="exempt_operations" invisible="1"/>
+                </tree>
+                <form string="Exempt Operations Taxes Mapping">
+                  <field name="name"/>
+                  <field name="tax_id"/>
+                  <field name="tax_code_id"/>
+                  <field name="exempt_operations" attrs="{'readonly': [('from_afip', '=', True)]}"/>
+                </form>
+              </field>
+              <group colspan="4" col="4">
+                <separator string="" colspan="3"/>
+                <button name="read_tax" string="Update VAT Taxes" type="object" icon="gtk-ok"/>
+              </group>
+             </page>
+          </notebook>
+       </group>
+      </form>
+    </field>
+  </record>
+
+        <!-- Tree View for electronic_invoice_config -->
+        <record id="view_wsfe_config_tree" model="ir.ui.view">
+            <field name="name">wsfe.config.tree</field>
+            <field name="model">wsfe.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Config Electronic Invoice">
+		            <field name="company_id" select="1"/>
+                    <field name="cuit" select="1" />
+                    <field name="url" select="1" />
+				</tree>
+            </field>
+        </record>
+
+        <!--Window Action para wsfe_config-->
+		<record model="ir.actions.act_window" id="action_wsfe_config">
+                <field name="name">WSFE Config</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">wsfe.config</field>
+                <field name="view_type">form</field>
+                <field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="wsfe_config_menu" name="WSFE Configuration" parent="l10n_ar_wsaa.base_afipws" sequence="20" action="action_wsfe_config"/>
+
+     </data>
+</openerp>
