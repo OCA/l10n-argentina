@@ -36,6 +36,8 @@
     'update_xml': [
         'wsfe_data.xml',
         'wsfe_view.xml',
+        'account_invoice_view.xml',
+        'account_invoice_workflow.xml',
     ],
     'demo_xml': [],
     'installable': True,

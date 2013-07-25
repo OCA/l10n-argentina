@@ -87,16 +87,35 @@ class wsfe_config(osv.osv):
 
         return super(wsfe_config, self).create(cr, uid, vals, context)
 
-    def check_errors(self, res):
+    def get_config(self, cr, uid):
+        # Obtenemos la compania que esta utilizando en este momento este usuario
+        res = self.pool.get('res.users').get_current_company(cr, uid)
+        if not res:
+            raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
+
+        company_id = res[0][0]
+
+        ids = self.search(cr, uid, [('company_id','=',company_id)])
+        if not ids:
+            raise osv.except_osv(_('WSFE Config Error!'), _('There is no WSFE configuration set to this company'))
+
+        return self.browse(cr, uid, ids[0])
+
+
+    def check_errors(self, cr, uid, res, raise_exception=True, context=None):
         msg = ''
         if 'errors' in res:
             errors = [error.msg for error in res['errors']]
             err_codes = [str(error.code) for error in res['errors']]
             msg = ' '.join(errors)
             msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
-            return msg
 
-    def check_observations(self, res):
+            if msg != '' and raise_exception:
+                raise osv.except_osv(_('WSFE Error!'), msg)
+
+        return msg
+
+    def check_observations(self, cr, uid, res, context):
         msg = ''
         if 'observations' in res:
             observations = [obs.msg for obs in res['observations']]
@@ -105,10 +124,24 @@ class wsfe_config(osv.osv):
             msg = msg + ' Codigo/s Observacion:' + ' '.join(obs_codes)
 
             # Escribimos en el log del cliente web
-            #self.log(cr, uid, inv_id, msg, context)
-            return msg
+            self.log(cr, uid, None, msg, context)
+
+        return msg
 
 
+    def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+        res = _wsfe.fe_comp_ultimo_autorizado(pos, voucher_type)
+
+        self.check_errors(cr, uid, res, context=context)
+        self.check_observations(cr, uid, res, context=context)
+        last = res['response'].CbteNro
+        return last
 
     def read_tax(self, cr, uid , ids , context={}):
         ta_obj = self.pool.get('wsaa.ta')
@@ -122,7 +155,7 @@ class wsfe_config(osv.osv):
         wsfe_tax_obj = self.pool.get('wsfe.tax.codes')
 
         # Chequeamos los errores
-        msg = self.check_errors(res)
+        msg = self.check_errors(cr, uid, res, raise_exception=False, context=context)
         if msg:
             # TODO: Hacer un wrapping de los errores, porque algunos son
             # largos y se imprimen muy mal en pantalla
@@ -158,3 +191,57 @@ class wsfe_config(osv.osv):
 
 wsfe_config()
 wsfe_tax_codes()
+
+class wsfe_voucher_type(osv.osv):
+    _name = "wsfe.voucher_type"
+    _description = "Voucher Type for Electronic Invoice"
+
+    _columns = {
+        'name': fields.char('Name', size=64, required=True, readonly=False, help='Voucher Type, eg.: Factura A, Nota de Credito B, etc.'),
+        'code': fields.char('Code', size=4, required=True, help='Internal Code assigned by AFIP for voucher type'),
+
+        'voucher_model': fields.selection([
+            ('invoice','Factura/NC/ND'),
+            ('voucher','Recibo'),],'Voucher Model', select=True, required=True),
+
+        'document_type' : fields.selection([
+            ('out_invoice','Factura'),
+            ('out_refund','Nota de Credito'),
+            ('out_debit','Nota de Debito'),
+            ],'Document Type', select=True, required=True, readonly=False),
+
+        'denomination_id': fields.many2one('invoice.denomination', 'Denomination', required=False),
+    }
+
+    def get_voucher_type(self, cr, uid, voucher, context=None):
+
+        # Chequeamos el modelo
+        voucher_model = None
+        model = voucher._table_name
+
+        if model == 'account.invoice':
+            voucher_model = 'invoice'
+
+            denomination_id = voucher.denomination_id.id
+            type = voucher.type
+            #if type == 'out_invoice':
+                # TODO: Activar esto para ND
+                #if voucher.debit_note:
+                    #type = 'out_debit'
+
+            res = self.search(cr, uid, [('voucher_model','=',voucher_model), ('document_type','=',type), ('denomination_id','=',denomination_id)], context=context)
+
+            if not len(res):
+                raise osv.except_osv(_("Voucher type error!"), _("There is no voucher type that corresponds to this object"))
+
+            if len(res) > 1:
+                raise osv.except_osv(_("Voucher type error!"), _("There is more than one voucher type that corresponds to this object"))
+
+            return res[0]
+
+        elif model == 'account.voucher':
+            voucher_model = 'voucher'
+
+        return None
+
+wsfe_voucher_type()
