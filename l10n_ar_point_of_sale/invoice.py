@@ -238,7 +238,7 @@ class invoice(osv.osv):
 
             if not obj_inv.internal_number:
                 max_number = []
-                if obj_inv.type == ('out_invoice', 'out_refund', 'out_debit'):
+                if obj_inv.type in ('out_invoice', 'out_refund', 'out_debit'):
                     cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type='out_invoice'", (pos_ar, ('open', 'paid', 'cancel',)))
                     max_number = cr.fetchone()
                 if not max_number:

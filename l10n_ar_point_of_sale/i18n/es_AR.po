@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.0.3\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2011-11-16 18:57+0000\n"
-"PO-Revision-Date: 2013-04-10 11:02-0300\n"
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-18 03:42+0000\n"
+"PO-Revision-Date: 2013-06-18 00:43-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,18 +21,18 @@ msgid "Is Exempt"
 msgstr "Exento"
 
 #. module: l10n_ar_point_of_sale
-#: field:invoice.denomination,vat_discriminated:0
-msgid "Vat Discriminated in Invoices"
-msgstr "IVA Discriminado en Facturas"
+#: sql_constraint:purchase.order:0
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique per Company!"
+msgstr "¡La referencia de la compra debe ser única por compañía!"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:194
-#: code:addons/l10n_ar_point_of_sale/invoice.py:204
-#: code:addons/l10n_ar_point_of_sale/invoice.py:262
-#: code:addons/l10n_ar_point_of_sale/invoice.py:281
+#: code:addons/l10n_ar_point_of_sale/invoice.py:197
+#: code:addons/l10n_ar_point_of_sale/invoice.py:207
+#: code:addons/l10n_ar_point_of_sale/invoice.py:265
+#: code:addons/l10n_ar_point_of_sale/invoice.py:284
 #, python-format
-msgid ""
-"The invoice denomination does not corresponds with this fiscal position."
+msgid "The invoice denomination does not corresponds with this fiscal position."
 msgstr "La denominación de la factura no corresponde a la Posición Fiscal."
 
 #. module: l10n_ar_point_of_sale
@@ -41,7 +41,7 @@ msgid "Denominations"
 msgstr "Denominaciones"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:316
+#: code:addons/l10n_ar_point_of_sale/invoice.py:319
 #, python-format
 msgid "is validated."
 msgstr "es validada."
@@ -68,7 +68,7 @@ msgid "Exempt"
 msgstr "Importe Exento"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:39
+#: code:addons/l10n_ar_point_of_sale/invoice.py:42
 #, python-format
 msgid "SI: "
 msgstr "FACP: "
@@ -76,18 +76,15 @@ msgstr "FACP: "
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_stock_picking
 msgid "Picking List"
-msgstr "Remito"
+msgstr "Albarán"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:209
-#: code:addons/l10n_ar_point_of_sale/invoice.py:267
-#: code:addons/l10n_ar_point_of_sale/invoice.py:286
+#: code:addons/l10n_ar_point_of_sale/invoice.py:212
+#: code:addons/l10n_ar_point_of_sale/invoice.py:270
+#: code:addons/l10n_ar_point_of_sale/invoice.py:289
 #, python-format
-msgid ""
-"The invoice fiscal position is not the same as the partner's fiscal position."
-msgstr ""
-"La Posición Fiscal de la factura no es la misma que la Posición Fiscal del "
-"partner."
+msgid "The invoice fiscal position is not the same as the partner's fiscal position."
+msgstr "La Posición Fiscal de la factura no es la misma que la Posición Fiscal del partner."
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_pos_ar
@@ -95,8 +92,13 @@ msgid "Point of Sale for Argentina"
 msgstr "Punto de Venta para Argentina"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:181
-#: code:addons/l10n_ar_point_of_sale/invoice.py:199
+#: selection:account.tax,tax_group:0
+msgid "Perception"
+msgstr "Percepción"
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/invoice.py:184
+#: code:addons/l10n_ar_point_of_sale/invoice.py:202
 #, python-format
 msgid "Denomination not set in invoice"
 msgstr "La denominación no está configurada en la factura"
@@ -107,22 +109,17 @@ msgid "Nro"
 msgstr "Nro"
 
 #. module: l10n_ar_point_of_sale
-#: field:invoice.denomination,desc:0 view:pos.ar:0 field:pos.ar,desc:0
+#: field:invoice.denomination,desc:0
+#: view:pos.ar:0
+#: field:pos.ar,desc:0
 msgid "Description"
 msgstr "Descripción"
 
 #. module: l10n_ar_point_of_sale
-#: model:ir.module.module,description:l10n_ar_point_of_sale.module_meta_information
-msgid ""
-"\n"
-"    This module provide :\n"
-"    1) Implementation of Point of Sale for Argentina.\n"
-"    "
-msgstr ""
-"\n"
-"    Este Modulo contiene :\n"
-"    1) Implementacion de Punto de Venta para Argentina.\n"
-"    "
+#: code:addons/l10n_ar_point_of_sale/invoice.py:43
+#, python-format
+msgid "OR: "
+msgstr "NC: "
 
 #. module: l10n_ar_point_of_sale
 #: help:account.tax,is_exempt:0
@@ -135,9 +132,15 @@ msgid "POS"
 msgstr "POS"
 
 #. module: l10n_ar_point_of_sale
+#: field:invoice.denomination,vat_discriminated:0
+msgid "Vat Discriminated in Invoices"
+msgstr "IVA Discriminado en Facturas"
+
+#. module: l10n_ar_point_of_sale
 #: field:account.fiscal.position,denom_supplier_id:0
 #: field:account.fiscal.position,denomination_id:0
-#: field:account.invoice,denomination_id:0 field:invoice.denomination,name:0
+#: field:account.invoice,denomination_id:0
+#: field:invoice.denomination,name:0
 #: field:pos.ar,denomination_id:0
 msgid "Denomination"
 msgstr "Denominación"
@@ -148,7 +151,7 @@ msgid "If True, the vat will be discriminated at invoice report."
 msgstr "Si está tildado, el IVA será discriminado en el reporte de factura."
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:275
+#: code:addons/l10n_ar_point_of_sale/invoice.py:278
 #, python-format
 msgid "The Invoice Number can not contain characters"
 msgstr "El Numero de la Factura no puede contener Caracteres"
@@ -169,10 +172,15 @@ msgid "Shop"
 msgstr "Sucursal"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:316
+#: code:addons/l10n_ar_point_of_sale/invoice.py:319
 #, python-format
 msgid "Invoice "
 msgstr "Factura "
+
+#. module: l10n_ar_point_of_sale
+#: sql_constraint:account.tax:0
+msgid "Tax Name must be unique per company!"
+msgstr "Tax Name must be unique per company!"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/sale.py:74
@@ -196,27 +204,24 @@ msgid "Refund"
 msgstr "Reembolso"
 
 #. module: l10n_ar_point_of_sale
-#: model:ir.module.module,shortdesc:l10n_ar_point_of_sale.module_meta_information
-msgid "Point of Sale ARGENTINA"
-msgstr "Punto de Venta ARGENTINA"
-
-#. module: l10n_ar_point_of_sale
 #: view:account.fiscal.position:0
 msgid "Supplier Denomination"
 msgstr "Denominación de Proveedor"
 
 #. module: l10n_ar_point_of_sale
-#: model:ir.model,name:l10n_ar_point_of_sale.model_account_invoice_refund
-msgid "Invoice Refund"
-msgstr "Abono factura"
+#: code:addons/l10n_ar_point_of_sale/sale.py:53
+#: code:addons/l10n_ar_point_of_sale/stock.py:49
+#, python-format
+msgid "You need to set up a Shop and/or a Fiscal Position"
+msgstr "Se necesita tener configurada una Sucursal y/o una Posicion Fiscal"
 
 #. module: l10n_ar_point_of_sale
-#: selection:account.tax,tax_group:0
-msgid "Perception"
-msgstr "Percepción"
+#: field:account.invoice,amount_no_taxed:0
+msgid "No Taxed"
+msgstr "No Taxed"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:38
+#: code:addons/l10n_ar_point_of_sale/invoice.py:41
 #, python-format
 msgid "CI: "
 msgstr "FAC: "
@@ -237,10 +242,10 @@ msgid "Purchase Order"
 msgstr "Orden de compra"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:181
-#: code:addons/l10n_ar_point_of_sale/invoice.py:186
+#: code:addons/l10n_ar_point_of_sale/invoice.py:184
 #: code:addons/l10n_ar_point_of_sale/invoice.py:189
-#: code:addons/l10n_ar_point_of_sale/invoice.py:199
+#: code:addons/l10n_ar_point_of_sale/invoice.py:192
+#: code:addons/l10n_ar_point_of_sale/invoice.py:202
 #, python-format
 msgid "Error!"
 msgstr "Error!"
@@ -251,21 +256,26 @@ msgid "Denomination for Invoices"
 msgstr "Denominación para Facturas"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:41
+#: code:addons/l10n_ar_point_of_sale/invoice.py:44
 #, python-format
 msgid "SR: "
 msgstr "NCP: "
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:193
-#: code:addons/l10n_ar_point_of_sale/invoice.py:203
-#: code:addons/l10n_ar_point_of_sale/invoice.py:208
-#: code:addons/l10n_ar_point_of_sale/invoice.py:256
-#: code:addons/l10n_ar_point_of_sale/invoice.py:261
-#: code:addons/l10n_ar_point_of_sale/invoice.py:266
-#: code:addons/l10n_ar_point_of_sale/invoice.py:274
-#: code:addons/l10n_ar_point_of_sale/invoice.py:280
-#: code:addons/l10n_ar_point_of_sale/invoice.py:285
+#: sql_constraint:stock.picking:0
+msgid "Reference must be unique per Company!"
+msgstr "¡La referencia debe ser única por compañía!"
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/invoice.py:196
+#: code:addons/l10n_ar_point_of_sale/invoice.py:206
+#: code:addons/l10n_ar_point_of_sale/invoice.py:211
+#: code:addons/l10n_ar_point_of_sale/invoice.py:259
+#: code:addons/l10n_ar_point_of_sale/invoice.py:264
+#: code:addons/l10n_ar_point_of_sale/invoice.py:269
+#: code:addons/l10n_ar_point_of_sale/invoice.py:277
+#: code:addons/l10n_ar_point_of_sale/invoice.py:283
+#: code:addons/l10n_ar_point_of_sale/invoice.py:288
 #: code:addons/l10n_ar_point_of_sale/purchase.py:56
 #: code:addons/l10n_ar_point_of_sale/sale.py:47
 #: code:addons/l10n_ar_point_of_sale/sale.py:52
@@ -282,17 +292,10 @@ msgid "Other Group"
 msgstr "Otro Grupo"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:186
+#: code:addons/l10n_ar_point_of_sale/invoice.py:189
 #, python-format
 msgid "Denomination not set neither in invoice nor point of sale"
-msgstr ""
-"No tiene configurada la denominación en la factura ni en el punto de venta"
-
-#. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:40
-#, python-format
-msgid "OR: "
-msgstr "NC: "
+msgstr "No tiene configurada la denominación en la factura ni en el punto de venta"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_pos_ar_root
@@ -300,7 +303,7 @@ msgid "Point of Sale AR"
 msgstr "Punto de Venta"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:257
+#: code:addons/l10n_ar_point_of_sale/invoice.py:260
 #, python-format
 msgid "The Invoice Number should be the format XXXX-XXXXXXXX"
 msgstr "El número de factura debería tener el formato XXXX-XXXXXXXX"
@@ -327,6 +330,11 @@ msgid "Invoice Tax"
 msgstr "Impuestos sobre Factura"
 
 #. module: l10n_ar_point_of_sale
+#: sql_constraint:account.invoice:0
+msgid "Invoice Number must be unique per Company!"
+msgstr "¡El número de factura debe ser único por empresa!"
+
+#. module: l10n_ar_point_of_sale
 #: field:account.invoice,pos_ar_id:0
 #: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_form
 #: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_tree
@@ -334,7 +342,7 @@ msgid "Point of Sale"
 msgstr "Punto de Venta"
 
 #. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/invoice.py:189
+#: code:addons/l10n_ar_point_of_sale/invoice.py:192
 #, python-format
 msgid "Point of sale has not the same denomination as the invoice."
 msgstr "El Punto de Venta no tiene la misma denominación que la factura."
@@ -353,13 +361,6 @@ msgstr "Impuesto Interno"
 #: field:account.tax,tax_group:0
 msgid "Tax Group"
 msgstr "Grupo de Impuesto"
-
-#. module: l10n_ar_point_of_sale
-#: code:addons/l10n_ar_point_of_sale/sale.py:53
-#: code:addons/l10n_ar_point_of_sale/stock.py:49
-#, python-format
-msgid "You need to set up a Shop and/or a Fiscal Position"
-msgstr "Se necesita tener configurada una Sucursal y/o una Posicion Fiscal"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/sale.py:67
@@ -383,14 +384,10 @@ msgid "Invoice"
 msgstr "Factura"
 
 #. module: l10n_ar_point_of_sale
-#: view:sale.shop:0 field:sale.shop,pos_ar_ids:0
+#: view:sale.shop:0
+#: field:sale.shop,pos_ar_ids:0
 msgid "Points of Sales"
 msgstr "Puntos de Ventas"
-
-#. module: l10n_ar_point_of_sale
-#: sql_constraint:purchase.order:0 sql_constraint:sale.order:0
-msgid "Order Reference must be unique !"
-msgstr "¡La referencia del pedido debe ser única!"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/purchase.py:57
@@ -405,3 +402,4 @@ msgstr "Chequee la configuración de Posición Fiscal"
 #: selection:account.tax,tax_group:0
 msgid "Retention"
 msgstr "Retención"
+
