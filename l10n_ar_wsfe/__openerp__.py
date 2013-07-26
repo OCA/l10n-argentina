@@ -22,7 +22,7 @@
 {
     "name": "WSFE (Factura Electronica)",
     "version": "2.0",
-    "depends": ["base", "account", "l10n_ar_point_of_sale", "l10n_ar_wsaa"],
+    "depends": ["base", "account", "base_vat_ar", "l10n_ar_point_of_sale", "l10n_ar_wsaa"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",

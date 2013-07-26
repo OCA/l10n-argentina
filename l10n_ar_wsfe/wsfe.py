@@ -128,6 +128,18 @@ class wsfe_config(osv.osv):
 
         return msg
 
+    def get_invoice_CAE(self, cr, uid, ids, pos, voucher_type, details, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+        res = _wsfe.fe_CAE_solicitar(pos, voucher_type, details)
+
+        self.check_errors(cr, uid, res, raise_exception=False, context=context)
+        self.check_observations(cr, uid, res, context=context)
+        return res
 
     def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
         ta_obj = self.pool.get('wsaa.ta')

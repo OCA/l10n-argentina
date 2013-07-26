@@ -388,7 +388,7 @@ class WSFEv1:
             if 'CAE' in det_response:
                 cae = {'cae': det_response.CAE, 'cae_vto': det_response.CAEFchVto,
                        'nro_comprobante': det_response.CbteHasta, 'resultado': det_response.Resultado}
-                caes[str(det_response.CbteHasta)] = cae
+                caes[det_response.CbteHasta] = cae
 
         res = {'CAES': caes, 'Errores': errores, 'Observaciones': observaciones, 'Resultado': result.FeCabResp.Resultado}
         return res

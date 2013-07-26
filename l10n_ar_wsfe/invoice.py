@@ -222,7 +222,7 @@ class account_invoice(osv.osv):
                         'AND account_analytic_line.move_id = account_move_line.id',
                         (ref, move_id))
 
-            # Escribimos el campo aut_cae segun si es electronica o no
+            # Escribimos los campos necesarios de la factura
             self.write(cr, uid, obj_inv.id, invoice_vals)
 
             for inv_id, name in self.name_get(cr, uid, [id], context=context):
@@ -238,73 +238,36 @@ class account_invoice(osv.osv):
         return detalle
 
     def action_aut_cae(self, cr, uid, ids, context={}, *args):
-
         obj_precision = self.pool.get('decimal.precision')
+        wsfe_conf_obj = self.pool.get('wsfe.config')
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
+
+        conf = wsfe_conf_obj.get_config(cr, uid)
 
         for inv in self.browse(cr, uid, ids):
-            # HACK para no informar la factura si ya tiene
-            # un numero de factura asignada
             if not inv.aut_cae:
                 self.write(cr, uid, ids, {'cae' : 'NA'})
                 return True
 
-            #pto_vta = 5
             fiscal_position = inv.fiscal_position
-            cuit = inv.partner_id.vat
-            doc_tipo = 99 # Por defecto, 99 para Consumidor Final
+            doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or 99
+            doc_num = inv.partner_id.vat
 
             if not fiscal_position:
                 raise osv.except_osv(_('Customer Configuration Error'),
                                     _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
 
-            # BAD HACK: En realidad, algo tenemos que hacer en la posicion
-            # fiscal para saber si lleva o no CUIT. Por ahora, chequemos por
-            # nombre de posicion fiscal Consumidor Final
-            # TODO: Esto lo podriamos hacer como una configuracion de electronic_invoice
-
-
-            #Comentado por Laureano
-
-            #~ if fiscal_position and fiscal_position.name == 'Consumidor Final':
-                #~ cuit = '0'
-                #~ doc_tipo = 99
-            #~ else:
-                #~ if not cuit:
-                    #~ raise osv.except_osv(_('Customer Configuration Error'),
-                                        #~ _('There is no vat configured for the customer %s') % inv.partner_id.name)
-                #~ doc_tipo = 80
-
-            #Fin comentado por Laureano
-
-
-            if not inv.partner_id.document_type_id:
-                raise osv.except_osv(_('Partner Configuration Error'),
-                                        _('There is no document type configured for the customer %s') % inv.partner_id.name)
-            else:
-                if not cuit:
-                    cuit = '0'
-
-                doc_tipo = inv.partner_id.document_type_id.afip_code
-
-            eivoucher_obj = self.pool.get('electronic.invoice.voucher_type')
-            res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
-
-            #voucher = eivoucher_obj.browse(cr, uid, res)
-
+            # Obtenemos el tipo de comprobante
+            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, inv, context=context)
 
             # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
             # cuenta que inv.number == 000X-00000NN o algo similar.
-            cbte_nro = int(inv.internal_number)
+            inv_number = inv.internal_number
+            pos, cbte_nro = inv_number.split('-')
+            pos = int(pos)
+            cbte_nro = int(cbte_nro)
 
             detalles = []
-
-            ei_config_obj = self.pool.get('electronic.invoice.config')
-            _wsfe = ei_config_obj.get_wsfe_obj(cr, uid, inv.company_id.id)
-            res = ei_config_obj.search(cr, uid, [('company_id', '=', inv.company_id.id)])
-            if not len(res):
-                raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
-
-            ei_config = ei_config_obj.browse(cr, uid, res[0])
 
             for inv in self.browse(cr, uid, ids):
                 date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
@@ -312,8 +275,8 @@ class account_invoice(osv.osv):
                 detalle = {}
                 detalle['Concepto'] = 1 # Hardcodeado 'Productos'
 
-                detalle['DocTipo'] = doc_tipo # Tipo CUIT
-                detalle['DocNro'] = cuit # CUIT Cliente
+                detalle['DocTipo'] = doc_type
+                detalle['DocNro'] = doc_num
 
                 #detalle['tipo_cbte'] = tipo_cbte # Factura A
                 #detalle['punto_vta'] = pto_vta
@@ -327,17 +290,16 @@ class account_invoice(osv.osv):
                 iva_array = []
 
                 importe_neto = 0.0
-                importe_operaciones_exentas = 0.0
+                importe_operaciones_exentas = inv.amount_exempt
                 importe_iva = 0.0
                 importe_total = 0.0
-                importe_neto_no_gravado = 0.0
+                importe_neto_no_gravado = inv.amount_no_taxed
 
-                # PRUEBA
-                #import pdb
-                #pdb.set_trace()
+
+                # Procesamos las taxes
                 taxes = inv.tax_line
                 for tax in taxes:
-                    for eitax in ei_config.vat_tax_ids+ei_config.exempt_operations_tax_ids:
+                    for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
                         if eitax.tax_code_id.id == tax.tax_code_id.id:
                             if eitax.exempt_operations:
                                 importe_operaciones_exentas += tax.base
@@ -375,7 +337,7 @@ class account_invoice(osv.osv):
                 detalle['ImpTrib'] = 0.0
                 detalle['Tributos'] = None
 
-                print 'Detalle de facturacion: ', detalle
+                #print 'Detalle de facturacion: ', detalle
 
                 # Agregamos un hook para agregar tributos o IVA que pueda ser
                 # llamado de otros modulos. O mismo para modificar el detalle.
@@ -383,64 +345,37 @@ class account_invoice(osv.osv):
 
                 detalles.append(detalle)
 
-            #print 'Antes de informar'
-            # Prueba
-            #print 'Invoice Type: ', inv.type, inv.denomination_id
-            eivoucher_obj = self.pool.get('electronic.invoice.voucher_type')
-            res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
-
-            ei_voucher_type = eivoucher_obj.browse(cr, uid, res)
-            tipo_cbte = ei_voucher_type.code
-
-            pto_vta = int(inv.pos_ar_id.name)
             #print 'Detalles: ', detalles
-            result = _wsfe.fe_CAE_solicitar(pto_vta, tipo_cbte, detalles)
-            #print 'Despues de informar'
-            #print '******* result: \n', result
 
-            # Chequeamos errores y si hubo alguno se lanza la excepcion
-            msg_error = ei_config_obj.check_errors(result)
+            result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], pos, tipo_cbte, detalles, context=context)
 
-            # Chequeamos las observaciones. Si hay alguna la presentamos en el log del cliente web
-            msg_observations = ei_config_obj.check_observations(result)
+            #print result
+            # Verificamos el resultado de la Operacion
 
-            # TODO: Esto ya deberia quedar sin efecto
             # Si no fue aprobado
-            if result['result'] != 'A':
+            if result['Resultado'] != 'A':
                 msg = ''
-                if msg_error:
-                    msg = 'Errores: ' + msg_error + '\n'
-                if msg_observations:
-                    msg = msg + 'Observaciones: ' + msg_observations
+                if result['Errores']:
+                    msg = 'Errores: ' + result['Errores'] + '\n'
+                if result['Observaciones']:
+                    msg = msg + 'Observaciones: ' + result['Observaciones']
 
                 raise osv.except_osv(_('AFIP Web Service Error'),
                                      _('La factura no fue aprobada. \n%s') % msg)
-            elif result['result'] == 'A' and msg_observations:
+            elif result['Resultado'] == 'A' and result['Observaciones']:
                 # Escribimos en el log del cliente web
-                self.log(cr, uid, inv.id, msg_observations, context)
+                self.log(cr, uid, inv.id, result['Observaciones'], context)
 
-
-            #print '\n\n====== Resultado =======', result, '\n\n'
-            #print 'Resultado: ', result.FecResp
+            # TODO: Mejorar esto, es una chanchada
             caes = result['CAES']
-            number = str(int(inv.internal_number))
             for inv in self.browse(cr, uid, ids):
-                #print inv.number
-                #print caes
-                if number in caes:
-                    cae = caes[number]['cae']
-                    cae_due_date = caes[number]['cae_vto']
-                    #print 'Number: ', inv.number
+                if cbte_nro in caes:
+                    cae = caes[cbte_nro]['cae']
+                    cae_due_date = caes[cbte_nro]['cae_vto']
+                    #print 'Number: ', cbte_nro
                     #print 'CAE: ', cae
                     #print 'Vencimiento CAE: ', cae_due_date
                     self.write(cr, uid, inv.id, {'cae' : cae, 'cae_due_date' : cae_due_date})
-
-            #cae = result.FedResp.FEDetalleResponse[0].cae
-            #print 'CAE: ', cae
-            #cae_due_date = result.FedResp.FEDetalleResponse[0].fecha_vto
-            #print 'Vencimiento CAE: ', cae_due_date
-
-            #self.write(cr, uid, ids, {'cae' : cae, 'cae_due_date' : cae_due_date})
         return True
 
 account_invoice()
