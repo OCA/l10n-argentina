@@ -25,14 +25,19 @@ from tools.translate import _
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>, Anibal Alejandro Guanca <aguanca@e-mips.com.ar>"
 
 class res_document_type(osv.osv):
-	_name = 'res.document.type'
-	_description = 'Document type'
-	
-	_columns = {
-		'name': fields.char('Document type', size=40),
-		'afip_code': fields.char('Afip code', size=10),
-		'verification_required': fields.boolean('Verification required'),
-	}
+    _name = 'res.document.type'
+    _description = 'Document type'
+
+    _columns = {
+        'name': fields.char('Document type', size=40),
+        'afip_code': fields.char('Afip code', size=10),
+        'verification_required': fields.boolean('Verification required'),
+    }
+
+    _defaults = {
+        'verification_required': lambda *a: False,
+        }
+
 res_document_type()
 	
 class res_partner(osv.osv):
