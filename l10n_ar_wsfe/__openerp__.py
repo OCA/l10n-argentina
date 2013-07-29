@@ -39,7 +39,14 @@
         'account_invoice_view.xml',
         'account_invoice_workflow.xml',
     ],
-    'demo_xml': [],
+    'demo_xml': [
+        'wsfe_demo.xml',
+        ],
+    'test': [
+        'test/invoice_customer.yml',
+        'test/refund_customer.yml',
+        'test/invoice_supplier.yml',
+        ],
     'installable': True,
     'active': False,
 }

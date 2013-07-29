@@ -378,6 +378,10 @@ class account_invoice(osv.osv):
                     self.write(cr, uid, inv.id, {'cae' : cae, 'cae_due_date' : cae_due_date})
         return True
 
+    def action_open(self, cr, uid, ids, context={}, *args):
+        self.write(cr, uid, ids, {'state':'open'}, context=context)
+        return True
+
 account_invoice()
 
 

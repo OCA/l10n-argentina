@@ -249,7 +249,7 @@ class wsfe_voucher_type(osv.osv):
             if len(res) > 1:
                 raise osv.except_osv(_("Voucher type error!"), _("There is more than one voucher type that corresponds to this object"))
 
-            return res[0]
+            return self.read(cr, uid, res[0], ['code'], context=context)['code']
 
         elif model == 'account.voucher':
             voucher_model = 'voucher'
