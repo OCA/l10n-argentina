@@ -46,6 +46,7 @@
         'test/invoice_customer.yml',
         'test/refund_customer.yml',
         'test/invoice_supplier.yml',
+        'test/invoice_massive.yml',
         ],
     'installable': True,
     'active': False,

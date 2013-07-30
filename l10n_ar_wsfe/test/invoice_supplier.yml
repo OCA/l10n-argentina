@@ -73,10 +73,6 @@
     acc_id=self.browse(cr, uid, ref("wsfe_invoice_supplier0"))
     print acc_id.internal_number
     print 'CAE: ', acc_id.cae
-
-
-
-
 -
   Chequeamos que inicialmente la NC esta en estado "Draft"
 -

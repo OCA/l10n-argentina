@@ -370,9 +370,8 @@ class WSFEv1:
 
         result = self.client.service.FECAESolicitar(self.argauth, argcaereq)
 
-        observaciones = []
         errores = []
-        caes = {}
+        comprobantes = []
 
         if 'Errors' in result:
             for e in result.Errors.Err:
@@ -380,17 +379,27 @@ class WSFEv1:
                 errores.append(error)
 
         for det_response in result.FeDetResp.FECAEDetResponse:
+            observaciones = []
+            comp = {}
+
             if 'Observaciones' in det_response:
                 for o in det_response.Observaciones.Obs:
                     observacion = '%s (Err. %s)' % (o.Msg, o.Code)
                     observaciones.append(observacion)
 
-            if 'CAE' in det_response:
-                cae = {'cae': det_response.CAE, 'cae_vto': det_response.CAEFchVto,
-                       'nro_comprobante': det_response.CbteHasta, 'resultado': det_response.Resultado}
-                caes[det_response.CbteHasta] = cae
+            comp['Concepto'] = det_response.Concepto
+            comp['DocTipo'] = det_response.DocTipo
+            comp['DocNro'] = det_response.DocNro
+            comp['CbteDesde'] = det_response.CbteDesde
+            comp['CbteHasta'] = det_response.CbteHasta
+            comp['CbteFch'] = det_response.CbteFch
+            comp['Resultado'] = det_response.Resultado
+            comp['CAE'] = det_response.CAE
+            comp['CAEFchVto'] = det_response.CAEFchVto
+            comp['Observaciones'] = observaciones
+            comprobantes.append(comp)
 
-        res = {'CAES': caes, 'Errores': errores, 'Observaciones': observaciones, 'Resultado': result.FeCabResp.Resultado}
+        res = {'Comprobantes': comprobantes, 'Errores': errores, 'Resultado': result.FeCabResp.Resultado, 'Reproceso': result.FeCabResp.Reproceso}
         return res
 
 

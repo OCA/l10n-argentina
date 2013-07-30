@@ -20,6 +20,13 @@
             <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
         </record>
 
+        <record id="wsfe_pos_A0002_not_electronic_demo" model="pos.ar">
+            <field name="name">0002</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="sale.shop"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
         <record id="wsfe_config_demo" model="wsfe.config">
             <field name="company_id" ref="base.main_company"/>
             <field name="url">https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl</field>
