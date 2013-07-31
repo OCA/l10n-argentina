@@ -359,8 +359,8 @@ class WSFEv1:
                 else:
                     if k in argdetreq:
                         argdetreq[k] = v
-                    else:
-                        argdetreq[k] = None
+                    #else:
+                        #argdetreq[k] = None
 
             if len(arrayIva):
                 argdetreq.Iva.AlicIva.append(arrayIva)
@@ -399,7 +399,7 @@ class WSFEv1:
             comp['Observaciones'] = observaciones
             comprobantes.append(comp)
 
-        res = {'Comprobantes': comprobantes, 'Errores': errores, 'Resultado': result.FeCabResp.Resultado, 'Reproceso': result.FeCabResp.Reproceso}
+        res = {'Comprobantes': comprobantes, 'Errores': errores, 'PtoVta': pto_vta, 'Resultado': result.FeCabResp.Resultado, 'Reproceso': result.FeCabResp.Reproceso}
         return res
 
 

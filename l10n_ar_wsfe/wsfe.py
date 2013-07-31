@@ -23,6 +23,7 @@ from osv import osv, fields
 from tools.translate import _
 from wsfe_suds import WSFEv1 as wsfe
 from datetime import datetime
+import time
 
 
 class wsfe_tax_codes(osv.osv):
@@ -128,7 +129,7 @@ class wsfe_config(osv.osv):
 
         return msg
 
-    def get_invoice_CAE(self, cr, uid, ids, pos, voucher_type, details, context={}):
+    def get_invoice_CAE(self, cr, uid, ids, invoice_ids, pos, voucher_type, details, context={}):
         ta_obj = self.pool.get('wsaa.ta')
 
         conf = self.browse(cr, uid, ids)[0]
@@ -137,9 +138,57 @@ class wsfe_config(osv.osv):
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_CAE_solicitar(pos, voucher_type, details)
 
-        self.check_errors(cr, uid, res, raise_exception=False, context=context)
-        self.check_observations(cr, uid, res, context=context)
+        errors = self.check_errors(cr, uid, res, raise_exception=False, context=context)
+        observations = self.check_observations(cr, uid, res, context=context)
+
+        # Creamos el wsfe.request
+        self._log_wsfe_request(cr, uid, ids, pos, voucher_type, details, res, errors, observations)
         return res
+
+    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, errors, observations):
+        wsfe_req_obj = self.pool.get('wsfe.request')
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
+        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
+        voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
+
+        req_details = []
+        for index, comp in enumerate(res['Comprobantes']):
+            detail = details[index]
+
+            det = {
+                'name': detail['invoice_id'],
+                'concept': str(detail['Concepto']),
+                'doctype': detail['DocTipo'], # TODO: Poner aca el nombre del tipo de documento
+                'docnum': str(detail['DocNro']),
+                'voucher_number': comp['CbteHasta'],
+                'voucher_date': comp['CbteFch'],
+                'amount_total': detail['ImpTotal'],
+                'cae': comp['CAE'],
+                'cae_duedate': comp['CAEFchVto'],
+                'result': comp['Resultado'],
+                'observations': '\n'.join(comp['Observaciones']),
+            }
+
+            req_details.append((0, 0, det))
+
+        # Chequeamos el reproceso
+        reprocess = False
+        if res['Reproceso'] == 'S':
+            reprocess = True
+
+        vals = {
+            'voucher_type': voucher_type_name,
+            'nregs': len(details),
+            'pos_ar': '%04d' % pos,
+            'date_request': time.strftime('%Y-%m-%d %H:%M:%S'),
+            'result': res['Resultado'],
+            'reprocess': reprocess,
+            'errors': '\n'.join(res['Errores']),
+            'detail_ids': req_details,
+            }
+        print 'Valores: ', vals
+
+        wsfe_req_obj.create(cr, uid, vals)
 
     def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
         ta_obj = self.pool.get('wsaa.ta')

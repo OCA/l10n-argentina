@@ -93,7 +93,7 @@ class account_invoice_confirm(osv.osv_memory):
 
         # Llamamos a la funcion para validar contra la AFIP
         pos = int(invoice.pos_ar_id.name)
-        result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], pos, tipo_cbte, fe_det_req, context=context)
+        result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], context['active_ids'], pos, tipo_cbte, fe_det_req, context=context)
         context['raise-exception'] = False
         invoices_approbed = inv_obj._parse_result(cr, uid, context['active_ids'], result, context=context)
 

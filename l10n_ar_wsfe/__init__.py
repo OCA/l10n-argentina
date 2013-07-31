@@ -21,3 +21,4 @@
 import wsfe
 import invoice
 import wizard
+import wsfe_request

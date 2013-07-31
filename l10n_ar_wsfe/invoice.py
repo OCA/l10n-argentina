@@ -438,6 +438,8 @@ class account_invoice(osv.osv):
 
             date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
 
+            detalle['invoice_id'] = inv.id
+
             detalle['Concepto'] = 1 # Hardcodeado 'Productos'
             detalle['DocTipo'] = doc_type
             detalle['DocNro'] = doc_num
@@ -535,7 +537,7 @@ class account_invoice(osv.osv):
 
             fe_det_req = self.wsfe_invoice_prepare_detail(cr, uid, ids, context=context)
 
-            result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], pos, tipo_cbte, fe_det_req, context=context)
+            result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], [inv.id], pos, tipo_cbte, fe_det_req, context=context)
             self._parse_result(cr, uid, ids, result, context=context)
 
         return True
@@ -561,6 +563,7 @@ class account_invoice(osv.osv):
         elif result['Resultado'] == 'A' or result['Resultado'] == 'P':
             index = 0
             for inv in self.browse(cr, uid, ids):
+                invoice_vals = {}
                 comp = result['Comprobantes'][index]
                 if comp['Observaciones']:
                     msg = 'Observaciones: ' + '\n'.join(comp['Observaciones'])
@@ -575,12 +578,17 @@ class account_invoice(osv.osv):
                 cbte = True
                 if inv.internal_number:
                     cbte = comp['CbteHasta'] == int(inv.internal_number.split('-')[1])
+                else:
+                    # TODO: El nro de factura deberia unificarse para que se setee en una funcion
+                    # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
+                    invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
 
                 if not all([doc_tipo, doc_num, cbte]):
                     raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
 
                 if comp['Resultado'] == 'A':
-                    invoice_vals = {'cae': comp['CAE'], 'cae_due_date': comp['CAEFchVto']}
+                    invoice_vals['cae'] = comp['CAE']
+                    invoice_vals['cae_due_date'] = comp['CAEFchVto']
                     self.write(cr, uid, inv.id, invoice_vals)
                     invoices_approbed.append(inv.id)
 
