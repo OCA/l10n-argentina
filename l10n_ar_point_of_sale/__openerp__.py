@@ -21,7 +21,7 @@
 {
     "name": "Point of Sale ARGENTINA",
     "version": "1.0",
-    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant" ],
+    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant", "base_vat_ar" ],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -38,8 +38,11 @@
         'partner_view.xml',
         'account_view.xml',
         'security/ir.model.access.csv',
+        'partner_data.xml',
     ],
-    'demo_xml': [],
+    'demo_xml': [
+        'partner_demo.xml',
+        ],
     'installable': True,
     'active': False,
 }
