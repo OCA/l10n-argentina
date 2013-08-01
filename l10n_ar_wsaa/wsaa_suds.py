@@ -66,7 +66,7 @@ class WSAA:
         gentime.text = tsgen.isoformat()
 
         # expirationTime
-        tsexp = datetime.fromtimestamp(timestamp+2400)
+        tsexp = datetime.fromtimestamp(timestamp+14400)
         exptime = etree.SubElement(header, 'expirationTime')
         exptime.text = tsexp.isoformat()
      

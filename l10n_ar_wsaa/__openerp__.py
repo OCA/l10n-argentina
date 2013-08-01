@@ -22,7 +22,7 @@
 {
     "name": "WSAA",
     "version": "1.0",
-    "depends": ["base"],
+    "depends": ["base", "account"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -42,7 +42,9 @@
         'wizard/wsaa_load_config_view.xml',
         'wsaa_view.xml',
     ],
-    'demo_xml': [],
+    'demo_xml': [
+        'wsaa_demo.xml',
+        ],
     'installable': True,
     'active': False,
 }
