@@ -58,8 +58,8 @@ class wsfe_request_detail(osv.osv):
         'voucher_number' : fields.integer('Voucher Number', readonly=True),
         'voucher_date' : fields.date('Voucher Date', readonly=True),
         'amount_total' : fields.char('Amount Total', size=64, readonly=True),
-        'cae' : fields.char('CAE', required=True, readonly=True, size=64),
-        'cae_duedate' : fields.date('CAE Due Date', required=True, readonly=True),
+        'cae' : fields.char('CAE', required=False, readonly=True, size=64),
+        'cae_duedate' : fields.date('CAE Due Date', required=False, readonly=True),
         'result' : fields.selection([('A', 'Approved'),('R', 'Rejected')], 'Result', readonly=True),
         'observations' : fields.text('Observations', readonly=True),
     }

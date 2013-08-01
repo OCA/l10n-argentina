@@ -138,14 +138,9 @@ class wsfe_config(osv.osv):
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_CAE_solicitar(pos, voucher_type, details)
 
-        errors = self.check_errors(cr, uid, res, raise_exception=False, context=context)
-        observations = self.check_observations(cr, uid, res, context=context)
-
-        # Creamos el wsfe.request
-        self._log_wsfe_request(cr, uid, ids, pos, voucher_type, details, res, errors, observations)
         return res
 
-    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, errors, observations):
+    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
         wsfe_req_obj = self.pool.get('wsfe.request')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
         voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
@@ -186,9 +181,8 @@ class wsfe_config(osv.osv):
             'errors': '\n'.join(res['Errores']),
             'detail_ids': req_details,
             }
-        print 'Valores: ', vals
 
-        wsfe_req_obj.create(cr, uid, vals)
+        return wsfe_req_obj.create(cr, uid, vals)
 
     def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
         ta_obj = self.pool.get('wsaa.ta')

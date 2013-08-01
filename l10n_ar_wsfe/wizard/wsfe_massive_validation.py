@@ -93,9 +93,12 @@ class account_invoice_confirm(osv.osv_memory):
 
         # Llamamos a la funcion para validar contra la AFIP
         pos = int(invoice.pos_ar_id.name)
+
         result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], context['active_ids'], pos, tipo_cbte, fe_det_req, context=context)
         context['raise-exception'] = False
         invoices_approbed = inv_obj._parse_result(cr, uid, context['active_ids'], result, context=context)
+
+        req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
         invoices_not_approbed = [j for j in context['active_ids'] if j not in invoices_approbed]
 
@@ -117,13 +120,21 @@ class account_invoice_confirm(osv.osv_memory):
         for invoice in inv_obj.browse(cr, uid, invoices_not_approbed):
             move_id = invoice.move_id.id
             move_ids.append(move_id)
-            inv_obj.write(cr, uid, invoice.id, {'move_id': False})
+            # Y borramos otros campos que ya no deben estar seteados
+            vals = {'move_id': False, 'date_invoice': False}
+            inv_obj.write(cr, uid, invoice.id, vals)
 
         move_obj.unlink(cr, uid, move_ids)
 
         # TODO: Ver que pasa con las account_analytic_lines
-
-        return {'type': 'ir.actions.act_window_close'}
-
+        return {
+            'name': _('WSFE Request'),
+            'domain' : "[('id','=',%s)]"%(req_id),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'wsfe.request',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+        }
 
 account_invoice_confirm()

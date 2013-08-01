@@ -22,6 +22,7 @@
 from osv import osv, fields
 from datetime import datetime
 from tools.translate import _
+import pooler
 import time
 import re
 
@@ -414,8 +415,8 @@ class account_invoice(osv.osv):
             detalle = {}
 
             fiscal_position = inv.fiscal_position
-            doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or 99
-            doc_num = inv.partner_id.vat
+            doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
+            doc_num = inv.partner_id.vat or '0'
 
             if not fiscal_position:
                 raise osv.except_osv(_('Customer Configuration Error'),
@@ -538,7 +539,27 @@ class account_invoice(osv.osv):
             fe_det_req = self.wsfe_invoice_prepare_detail(cr, uid, ids, context=context)
 
             result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], [inv.id], pos, tipo_cbte, fe_det_req, context=context)
-            self._parse_result(cr, uid, ids, result, context=context)
+
+            new_cr = False
+            try:
+                self._parse_result(cr, uid, ids, result, context=context)
+            except Exception, e:
+                new_cr = cr.dbname
+                cr.rollback()
+                raise e
+            finally:
+                # Creamos el wsfe.request con otro cursor, porque puede pasar que
+                # tengamos una excepcion e igualmente, tenemos que escribir la request
+                # Sino al hacer el rollback se pierde hasta el wsfe.request
+                if new_cr:
+                    cr2 = pooler.get_db(new_cr).cursor()
+                else:
+                    cr2 = cr
+
+                wsfe_conf_obj._log_wsfe_request(cr2, uid, ids, pos, tipo_cbte, fe_det_req, result)
+                if new_cr:
+                    cr2.commit()
+                    cr2.close()
 
         return True
 
@@ -572,7 +593,7 @@ class account_invoice(osv.osv):
                     #self.log(cr, uid, inv.id, msg, context)
 
                 # Chequeamos que se corresponda con la factura que enviamos a validar
-                doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or 99
+                doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
                 doc_num = comp['DocNro'] == int(inv.partner_id.vat)
                 cbte = True
