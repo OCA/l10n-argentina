@@ -38,21 +38,38 @@ class invoice(osv.osv):
 
         res = []
         types = {
-                'out_invoice': _('CI: '),
-                'in_invoice': _('SI: '),
-                'out_refund': _('OR: '),
-                'in_refund': _('SR: '),
+                'out_invoice': _('CI '),
+                'in_invoice': _('SI '),
+                'out_refund': _('CR '),
+                'in_refund': _('SR '),
+                'out_debit': _('CD '),
+                'in_debit': _('SD '),
                 }
 
-        if not context.get('use_internal_number', False):
+        if not context.get('use_internal_number', True):
             res = super(invoice, self).name_get( cr, uid, ids, context=context)
         else:
-            reads = self.read(cr, uid, ids, ['pos_ar_id', 'type', 'internal_number', 'denomination_id'], context=context)
+            reads = self.read(cr, uid, ids, ['pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'denomination_id'], context=context)
             for record in reads:
-                if record['type'] in ('out_invoice', 'out_refund'):
-                    name = types[record['type']] + record['pos_ar_id'][1] + '-' + record['internal_number']
-                else:
-                    name = types[record['type']] + record['denomination_id'][1] + ' ' + record['internal_number']
+                type = record['type']
+                rtype = type
+                number = record['internal_number'] or ''
+                denom = record['denomination_id'] and record['denomination_id'][1] or ''
+                debit_note = record['is_debit_note']
+
+                # Chequeo de Nota de Debito
+                if type == 'out_invoice':
+                    if debit_note:
+                        rtype = 'out_debit'
+                    else:
+                        rtype = 'out_invoice'
+                elif type == 'in_invoice':
+                    if debit_note:
+                        rtype = 'in_debit'
+                    else:
+                        rtype = 'in_invoice'
+
+                name = types[rtype] + denom + number
                 res.append((record['id'], name))
 
         return res
@@ -64,13 +81,15 @@ class invoice(osv.osv):
             context = {}
         ids = []
 
-        if not context.get('use_internal_number', False):
+        if not context.get('use_internal_number', True):
             return super(invoice, self).name_search( cr, user, name, args, operator, context=context, limit=limit)
         else:
             if name:
                 ids = self.search(cr, user, [('internal_number','=',name)] + args, limit=limit, context=context)
             if not ids:
                 ids = self.search(cr, user, [('internal_number',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('pos_ar.name',operator,name)] + args, limit=limit, context=context)
 
         return self.name_get(cr, user, ids, context)
 
@@ -125,10 +144,9 @@ class invoice(osv.osv):
             ('in_invoice','Supplier Invoice'),
             ('out_refund','Customer Refund'),
             ('in_refund','Supplier Refund'),
-            ('out_debit','Customer Debit'),
-            ('in_debit','Supplier Debit'),
             ],'Type', readonly=True, select=True, change_default=True),
         'pos_ar_id' : fields.many2one('pos.ar','Point of Sale'),
+        'is_debit_note': fields.boolean('Debit Note'),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
         'internal_number': fields.char('Invoice Number', size=32, help="Unique number of the invoice, computed automatically when the invoice is created."),
         'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
@@ -174,6 +192,10 @@ class invoice(osv.osv):
             },
             multi='all'),
     }
+
+    _defaults = {
+            'is_debit_note': lambda *a: False,
+            }
 
     def _check_fiscal_values(self, cr, uid, inv):
         # Si es factura de cliente
