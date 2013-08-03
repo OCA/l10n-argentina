@@ -318,9 +318,9 @@ class account_invoice(osv.osv):
         invoice_vals = {}
         invtype = None
 
-#        #TODO: not correct fix but required a frech values before reading it.
-#        #self.write(cr, uid, ids, {})
-#        context['use_internal_number'] = True
+        #TODO: not correct fix but required a fresh values before reading it.
+        # Esto se usa para forzar a que recalcule los campos funcion
+        self.write(cr, uid, ids, {})
 
         for obj_inv in self.browse(cr, uid, ids, context=context):
             id = obj_inv.id
@@ -374,10 +374,12 @@ class account_invoice(osv.osv):
 
                 internal_number = obj_inv.internal_number
 
+            # Escribimos los campos necesarios de la factura
+            self.write(cr, uid, obj_inv.id, invoice_vals)
+
             if not reference:
-                # TODO: Poner el nombre de la factura toda. A0001-00000001
-                # Podemos usar la funcion del l10n_ar_point_of_sale que devuelve el nombre completo
-                ref = internal_number
+                invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
+                ref = invoice_name
             else:
                 ref = reference
 
@@ -388,9 +390,6 @@ class account_invoice(osv.osv):
             # Lo sacamos para permitir la validacion por lote. Ver wizard account.invoice.confirm
             move_id = obj_inv.move_id and obj_inv.move_id.id or False
             self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':obj_inv})
-
-            # Escribimos los campos necesarios de la factura
-            self.write(cr, uid, obj_inv.id, invoice_vals)
 
             for inv_id, name in self.name_get(cr, uid, [id], context=context):
                 ctx = context.copy()
@@ -542,7 +541,9 @@ class account_invoice(osv.osv):
 
             new_cr = False
             try:
-                self._parse_result(cr, uid, ids, result, context=context)
+                invoices_approbed = self._parse_result(cr, uid, ids, result, context=context)
+                for invoice_id, invoice_vals in invoices_approbed.iteritems():
+                    self.write(cr, uid, invoice_id, invoice_vals)
             except Exception, e:
                 new_cr = cr.dbname
                 cr.rollback()
@@ -568,7 +569,7 @@ class account_invoice(osv.osv):
         if not context:
             context = {}
 
-        invoices_approbed = []
+        invoices_approbed = {}
 
         # Verificamos el resultado de la Operacion
         # Si no fue aprobado
@@ -610,8 +611,9 @@ class account_invoice(osv.osv):
                 if comp['Resultado'] == 'A':
                     invoice_vals['cae'] = comp['CAE']
                     invoice_vals['cae_due_date'] = comp['CAEFchVto']
-                    self.write(cr, uid, inv.id, invoice_vals)
-                    invoices_approbed.append(inv.id)
+                    invoices_approbed[inv.id] = invoice_vals
+                    #self.write(cr, uid, inv.id, invoice_vals)
+                    #invoices_approbed.append(inv.id)
 
                 index += 1
 

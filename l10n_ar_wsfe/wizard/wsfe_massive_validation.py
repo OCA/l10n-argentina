@@ -100,17 +100,28 @@ class account_invoice_confirm(osv.osv_memory):
 
         req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
-        invoices_not_approbed = [j for j in context['active_ids'] if j not in invoices_approbed]
+        invoices_not_approbed = [j for j in context['active_ids'] if j not in invoices_approbed.keys()]
 
         # Seguimos adelante con el workflow para todas las que fueron aprobadas
-        for invoice in inv_obj.browse(cr, uid, invoices_approbed):
-            ref = invoice.internal_number
-            inv_obj._update_reference(cr, uid, invoice, ref, context)
+        #for invoice in inv_obj.browse(cr, uid, invoices_approbed):
+        for invoice_id, invoice_vals in invoices_approbed.iteritems():
+            invoice = inv_obj.browse(cr, uid, invoice_id)
 
             # Como sacamos el post de action_move_create, lo tenemos que poner aqui
             # Lo sacamos para permitir la validacion por lote. Ver wizard account.invoice.confirm
             move_id = invoice.move_id and invoice.move_id.id or False
             self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':invoice})
+
+            inv_obj.write(cr, uid, invoice_id, invoice_vals)
+
+            reference = invoice.reference or ''
+            if not reference:
+                invoice_name = inv_obj.name_get(cr, uid, [invoice_id])[0][1]
+                ref = invoice_name
+            else:
+                ref = reference
+
+            inv_obj._update_reference(cr, uid, invoice, ref, context)
 
             # Llamamos al workflow para que siga su curso
             wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_massive_open', cr)
