@@ -274,7 +274,7 @@ class account_invoice(osv.osv):
 
         return True
 
-    def _get_next_number(self, cr, uid, inv, context=None):
+    def _get_next_wsfe_number(self, cr, uid, inv, context=None):
         wsfe_conf_obj = self.pool.get('wsfe.config')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
 
@@ -306,6 +306,22 @@ class account_invoice(osv.osv):
                     'AND account_analytic_line.move_id = account_move_line.id',
                     (ref, move_id))
         return True
+
+    def get_next_invoice_number(self, cr, uid, invoice, context=None):
+        """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
+
+        # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
+        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type))
+        last_number = cr.fetchone()
+
+        # Si no devuelve resultados, es porque es el primero
+        if not last_number or not last_number[0]:
+            next_number = 1
+        else:
+            next_number = last_number[0] + 1
+
+        return next_number
+
 
     def action_number(self, cr, uid, ids, context=None):
         wsfe_conf_obj = self.pool.get('wsfe.config')
@@ -339,22 +355,13 @@ class account_invoice(osv.osv):
             if invtype in ('out_invoice', 'out_refund'):
 
                 pos_ar = obj_inv.pos_ar_id
-
-                # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
-                cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s", (pos_ar.id, ('open', 'paid', 'cancel',), invtype))
-                last_number = cr.fetchone()
-
-                # Si no devuelve resultados, es porque es el primero
-                if not last_number or not last_number[0]:
-                    next_number = 1
-                else:
-                    next_number = last_number[0] + 1
+                next_number = self.get_next_invoice_number(cr, uid, obj_inv, context=context)
 
                 # Chequeamos si corresponde Factura Electronica
                 # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
                 if obj_inv.pos_ar_id in conf.point_of_sale_ids:
                     invoice_vals['aut_cae'] = True
-                    fe_next_number = self._get_next_number(cr, uid, obj_inv, context=context)
+                    fe_next_number = self._get_next_wsfe_number(cr, uid, obj_inv, context=context)
 
                     if fe_next_number != next_number:
                         raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
