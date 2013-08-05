@@ -333,32 +333,42 @@ class account_invoice(osv.osv):
             # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
             # si el usuario hizo un ingreso dejo ese numero
             internal_number = False
+            next_number = False
 
             # Si son de Cliente
             if invtype in ('out_invoice', 'out_refund'):
 
                 pos_ar = obj_inv.pos_ar_id
 
+                # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
+                cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s", (pos_ar.id, ('open', 'paid', 'cancel',), invtype))
+                last_number = cr.fetchone()
+
+                # Si no devuelve resultados, es porque es el primero
+                if not last_number or not last_number[0]:
+                    next_number = 1
+                else:
+                    next_number = last_number[0] + 1
+
                 # Chequeamos si corresponde Factura Electronica
                 # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
                 if obj_inv.pos_ar_id in conf.point_of_sale_ids:
                     invoice_vals['aut_cae'] = True
-                    next_number = self._get_next_number(cr, uid, obj_inv, context=context)
+                    fe_next_number = self._get_next_number(cr, uid, obj_inv, context=context)
+
+                    if fe_next_number != next_number:
+                        raise osv.except_osv(_("WSFE Error!"), _("The next number does not corresponds to that obtained from AFIP WSFE"))
 
                 # Si no es Factura Electronica...
                 else:
                     # Nos fijamos si el usuario dejo en blanco el campo de numero de factura
-                    if not obj_inv.internal_number:
-                        cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type=%s", (pos_ar.id, ('open', 'paid', 'cancel',), invtype))
-                        max_number = cr.fetchone()
-                        # Si no devuelve resultados, es porque es el primero
-                        if not max_number or not max_number[0]:
-                            next_number = 1
-                        else:
-                            next_number = max_number[0] + 1
+                    if obj_inv.internal_number:
+                        internal_number = obj_inv.internal_number
 
                 # Lo ponemos como en Proveedores, o sea, A0001-00000001
-                internal_number = '%s-%08d' % (pos_ar.name, next_number)
+                if not internal_number:
+                    internal_number = '%s-%08d' % (pos_ar.name, next_number)
+
                 m = re.match('^[0-9]{4}-[0-9]{8}$', internal_number)
                 if not m:
                     raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
@@ -371,8 +381,6 @@ class account_invoice(osv.osv):
                 m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
                 if not m:
                     raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
-
-                internal_number = obj_inv.internal_number
 
             # Escribimos los campos necesarios de la factura
             self.write(cr, uid, obj_inv.id, invoice_vals)
