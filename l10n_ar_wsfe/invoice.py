@@ -357,7 +357,7 @@ class account_invoice(osv.osv):
                     fe_next_number = self._get_next_number(cr, uid, obj_inv, context=context)
 
                     if fe_next_number != next_number:
-                        raise osv.except_osv(_("WSFE Error!"), _("The next number does not corresponds to that obtained from AFIP WSFE"))
+                        raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
 
                 # Si no es Factura Electronica...
                 else:

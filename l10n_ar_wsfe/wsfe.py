@@ -198,6 +198,49 @@ class wsfe_config(osv.osv):
         last = res['response'].CbteNro
         return last
 
+    def get_voucher_info(self, cr, uid, ids, pos, voucher_type, number, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+        res = _wsfe.fe_comp_consultar(pos, voucher_type, number)
+
+        self.check_errors(cr, uid, res, context=context)
+        self.check_observations(cr, uid, res, context=context)
+        #last = res['response'].CbteNro
+
+        res = res['response']
+
+        result = {
+            'DocTipo' : res[0].DocTipo,
+            'DocNro' : res[0].DocNro,
+            'CbteDesde' : res[0].CbteDesde,
+            'CbteHasta' : res[0].CbteHasta,
+            'CbteFch' : res[0].CbteFch,
+            'ImpTotal' : res[0].ImpTotal,
+            'ImpTotConc' : res[0].ImpTotConc,
+            'ImpNeto' : res[0].ImpNeto,
+            'ImpOpEx' : res[0].ImpOpEx,
+            'ImpTrib' : res[0].ImpTrib,
+            'ImpIVA' : res[0].ImpIVA,
+            'FchServDesde' : res[0].FchServDesde,
+            'FchServHasta' : res[0].FchServHasta,
+            'FchVtoPago' : res[0].FchVtoPago,
+            'MonId' : res[0].MonId,
+            'MonCotiz' : res[0].MonCotiz,
+            'Resultado' : res[0].Resultado,
+            'CodAutorizacion' : res[0].CodAutorizacion,
+            'EmisionTipo' : res[0].EmisionTipo,
+            'FchVto' : res[0].FchVto,
+            'FchProceso' : res[0].FchProceso,
+            'PtoVta' : res[0].PtoVta,
+            'CbteTipo' : res[0].CbteTipo,
+        }
+
+        return result
+
     def read_tax(self, cr, uid , ids , context={}):
         ta_obj = self.pool.get('wsaa.ta')
 

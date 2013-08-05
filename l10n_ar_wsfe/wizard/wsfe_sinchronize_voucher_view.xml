@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_wsfe_sinchronize_voucher" model="ir.ui.view">
+            <field name="name">WSFE Sinchronize Voucher</field>
+            <field name="model">wsfe.sinchronize.voucher</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="WSFE Sinchronize Voucher">
+                    <separator colspan="4" string="Query Information" />
+                    <group colspan="4" col="6">
+                        <field name="voucher_type"/>
+                        <field name="pos_id"/>
+                        <field name="voucher_number"/>
+                    </group>
+                    <separator string="Voucher Information" colspan="4"/>
+                    <group colspan="4" col="6">
+                        <group colspan="4">
+                            <field name="document_type"/>
+                            <field name="document_number"/>
+                            <field name="date_process"/>
+                            <field name="date_invoice"/>
+                            <field name="cae"/>
+                            <field name="cae_due_date"/>
+                        </group>
+                        <group colspan="2" col="2">
+                            <field name="amount_no_taxed"/>
+                            <field name="amount_exempt"/>
+                            <field name="amount_taxed"/>
+                            <field name="amount_tax"/>
+                            <field name="amount_total"/>
+                            <!--<field name="amount_untaxed"/>-->
+                            <!--<field name="currency"/>-->
+                        </group>
+                    </group>
+                    <field name="infook" invisible="1"/>
+                    <group name="invoice" colspan="4" attrs="{'invisible': [('infook','=',False)]}">
+                        <separator string="Invoice Relationship" colspan="4"/>
+                        <field name="invoice_id" domain="[('amount_total','=',amount_total),('partner_id.vat','=',document_number),('amount_exempt','=',amount_exempt),('amount_taxed','=',amount_taxed),('amount_no_taxed','=',amount_no_taxed),('state','in',('draft','proforma2','proforma'))]"/>
+                    </group>
+                    <separator colspan="4"/>
+				    <group col="4" colspan="4">
+                        <button icon='gtk-stop' special="cancel"
+                            string="Cancel" />
+                        <button name="get_voucher_info" string="Get Info"
+                            colspan="1" type="object" icon="gtk-print"
+                            attrs="{'invisible': [('infook','=',True)]}"/>
+                        <button name="relate_invoice" string="Relate"
+                            colspan="1" type="object" icon="gtk-convert"
+                            attrs="{'invisible': [('infook','=',False)]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+    <act_window name="WSFE Sinchronize Voucher"
+      res_model="wsfe.sinchronize.voucher"
+      src_model="account.invoice"
+      view_mode="form"
+      target="new"
+      key2="client_action_multi"
+      id="action_wsfe_sinchronize_voucher"/>
+
+    </data>
+</openerp>

@@ -38,6 +38,7 @@
         'wsfe_view.xml',
         'account_invoice_view.xml',
         'account_invoice_workflow.xml',
+        'wizard/wsfe_sinchronize_voucher_view.xml',
     ],
     'demo_xml': [
         'wsfe_demo.xml',
