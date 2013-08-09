@@ -432,6 +432,22 @@ class account_invoice(osv.osv):
             doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
             doc_num = inv.partner_id.vat or '0'
 
+            # Chequeamos si el concepto es producto, servicios o productos y servicios
+            product_service = [l.product_id.type for l in inv.invoice_line]
+
+            service = all([ps == 'service' for ps in product_service])
+            products = all([ps == 'consu' or ps == 'product' for ps in product_service])
+
+            # Calculamos el concepto de la factura, dependiendo de las
+            # lineas de productos que se estan vendiendo
+            concept = None
+            if products:
+                concept = 1 # Productos
+            elif service:
+                concept =  2 # Servicios
+            else:
+                concept = 3 # Productos y Servicios
+
             if not fiscal_position:
                 raise osv.except_osv(_('Customer Configuration Error'),
                                     _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
@@ -455,7 +471,7 @@ class account_invoice(osv.osv):
 
             detalle['invoice_id'] = inv.id
 
-            detalle['Concepto'] = 1 # Hardcodeado 'Productos'
+            detalle['Concepto'] = concept
             detalle['DocTipo'] = doc_type
             detalle['DocNro'] = doc_num
             detalle['CbteDesde'] = cbte_nro
