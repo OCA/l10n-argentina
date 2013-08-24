@@ -21,6 +21,10 @@
 
 from osv import osv
 
+# TODO: Hardcodeamos el codigo porque es por a nivel Jurisdiccional
+# Despues podemos pensar algo mejor
+codes = {'nacional': '1', 'provincial': '2', 'municipal': '3'}
+
 
 class account_invoice(osv.osv):
     _name = "account.invoice"
@@ -28,6 +32,15 @@ class account_invoice(osv.osv):
 
     def hook_add_taxes(self, cr, uid, inv, detalle):
         detalle = super(account_invoice, self).hook_add_taxes(cr, uid, inv, detalle)
+        perc_array = []
+
+        for perception in inv.perception_ids:
+            print perception.name, perception.base, perception.amount
+            code = codes[perception.perception_id.jurisdiccion]
+            perc = {'Id': code, 'BaseImp': perception.base, 'Importe': perception.amount, 'Alic': 0.0}
+            perc_array.append(perc)
+
+        detalle['Tributos'] = perc_array
         return detalle
 
 account_invoice()
