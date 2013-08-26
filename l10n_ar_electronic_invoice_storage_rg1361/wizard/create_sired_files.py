@@ -108,58 +108,88 @@ class create_sired_files(osv.osv_memory):
 
     def _get_partner_name(self, invoice):
         # El nombre del partner se corta en 30 o se le agregan espacios para completar
-        # TODO: HORRIBLE, cambiar esto URGENTE!!!! No se puede chequear asi esto
-        if invoice.fiscal_position.name == 'Consumidor Final':
-            if invoice.amount_total <= 1000.0:
-                return ustr('%-30s') % 'CONSUMIDOR FINAL'
-            elif invoice.partner_id.vat:
-                val = ustr('%-30s') % invoice.partner_id.name
-                partner_name = val[0:30]
-                return partner_name
-            else:
-                raise osv.except_osv(_('Error!'), _('Cannot get identifier document for partner %s') % invoice.partner_id.name)
+        if int(invoice.fiscal_position.afip_code) == 5 and invoice.amount_total <= 1000.0:
+            return ustr('%-30s') % 'CONSUMIDOR FINAL'
 
         val = ustr('%-30s') % invoice.partner_id.name
         partner_name = val[0:30]
         return partner_name
 
 
-    # TODO: Pasar a account.invoice en l10n_ar_point_of_sale esta funcion
-    # que tambien se puede utilizar desde electronic_invoice
-    def _get_amounts_and_vat_taxes(self, cr, uid, inv, ei_config):
-        iva_array = []
-
-        importe_neto = 0.0
-        importe_operaciones_exentas = 0.0
-        importe_iva = 0.0
-        importe_total = 0.0
-        importe_neto_no_gravado = 0.0
-
-#        ei_config_obj = self.pool.get('electronic.invoice.config')
-#        res = ei_config_obj.search(cr, uid, [('company_id', '=', inv.company_id.id)])
-#        if not len(res):
-#            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
+#    # TODO: Pasar a account.invoice en l10n_ar_point_of_sale esta funcion
+#    # que tambien se puede utilizar desde electronic_invoice
+#    def _get_amounts_and_vat_taxes(self, cr, uid, inv, ei_config):
+#        iva_array = []
 #
-#        ei_config = ei_config_obj.browse(cr, uid, res[0])
+#        importe_neto = 0.0
+#        importe_operaciones_exentas = 0.0
+#        importe_iva = 0.0
+#        importe_total = 0.0
+#        importe_neto_no_gravado = 0.0
+#
+##        ei_config_obj = self.pool.get('electronic.invoice.config')
+##        res = ei_config_obj.search(cr, uid, [('company_id', '=', inv.company_id.id)])
+##        if not len(res):
+##            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
+##
+##        ei_config = ei_config_obj.browse(cr, uid, res[0])
+#
+#        taxes = inv.tax_line
+#        for tax in taxes:
+#            for eitax in ei_config.vat_tax_ids+ei_config.exempt_operations_tax_ids:
+#                if eitax.tax_code_id.id == tax.tax_code_id.id:
+#                    if eitax.exempt_operations:
+#                        importe_operaciones_exentas += tax.base
+#                    else:
+#                        importe_iva += tax.amount
+#                        importe_neto += tax.base
+#                        iva2 = {'Id': int(eitax.code), 'IVA': eitax.tax_id.amount, 'BaseImp': tax.base, 'Importe': tax.amount}
+#                        iva_array.append(iva2)
+#
+#        importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva
+#        return importe_total, importe_neto, importe_neto_no_gravado, importe_operaciones_exentas, importe_iva, iva_array
 
-        taxes = inv.tax_line
+    def _get_invoice_vat_taxes(self, cr, uid, invoice, context=None):
+        # TODO: Cambiar esto. Lo mejor seria que el codigo de AFIP este en el mismo impuesto
+        # y no tener que hacer este for que no tiene mucho sentido.
+        wsfe_conf_obj = self.pool.get('wsfe.config')
+        conf = wsfe_conf_obj.get_config(cr, uid)
+
+        iva_array = []
+        taxes = invoice.tax_line
+        importe_neto = 0.0
+        importe_iva = 0.0
+        importe_tributos = 0.0
+
         for tax in taxes:
-            for eitax in ei_config.vat_tax_ids+ei_config.exempt_operations_tax_ids:
+            found = False
+            for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
                 if eitax.tax_code_id.id == tax.tax_code_id.id:
+                    found = True
                     if eitax.exempt_operations:
-                        importe_operaciones_exentas += tax.base
+                        pass
                     else:
                         importe_iva += tax.amount
                         importe_neto += tax.base
+                        #iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
                         iva2 = {'Id': int(eitax.code), 'IVA': eitax.tax_id.amount, 'BaseImp': tax.base, 'Importe': tax.amount}
                         iva_array.append(iva2)
+            if not found:
+                importe_tributos += tax.amount
 
-        importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva
-        return importe_total, importe_neto, importe_neto_no_gravado, importe_operaciones_exentas, importe_iva, iva_array
+        return iva_array
 
-    def _get_operation_code(self, cr, uid, importe_iva, neto_no_gravado, invoice):
-        if importe_iva == 0 and neto_no_gravado != 0:
-            raise osv.except_osv(_('Error'), _('You have to specify type of operation'))
+    def _get_operation_code(self, cr, uid, invoice):
+        # TODO: Aca tendriamos que darle la opcion al usuario de que llene el codigo de operacion
+        # Si el impuesto liquidado (campo 15) es igual a cero (0) y el importe total de conceptos que no integran el precio neto gravado (campo 13) es distinto de cero, se deberá completar de acuerdo con la siguiente codificación:
+        # Z- Exportaciones a la zona franca.
+        # X- Exportaciones al Exterior.
+        # E- Operaciones Exentas.
+        # N- No Gravado
+        # En caso contrario se completará con espacios.
+        if invoice.amount_tax == 0 and invoice.amount_no_taxed != 0:
+            #raise osv.except_osv(_('Error'), _('You have to specify type of operation'))
+            return 'E'
         return ' '
 
     def _get_voucher_type(self, cr, uid, invoice):
@@ -173,24 +203,21 @@ class create_sired_files(osv.osv_memory):
 
     def _get_identifier_document_code_and_number(self, cr, uid, invoice):
         partner = invoice.partner_id
-        # TODO: Deberiamos agregar tipo de documento
-        if partner.vat:
-            return '80', partner.vat
-        else:
-            if invoice.amount_total<=1000:
+        if partner.document_type_id.afip_code == '99':
+            if invoice.amount_total <= 1000:
                 return '99', '0'*11
             else:
-                raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s-%s because amount total is greater than 1000 and partner has not got document identification') % (invoice.denomination_id.name, invoice.pos_ar_id.name, invoice.internal_number))
+                raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because amount total is greater than 1000 and partner has not got document identification') % (invoice.denomination_id.name, invoice.internal_number))
+
+        code = partner.document_type_id and partner.document_type_id.afip_code or False
+        if not code or not partner.vat:
+            raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because partner has not got document identification') % (invoice.denomination_id.name, invoice.internal_number))
+
+        return code, partner.vat
 
     def _generate_head_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
-        ei_config_obj = self.pool.get('electronic.invoice.config')
-
-        res = ei_config_obj.search(cr, uid, [('company_id', '=', company.id)])
-        if not len(res):
-            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
-
-        ei_config = ei_config_obj.browse(cr, uid, res[0])
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
 
         importe_total_reg1 = 0.0
         importe_total_neto_no_gravado_reg1 = 0.0
@@ -210,27 +237,30 @@ class create_sired_files(osv.osv_memory):
 
             code, number = self._get_identifier_document_code_and_number(cr, uid, invoice)
 
-            importe_total, importe_neto, importe_neto_no_gravado, importe_operaciones_exentas, importe_iva, iva_array = self._get_amounts_and_vat_taxes(cr, uid, invoice, ei_config)
-            importe_total_reg1 += importe_total
-            importe_total_neto_no_gravado_reg1 += importe_neto_no_gravado
-            importe_total_neto_reg1 += importe_neto
-            importe_total_iva_reg1 += importe_iva
-            importe_total_operaciones_exentas_reg1 += importe_operaciones_exentas
+            importe_total_reg1 += invoice.amount_total
+            importe_total_neto_no_gravado_reg1 += invoice.amount_no_taxed
+            importe_total_neto_reg1 += invoice.amount_taxed
+            importe_total_iva_reg1 += invoice.amount_tax
+            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt
+
+            pos_ar, invoice_number = invoice.internal_number.split('-')
+            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
 
             # 'tipo_registro'
             type1_reg.append('1')
             # 'fecha_comprobante'
             type1_reg.append(date_invoice)
             # 'tipo_comprobante'
-            type1_reg.append(self._get_voucher_type(cr, uid, invoice))
+            #type1_reg.append(self._get_voucher_type(cr, uid, invoice))
+            type1_reg.append(tipo_cbte)
             # 'controlador'
             type1_reg.append(' ')
             # 'punto_venta'
-            type1_reg.append(invoice.pos_ar_id.name)
+            type1_reg.append(pos_ar)
             # 'numero_comprobante'
-            type1_reg.append(invoice.internal_number)
+            type1_reg.append(invoice_number)
             # 'numero_comprobante_reg'
-            type1_reg.append(invoice.internal_number)
+            type1_reg.append(invoice_number)
             # 'cantidad_hojas'
             type1_reg.append('001')
             # 'codigo_doc_ident_comprador'
@@ -240,17 +270,17 @@ class create_sired_files(osv.osv_memory):
             # 'apenom_comprador'
             type1_reg.append(self._get_partner_name(invoice))
             # 'importe_total'
-            type1_reg.append(moneyfmt(Decimal(str(importe_total)), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_total)), places=2, ndigits=15, dp='', sep=''))
             # 'neto_no_gravado'
-            type1_reg.append(moneyfmt(Decimal(str(importe_neto_no_gravado)), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_no_taxed)), places=2, ndigits=15, dp='', sep=''))
             # 'neto_gravado'
-            type1_reg.append(moneyfmt(Decimal(str(importe_neto)), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_taxed)), places=2, ndigits=15, dp='', sep=''))
             # 'impuesto_liquidado'
-            type1_reg.append(moneyfmt(Decimal(str(importe_iva)), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_tax)), places=2, ndigits=15, dp='', sep=''))
             # 'impuesto_rni'
             type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'impuesto_op_exentas'
-            type1_reg.append(moneyfmt(Decimal(str(importe_operaciones_exentas)), places=2, ndigits=15, dp='', sep=''))
+            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_exempt)), places=2, ndigits=15, dp='', sep=''))
             # 'percep_imp_nacionales'
             type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
             # 'percep_iibb'
@@ -268,9 +298,11 @@ class create_sired_files(osv.osv_memory):
             # 'tipo_cambio'
             type1_reg.append(moneyfmt(Decimal('1.0'), places=6, ndigits=10, dp='', sep=''))
             # 'cant_alicuotas_iva'
-            type1_reg.append(len(iva_array) and str(len(iva_array)) or '1')
+            iva_array = self._get_invoice_vat_taxes(cr, uid, invoice, context)
+            type1_reg.append(str(len(iva_array)))
+            #type1_reg.append(len(iva_array) and str(len(iva_array)) or '1')
             # 'codigo_operacion'
-            type1_reg.append(self._get_operation_code(cr,uid, importe_iva, importe_neto_no_gravado, invoice))
+            type1_reg.append(self._get_operation_code(cr,uid, invoice))
             # 'cae'
             type1_reg.append(invoice.cae)
             # 'fecha_vencimiento'
@@ -556,7 +588,7 @@ class create_sired_files(osv.osv_memory):
                 # 'cant_alicuotas_iva' (25)
                 sale_reg_type1.append(len(iva_array) and str(len(iva_array)) or '1')
                 # 'codigo_operacion' (26)
-                sale_reg_type1.append(self._get_operation_code(cr,uid, importe_iva, importe_neto_no_gravado, invoice))
+                sale_reg_type1.append(self._get_operation_code(cr,uid, invoice))
                 # 'cae' (27)
                 sale_reg_type1.append(invoice.cae)
                 # 'fecha_vencimiento' (28)
@@ -754,7 +786,7 @@ class create_sired_files(osv.osv_memory):
                 # 'cant_alicuotas_iva' (29)
                 purchase_reg_type1.append(len(iva_array) and str(len(iva_array)) or '1')
                 # 'codigo_operacion' (30)
-                purchase_reg_type1.append(self._get_operation_code(cr,uid, importe_iva, importe_neto_no_gravado, invoice))
+                purchase_reg_type1.append(self._get_operation_code(cr,uid, invoice))
                 # 'cae' (31)
                 purchase_reg_type1.append(invoice.cae or '123123123123')
                 # 'fecha_vencimiento' (32)
@@ -871,11 +903,12 @@ class create_sired_files(osv.osv_memory):
         "JOIN account_period p on p.id=i.period_id " \
         "JOIN invoice_denomination d on d.id=i.denomination_id " \
         "JOIN pos_ar pos on pos.id=i.pos_ar_id " \
-        "JOIN res_partner par on par.id=i.partner_id, electronic_invoice_voucher_type evt " \
-        "WHERE p.id=%(period)s AND evt.denomination_id=i.denomination_id " \
-        "AND i.state in %(state)s AND evt.document_type=i.type " \
+        "JOIN res_partner par on par.id=i.partner_id, wsfe_voucher_type wvt " \
+        "WHERE p.id=%(period)s AND wvt.denomination_id=i.denomination_id " \
+        "AND i.state in %(state)s " \
+        "AND ((wvt.document_type='out_debit' AND i.is_debit_note='t') OR (wvt.document_type=i.type AND i.is_debit_note='f')) " \
         "AND i.type in %(invoice_types)s " \
-        "ORDER BY i.date_invoice, evt.code, pos.name, i.internal_number "
+        "ORDER BY i.date_invoice, wvt.code, pos.name, i.internal_number "
 
         cr.execute(invoice_query, {'period': period.id, 'state': ('open', 'paid',), 'invoice_types': ('out_invoice', 'out_refund',)})
         res = cr.fetchall()
@@ -888,10 +921,10 @@ class create_sired_files(osv.osv_memory):
         self._generate_head_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Detalle Tipo 1
-        self._generate_detail_file(cr, uid, company, period.id, period_name, invoice_ids, context)
+        #self._generate_detail_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Ventas Tipo 1 y Tipo 2
-        self._generate_sales_file(cr, uid, company, period.id, period_name, invoice_ids, context)
+        #self._generate_sales_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
 #        # Generamos los registros de Compras Tipo 1 y Tipo 2
 #        purchase_invoice_query = "SELECT i.id " \

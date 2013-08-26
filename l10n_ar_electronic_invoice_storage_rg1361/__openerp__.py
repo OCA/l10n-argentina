@@ -21,7 +21,7 @@
 {
     "name": "l10n_ar_electronic_invoice_storage_rg1361",
     "version": "1.0",
-    "depends": ["l10n_ar_point_of_sale"],
+    "depends": ["l10n_ar_point_of_sale", "base_vat_ar", "l10n_ar_wsfe"],
     "author": "E-MIPS",
     "category": "Localisation/Argentina",
     "description": """
