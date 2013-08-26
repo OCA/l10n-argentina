@@ -391,29 +391,28 @@ class create_sired_files(osv.osv_memory):
 
         return head_regs
 
-    def _get_vat_tax_and_exempt_indicator(self, cr, uid, ei_config, line_taxes):
+    def _get_vat_tax_and_exempt_indicator(self, cr, uid, line_taxes):
+        wsfe_conf_obj = self.pool.get('wsfe.config')
+        conf = wsfe_conf_obj.get_config(cr, uid)
 
         # Tomamos la primer tax que encontremos en la configuracion
         # Evidentemente AFIP solo espera un IVA por linea por eso apenas
         # encontramos una que tenga codificacion, retornamos
         # TODO: Mejorar toda esta parte de impuestos de AFIP
         for tax in line_taxes:
-            for eitax in ei_config.vat_tax_ids+ei_config.exempt_operations_tax_ids:
+            for eitax in conf.vat_tax_ids+conf.exempt_operations_tax_ids:
                 if eitax.tax_code_id.id == tax.tax_code_id.id:
                     if eitax.exempt_operations:
                         return '0', 'E'
                     else:
                         return tax.amount*100, 'G'
 
+        # Si es No Gravado
+        return '0', 'N'
+
     def _generate_detail_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
-
-        ei_config_obj = self.pool.get('electronic.invoice.config')
-        res = ei_config_obj.search(cr, uid, [('company_id', '=', company.id)])
-        if not len(res):
-            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
-
-        ei_config = ei_config_obj.browse(cr, uid, res[0])
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
 
         detail_regs = []
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
@@ -421,23 +420,28 @@ class create_sired_files(osv.osv_memory):
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
             date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
 
+            pos_ar, invoice_number = invoice.internal_number.split('-')
+            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
+
             for line in invoice.invoice_line:
                 reg = []
                 # 'tipo_comprobante'
-                reg.append(self._get_voucher_type(cr, uid, invoice))
+                reg.append(tipo_cbte)
                 # 'controlador'
                 reg.append(' ')
                 # 'fecha_comprobante'
                 reg.append(date_invoice)
                 # 'punto_venta'
-                reg.append(invoice.pos_ar_id.name)
+                reg.append(pos_ar)
                 # 'numero_comprobante'
-                reg.append(invoice.internal_number)
+                reg.append(invoice_number)
                 # 'numero_comprobante_reg'
-                reg.append(invoice.internal_number)
+                reg.append(invoice_number)
                 # Cantidad
                 reg.append(moneyfmt(Decimal(str(line.quantity)), places=5, ndigits=12, dp='', sep=''))
                 # Unidad de Medida
+                if not line.uos_id.afip_code:
+                    raise osv.except_osv(_('SIRED Error!'), _('You have to configure AFIP Code for UoM %s') % (line.uos_id.name))
                 reg.append(line.uos_id.afip_code)
                 # Precio Unitario
                 reg.append(moneyfmt(Decimal(str(line.price_unit)), places=3, ndigits=16, dp='', sep=''))
@@ -449,11 +453,10 @@ class create_sired_files(osv.osv_memory):
                 # Subtotal por registro
                 reg.append(moneyfmt(Decimal(str(line.price_subtotal)), places=3, ndigits=16, dp='', sep=''))
                 # Alicuota de IVA
-                iva, exempt_indicator = self._get_vat_tax_and_exempt_indicator(cr, uid, ei_config, line.invoice_line_tax_id)
+                iva, exempt_indicator = self._get_vat_tax_and_exempt_indicator(cr, uid, line.invoice_line_tax_id)
                 reg.append(moneyfmt(Decimal(str(iva)), places=2, ndigits=4, dp='', sep=''))
                 # Indicacion de Exento, Gravado o No Gravado
-                # TODO: Tenemos que tener en cuenta los casos en que son exentos
-                reg.append('G')
+                reg.append(exempt_indicator)
                 # Indicacion de Anulacion
                 reg.append(' ')
                 # Disenio Libre
@@ -921,7 +924,7 @@ class create_sired_files(osv.osv_memory):
         self._generate_head_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Detalle Tipo 1
-        #self._generate_detail_file(cr, uid, company, period.id, period_name, invoice_ids, context)
+        self._generate_detail_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Ventas Tipo 1 y Tipo 2
         #self._generate_sales_file(cr, uid, company, period.id, period_name, invoice_ids, context)
