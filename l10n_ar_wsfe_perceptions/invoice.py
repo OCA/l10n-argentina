@@ -40,7 +40,11 @@ class account_invoice(osv.osv):
             perc = {'Id': code, 'BaseImp': perception.base, 'Importe': perception.amount, 'Alic': 0.0}
             perc_array.append(perc)
 
-        detalle['Tributos'] = perc_array
+        if detalle['Tributos']:
+            detalle['Tributos'] += perc_array
+        else:
+            detalle['Tributos'] = perc_array
+
         return detalle
 
 account_invoice()
