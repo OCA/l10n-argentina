@@ -612,7 +612,7 @@ class account_invoice(osv.osv):
         if result['Resultado'] == 'R':
             msg = ''
             if result['Errores']:
-                msg = 'Errores: ' + result['Errores'] + '\n'
+                msg = 'Errores: ' + '\n'.join(result['Errores']) + '\n'
 
             if context.get('raise-exception', True):
                 raise osv.except_osv(_('AFIP Web Service Error'),
