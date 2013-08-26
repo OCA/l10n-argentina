@@ -486,6 +486,7 @@ class account_invoice(osv.osv):
             importe_neto = 0.0
             importe_operaciones_exentas = inv.amount_exempt
             importe_iva = 0.0
+            importe_tributos = 0.0
             importe_total = 0.0
             importe_neto_no_gravado = inv.amount_no_taxed
 
@@ -493,8 +494,10 @@ class account_invoice(osv.osv):
             # Procesamos las taxes
             taxes = inv.tax_line
             for tax in taxes:
+                found = False
                 for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
                     if eitax.tax_code_id.id == tax.tax_code_id.id:
+                        found = True
                         if eitax.exempt_operations:
                             importe_operaciones_exentas += tax.base
                         else:
@@ -502,8 +505,10 @@ class account_invoice(osv.osv):
                             importe_neto += tax.base
                             iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
                             iva_array.append(iva2)
+                if not found:
+                    importe_tributos += tax.amount
 
-            importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva
+            importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva + importe_tributos
 #            print 'Importe total: ', importe_total
 #            print 'Importe neto gravado: ', importe_neto
 #            print 'Importe IVA: ', importe_iva
@@ -528,7 +533,7 @@ class account_invoice(osv.osv):
             detalle['ImpTotConc'] = importe_neto_no_gravado
             detalle['ImpIVA'] = importe_iva
             detalle['ImpTotal'] = inv.amount_total
-            detalle['ImpTrib'] = 0.0
+            detalle['ImpTrib'] = importe_tributos
             detalle['Tributos'] = None
 
             #print 'Detalle de facturacion: ', detalle

@@ -326,10 +326,10 @@ class WSFEv1:
         argcaereq.FeCabReq.PtoVta = pto_vta
         argcaereq.FeCabReq.CbteTipo = cbte_tipo
 
-        arrayIva = []
-        arrayTributos = []
-
         for detalle in detalles:
+            arrayIva = []
+            arrayTributos = []
+
             argdetreq = self.client.factory.create('ns0:FECAEDetRequest')
 
             for k, v in detalle.iteritems():
