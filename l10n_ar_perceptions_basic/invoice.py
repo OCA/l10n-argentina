@@ -173,8 +173,8 @@ class account_invoice_tax(osv.osv):
                 val['tax_amount'] = tax_amount
                 val['account_id'] = tax.account_collected_id.id
             else:
-                val['base_code_id'] = tax.ref_base_code_id
-                val['tax_code_id'] = tax.ref_tax_code_id
+                val['base_code_id'] = tax.ref_base_code_id.id
+                val['tax_code_id'] = tax.ref_tax_code_id.id
                 val['base_amount'] = base_amount
                 val['tax_amount'] = tax_amount
                 val['account_id'] = tax.account_paid_id.id
