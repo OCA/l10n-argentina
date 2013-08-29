@@ -5,7 +5,7 @@
 
 
         <record model="ir.ui.view" id="view_vendor_receipt_voucher_form">
-            <field name="name">account.voucher.receipt.form</field>
+            <field name="name">account.voucher.l10n_ar.receipt.form</field>
             <field name="model">account.voucher</field>
             <field name="type">form</field>
             <field name="arch" type="xml">

@@ -28,11 +28,12 @@ class invoice(osv.osv):
     def invoice_pay_customer(self, cr, uid, ids, context=None):
         if not ids: return []
         inv = self.browse(cr, uid, ids[0], context=context)
-        view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name','=','account.voucher.l10n_ar.payment.form')], context=context)
-        import pdb
-        pdb.set_trace()
+        if inv.type in ('out_invoice', 'out_refund'):
+            view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name','=','account.voucher.l10n_ar.receipt.form')], context=context)
+        else:
+            view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name','=','account.voucher.l10n_ar.payment.form')], context=context)
 
-        return {
+        res = {
             'name':_("Pay Invoice"),
             'view_mode': 'form',
             'view_id': view_id,
@@ -52,6 +53,8 @@ class invoice(osv.osv):
                 'default_type': inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment'
                 }
         }
+
+        return res
 
 invoice()
 
