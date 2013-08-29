@@ -144,6 +144,17 @@ class account_invoice_tax(osv.osv):
     # Aca le agregamos las account_invoice_taxes pertenecientes a las Percepciones
     def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
 
+        if not context:
+            context = {}
+
+        # Si se hacen calculo automatico de Percepciones,
+        # esta funcion ya no tiene sentido
+        # Esta key se setea en el modulo l10n_ar_perceptions
+        auto = context.get('auto', False)
+
+        if auto:
+            return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+
         percep_tax_line_obj = self.pool.get('perception.tax.line')
         cur_obj = self.pool.get('res.currency')
         inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
