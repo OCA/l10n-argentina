@@ -172,7 +172,11 @@ class create_sired_files(osv.osv_memory):
                         importe_iva += tax.amount
                         importe_neto += tax.base
                         #iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
-                        iva2 = {'Id': int(eitax.code), 'IVA': eitax.tax_id.amount, 'BaseImp': tax.base, 'Importe': tax.amount}
+                        if eitax.tax_id.amount == None:
+                            percent_amount = 0
+                        else:
+                            percent_amount = eitax.tax_id.amount
+                        iva2 = {'Id': int(eitax.code), 'IVA': percent_amount, 'BaseImp': tax.base, 'Importe': tax.amount}
                     iva_array.append(iva2)
             if not found:
                 importe_tributos += tax.amount
@@ -180,6 +184,8 @@ class create_sired_files(osv.osv_memory):
         if len(iva_array) == 0:
             iva_array.append({'Id': 0, 'IVA': 0, 'BaseImp': 0, 'Importe': 0})
 
+        #print invoice.internal_number, invoice.partner_id.name
+        #print iva_array
         return iva_array
 
     def _get_operation_code(self, cr, uid, invoice):
@@ -206,15 +212,15 @@ class create_sired_files(osv.osv_memory):
 
     def _get_identifier_document_code_and_number(self, cr, uid, invoice):
         partner = invoice.partner_id
-        if partner.document_type_id.afip_code == '99':
+        if partner.document_type_id.afip_code == '99' or not partner.document_type_id:
             if invoice.amount_total <= 1000:
                 return '99', '0'*11
             else:
-                raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because amount total is greater than 1000 and partner has not got document identification') % (invoice.denomination_id.name, invoice.internal_number))
+                raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because amount total is greater than 1000 and partner (%s) has not got document identification') % (invoice.denomination_id.name, invoice.internal_number, invoice.partner_id.name))
 
         code = partner.document_type_id and partner.document_type_id.afip_code or False
         if not code or not partner.vat:
-            raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because partner has not got document identification') % (invoice.denomination_id.name, invoice.internal_number))
+            raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because partner (%s) has not got document identification') % (invoice.denomination_id.name, invoice.internal_number, invoice.partner_id.name))
 
         return code, partner.vat
 
