@@ -41,7 +41,7 @@ class Parser(report_sxw.rml_parse):
         self.based_on = None
 
     def _set_period(self, period_id):
-        self.period_id = period_id
+        self.period_id = period_id[0]
 
     def _set_context(self, data):
         self.based_on = data['based_on']
@@ -54,7 +54,6 @@ class Parser(report_sxw.rml_parse):
             return ['in_invoice', 'in_refund', 'in_debit']
 
     def get_title(self, company_id):
-        print 'company_id: ', company_id
         #company = self.pool.get('res.company').browse(self.cr, self.uid, company_id)
         period = self.pool.get('account.period').browse(self.cr, self.uid, self.period_id)
         if self.based_on == 'sale':
@@ -85,7 +84,7 @@ class Parser(report_sxw.rml_parse):
         "WHERE report_config_id=%s) ORDER BY at.code"
 
         #self.cr.execute(q, (self.period_id, tuple(types), self.period_id, tuple(types), config_id))
-        self.cr.execute(q, (self.period_id, tuple(types), config_id))
+        self.cr.execute(q, (self.period_id, tuple(types), config_id[0]))
         res = self.cr.fetchall()
         self.columns = res
 
