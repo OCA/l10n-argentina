@@ -18,6 +18,7 @@
           <field name="tax_id" select="1"/>
           <field name="jurisdiccion" select="1"/>
           <field name="type_tax_use" select="1"/>
+          <field name="type" select="1"/>
           <field name="state_id" select="1" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
         </group>
       </form>
