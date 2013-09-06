@@ -140,7 +140,7 @@ class account_voucher(osv.osv):
             currency_id = journal.company_id.currency_id.id
         
         default['value']['currency_id'] = currency_id
-        
+
         account_id = False
         if journal.type in ('sale','sale_refund'):
             account_id = partner.property_account_receivable.id
