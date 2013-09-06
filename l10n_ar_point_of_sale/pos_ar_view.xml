@@ -11,15 +11,24 @@
             <field name="model">pos.ar</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form>
-                    <group>
-                        <field name="name"/>
-                        <field name="shop_id" widget="selection"/>
-                        <field name="priority" colspan="2"/>
-                        <field name="denomination_id" select="1"/>
-                        <separator string="Description" colspan="4"/>                        
-                        <field name="desc" select="1" nolabel="1" colspan="4"/>
-                    </group>
+                <form string="POS AR" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="POS AR"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="shop_id" widget="selection"/>
+                            </group>
+                            <group>
+                                <field name="priority" colspan="2"/>
+                                <field name="denomination_id" select="1"/>
+                            </group>
+                        </group>
+                        <separator string="Description"/>                        
+                        <field name="desc" select="1" nolabel="1"/>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -29,7 +38,7 @@
             <field name="model">pos.ar</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree string="POS AR">
                     <field name="name"/>
                     <field name="shop_id"/>
                     <field name="denomination_id"/>
@@ -70,10 +79,17 @@
             <field name="model">invoice.denomination</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form>
-                    <field name="name" select="1"/>
-                    <field name="desc" select="1" nolabel="1" height="100"/>
-                    <field name="vat_discriminated" select="1"/>
+                <form string="Invoice denomination" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="Invoice denomination"/>
+                        </h1>
+                        <group>
+                            <field name="name" select="1"/>
+                            <field name="desc" select="1" nolabel="1" height="100"/>
+                            <field name="vat_discriminated" select="1"/>
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -83,7 +99,7 @@
             <field name="model">invoice.denomination</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree string="Invoice denominations">
                     <field name="name" />
                     <field name="desc" />
                     <field name="vat_discriminated" />

@@ -2,7 +2,7 @@
 <openerp>
     <data noupdate="1">
 
-        <record id="base.res_partner_address_tang" model="res.partner.address">
+        <record id="base.res_partner_address_tang" model="res.partner">
             <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
         </record>
 
@@ -12,7 +12,7 @@
             <field name="vat">30710981295</field>
         </record>
 
-        <record id="base.res_partner_address_11" model="res.partner.address">
+        <record id="base.res_partner_address_11" model="res.partner">
             <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
         </record>
 
@@ -22,7 +22,7 @@
             <field name="vat">33703122219</field>
         </record>
 
-        <record id="base.res_partner_address_8" model="res.partner.address">
+        <record id="base.res_partner_address_8" model="res.partner">
             <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
         </record>
 
@@ -32,7 +32,7 @@
             <field name="vat">30590360763</field>
         </record>
 
-        <record id="base.res_partner_address_7" model="res.partner.address">
+        <record id="base.res_partner_address_7" model="res.partner">
             <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
         </record>
 

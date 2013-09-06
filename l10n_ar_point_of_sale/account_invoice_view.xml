@@ -21,9 +21,9 @@
                     <field name="currency_id" position="before">
                         <field name="journal_id"/>
                     </field>
-                    <xpath expr="//button[@string='Refund']" position="replace" >
+                    <xpath expr="//button[@string='Refund Invoice']" position="replace" >
                       <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
-                        states='open,paid' icon="gtk-execute" attrs="{'invisible':['|', ('type','=','out_refund'), ('is_debit_note','=',True)]}"/>
+                        states='open,paid' attrs="{'invisible':['|', ('type','=','out_refund'), ('is_debit_note','=',True)]}"/>
                     </xpath>
                     <field name="amount_untaxed" position="before">
                         <field name="amount_taxed"/>
@@ -51,9 +51,6 @@
                         <field name="denomination_id" string="Denomination" widget="selection"/>
                         <field name="internal_number"/>
                         <field name="pos_ar_id" string="POS"/>
-                    </field>
-                    <field name="origin" position="before">
-                        <newline/>
                     </field>
                 </data>
             </field>
@@ -90,9 +87,9 @@
                     <field name="currency_id" position="before">
                         <field name="journal_id"/>
                     </field>
-                    <xpath expr="//button[@string='Refund']" position="replace" >
+                    <xpath expr="//button[@string='Ask Refund']" position="replace" >
                       <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
-                        states='open,paid' icon="gtk-execute" attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True)]}"/>
+                        states='open,paid' attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True)]}"/>
                     </xpath>
                     <field name="fiscal_position" position="attributes">
                       <attribute name="required">1</attribute>

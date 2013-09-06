@@ -42,7 +42,7 @@
         'security/ir.model.access.csv',
     ],
     'demo_xml': [
-        'partner_demo.xml',
+        #'partner_demo.xml',
         ],
     'installable': True,
     'active': False,
