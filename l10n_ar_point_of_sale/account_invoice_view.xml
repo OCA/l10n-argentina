@@ -63,10 +63,10 @@
             <field name="type">tree</field>
             <field name="inherit_id" ref="account.invoice_tree"/>
             <field name="arch" type="xml">
-                    <field name="number" position="replace">
-                        <field name="denomination_id" string="Den"/>
-                        <field name="internal_number" width="100"/>
-                    </field>
+                <field name="number" position="replace">
+                    <field name="denomination_id" string="Den"/>
+                    <field name="internal_number" width="100"/>
+                </field>
             </field>
         </record>
         
@@ -78,11 +78,12 @@
             <field name="arch" type="xml">
                     <field name="journal_id" position="replace"/>
                     <field name="number" position="replace">
-                        <field  name="denomination_id" 
-                                attrs="{'readonly':[('state', '!=', 'draft')]}"/>
-                        <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}" required="1"/>
-                        <field name="is_debit_note" invisible="1"/>
-                        <newline/>
+                        <group>
+                            <field  name="denomination_id" 
+                                    attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}" required="1"/>
+                            <field name="is_debit_note" invisible="1"/>
+                        </group>
                     </field>
                     <field name="currency_id" position="before">
                         <field name="journal_id"/>
@@ -92,7 +93,7 @@
                         states='open,paid' attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True)]}"/>
                     </xpath>
                     <field name="fiscal_position" position="attributes">
-                      <attribute name="required">1</attribute>
+                        <attribute name="required">1</attribute>
                     </field>
             </field>
         </record>
