@@ -1,0 +1,344 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_perceptions_basic
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-09-15 19:44+0000\n"
+"PO-Revision-Date: 2013-09-15 19:44+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_perceptions_basic
+#: selection:perception.perception,jurisdiccion:0
+msgid "Provincial"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,tax_amount:0
+msgid "Tax Code Amount"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Base Total"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.perception,tax_id:0
+msgid "Tax"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,tax_code_id:0
+msgid "Tax Code"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: help:perception.tax.line,tax_code_id:0
+msgid "The tax basis of the tax declaration."
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.operaciones_con_percepcion_iibb_caba_efectuada
+msgid "Operaciones con Percepcion IIBB CABA Efectuada"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: selection:perception.perception,jurisdiccion:0
+msgid "Nacional"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.operaciones_con_percepcion_sufrida
+msgid "Operaciones con Percepcion Sufrida"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Group By..."
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.ui.menu,name:l10n_ar_perceptions_basic.perception_tax_line_supported_menu
+msgid "Perception Supported"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.percepcion_iibb_caba_sufrida
+msgid "Percepcion IIBB CABA Sufrida"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.module.module,shortdesc:l10n_ar_perceptions_basic.module_meta_information
+msgid "Perceptions for ARGENTINA (Percepciones) - Basic Module"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.percepcion_iibb_caba_efectuada
+msgid "Percepcion IIBB CABA Efectuada"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,account_id:0
+msgid "Tax Account"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.operaciones_con_percepcion_efectuada
+msgid "Operaciones con Percepcion Efectuada"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Province"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,base_code_id:0
+msgid "Base Code"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.module.module,description:l10n_ar_perceptions_basic.module_meta_information
+msgid "\n"
+"    This module provide :\n"
+"    1) Implementation of Perceptions Taxes for Argentina\n"
+"       based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.\n"
+"    "
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: selection:perception.perception,jurisdiccion:0
+msgid "Municipal"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.operaciones_con_percepcion_iva_sufrida
+msgid "Operaciones con Percepcion IVA Sufrida"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,vat:0
+msgid "CIF/NIF"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,company_id:0
+msgid "Company"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax,name:l10n_ar_perceptions_basic.tax_percepcion_iva_efectuada
+msgid "Percepciones IVA Efectuada"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.actions.act_window,name:l10n_ar_perceptions_basic.action_perception_tax_tree
+msgid "Perception Tax Applied"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,base:0
+msgid "Base"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: help:perception.tax.line,base_code_id:0
+msgid "The account basis of the tax declaration."
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Perception Tax Lines"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+#: field:perception.tax.line,date:0
+msgid "Date"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: help:perception.perception,tax_id:0
+msgid "Tax configuration for this perception"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+#: model:ir.ui.menu,name:l10n_ar_perceptions_basic.perception_perception_menu
+#: view:perception.perception:0
+msgid "Perceptions"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Applied"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax,name:l10n_ar_perceptions_basic.tax_percepcion_iibb_caba_sufrida
+msgid "Percepciones IIBB CABA Sufrida"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: help:perception.tax.line,perception_id:0
+msgid "Perception configuration used '                                       'for this perception tax, where all the configuration resides. Accounts, Tax Codes, etc."
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+msgid "Keep date empty if the date is the same as the invoice."
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.operaciones_con_percepcion_iibb_caba_sufrida
+msgid "Operaciones con Percepcion IIBB CABA Sufrida"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.perception,type_tax_use:0
+msgid "Tax Application"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.percepcion_iva_efectuada
+msgid "Percepcion IVA Efectuada (Ventas)"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.actions.act_window,name:l10n_ar_perceptions_basic.action_perception_tax_supported_tree
+msgid "perception Tax Supported"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+#: field:perception.tax.line,amount:0
+msgid "Amount"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:account.invoice,perception_ids:0
+#: model:ir.actions.act_window,name:l10n_ar_perceptions_basic.action_perception_perception_tree
+#: field:perception.perception,name:0
+#: field:perception.tax.line,name:0
+msgid "Perception"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+msgid "Perception Type"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.perception,state_id:0
+#: field:perception.tax.line,state_id:0
+msgid "State/Province"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax,name:l10n_ar_perceptions_basic.tax_percepcion_iva_sufrida
+msgid "Percepciones IVA Sufrida"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.ui.menu,name:l10n_ar_perceptions_basic.perception_tax_line_applied_menu
+msgid "Perception Applied"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.model,name:l10n_ar_perceptions_basic.model_account_invoice_tax
+#: field:perception.tax.line,ait_id:0
+msgid "Invoice Tax"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,base_amount:0
+msgid "Base Code Amount"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.model,name:l10n_ar_perceptions_basic.model_perception_tax_line
+msgid "Perception Tax Line"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.percepcion_iva_sufrida
+msgid "Percepcion IVA Sufrida (Compras)"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.actions.act_window,help:l10n_ar_perceptions_basic.action_perception_tax_supported_tree
+#: model:ir.actions.act_window,help:l10n_ar_perceptions_basic.action_perception_tax_tree
+msgid "Help"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.perception,jurisdiccion:0
+msgid "Jurisdiccion"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax,name:l10n_ar_perceptions_basic.tax_percepcion_iibb_caba_efectuada
+msgid "Percepciones IIBB CABA Efectuada"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+msgid "Perception Lines"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Supported"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.actions.act_window,help:l10n_ar_perceptions_basic.action_perception_perception_tree
+msgid "Here you can define Perceptions and their configuration to be used in Customer Invoices or Supplier Invoices"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:account.tax.code,name:l10n_ar_perceptions_basic.operaciones_con_percepcion_iva_efectuada
+msgid "Operaciones con Percepcion IVA Efectuada"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+msgid "Supported Perceptions"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+#: model:ir.model,name:l10n_ar_perceptions_basic.model_account_invoice
+#: field:perception.tax.line,invoice_id:0
+msgid "Invoice"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: model:ir.model,name:l10n_ar_perceptions_basic.model_perception_perception
+#: field:perception.tax.line,perception_id:0
+msgid "Perception Configuration"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: field:perception.tax.line,partner_id:0
+msgid "Partner"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:account.invoice:0
+msgid "Applied Perceptions"
+msgstr ""
+
+#. module: l10n_ar_perceptions_basic
+#: view:perception.tax.line:0
+msgid "Amount Total"
+msgstr ""
+
