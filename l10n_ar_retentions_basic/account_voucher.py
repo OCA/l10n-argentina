@@ -99,22 +99,22 @@ class account_voucher(osv.osv):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
 
-    def _total_amount(self, cr, uid, ids, name, arg, context=None):
-        vouchers = super(account_voucher, self)._total_amount(cr, uid, ids, name, arg, context=context)
-
-        for v in vouchers:
-            voucher = self.browse(cr, uid, v)
-            amount = 0.0
-            # Sumamos los importes de las retenciones
-            for r in voucher.retention_ids:
-                amount += r.amount
-
-            vouchers[v] += amount
-        return vouchers
+#    def _total_amount(self, cr, uid, ids, name, arg, context=None):
+#        vouchers = super(account_voucher, self)._total_amount(cr, uid, ids, name, arg, context=context)
+#
+#        for v in vouchers:
+#            voucher = self.browse(cr, uid, v)
+#            amount = 0.0
+#            # Sumamos los importes de las retenciones
+#            for r in voucher.retention_ids:
+#                amount += r.amount
+#
+#            vouchers[v] += amount
+#        return vouchers
 
     _columns = {
             'retention_ids': fields.one2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft':[('readonly', False)]}),
-              'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
+              #'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
             }
 
     def onchange_retentions(self, cr, uid, ids, retention_ids, context):

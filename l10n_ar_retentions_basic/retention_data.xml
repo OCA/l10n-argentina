@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
+  <data noupdate="1">
 
   <!-- TODO: Hacer esto como templates para luego ser instalado, deberia estar en el modulo de localizacion -->
   <!-- Retenciones Tax Code -->
@@ -376,41 +376,49 @@
   <!-- Configuracion de Retenciones (retention.retention) -->
   <record id="retention_retention_iva_sufrida" model="retention.retention">
     <field name="name">Retencion IVA Sufrida</field>
+    <field name="type">vat</field>
     <field name="tax_id" ref="tax_retencion_iva_sufrida" />
   </record>
 
   <record id="retention_retention_iva_efectuada" model="retention.retention">
     <field name="name">Retencion IVA Efectuada</field>
+    <field name="type">vat</field>
     <field name="tax_id" ref="tax_retencion_iva_efectuada" />
   </record>
 
   <record id="retention_retention_iibb_caba_sufrida" model="retention.retention">
     <field name="name">Retencion IIBB CABA Sufrida</field>
+    <field name="type">gross_income</field>
     <field name="tax_id" ref="tax_retencion_iibb_caba_sufrida" />
   </record>
 
   <record id="retention_retention_iibb_caba_efectuada" model="retention.retention">
     <field name="name">Retencion IIBB CABA Efectuada</field>
+    <field name="type">gross_income</field>
     <field name="tax_id" ref="tax_retencion_iibb_caba_efectuada" />
   </record>
 
   <record id="retention_retention_ganancias_sufrida" model="retention.retention">
     <field name="name">Retencion Ganancias Sufrida</field>
+    <field name="type">profit</field>
     <field name="tax_id" ref="tax_retencion_ganancias_sufrida" />
   </record>
 
   <record id="retention_retention_ganancias_efectuada" model="retention.retention">
     <field name="name">Retencion Ganancias Efectuada</field>
+    <field name="type">profit</field>
     <field name="tax_id" ref="tax_retencion_ganancias_efectuada" />
   </record>
 
   <record id="retention_retention_suss_sufrida" model="retention.retention">
     <field name="name">Retencion SUSS Sufrida</field>
+    <field name="type">other</field>
     <field name="tax_id" ref="tax_retencion_suss_sufrida" />
   </record>
 
   <record id="retention_retention_suss_efectuada" model="retention.retention">
     <field name="name">Retencion SUSS Efectuada</field>
+    <field name="type">other</field>
     <field name="tax_id" ref="tax_retencion_suss_efectuada" />
   </record>
 

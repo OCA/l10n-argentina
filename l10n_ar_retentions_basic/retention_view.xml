@@ -18,6 +18,7 @@
           <field name="tax_id" select="1"/>
           <field name="jurisdiccion" select="1"/>
           <field name="type_tax_use" select="1"/>
+          <field name="type" select="1"/>
           <field name="state_id" select="1" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
         </group>
       </form>
@@ -54,6 +55,7 @@
           <field name="date"/>
           <field name="partner_id"/>
           <field name="certificate_no"/>
+          <newline/>
           <field name="voucher_number"/>
           <field name="retention_id"/>
           <field name="state_id"/>
@@ -62,7 +64,7 @@
         <newline/>
         <group expand="0" string="Group By..." colspan="4" col="4" groups="base.group_extended">
           <filter string="Province" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state_id'}"/>
-          <filter string="Date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
+          <filter string="Date" name="group_date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
         </group>
       </search>
     </field>
