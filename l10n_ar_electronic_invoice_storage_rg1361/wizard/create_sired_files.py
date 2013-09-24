@@ -28,64 +28,10 @@ from decimal import *
 import tempfile
 import binascii, base64
 
-def moneyfmt(value, places=2, ndigits=15, curr='', sep=',', dp='.',
-             pos='', neg='-', trailneg=''):
-    """Convert Decimal to a money formatted string.
-
-    places:  required number of places after the decimal point
-    curr:    optional currency symbol before the sign (may be blank)
-    sep:     optional grouping separator (comma, period, space, or blank)
-    dp:      decimal point indicator (comma or period)
-             only specify as blank when places is zero
-    pos:     optional sign for positive numbers: '+', space or blank
-    neg:     optional sign for negative numbers: '-', '(', space or blank
-    trailneg:optional trailing minus indicator:  '-', ')', space or blank
-
-    >>> d = Decimal('-1234567.8901')
-    >>> moneyfmt(d, curr='$')
-    '-$1,234,567.89'
-    >>> moneyfmt(d, places=0, sep='.', dp='', neg='', trailneg='-')
-    '1.234.568-'
-    >>> moneyfmt(d, curr='$', neg='(', trailneg=')')
-    '($1,234,567.89)'
-    >>> moneyfmt(Decimal(123456789), sep=' ')
-    '123 456 789.00'
-    >>> moneyfmt(Decimal('-0.02'), neg='<', trailneg='>')
-    '<0.02>'
-
-    """
-    q = Decimal(10) ** -places      # 2 places --> '0.01'
-    sign, digits, exp = value.quantize(q).as_tuple()
-    result = []
-    digits = map(str, digits)
-    digits_total = 0
-    build, next = result.append, digits.pop
-    if sign:
-        build(trailneg)
-    for i in range(places):
-        build(next() if digits else '0')
-        digits_total += 1
-    build(dp)
-    if not digits:
-        build('0')
-        digits_total += 1
-    i = 0
-    while digits:
-        build(next())
-        digits_total += 1
-        i += 1
-        if i == 3 and digits:
-            i = 0
-            build(sep)
-    # Si le faltan digitos, rellenamos con ceros
-    for i in range(ndigits-digits_total):
-        build('0')
-    build(curr)
-    build(neg if sign else pos)
-    return ''.join(reversed(result))
-
-
-
+from ..fixed_width import FixedWidth
+from ..fixed_width import moneyfmt
+from fixed_width_dicts import HEAD_LINES, HEAD_TYPE2_LINES, DETAIL_LINES, SALE_LINES, SALE_TYPE2_LINES, PURCHASE_LINES, PURCHASE_TYPE2_LINES
+    
 class create_sired_files(osv.osv_memory):
     _name = 'create.sired.files'
     _description = 'Wizard Create Sired Files'
@@ -105,87 +51,35 @@ class create_sired_files(osv.osv_memory):
 
         return res
 
-
     def _get_partner_name(self, invoice):
-        # El nombre del partner se corta en 30 o se le agregan espacios para completar
         if int(invoice.fiscal_position.afip_code) == 5 and invoice.amount_total <= 1000.0:
-            return ustr('%-30s') % 'CONSUMIDOR FINAL'
+            return 'CONSUMIDOR FINAL'
 
-        val = ustr('%-30s') % invoice.partner_id.name
-        partner_name = val[0:30]
-        return partner_name
-
-
-#    # TODO: Pasar a account.invoice en l10n_ar_point_of_sale esta funcion
-#    # que tambien se puede utilizar desde electronic_invoice
-#    def _get_amounts_and_vat_taxes(self, cr, uid, inv, ei_config):
-#        iva_array = []
-#
-#        importe_neto = 0.0
-#        importe_operaciones_exentas = 0.0
-#        importe_iva = 0.0
-#        importe_total = 0.0
-#        importe_neto_no_gravado = 0.0
-#
-##        ei_config_obj = self.pool.get('electronic.invoice.config')
-##        res = ei_config_obj.search(cr, uid, [('company_id', '=', inv.company_id.id)])
-##        if not len(res):
-##            raise osv.except_osv(_('Error'), _('Cannot find electronic invoice configuration for this company'))
-##
-##        ei_config = ei_config_obj.browse(cr, uid, res[0])
-#
-#        taxes = inv.tax_line
-#        for tax in taxes:
-#            for eitax in ei_config.vat_tax_ids+ei_config.exempt_operations_tax_ids:
-#                if eitax.tax_code_id.id == tax.tax_code_id.id:
-#                    if eitax.exempt_operations:
-#                        importe_operaciones_exentas += tax.base
-#                    else:
-#                        importe_iva += tax.amount
-#                        importe_neto += tax.base
-#                        iva2 = {'Id': int(eitax.code), 'IVA': eitax.tax_id.amount, 'BaseImp': tax.base, 'Importe': tax.amount}
-#                        iva_array.append(iva2)
-#
-#        importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva
-#        return importe_total, importe_neto, importe_neto_no_gravado, importe_operaciones_exentas, importe_iva, iva_array
+        return invoice.partner_id.name
 
     def _get_invoice_vat_taxes(self, cr, uid, invoice, context=None):
-        # TODO: Cambiar esto. Lo mejor seria que el codigo de AFIP este en el mismo impuesto
-        # y no tener que hacer este for que no tiene mucho sentido.
-        wsfe_conf_obj = self.pool.get('wsfe.config')
-        conf = wsfe_conf_obj.get_config(cr, uid)
 
         iva_array = []
         taxes = invoice.tax_line
-        importe_neto = 0.0
-        importe_iva = 0.0
-        importe_tributos = 0.0
 
         for tax in taxes:
-            found = False
-            for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
-                if eitax.tax_code_id.id == tax.tax_code_id.id:
-                    found = True
-                    if eitax.exempt_operations:
-                        iva2 = {'Id': int(eitax.code), 'IVA': 0, 'BaseImp': 0, 'Importe': 0}
-                    else:
-                        importe_iva += tax.amount
-                        importe_neto += tax.base
-                        #iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
-                        if eitax.tax_id.amount == None:
-                            percent_amount = 0
-                        else:
-                            percent_amount = eitax.tax_id.amount
-                        iva2 = {'Id': int(eitax.code), 'IVA': percent_amount, 'BaseImp': tax.base, 'Importe': tax.amount}
-                    iva_array.append(iva2)
-            if not found:
-                importe_tributos += tax.amount
+            iva2 = {}
+            if tax.tax_id.tax_group == 'vat':
+                if tax.is_exempt:
+                    iva2 = {'IVA': 0, 'type': 'vat', 'BaseImp': 0, 'Importe': 0}
+                else:
+                    percent_amount = tax.tax_id.amount
+                    iva2 = {'IVA': percent_amount, 'type': 'vat', 'BaseImp': tax.base, 'Importe': tax.amount}
+            elif tax.tax_id.tax_group == 'internal':
+                iva2 = {'IVA': 0, 'type': 'internal', 'BaseImp': tax.base, 'Importe': tax.amount}
+            else:
+                continue
+
+            iva_array.append(iva2)
 
         if len(iva_array) == 0:
-            iva_array.append({'Id': 0, 'IVA': 0, 'BaseImp': 0, 'Importe': 0})
+            iva_array.append({'IVA': 0, 'type': 'vat', 'BaseImp': 0, 'Importe': 0})
 
-        #print invoice.internal_number, invoice.partner_id.name
-        #print iva_array
         return iva_array
 
     def _get_operation_code(self, cr, uid, invoice):
@@ -220,10 +114,11 @@ class create_sired_files(osv.osv_memory):
 
         code = partner.document_type_id and partner.document_type_id.afip_code or False
         if not code or not partner.vat:
-            raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because partner (%s) has not got document identification') % (invoice.denomination_id.name, invoice.internal_number, invoice.partner_id.name))
+            raise osv.except_osv(_('SIRED import Error!'), _('Cannot inform invoice %s%s because partner (%s) has not got document identification') % (invoice.denomination_id.name, invoice.internal_number, invoice.partner_id.name))
 
         return code, partner.vat
 
+    # Usa HEAD_LINES Y HEAD_TYPE2_LINES
     def _generate_head_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
@@ -235,8 +130,10 @@ class create_sired_files(osv.osv_memory):
         importe_total_operaciones_exentas_reg1 = 0.0
 
         head_regs = []
+        fixed_width = FixedWidth(HEAD_LINES)
+        
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
-            type1_reg = []
+            
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
             date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
@@ -253,122 +150,70 @@ class create_sired_files(osv.osv_memory):
             importe_total_operaciones_exentas_reg1 += invoice.amount_exempt
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
-            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
+            voucher_type = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
 
-            # 'tipo_registro'
-            type1_reg.append('1')
-            # 'fecha_comprobante'
-            type1_reg.append(date_invoice)
-            # 'tipo_comprobante'
-            #type1_reg.append(self._get_voucher_type(cr, uid, invoice))
-            type1_reg.append(tipo_cbte)
-            # 'controlador'
-            type1_reg.append(' ')
-            # 'punto_venta'
-            type1_reg.append(pos_ar)
-            # 'numero_comprobante'
-            type1_reg.append(invoice_number)
-            # 'numero_comprobante_reg'
-            type1_reg.append(invoice_number)
-            # 'cantidad_hojas'
-            type1_reg.append('001')
-            # 'codigo_doc_ident_comprador'
-            type1_reg.append(code)
-            # 'numero_ident_comprador'
-            type1_reg.append(number)
-            # 'apenom_comprador'
-            type1_reg.append(self._get_partner_name(invoice))
-            # 'importe_total'
-            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_total)), places=2, ndigits=15, dp='', sep=''))
-            # 'neto_no_gravado'
-            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_no_taxed)), places=2, ndigits=15, dp='', sep=''))
-            # 'neto_gravado'
-            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_taxed)), places=2, ndigits=15, dp='', sep=''))
-            # 'impuesto_liquidado'
-            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_tax)), places=2, ndigits=15, dp='', sep=''))
-            # 'impuesto_rni'
-            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-            # 'impuesto_op_exentas'
-            type1_reg.append(moneyfmt(Decimal(str(invoice.amount_exempt)), places=2, ndigits=15, dp='', sep=''))
-            # 'percep_imp_nacionales'
-            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-            # 'percep_iibb'
-            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-            # 'percep_municipales'
-            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-            # 'impuestos_internos'
-            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-            # 'transporte'
-            type1_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-            # 'tipo_responsable'
-            type1_reg.append(invoice.fiscal_position.afip_code)
-            # 'codigo_moneda'
-            type1_reg.append(invoice.currency_id.afip_code)
-            # 'tipo_cambio'
-            type1_reg.append(moneyfmt(Decimal('1.0'), places=6, ndigits=10, dp='', sep=''))
-            # 'cant_alicuotas_iva'
             iva_array = self._get_invoice_vat_taxes(cr, uid, invoice, context)
-            type1_reg.append(str(len(iva_array)))
-            #type1_reg.append(len(iva_array) and str(len(iva_array)) or '1')
-            # 'codigo_operacion'
-            type1_reg.append(self._get_operation_code(cr,uid, invoice))
-            # 'cae'
-            type1_reg.append(invoice.cae)
-            # 'fecha_vencimiento'
-            type1_reg.append(cae_due_date)
-            # 'fecha_anulacion'
-            type1_reg.append(' '*8)
+
+            line = {
+                'type': 1,
+                'date_invoice': date_invoice,
+                'voucher_type': voucher_type,
+                'fiscal_controller': ' ',
+                'pos_ar': pos_ar,
+                'invoice_number': invoice_number,
+                'invoice_number_reg': invoice_number,
+                'cant_hojas': '001',
+                'code': code,
+                'number': number,
+                'partner_name': self._get_partner_name(invoice),
+                'total': moneyfmt(Decimal(invoice.amount_total), places=2, ndigits=15),
+                'neto_no_gravado': moneyfmt(Decimal(invoice.amount_no_taxed), places=2, ndigits=15),
+                'neto_gravado': moneyfmt(Decimal(invoice.amount_taxed), places=2, ndigits=15),
+                'impuesto_liquidado': moneyfmt(Decimal(invoice.amount_tax), places=2, ndigits=15),
+                'impuesto_rni': moneyfmt(Decimal(0.0)),
+                'impuesto_op_exentas': moneyfmt(Decimal(invoice.amount_exempt), places=2, ndigits=15),
+                'percep_imp_nacionales': moneyfmt(Decimal(0.0)),
+                'percep_iibb': moneyfmt(Decimal(0.0)),
+                'percep_municipales': moneyfmt(Decimal(0.0)),
+                'impuestos_internos': moneyfmt(Decimal(0.0)),
+                'transporte': moneyfmt(Decimal(0.0)),
+                'tipo_responsable': invoice.fiscal_position.afip_code,
+                'codigo_moneda': invoice.currency_id.afip_code,
+                'tipo_cambio': moneyfmt(Decimal(1.0), places=6, ndigits=10),
+                'cant_alicuotas_iva': str(len(iva_array)),
+                'codigo_operacion': self._get_operation_code(cr,uid, invoice),
+                'cae': invoice.cae,
+                'fecha_vencimiento': cae_due_date,
+                'fecha_anulacion': ''
+            }
 
             # Apendeamos el registro
-            head_regs.append(type1_reg)
-
+            fixed_width.update(**line)
+            head_regs.append(fixed_width.line)
 
         # Creacion del registro tipo 2 (Totales)
         company_cuit = company.partner_id.vat
-
-        # head_type2_regs
-        type2_reg = []
-
-        # 'tipo_registro'
-        type2_reg.append('2')
-        # 'periodo'
-        type2_reg.append(period_name)
-        # 'relleno'
-        type2_reg.append(' '*13)
-        # Cantidad de registros tipo1
-        type2_reg.append('%08d' % len(head_regs))
-        # 'relleno'
-        type2_reg.append(' '*17)
-        # 'CUIT del Informante'
-        type2_reg.append(company_cuit)
-        # 'relleno'
-        type2_reg.append(' '*22)
-        # Importe total de la operacion
-        type2_reg.append(moneyfmt(Decimal(str(importe_total_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total neto no gravado
-        type2_reg.append(moneyfmt(Decimal(str(importe_total_neto_no_gravado_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total neto gravado
-        type2_reg.append(moneyfmt(Decimal(str(importe_total_neto_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total impuesto liquidado
-        type2_reg.append(moneyfmt(Decimal(str(importe_total_iva_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total impuesto liquidado RNI
-        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total operaciones exentas
-        type2_reg.append(moneyfmt(Decimal(str(importe_total_operaciones_exentas_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones nacionales
-        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones iibb
-        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones municipales
-        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total impuestos internos
-        type2_reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # 'relleno'
-        type2_reg.append(' '*62)
-
-        # Apendeamos el registro
-        head_regs.append(type2_reg)
-
+        
+        fixed_width = FixedWidth(HEAD_TYPE2_LINES)
+        
+        type2_reg = {
+            'period': period_name,
+            'amount': len(head_regs),
+            'company_cuit': company_cuit,
+            'total': moneyfmt(Decimal(importe_total_reg1), places=2, ndigits=15),
+            'neto_no_gravado': moneyfmt(Decimal(importe_total_neto_no_gravado_reg1), places=2, ndigits=15),
+            'neto_gravado': moneyfmt(Decimal(importe_total_neto_reg1), places=2, ndigits=15),
+            'impuesto_liquidado': moneyfmt(Decimal(importe_total_iva_reg1), places=2, ndigits=15),
+            'impuesto_rni': moneyfmt(Decimal(0.0)),
+            'impuesto_op_exentas': moneyfmt(Decimal(importe_total_operaciones_exentas_reg1), places=2, ndigits=15),
+            'percep_imp_nacionales': moneyfmt(Decimal(0.0)),
+            'percep_iibb': moneyfmt(Decimal(0.0)),
+            'percep_municipales': moneyfmt(Decimal(0.0)),
+            'impuestos_internos': moneyfmt(Decimal(0.0))
+        }
+        
+        fixed_width.update(**type2_reg)
+        head_regs.append(fixed_width.line)
 
         head_filename = tempfile.mkstemp(suffix='.siredhead')[1]
         f = open(head_filename, 'w')
@@ -390,8 +235,7 @@ class create_sired_files(osv.osv_memory):
         data_attach = {
             'name': name,
             'datas':binascii.b2a_base64(f.read()),
-            'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
-            #'description': '',
+            'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
         }
@@ -419,63 +263,50 @@ class create_sired_files(osv.osv_memory):
         # Si es No Gravado
         return '0', 'N'
 
+    # Usa DETAIL_LINES
     def _generate_detail_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
 
         detail_regs = []
+        fixed_width = FixedWidth(DETAIL_LINES)
+        
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
             date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
-            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
+            voucher_type = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
 
             for line in invoice.invoice_line:
-                reg = []
-                # 'tipo_comprobante'
-                reg.append(tipo_cbte)
-                # 'controlador'
-                reg.append(' ')
-                # 'fecha_comprobante'
-                reg.append(date_invoice)
-                # 'punto_venta'
-                reg.append(pos_ar)
-                # 'numero_comprobante'
-                reg.append(invoice_number)
-                # 'numero_comprobante_reg'
-                reg.append(invoice_number)
-                # Cantidad
-                reg.append(moneyfmt(Decimal(str(line.quantity)), places=5, ndigits=12, dp='', sep=''))
-                # Unidad de Medida
+
                 if not line.uos_id.afip_code:
                     raise osv.except_osv(_('SIRED Error!'), _('You have to configure AFIP Code for UoM %s') % (line.uos_id.name))
-                reg.append(line.uos_id.afip_code)
-                # Precio Unitario
-                reg.append(moneyfmt(Decimal(str(line.price_unit)), places=3, ndigits=16, dp='', sep=''))
-                # Importe de Bonificacion
-                # TODO: Tener en cuenta los descuentos
-                reg.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # Importe de ajuste
-                reg.append(moneyfmt(Decimal('0.0'), places=3, ndigits=16, dp='', sep=''))
-                # Subtotal por registro
-                reg.append(moneyfmt(Decimal(str(line.price_subtotal)), places=3, ndigits=16, dp='', sep=''))
-                # Alicuota de IVA
+
                 iva, exempt_indicator = self._get_vat_tax_and_exempt_indicator(cr, uid, line.invoice_line_tax_id)
-                reg.append(moneyfmt(Decimal(str(iva)), places=2, ndigits=4, dp='', sep=''))
-                # Indicacion de Exento, Gravado o No Gravado
-                reg.append(exempt_indicator)
-                # Indicacion de Anulacion
-                reg.append(' ')
-                # Disenio Libre
-                product_name = ustr('%-75s') % line.name
 
-                reg.append(product_name)
-                #reg.append("\r\n")
+                detail_line = {
+                    'voucher_type': voucher_type,
+                    'date_invoice': date_invoice,
+                    'pos_ar': pos_ar,
+                    'invoice_number': invoice_number,
+                    'invoice_number_reg': invoice_number,
+                    'quantity': moneyfmt(Decimal(line.quantity), places=5, ndigits=12),
+                    'uom': line.uos_id.afip_code,
+                    'price_unit': moneyfmt(Decimal(line.price_unit), places=3, ndigits=16),
+                    #TODO: Tener en cuenta los descuentos
+                    'bonus_amount': moneyfmt(Decimal(0.0), places=2, ndigits=15),
+                    'adjustment_amount': moneyfmt(Decimal(0.0), places=3, ndigits=16),
+                    'subtotal': moneyfmt(Decimal(line.price_subtotal), places=3, ndigits=16),
+                    'iva': moneyfmt(Decimal(iva), places=2, ndigits=4),
+                    'exempt_indicator': exempt_indicator,
+                    'product_name': line.name
+                }
+
                 # Apendeamos el registro
-                detail_regs.append(reg)
-
+                fixed_width.update(**detail_line)
+                detail_regs.append(fixed_width.line)
 
         detail_filename = tempfile.mkstemp(suffix='.sireddetail')[1]
         f = open(detail_filename, 'w')
@@ -494,8 +325,7 @@ class create_sired_files(osv.osv_memory):
         data_attach = {
             'name': name,
             'datas':binascii.b2a_base64(f.read()),
-            'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
-            #'description': '',
+            'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
         }
@@ -504,6 +334,7 @@ class create_sired_files(osv.osv_memory):
 
         return detail_regs
 
+    # Usa SALE_LINES y SALE_TYPE2_LINES
     def _generate_sales_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
@@ -514,7 +345,16 @@ class create_sired_files(osv.osv_memory):
         importe_total_iva_reg1 = 0.0
         importe_total_operaciones_exentas_reg1 = 0.0
 
+        # Totales de Percepciones
+        # TODO: Implementar Percepciones en VENTAS
+        #percepciones_iva_reg1 = 0.0
+        #percepciones_nacionales_reg1 = 0.0
+        #percepciones_iibb_reg1 = 0.0
+        #percepciones_municipales_reg1 = 0.0
+
         sale_regs = []
+        fixed_width = FixedWidth(SALE_LINES)
+
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
 
             # Conversiones varias
@@ -534,136 +374,77 @@ class create_sired_files(osv.osv_memory):
             importe_total_operaciones_exentas_reg1 += invoice.amount_exempt
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
-            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
+            voucher_type = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
 
             iva_array = self._get_invoice_vat_taxes(cr, uid, invoice, context)
 
+
             for alic_iva in iva_array:
-                sale_reg_type1 = []
 
-                # 'tipo_registro' (1)
-                sale_reg_type1.append('1')
-                # 'fecha_comprobante' (2)
-                sale_reg_type1.append(date_invoice)
-                # 'tipo_comprobante' (3)
-                sale_reg_type1.append(tipo_cbte)
-
-                # 'controlador' (4)
-                sale_reg_type1.append(' ')
-                # 'punto_venta' (5)
-                sale_reg_type1.append(pos_ar)
-                # 'numero_comprobante' (6)
-                sale_reg_type1.append(invoice_number)
-                # 'numero_comprobante_reg' (7)
-                sale_reg_type1.append(invoice_number)
-                # 'codigo_doc_ident_comprador' (8)
-                sale_reg_type1.append(code)
-                # 'numero_ident_comprador' (9)
-                sale_reg_type1.append(number)
-                # 'apenom_comprador' (10)
-                sale_reg_type1.append(self._get_partner_name(invoice))
-
-                # 'importe_total' (11)
-                sale_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                #sale_reg_type1.append(moneyfmt(Decimal(importe_total), places=2, ndigits=15, dp='', sep=''))
-
-                # 'neto_no_gravado' (12)
-                sale_reg_type1.append(moneyfmt(Decimal(str(invoice.amount_no_taxed)), places=2, ndigits=15, dp='', sep=''))
-                # 'neto_gravado' (13)
-                sale_reg_type1.append(moneyfmt(Decimal(str(alic_iva['BaseImp'])), places=2, ndigits=15, dp='', sep=''))
-
-                # Alicuota de IVA (14)
-                sale_reg_type1.append(str(alic_iva['IVA']*100))
-
-                # 'impuesto_liquidado' (15)
-                sale_reg_type1.append(moneyfmt(Decimal(str(alic_iva['Importe'])), places=2, ndigits=15, dp='', sep=''))
-                # 'impuesto_rni' (16)
-                sale_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'impuesto_op_exentas' (17)
-                sale_reg_type1.append(moneyfmt(Decimal(str(invoice.amount_exempt)), places=2, ndigits=15, dp='', sep=''))
-                # 'percep_imp_nacionales' (18)
-                sale_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'percep_iibb' (19)
-                sale_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'percep_municipales' (20)
-                sale_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'impuestos_internos' (21)
-                sale_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'tipo_responsable' (22)
-                sale_reg_type1.append(invoice.fiscal_position.afip_code)
-                # 'codigo_moneda' (23)
-                sale_reg_type1.append(invoice.currency_id.afip_code)
-                # 'tipo_cambio' (24)
-                sale_reg_type1.append(moneyfmt(Decimal('1.0'), places=6, ndigits=10, dp='', sep=''))
-                # 'cant_alicuotas_iva' (25)
-                sale_reg_type1.append(len(iva_array) and str(len(iva_array)) or '1')
-                # 'codigo_operacion' (26)
-                sale_reg_type1.append(self._get_operation_code(cr,uid, invoice))
-                # 'cae' (27)
-                sale_reg_type1.append(invoice.cae)
-                # 'fecha_vencimiento' (28)
-                sale_reg_type1.append(cae_due_date)
-                # 'fecha_anulacion' (29)
-                sale_reg_type1.append(' '*8)
-
-                # 'Informacion Adicional' (30)
-                # TODO: Ibamos a poner los comentarios de la Factura, pero son mas internos
-                sale_reg_type1.append(' '*75)
+                line = {
+                    'type': 1,
+                    'date_invoice': date_invoice,
+                    'voucher_type': voucher_type,
+                    'pos_ar': pos_ar,
+                    'invoice_number': invoice_number,
+                    'invoice_number_reg': invoice_number,
+                    'code': code,
+                    'number': number,
+                    'partner_name': self._get_partner_name(invoice),
+                    'total': moneyfmt(Decimal(0.0)),
+                    'neto_no_gravado': moneyfmt(Decimal(invoice.amount_no_taxed), places=2, ndigits=15),
+                    'neto_gravado': moneyfmt(Decimal(alic_iva['BaseImp']), places=2, ndigits=15),
+                    'alic_iva': int(alic_iva['IVA']*10000),
+                    'impuesto_liquidado': moneyfmt(Decimal(alic_iva['Importe']), places=2, ndigits=15),
+                    'impuesto_rni': moneyfmt(Decimal(0.0)),
+                    'impuesto_op_exentas': moneyfmt(Decimal(invoice.amount_exempt), places=2, ndigits=15),
+                    'percep_imp_nacionales': moneyfmt(Decimal(0.0)),
+                    'percep_iibb': moneyfmt(Decimal(0.0)),
+                    'percep_municipales': moneyfmt(Decimal(0.0)),
+                    'impuestos_internos': moneyfmt(Decimal(0.0)),
+                    'tipo_responsable': invoice.fiscal_position.afip_code,
+                    'codigo_moneda': invoice.currency_id.afip_code,
+                    'tipo_cambio': moneyfmt(Decimal(1.0), places=6, ndigits=10),
+                    'cant_alicuotas_iva': len(iva_array) and str(len(iva_array)) or '1',
+                    'codigo_operacion': self._get_operation_code(cr, uid, invoice),
+                    'cae': invoice.cae,
+                    'fecha_vencimiento': cae_due_date,
+                    'fecha_anulacion': ''
+                }
 
                 # Apendeamos el registro
-                sale_regs.append(sale_reg_type1)
+                fixed_width.update(**line)
+                sale_regs.append(fixed_width.line)
 
-            # En el ultimo reg1 consignamos valores totales segun la RG
-            sale_reg_type1[10] = moneyfmt(Decimal(str(invoice.amount_total)), places=2, ndigits=15, dp='', sep='')
-
+            # En el ultimo reg1 consignamos valores totales segun la RG            
+            line['total'] = moneyfmt(Decimal(invoice.amount_total), places=2, ndigits=15)
+            
+            fixed_width.update(**line)
+            sale_regs[-1] = fixed_width.line
 
         # Creacion del registro tipo 2 (Totales)
         company_cuit = company.partner_id.vat
 
-        # Registros de Ventas Tipo 2
-        sale_reg_type2 = []
-
-        # 'tipo_registro'
-        sale_reg_type2.append('2')
-        # 'periodo'
-        sale_reg_type2.append(period_name)
-        # 'relleno'
-        sale_reg_type2.append(' '*29)
-        # Cantidad de registros tipo1
-        sale_reg_type2.append('%012d' % len(sale_regs))
-        # 'relleno'
-        sale_reg_type2.append(' '*30)
-        # 'CUIT del Informante'
-        sale_reg_type2.append(company_cuit)
-        # 'relleno'
-        sale_reg_type2.append(' '*30)
-        # Importe total de la operacion
-        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total neto no gravado
-        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_no_gravado_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total neto gravado
-        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # 'relleno'
-        sale_reg_type2.append(' '*4)
-        # Importe total impuesto liquidado
-        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_iva_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total impuesto liquidado RNI
-        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total operaciones exentas
-        sale_reg_type2.append(moneyfmt(Decimal(str(importe_total_operaciones_exentas_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones nacionales
-        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones iibb
-        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones municipales
-        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total impuestos internos
-        sale_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # 'relleno'
-        sale_reg_type2.append(' '*122)
-
-        # Apendeamos el registro
-        sale_regs.append(sale_reg_type2)
+        fixed_width = FixedWidth(SALE_TYPE2_LINES)
+        
+        type2_reg = {
+            'period': period_name,
+            'amount': len(sale_regs),
+            'company_cuit': company_cuit,
+            'total': moneyfmt(Decimal(importe_total_reg1), places=2, ndigits=15),
+            'neto_no_gravado': moneyfmt(Decimal(importe_total_neto_no_gravado_reg1), places=2, ndigits=15),
+            'neto_gravado': moneyfmt(Decimal(importe_total_neto_reg1), places=2, ndigits=15),
+            'impuesto_liquidado': moneyfmt(Decimal(importe_total_iva_reg1), places=2, ndigits=15),
+            'impuesto_rni': moneyfmt(Decimal(0.0)),
+            'impuesto_op_exentas': moneyfmt(Decimal(importe_total_operaciones_exentas_reg1), places=2, ndigits=15),
+            'percep_imp_nacionales': moneyfmt(Decimal(0.0)),
+            'percep_iibb': moneyfmt(Decimal(0.0)),
+            'percep_municipales': moneyfmt(Decimal(0.0)),
+            'impuestos_internos': moneyfmt(Decimal(0.0))
+        }
+        
+        fixed_width.update(**type2_reg)
+        sale_regs.append(fixed_width.line)
 
         sale_filename = tempfile.mkstemp(suffix='.siredsale')[1]
         f = open(sale_filename, 'w')
@@ -682,8 +463,7 @@ class create_sired_files(osv.osv_memory):
         data_attach = {
             'name': name,
             'datas':binascii.b2a_base64(f.read()),
-            'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
-            #'description': '',
+            'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
         }
@@ -692,10 +472,8 @@ class create_sired_files(osv.osv_memory):
 
         return sale_regs
 
-
     def _generate_purchase_file(self, cr, uid, company, period_id, period_name, invoice_ids, context):
         invoice_obj = self.pool.get('account.invoice')
-        #voucher_type_obj = self.pool.get('wsfe.voucher_type')
 
         importe_total_reg1 = 0.0
         importe_total_neto_no_gravado_reg1 = 0.0
@@ -703,8 +481,20 @@ class create_sired_files(osv.osv_memory):
         importe_total_iva_reg1 = 0.0
         importe_total_operaciones_exentas_reg1 = 0.0
 
+        impuestos_internos_reg1 = 0.0
+
+        # Totales de Percepciones
+        percepciones_iva_reg1 = 0.0
+        percepciones_nacionales_reg1 = 0.0
+        percepciones_iibb_reg1 = 0.0
+        percepciones_municipales_reg1 = 0.0
+
         purchase_regs = []
+        fixed_width = FixedWidth(PURCHASE_LINES)
+
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
+
+            impuestos_internos = 0.0
 
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
@@ -755,84 +545,51 @@ class create_sired_files(osv.osv_memory):
             if not tipo_cbte:
                 raise osv.except_osv(_('SIRED Error'), _('Cannot be determined the type of voucher [%s]') % (invoice.internal_number))
 
-
-
             iva_array = self._get_invoice_vat_taxes(cr, uid, invoice, context)
 
             for alic_iva in iva_array:
-                purchase_reg_type1 = []
 
-                # 'tipo_registro' (1)
-                purchase_reg_type1.append('1')
-                # 'fecha_comprobante' (2)
-                purchase_reg_type1.append(date_invoice)
-                # 'tipo_comprobante' (3)
-                purchase_reg_type1.append(tipo_cbte)
-                # 'controlador' (4)
-                purchase_reg_type1.append(' ')
-                # 'punto_venta' (5)
-                purchase_reg_type1.append(pos_ar)
-                # 'numero_comprobante' (6)
-                purchase_reg_type1.append(invoice_number)
-                # 'Fecha de Registracion Contable' (7)
-                # TODO: Por ahora es date_invoice, despues lo cambiaremos
-                purchase_reg_type1.append(date_invoice)
-                # 'Codigo de Aduana' (8)
-                purchase_reg_type1.append(' '*3)
-                # 'Codigo de Destinacion' (9)
-                purchase_reg_type1.append(' '*4)
-                # 'Numero de despacho' (10)
-                purchase_reg_type1.append(' '*6)
-                # 'Digito verificador del numero de despacho' (11)
-                purchase_reg_type1.append(' ')
-                # 'Codigo de documento identificatorio del Vendedor' (12)
-                purchase_reg_type1.append(code)
-                # 'Numero identificatorio Vendedor' (13)
-                purchase_reg_type1.append(number)
-                # 'Apellido y nombre del Vendedor' (14)
-                purchase_reg_type1.append(self._get_partner_name(invoice))
-                # 'importe_total' (15)
-                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'neto_no_gravado' (16)
-                purchase_reg_type1.append(moneyfmt(Decimal(str(invoice.amount_no_taxed)), places=2, ndigits=15, dp='', sep=''))
-                # 'neto_gravado' (17)
-                purchase_reg_type1.append(moneyfmt(Decimal(str(alic_iva['BaseImp'])), places=2, ndigits=15, dp='', sep=''))
-                # Alicuota de IVA (18)
-                purchase_reg_type1.append(str(alic_iva['IVA']*100))
-                # 'impuesto_liquidado' (19)
-                purchase_reg_type1.append(moneyfmt(Decimal(str(alic_iva['Importe'])), places=2, ndigits=15, dp='', sep=''))
-                # 'Importe de Operaciones Exentas' (20)
-                purchase_reg_type1.append(moneyfmt(Decimal(str(invoice.amount_exempt)), places=2, ndigits=15, dp='', sep=''))
-                # 'Importe de percepciones o pagos a cuenta del IVA' (21)
-                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'Importe de percepciones o pagos a cuenta de otros impuestos nacionales' (22)
-                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'Importe de percepciones de IIBB' (23)
-                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'Importe de percepciones de Impuestos Municipales' (24)
-                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'Importe de Impuestos Internos' (25)
-                purchase_reg_type1.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-                # 'tipo_responsable' (26)
-                purchase_reg_type1.append(invoice.fiscal_position.afip_code)
-                # 'codigo_moneda' (27)
-                purchase_reg_type1.append(invoice.currency_id.afip_code)
-                # 'tipo_cambio' (28)
-                purchase_reg_type1.append(moneyfmt(Decimal('1.0'), places=6, ndigits=10, dp='', sep=''))
-                # 'cant_alicuotas_iva' (29)
-                purchase_reg_type1.append(len(iva_array) and str(len(iva_array)) or '1')
-                # 'codigo_operacion' (30)
-                purchase_reg_type1.append(self._get_operation_code(cr,uid, invoice))
-                # 'cae' (31)
-                purchase_reg_type1.append(invoice.cae or '123123123123')
-                # 'fecha_vencimiento' (32)
-                purchase_reg_type1.append(cae_due_date)
-                # 'Informacion Adicional' (33)
-                # TODO: Ibamos a poner los comentarios de la Factura, pero son mas internos
-                purchase_reg_type1.append(' '*75)
+                if alic_iva['type'] == 'internal':
+                    impuestos_internos += alic_iva['Importe']
+                    continue
+            
+                line = {
+                    'type': 1,
+                    'date_invoice': date_invoice,
+                    'voucher_type': tipo_cbte,
+                    'pos_ar': pos_ar,
+                    'invoice_number': invoice_number,
+                    'date_invoice2': date_invoice,
+                    'codigo_aduana': '000',
+                    'codigo_destinacion': ' ',
+                    'verificador_numero_despacho': ' ',
+                    'code': code,
+                    'number': number,
+                    'partner_name': self._get_partner_name(invoice),
+                    'total': moneyfmt(Decimal(0.0)),
+                    'neto_no_gravado': moneyfmt(Decimal(invoice.amount_no_taxed), places=2, ndigits=15),
+                    'neto_gravado': moneyfmt(Decimal(alic_iva['BaseImp']), places=2, ndigits=15),
+                    'alic_iva': int(alic_iva['IVA']*10000),
+                    'impuesto_liquidado': moneyfmt(Decimal(alic_iva['Importe']), places=2, ndigits=15),
+                    'impuesto_rni': moneyfmt(Decimal(0.0), places=2, ndigits=15),
+                    'impuesto_op_exentas': moneyfmt(Decimal(invoice.amount_exempt), places=2, ndigits=15),
+                    'percep_iva': moneyfmt(Decimal(0.0)),
+                    'percep_imp_nacionales': moneyfmt(Decimal(0.0)),
+                    'percep_iibb': moneyfmt(Decimal(0.0)),
+                    'percep_municipales': moneyfmt(Decimal(0.0)),
+                    'impuestos_internos': moneyfmt(Decimal(0.0)),
+                    'tipo_responsable': invoice.fiscal_position.afip_code,
+                    'codigo_moneda': invoice.currency_id.afip_code,
+                    'tipo_cambio': moneyfmt(Decimal(1.0), places=6, ndigits=10),
+                    'cant_alicuotas_iva': len(iva_array) and str(len(iva_array)) or '1',
+                    'codigo_operacion': self._get_operation_code(cr, uid, invoice),
+                    'cae': invoice.cae or '000000000000',
+                    'fecha_vencimiento': cae_due_date
+                }
 
                 # Apendeamos el registro
-                purchase_regs.append(purchase_reg_type1)
+                fixed_width.update(**line)
+                purchase_regs.append(fixed_width.line)
 
             # Obtenemos los importes de percepciones
             percepciones_iva = 0.0
@@ -850,68 +607,46 @@ class create_sired_files(osv.osv_memory):
                 elif perc.perception_id.jurisdiccion == 'municipal':
                     percepciones_municipales += perc.amount
 
-            # En el ultimo reg1 consignamos valores totales segun la RG
-            # TODO: Agregar los de percepciones que tambien todos se consignan en el ultimo de los registros
-            purchase_reg_type1[14] = moneyfmt(Decimal(str(invoice.amount_total)), places=2, ndigits=15, dp='', sep='')
-            # 'Importe de percepciones o pagos a cuenta del IVA' (21)
-            purchase_reg_type1[20] = moneyfmt(Decimal(str(percepciones_iva)), places=2, ndigits=15, dp='', sep='')
-            # 'Importe de percepciones o pagos a cuenta de otros impuestos nacionales' (22)
-            purchase_reg_type1[21] = moneyfmt(Decimal(str(percepciones_nacionales)), places=2, ndigits=15, dp='', sep='')
-            # 'Importe de percepciones de IIBB' (23)
-            purchase_reg_type1[22] = moneyfmt(Decimal(str(percepciones_iibb)), places=2, ndigits=15, dp='', sep='')
-            # 'Importe de percepciones de Impuestos Municipales' (24)
-            purchase_reg_type1[23] = moneyfmt(Decimal(str(percepciones_municipales)), places=2, ndigits=15, dp='', sep='')
-            # 'Importe de Impuestos Internos' (25)
-            purchase_reg_type1[24] = moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep='')
+            # En el ultimo registro consignamos valores totales segun la RG
+            line['total'] = moneyfmt(Decimal(invoice.amount_total), places=2, ndigits=15)
+            line['percep_iva'] = moneyfmt(Decimal(percepciones_iva), places=2, ndigits=15)
+            line['percep_imp_nacionales'] = moneyfmt(Decimal(percepciones_nacionales), places=2, ndigits=15)
+            line['percep_iibb'] = moneyfmt(Decimal(percepciones_iibb), places=2, ndigits=15)
+            line['percep_municipales'] = moneyfmt(Decimal(percepciones_municipales), places=2, ndigits=15)
+            line['impuestos_internos'] = moneyfmt(Decimal(impuestos_internos), places=2, ndigits=15)
 
+            percepciones_iva_reg1 += percepciones_iva
+            percepciones_nacionales_reg1 += percepciones_nacionales
+            percepciones_iibb_reg1 += percepciones_iibb
+            percepciones_municipales_reg1 += percepciones_municipales
+            impuestos_internos_reg1 += impuestos_internos
+            
+            fixed_width.update(**line)
+            purchase_regs[-1] = fixed_width.line
 
         # Creacion del registro tipo 2 (Totales)
         company_cuit = company.partner_id.vat
 
-        # Registros de Ventas Tipo 2
-        purchase_reg_type2 = []
-
-        # 'Tipo de Registro' (1)
-        purchase_reg_type2.append('2')
-        # 'Periodo' (2)
-        purchase_reg_type2.append(period_name)
-        # 'Relleno' (3)
-        purchase_reg_type2.append(' '*29)
-        # Cantidad de registros tipo1 (4)
-        purchase_reg_type2.append('%012d' % len(purchase_regs))
-        # 'relleno' (5)
-        purchase_reg_type2.append(' '*31)
-        # 'CUIT del Informante' (6)
-        purchase_reg_type2.append(company_cuit)
-        # 'relleno' (7)
-        purchase_reg_type2.append(' '*30)
-        # Importe total de la operacion (8)
-        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total neto no gravado (9)
-        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_no_gravado_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total neto gravado (10)
-        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_neto_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # 'relleno' (11)
-        purchase_reg_type2.append(' '*4)
-        # Importe total impuesto liquidado (12)
-        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_iva_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total operaciones exentas (13)
-        purchase_reg_type2.append(moneyfmt(Decimal(str(importe_total_operaciones_exentas_reg1)), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones o pagos a cuenta del IVA (14)
-        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones o pagos a cuenta de otros impuestos nacionales (15)
-        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones de IIBB (16)
-        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total percepciones de impuestos internos (17)
-        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # Importe total impuestos internos (17)
-        purchase_reg_type2.append(moneyfmt(Decimal('0.0'), places=2, ndigits=15, dp='', sep=''))
-        # 'relleno' (19)
-        purchase_reg_type2.append(' '*114)
-
-        # Apendeamos el registro
-        purchase_regs.append(purchase_reg_type2)
+        fixed_width = FixedWidth(PURCHASE_TYPE2_LINES)
+        
+        type2_reg = {
+            'period': period_name,
+            'amount': len(purchase_regs),
+            'company_cuit': company_cuit,
+            'total': moneyfmt(Decimal(importe_total_reg1), places=2, ndigits=15),
+            'neto_no_gravado': moneyfmt(Decimal(importe_total_neto_no_gravado_reg1), places=2, ndigits=15),
+            'neto_gravado': moneyfmt(Decimal(importe_total_neto_reg1), places=2, ndigits=15),
+            'impuesto_liquidado': moneyfmt(Decimal(importe_total_iva_reg1), places=2, ndigits=15),
+            'importe_op_exentas': moneyfmt(Decimal(importe_total_operaciones_exentas_reg1), places=2, ndigits=15),
+            'percep_iva': moneyfmt(Decimal(percepciones_iva_reg1), places=2, ndigits=15),
+            'percep_imp_nacionales': moneyfmt(Decimal(percepciones_nacionales_reg1), places=2, ndigits=15),
+            'percep_iibb': moneyfmt(Decimal(percepciones_iibb_reg1), places=2, ndigits=15),
+            'percep_municipales': moneyfmt(Decimal(percepciones_municipales_reg1), places=2, ndigits=15),
+            'impuestos_internos': moneyfmt(Decimal(impuestos_internos_reg1), places=2, ndigits=15),
+        }
+        
+        fixed_width.update(**type2_reg)
+        purchase_regs.append(fixed_width.line)
 
         purchase_filename = tempfile.mkstemp(suffix='.siredpurchase')[1]
         f = open(purchase_filename, 'w')
@@ -930,8 +665,7 @@ class create_sired_files(osv.osv_memory):
         data_attach = {
             'name': name,
             'datas':binascii.b2a_base64(f.read()),
-            'datas_fname': name,#name.replace('-', '_').replace('/', '_') + '.txt',
-            #'description': '',
+            'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
         }
@@ -939,9 +673,6 @@ class create_sired_files(osv.osv_memory):
         f.close()
 
         return purchase_regs
-
-
-
 
     def create_files(self, cr, uid, ids, context=None):
         """
@@ -980,12 +711,15 @@ class create_sired_files(osv.osv_memory):
         period_name = period_split[1]+period_split[0]
 
         # Generamos los registros de Cabecera Tipo 1 y Tipo 2
+        # TODO: Implementar impuestos_internos
         self._generate_head_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Detalle Tipo 1
+        # TODO: Implementar impuestos_internos
         self._generate_detail_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Ventas Tipo 1 y Tipo 2
+        # TODO: Implementar impuestos_internos
         self._generate_sales_file(cr, uid, company, period.id, period_name, invoice_ids, context)
 
         # Generamos los registros de Compras Tipo 1 y Tipo 2
