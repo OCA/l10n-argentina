@@ -2,332 +2,59 @@
 <openerp>
     <data>
 
-        <record model="ir.ui.view" id="view_vendor_receipt_voucher_form">
+        <record model="ir.ui.view" id="view_vendor_l10n_ar_receipt_form">
             <field name="name">account.voucher.l10n_ar.receipt.form</field>
             <field name="model">account.voucher</field>
-            <field name="type">form</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
             <field name="arch" type="xml">
-                <form string="Customer Payment" version="7.0">
-                    <header>
-                        <button name="cancel_voucher" string="Cancel" states="draft,proforma"/>
-                        <button name="cancel_voucher" string="Unreconcile" type="object" states="posted" confirm="Are you sure to unreconcile this record ?"/>
-                        <button name="compute" type="object" string="Compute" states="draft,proforma" />
-                        <button name="action_cancel_draft" type="object" states="cancel" string="Set to Draft"/>
-                        <button name="proforma_voucher" string="Validate" states="draft" class="oe_highlight"/>
-                        <button colspan="2" name="get_invoices_and_credits" states="draft,proforma" type="object" string="Get Invoices and Credits" class="oe_highlight"/>
-                        <field name="state" widget="statusbar"/>
-                    </header>
-                    <sheet>
-                        <h1>
-                            <label string="Customer Payment "/>
-                            <field name="name" class="oe_inline" readonly="1"/>
-                        </h1>
-                        <group>
-                            <group>
-                                <field name="partner_id" domain="[('customer','=',True)]" required="1" on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, company_id, context)" />
-                                <field name="journal_id"
-                                    domain="[('type','in',['bank', 'cash'])]"
-                                    widget="selection" select="1"
-                                    on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, company_id, context)"
-                                    string="Payment Method"/>
-                                <field name="reference" select="1" string="Payment Ref"/>
-                            </group>
-                            <group>
-                                <field name="name" colspan="2"/>
-                                <field name="date" select="1" on_change="onchange_date(date, currency_id, currency_id, amount, company_id, context)"/>
-                                <field name="company_id" select="1" widget="selection" groups="base.group_multi_company"/>
-                                <field name="account_id"
-                                    widget="selection"
-                                    invisible="True"/>
-                                <field name="pre_line" invisible="1"/>
-                                <field name="type" invisible="True"/>
-                            </group>
-                        </group>
-                        <notebook colspan="4">
-                            <page string="Payment Information">
-                                <field name="currency_id" invisible="1"/>
-                                <group>
-                                    <group>
-                                        <separator string="Payment Lines"/>
-                                        <field name="payment_line_ids" nolabel="1" colspan="4" height="180" on_change="onchange_paymode_line(payment_line_ids)">
-                                            <tree string="Payment Lines" editable="bottom">
-                                                <field name="name"/>
-                                                <field name="date" readonly="1"/>
-                                                <field name="currency" readonly="1"/>
-                                                <field name="amount" sum="Total"/>
-                                            </tree>
-                                            <form>
-                                                <field name="name" readonly="1"/>
-                                                <field name="date" readonly="0"/>
-                                                <field name="currency" readonly="0"/>
-                                                <field name="amount"/>
-                                            </form>
-                                        </field>
-                                    </group>
-                                    <group>
-                                        <separator string="Amounts"/>
-                                        <label string="" colspan="2"/>
-                                        <field name="amount" colspan="2" on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, company_id, context)"/>
-                                        <label string="-" align="1.0" colspan="2"/>
-                                        <field name="total_invoices" colspan="2"/>
-                                        <label string="+" align="1.0" colspan="2"/>
-                                        <field name="total_credits" colspan="2"/>
-                                        <label string="" colspan="2"/>
-                                        <separator string="" colspan="2"/>
-                                        <label string="Balance" colspan="2"/>
-                                        <field name="credit_balance" colspan="2"/>
-                                    </group>
-                                </group>
-
-                                <separator string="Invoices and outstanding transactions"/>
-                                <field name="line_cr_ids" colspan="4" nolabel="1" default_get="{'journal_id':journal_id, 'partner_id':partner_id}">
-                                    <tree string="Invoices and outstanding transactions" colors="black:state=='included' ;grey:state=='not_included'">
-                                        <field name="move_line_id"/>
-                                        <field name="account_id" groups="base.group_extended" domain="[('type','=','receivable')]"/>
-                                        <field name="date_original"/>
-                                        <field name="amount_original"/>
-                                        <field name="amount" sum="Payment"/>
-                                        <field name="state" readonly="1"/>
-                                        <button name="add_voucher_line" string="Add"
-                                                type="object"
-                                                icon="gtk-go-back"
-                                                states="not_included"/>
-                                        <button name="delete_voucher_line"
-                                                string="Remove"
-                                                type="object"
-                                                icon="gtk-cancel"
-                                                states="included"/>
-                                    </tree>
-                                </field>
-
-                                <separator string="Credits" attrs="{'invisible': [('pre_line','=',False)]}"/>
-                                <field name="line_dr_ids" attrs="{'invisible': [('pre_line','=',False)]}" default_get="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" colspan="4" nolabel="1" height="140">
-                                    <tree string="Credits"
-                                          colors="black:state=='included' ;grey:state=='not_included'">
-                                        <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
-                                            on_change="onchange_move_line_id(move_line_id)"
-                                            domain="[('account_id.type','=','payable'), ('reconcile_id','=', False), ('partner_id','=',parent.partner_id)]"
-                                            />
-                                        <field name="account_id" groups="base.group_extended" domain="[('type','=','payable')]"/>
-                                        <field name="date_original" readonly="1"/>
-                                        <field name="date_due" readonly="1"/>
-                                        <field name="amount_original" readonly="1"/>
-                                        <field name="amount_unreconciled" sum="Open Balance" readonly="1"/>
-                                        <field name="amount" sum="Payment"/>
-                                        <field name="state"/>
-                                        <button name="add_voucher_line"
-                                                string="Add"
-                                                type="object"
-                                                icon="gtk-go-back"
-                                                states="not_included"/>
-                                        <button name="delete_voucher_line"
-                                                string="Remove"
-                                                type="object"
-                                                icon="gtk-cancel"
-                                                states="included"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Journal Items" groups="base.group_extended" attrs="{'invisible': [('state','!=','posted')]}">
-                                <group>
-                                    <field name="period_id"/>
-                                    <field name="audit"/>
-                                </group>
-                                
-                                <separator string="Journal Items"/>
-                                <field name="move_ids" colspan="4" nolabel="1" readonly="1">
-                                   <tree string="Journal Items">
-                                       <field name="move_id"/>
-                                       <field name="ref"/>
-                                       <field name="date"/>
-                                       <field name="statement_id"/>
-                                       <field name="partner_id"/>
-                                       <field name="account_id"/>
-                                       <field name="name"/>
-                                       <field name="debit"/>
-                                       <field name="credit"/>
-                                       <field name="state"/>
-                                       <field name="reconcile_id"/>
-                                       <field name="amount_currency"/>
-                                       <field name="currency_id"/>
-                                   </tree>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
+                <field name="amount" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                 <field name="journal_id" position="attributes">
+                    <attribute name="string">Journal</attribute>
+                </field>
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="before">
+                    <label for="payment_line_ids"/>
+                    <field name="payment_line_ids" on_change="onchange_payment_line(amount, payment_line_ids, context)">
+                        <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
+                            <field name="name"/>
+                            <field name="currency" readonly="1"/>
+                            <field name="date"/>
+                            <field name="voucher_id" invisible="1"/>
+                            <field name="amount" sum="Total"/>
+                        </tree>
+                    </field>
+                </xpath>
             </field>
         </record>
+ 
 
-        <record id="account_voucher.action_vendor_receipt_form" model="ir.actions.act_window.view">
-            <field eval="2" name="sequence"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_vendor_receipt_voucher_form"/>
-            <field name="act_window_id" ref="account_voucher.action_vendor_receipt"/>
-        </record>
 
-        <record model="ir.ui.view" id="view_vendor_payment_voucher_form">
+        <record model="ir.ui.view" id="view_vendor_l10n_ar_payment_form">
             <field name="name">account.voucher.l10n_ar.payment.form</field>
             <field name="model">account.voucher</field>
-            <field name="type">form</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_payment_form"/>
             <field name="arch" type="xml">
-                <form string="Bill Payment" version="7.0">
-                    <header>
-                        <button name="cancel_voucher" string="Cancel" states="draft,proforma"/>
-                        <button name="cancel_voucher" string="Unreconcile" type="object" states="posted" confirm="Are you sure to unreconcile this record ?"/>
-                        <button name="compute" type="object" string="Compute" states="draft,proforma" />
-                        <button name="action_cancel_draft" type="object" states="cancel" string="Set to Draft"/>
-                        <button name="proforma_voucher" string="Validate" states="draft" class="oe_highlight"/>
-                        <button colspan="2" name="get_invoices_and_credits" states="draft,proforma" type="object" string="Get Invoices and Credits" class="oe_highlight"/>
-                        <field name="state" widget="statusbar"/>
-                    </header>
-                    <sheet>
-                        <h1>
-                            <label string="Supplier Payment "/>
-                            <field name="name" class="oe_inline" readonly="1"/>
-                        </h1>
-                        <group>
-                            <group>
-                                <field name="partner_id" domain="[('supplier','=',True)]" required="1" on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, company_id, context)" context="{'invoice_currency':currency_id}" string="Supplier"/>
-                                <field name="journal_id"
-                                    domain="[('type','in',['bank', 'cash'])]"
-                                    widget="selection" select="1"
-                                    on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, company_id, context)"
-                                    string="Payment Method"/>
-                                <field name="reference" select="1" string="Payment Ref"/>
-                            </group>
-                            <group>
-                                <field name="name" colspan="2"/>
-                                <field name="date" select="1" on_change="onchange_date(date, currency_id, currency_id, amount, company_id, context)"/>
-                                <field name="company_id" select="1" widget="selection" groups="base.group_multi_company"/>
-                                <field name="account_id"
-                                    widget="selection"
-                                    invisible="True"/>
-                                <field name="pre_line" invisible="1"/>
-                                <field name="type" invisible="True"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Payment Information">
-                                <field name="currency_id" invisible="1"/>
-                                <group>
-                                    <group>
-                                        <separator string="Payment Lines"/>
-                                        <field name="payment_line_ids" nolabel="1" colspan="4" height="180" on_change="onchange_paymode_line(payment_line_ids)">
-                                            <tree string="Payment Lines" editable="bottom">
-                                                <field name="name"/>
-                                                <field name="date" readonly="1"/>
-                                                <field name="currency" readonly="1"/>
-                                                <field name="amount" sum="Total"/>
-                                            </tree>
-                                            <form>
-                                                <field name="name" readonly="1"/>
-                                                <field name="date" readonly="0"/>
-                                                <field name="currency" readonly="0"/>
-                                                <field name="amount"/>
-                                            </form>
-                                        </field>
-                                    </group>
-                                    <group>
-                                        <separator string="Amounts"/>
-                                        <label string="" colspan="2"/>
-                                        <field name="amount" colspan="2" on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, company_id, context)"/>
-                                        <label string="-" align="1.0" colspan="2"/>
-                                        <field name="total_invoices" colspan="2"/>
-                                        <label string="+" align="1.0" colspan="2"/>
-                                        <field name="total_credits" colspan="2"/>
-                                        <label string="" colspan="2"/>
-                                        <separator string="" colspan="2"/>
-                                        <label string="Balance" colspan="2"/>
-                                        <field name="credit_balance" colspan="2"/>
-                                    </group>
-                                </group>
-
-                                <separator string="Invoices and outstanding transactions"/>
-                                <field name="line_cr_ids" colspan="4" nolabel="1" default_get="{'journal_id':journal_id, 'partner_id':partner_id}">
-                                    <tree string="Invoices and outstanding transactions" colors="black:state=='included' ;grey:state=='not_included'">
-                                        <field name="move_line_id"/>
-                                        <field name="account_id" groups="base.group_extended" domain="[('type','=','receivable')]"/>
-                                        <field name="date_original"/>
-                                        <field name="amount_original"/>
-                                        <field name="amount" sum="Payment"/>
-                                        <field name="state" readonly="1"/>
-                                        <button name="add_voucher_line" string="Add"
-                                                type="object"
-                                                icon="gtk-go-back"
-                                                states="not_included"/>
-                                        <button name="delete_voucher_line"
-                                                string="Remove"
-                                                type="object"
-                                                icon="gtk-cancel"
-                                                states="included"/>
-                                    </tree>
-                                </field>
-
-                                <separator string="Credits" attrs="{'invisible': [('pre_line','=',False)]}"/>
-                                <field name="line_dr_ids" attrs="{'invisible': [('pre_line','=',False)]}" default_get="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" colspan="4" nolabel="1" height="140">
-                                    <tree string="Credits"
-                                          colors="black:state=='included' ;grey:state=='not_included'">
-                                        <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
-                                            on_change="onchange_move_line_id(move_line_id)"
-                                            domain="[('account_id.type','=','payable'), ('reconcile_id','=', False), ('partner_id','=',parent.partner_id)]"
-                                            />
-                                        <field name="account_id" groups="base.group_extended" domain="[('type','=','payable')]"/>
-                                        <field name="date_original" readonly="1"/>
-                                        <field name="date_due" readonly="1"/>
-                                        <field name="amount_original" readonly="1"/>
-                                        <field name="amount_unreconciled" sum="Open Balance" readonly="1"/>
-                                        <field name="amount" sum="Payment"/>
-                                        <field name="state"/>
-                                        <button name="add_voucher_line"
-                                                string="Add"
-                                                type="object"
-                                                icon="gtk-go-back"
-                                                states="not_included"/>
-                                        <button name="delete_voucher_line"
-                                                string="Remove"
-                                                type="object"
-                                                icon="gtk-cancel"
-                                                states="included"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Journal Items" groups="base.group_extended" attrs="{'invisible': [('state','!=','posted')]}">
-                                <group>
-                                    <field name="period_id"/>
-                                    <field name="audit"/>
-                                </group>
-                                
-                                <separator string="Journal Items"/>
-                                <field name="move_ids" colspan="4" nolabel="1" readonly="1">
-                                   <tree string="Journal Items">
-                                       <field name="move_id"/>
-                                       <field name="ref"/>
-                                       <field name="date"/>
-                                       <field name="statement_id"/>
-                                       <field name="partner_id"/>
-                                       <field name="account_id"/>
-                                       <field name="name"/>
-                                       <field name="debit"/>
-                                       <field name="credit"/>
-                                       <field name="state"/>
-                                       <field name="reconcile_id"/>
-                                       <field name="amount_currency"/>
-                                       <field name="currency_id"/>
-                                   </tree>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
+                <field name="amount" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                 <field name="journal_id" position="attributes">
+                    <attribute name="string">Journal</attribute>
+                </field>
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="before">
+                    <label for="payment_line_ids"/>
+                    <field name="payment_line_ids" on_change="onchange_payment_line(amount, payment_line_ids, context)">
+                        <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
+                            <field name="name"/>
+                            <field name="currency" readonly="1"/>
+                            <field name="date"/>
+                            <field name="voucher_id" invisible="1"/>
+                            <field name="amount" sum="Total"/>
+                        </tree>
+                    </field>
+                </xpath>
             </field>
         </record>
-
-        <record id="account_voucher.action_vendor_payment_form" model="ir.actions.act_window.view">
-            <field eval="2" name="sequence"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_vendor_payment_voucher_form"/>
-            <field name="act_window_id" ref="account_voucher.action_vendor_payment"/>
-        </record>
+ 
     </data>
 </openerp>

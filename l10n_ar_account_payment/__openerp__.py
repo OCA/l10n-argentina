@@ -22,21 +22,20 @@
 {
     "name": "Payments for ARGENTINA",
     "version": "1.0",
-    "depends": ["base" , "account_voucher" , "account_payment" , "account_accountant"],
+    "depends": ["base", "account_voucher", "account_accountant"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
     "category": "Own Modules",
     "description": """
     This module provide :
-    1) Implementation of Payments Modes for Argentina
-    2) Implementation of Receipt for Argentina
+     Implementation of Receipt/Payments for Argentina
     """,
     "init_xml": [],
     'update_xml': [
         'security/ir.model.access.csv',
         'voucher_payment_receipt_view.xml',
-        'account_payment_view.xml',
+        #'account_payment_view.xml',
         'payment_mode_receipt_view.xml',
     ],
     'demo_xml': [],
