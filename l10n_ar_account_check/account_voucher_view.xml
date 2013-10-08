@@ -8,7 +8,7 @@
             <field name="name">account.voucher.check.form.inherit</field>
             <field name="model">account.voucher</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_payment_voucher_form"/>
+            <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_payment_form"/>
             <field name="arch" type="xml">
                 <page string="Payment Information" position="after">
                     <page string="Checks">
@@ -42,7 +42,7 @@
             <field name="name">account.voucher.form.receipt.inherit</field>
             <field name="model">account.voucher</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_receipt_voucher_form"/>
+            <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_receipt_form"/>
             <field name="arch" type="xml">
                 <page string="Payment Information" position="after">
                     <page string="Checks">
@@ -72,7 +72,7 @@
             <field name="name">account.voucher.payment.form3.inherit</field>
             <field name="model">account.voucher</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_receipt_voucher_form"/>
+            <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_receipt_form"/>
             <field name="arch" type="xml">
                 <field name="payment_line_ids" position="replace" >
                     <field  name="payment_line_ids" nolabel="1" colspan="4" on_change="onchange_paymode_line(payment_line_ids)">
