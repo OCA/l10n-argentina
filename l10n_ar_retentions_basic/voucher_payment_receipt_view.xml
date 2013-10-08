@@ -23,9 +23,9 @@
                 </tree>
                 <form string="Retention Line" version="7.0">
                   <sheet>
-                    <h1>
-                        <label string="Retention Lines"/>
-                    </h1>
+                      <h1>
+                          <label string="Retention Lines"/>
+                      </h1>
                       <group>
                         <group>
                           <field name="retention_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_retention(retention_id, context)"/>
