@@ -75,7 +75,7 @@
             <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_receipt_form"/>
             <field name="arch" type="xml">
                 <field name="payment_line_ids" position="replace" >
-                    <field  name="payment_line_ids" nolabel="1" colspan="4" on_change="onchange_paymode_line(payment_line_ids)">
+                    <field  name="payment_line_ids" nolabel="1" colspan="4" on_change="onchange_payment_line(amount, payment_line_ids, context)">
                         <tree string="Payment Lines" editable="bottom">
                             <field name="name"/>
                             <field name="date" readonly="1"/>
