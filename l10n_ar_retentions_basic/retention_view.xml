@@ -133,7 +133,7 @@
     <field name="name">Retentions</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">retention.retention</field>
-    <field name="help">Here you can define Retentions and their configuration to be used in Customer Payents or Supplier Payments</field>
+    <field name="help">Here you can define Retentions and their configuration to be used in Customer Payents or Supplier Payments.</field>
     <field name="view_type">form</field>
     <field name="view_mode">tree,form</field>
   </record>
@@ -146,27 +146,35 @@
   </record>
 
   <record id="action_retention_tax_tree" model="ir.actions.act_window">
-      <field name="name">Retention Tax Applied</field>
-      <field name="type">ir.actions.act_window</field>
-      <field name="res_model">retention.tax.line</field>
-      <field name="view_type">form</field>
-      <field name="view_id" ref="view_retention_tax_line_tree"/>
-      <field name="context">{"search_default_applied":1}</field>
-      <field name="domain">[('voucher_id.state','in',['posted'])]</field>
-      <field name="search_view_id" ref="view_retention_tax_line_search" />
-      <field name="help">Ayuda</field>
+        <field name="name">Retention Tax Applied</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">retention.tax.line</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_retention_tax_line_tree"/>
+        <field name="context">{"search_default_applied":1}</field>
+        <field name="domain">[('voucher_id.state','in',['posted'])]</field>
+        <field name="search_view_id" ref="view_retention_tax_line_search" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a retention.
+          </p>
+        </field>
   </record>
 
   <record id="action_retention_tax_supported_tree" model="ir.actions.act_window">
-      <field name="name">Retention Tax Supported</field>
-      <field name="type">ir.actions.act_window</field>
-      <field name="res_model">retention.tax.line</field>
-      <field name="view_type">form</field>
-      <field name="view_id" ref="view_retention_tax_line_tree"/>
-      <field name="context">{"search_default_supported":1}</field>
-      <field name="domain">[('voucher_id.state','in',['posted'])]</field>
-      <field name="search_view_id" ref="view_retention_tax_line_search" />
-      <field name="help">Ayuda</field>
+        <field name="name">Retention Tax Supported</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">retention.tax.line</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_retention_tax_line_tree"/>
+        <field name="context">{"search_default_supported":1}</field>
+        <field name="domain">[('voucher_id.state','in',['posted'])]</field>
+        <field name="search_view_id" ref="view_retention_tax_line_search" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a retention.
+          </p>
+        </field>
   </record>
 
   <menuitem id="retention_retention_menu" name="Retentions" parent="account.next_id_27" sequence="20" action="action_retention_retention_tree"/>
