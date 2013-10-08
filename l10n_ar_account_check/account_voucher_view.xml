@@ -10,11 +10,6 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_payment_voucher_form"/>
             <field name="arch" type="xml">
-<!--
-                <field name="amount" position="after">
-                    <separator string="Metodos de Pago" colspan="8"/>
-                </field>
--->
                 <page string="Payment Information" position="after">
                     <page string="Checks">
                         <field name="issued_check_ids" string="Issued Checks"
@@ -22,7 +17,6 @@
                             on_change="onchange_pay_amount(payment_line_ids,issued_check_ids,third_check_ids,third_check_receipt_ids,
                                         journal_id, partner_id, currency_id, type, date ,context)"/>
                         <separator string="Third Checks" colspan="4"/>
-
 
                         <field name="third_check_ids" 
                             string="Third Checks" nolabel="1" colspan="4" domain="[('state', '=', 'wallet')]"
@@ -66,32 +60,9 @@
                                 <field name="amount"/>
                                 <field name="state"/>
                             </tree>
-                            <form string="Third Checks">
-                                <field name="source_partner_id" invisible="1"/>
-                                <field name="number"/>
-                                <field name="type"/>
-                                <group colspan="4" col="6">
-                                    <group colspan="4" col="4">
-                                        <separator colspan="4" string="Check Information"/>
-                                        <field name="bank_id"/>
-                                        <field name="amount"/>
-                                        <field name="receipt_date"/>
-                                        <field name="issue_date"/>
-                                        <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
-                                                                           'required': [('type','=','postdated')]}"/>
-                                    </group>
-                                    <group colspan="2" col="2">
-                                        <separator string="Other Information" colspan="2"/>
-                                        <field name="clearing"/>
-                                        <field name="signatory"/>
-                                    </group>
-                                </group>
-                                <separator string="State" colspan="4"/>
-                                <field name="state" colspan="4"/>
-                            </form>
                         </field> 
                         <button name="add_precreated_check"
-                            string="Add Pre-created" type="object" icon="terp-folder-orange"/>
+                            string="Add Pre-created" type="object"/>
                    </page>
                 </page>
             </field>
@@ -111,11 +82,18 @@
                             <field name="currency" readonly="1"/>
                             <field name="amount" sum="Total"/>
                         </tree>
-                        <form>
-                            <field name="name" readonly="1"/>
-                            <field name="date" readonly="0"/>
-                            <field name="currency" readonly="0"/>
-                            <field name="amount"/>
+                        <form string="Payment Line" version="7.0">
+                            <sheet>
+                                <h1>
+                                    <label string="Payment Line"/>
+                                </h1>
+                                <group>
+                                    <field name="name" readonly="1"/>
+                                    <field name="date" readonly="0"/>
+                                    <field name="currency" readonly="0"/>
+                                    <field name="amount"/>
+                                </group>
+                            </sheet>
                         </form>
                     </field>
                 </field>

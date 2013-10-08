@@ -7,15 +7,23 @@
             <field name="model">account.add.issued.check</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Add New Issued Check" col="4">
-                    <field name="number"/>
-                    <field name="date_out"/>
-                    <field name="date"/>
-                    <field name="bank_id"/>
-                    <field name="account_bank_id"/>
-                    <field name="amount"/>
-                    <button name="add_issued_checks" type="object" string="Add Checks" icon="gtk-ok"/>
-                    <button type="special" special="cancel"  string="Cancel" icon="gtk-cancel"/>
+                <form string="Add New Issued Check" version="7.0">
+                    <group>
+                        <group>
+                            <field name="number"/>
+                            <field name="date_out"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="bank_id"/>
+                            <field name="account_bank_id"/>
+                            <field name="amount"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="add_issued_checks" type="object" string="Add Checks" class="oe_highlight"/>
+                        <button type="special" special="cancel"  string="Cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>
@@ -37,17 +45,25 @@
             <field name="type">form</field>
             <field name="priority">100</field>
             <field name="arch" type="xml">
-                <form string="Third Checks" col="4">
-                    <field name="number"/>
-                    <field name="amount"/>
-                    <field name="date_in"/>
-                    <field name="date"/>
-                    <field name="vat"/>
-                    <field name="bank_id"/>
-                    <field name="clearing"/>
-                    <field name="account_bank_id"/>
-                    <button type="object" name="add_third_checks" string="Add Checks" icon="gtk-ok"/>
-                    <button type="special" special="cancel"  string="Cancel" icon="gtk-cancel"/>
+                <form string="Third Checks" version="7.0">
+                    <group>
+                        <group>
+                            <field name="number"/>
+                            <field name="amount"/>
+                            <field name="date_in"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="vat"/>
+                            <field name="bank_id"/>
+                            <field name="clearing"/>
+                            <field name="account_bank_id"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button type="object" name="add_third_checks" string="Add Checks" class="oe_highlight"/>
+                        <button type="special" special="cancel"  string="Cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>

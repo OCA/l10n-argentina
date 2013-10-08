@@ -7,14 +7,18 @@
             <field name="model">account.check.deposit</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Check Deposit" col="2">
-                    <field name="partner_id" invisible="1"/>
-                    <field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
-                    <field name="date"/>
-                    <button type="special" special="cancel"
-                        string="Cancel" icon="gtk-cancel"/>
-                    <button type="object" name="action_deposit"
-                        string="Checks Deposit" icon="gtk-ok"/>
+                <form string="Check Deposit" version="7.0">
+                    <group>
+                        <field name="partner_id" invisible="1"/>
+                        <field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
+                        <field name="date"/>
+                    </group>
+                    <footer>
+                        <button type="special" special="cancel"
+                            string="Cancel"/>
+                        <button type="object" name="action_deposit"
+                            string="Checks Deposit" class="oe_highlight"/>
+                    </footer>
                 </form>
             </field>
         </record>
