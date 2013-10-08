@@ -12,8 +12,8 @@
     <field name="type">form</field>
     <field name="arch" type="xml">
       <form string="Perceptions">
-        <group colspan="4" col="6">
-          <separator colspan="6" string="Configuration"/>
+        <group>
+          <separator string="Configuration"/>
           <field name="name" select="1"/>
           <field name="tax_id" select="1"/>
           <field name="jurisdiccion" select="1"/>
@@ -86,6 +86,37 @@
       </tree>
     </field>
   </record>
+  
+  <record id="view_perception_tax_line_form" model="ir.ui.view">
+    <field name="name">perception.tax.line.form</field>
+    <field name="model">perception.tax.line</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Perception Tax Line" version="7.0">
+          <sheet>
+              <h1>
+                <label string="Perception Tax Line"/>
+                <field name="name" class="oe_inline" readonly="1"/>
+              </h1>
+              <group>
+                  <field name="date"/>
+                  <field name="partner_id"/>
+                  <field name="vat"/>
+              </group>
+              <group>
+                <group>
+                  <field name="amount" sum="Amount Total"/>
+                  <field name="base" sum="Base Total"/>
+                </group>
+                <group>
+                  <field name="state_id"/>
+                  <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+              </group>
+          </sheet>
+      </form>
+    </field>
+  </record>
 
   <!--Window Action para Perceptions -->
   <record model="ir.actions.act_window" id="action_perception_perception_tree">
@@ -105,27 +136,35 @@
   </record>
 
   <record id="action_perception_tax_tree" model="ir.actions.act_window">
-      <field name="name">Perception Tax Applied</field>
-      <field name="type">ir.actions.act_window</field>
-      <field name="res_model">perception.tax.line</field>
-      <field name="view_type">form</field>
-      <field name="view_id" ref="view_perception_tax_line_tree"/>
-      <field name="context">{"search_default_applied":1, "use_internal_number": 1}</field>
-      <field name="domain">[('invoice_id.state','in',['open','paid'])]</field>
-      <field name="search_view_id" ref="view_perception_tax_line_search" />
-      <field name="help">Help</field>
+        <field name="name">Perception Tax Applied</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">perception.tax.line</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_perception_tax_line_tree"/>
+        <field name="context">{"search_default_applied":1, "use_internal_number": 1}</field>
+        <field name="domain">[('invoice_id.state','in',['open','paid'])]</field>
+        <field name="search_view_id" ref="view_perception_tax_line_search" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a perception.
+          </p>
+        </field>
   </record>
 
   <record id="action_perception_tax_supported_tree" model="ir.actions.act_window">
-      <field name="name">perception Tax Supported</field>
-      <field name="type">ir.actions.act_window</field>
-      <field name="res_model">perception.tax.line</field>
-      <field name="view_type">form</field>
-      <field name="view_id" ref="view_perception_tax_line_tree"/>
-      <field name="context">{"search_default_supported":1, "use_internal_number": 1}</field>
-      <field name="domain">[('invoice_id.state','in',['open','paid'])]</field>
-      <field name="search_view_id" ref="view_perception_tax_line_search" />
-      <field name="help">Help</field>
+        <field name="name">Perception Tax Supported</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">perception.tax.line</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_perception_tax_line_tree"/>
+        <field name="context">{"search_default_supported":1, "use_internal_number": 1}</field>
+        <field name="domain">[('invoice_id.state','in',['open','paid'])]</field>
+        <field name="search_view_id" ref="view_perception_tax_line_search" />
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a perception.
+          </p>
+        </field>
   </record>
 
   <menuitem id="perception_perception_menu" name="Perceptions" parent="account.next_id_27" sequence="20" action="action_perception_perception_tree"/>

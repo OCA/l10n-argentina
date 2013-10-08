@@ -45,7 +45,7 @@ class perception_perception(osv.osv):
             'type': fields.selection([('vat', 'VAT'),
                                       ('gross_income', 'Gross Income'),
                                       ('profit', 'Profit'),
-                                      ('other', 'Other')], 'Type', required=True),
+                                      ('other', 'Other')], 'Type'),
             'jurisdiccion': fields.selection([('nacional', 'Nacional'),
                                               ('provincial', 'Provincial'),
                                               ('municipal', 'Municipal')], 'Jurisdiccion'),
@@ -53,6 +53,7 @@ class perception_perception(osv.osv):
 
     _defaults = {
             'jurisdiccion': 'nacional',
+            'type': 'vat'
             }
 
 perception_perception()
