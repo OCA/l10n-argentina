@@ -7,21 +7,17 @@
             <field name="model">wizard.create.check</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Create checkbooks">
-                    <group colspan="2" width="300">
+                <form string="Create checkbooks" version="7.0">
+                    <group>
                         <field name="bank_account_id"/>
-                        <newline/>
                         <field name="checkbook_num"/>
-                        <newline/>
                         <field name="start_num"/>
-                        <newline/>
                         <field name="end_num"/>
                     </group>
-                    <separator string="" colspan="4" />
-                    <group colspan="4" col="6">
-                        <button icon="gtk-cancel" special="cancel" string="Cancel"/>
-                        <button  icon="gtk-execute" string="Create" name="create_checkbook" type="object"/>
-                   </group>
+                    <footer>
+                        <button special="cancel" string="Cancel"/>
+                        <button  string="Create" name="create_checkbook" type="object" class="oe_highlight"/>
+                    </footer>
                 </form>
             </field>
         </record>
