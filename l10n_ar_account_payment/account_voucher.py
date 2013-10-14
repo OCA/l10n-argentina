@@ -79,7 +79,7 @@ class account_voucher(osv.osv):
 
         return lines
 
-    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
+    def _clean_payment_lines(self, cr, uid, ids, context=None):
 
         lines_to_unlink = []
 
@@ -88,21 +88,34 @@ class account_voucher(osv.osv):
                 if payment_line.amount == 0:
                     lines_to_unlink.append(payment_line.id)
 
-                amount += payment_line.amount
+        self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
+        return True
 
-        if context.get('zero_check', False):
-            self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
-        return amount
+#    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
+#
+#        lines_to_unlink = []
+#
+#        for voucher in self.browse(cr, uid, ids, context=context):
+#            for payment_line in voucher.payment_line_ids:
+#                if payment_line.amount == 0:
+#                    lines_to_unlink.append(payment_line.id)
+#
+#                amount += payment_line.amount
+#
+#        if context.get('zero_check', False):
+#            self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
+#        return amount
 
     def proforma_voucher(self, cr, uid, ids, context=None):
         # Escribimos la cantidad calculada
-        amount = 0.0
+        #amount = 0.0
         if not context:
             context = {}
 
-        amount = self._hook_get_amount(cr, uid, ids, amount, context=context)
+        #amount = self._hook_get_amount(cr, uid, ids, amount, context=context)
+        self._clean_payment_lines(cr, uid, ids, context=context)
 
-        self.write(cr, uid, ids, {'amount': amount}, context=context)
+        #self.write(cr, uid, ids, {'amount': amount}, context=context)
         self.action_move_line_create(cr, uid, ids, context=context)
         return True
 
@@ -208,12 +221,18 @@ class account_voucher(osv.osv):
             # Get the name of the account_move just created
             name = move_pool.browse(cr, uid, move_id, context=context).name
 
-            # Creamos las lineas contables de todas las formas de pago, etc
-            move_line_vals = self.create_move_lines(cr,uid,voucher.id, move_id, company_currency, current_currency, context)
-            line_total = 0.0
-            for vals in move_line_vals:
-                line_total += vals['debit'] - vals['credit']
-                move_line_pool.create(cr, uid, vals, context)
+            if voucher.type in ('payment', 'receipt'):
+                # Creamos las lineas contables de todas las formas de pago, etc
+                move_line_vals = self.create_move_lines(cr,uid,voucher.id, move_id, company_currency, current_currency, context)
+                line_total = 0.0
+                for vals in move_line_vals:
+                    line_total += vals['debit'] - vals['credit']
+                    move_line_pool.create(cr, uid, vals, context)
+            else:  #('sale', 'purchase')
+                # Create the first line of the voucher
+                move_line_id = move_line_pool.create(cr, uid, self.first_move_line_get(cr,uid,voucher.id, move_id, company_currency, current_currency, context), context)
+                move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
+                line_total = move_line_brw.debit - move_line_brw.credit
 
             #move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
             #line_total = move_line_brw.debit - move_line_brw.credit
