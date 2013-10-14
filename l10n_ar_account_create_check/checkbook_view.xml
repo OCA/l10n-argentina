@@ -13,7 +13,7 @@
                     <field name="check_id" attrs="{'readonly': [('issued','=',True)]}" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
                     <field name="checkbook_id" invisible="1"/>
                 </field>
-             </data>
+            </data>
         </field>
     </record>
 
