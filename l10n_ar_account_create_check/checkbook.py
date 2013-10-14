@@ -22,6 +22,7 @@
 ##############################################################################
 
 from osv import osv, fields
+from tools.translate import _
 
 class account_checkbook(osv.osv):
     _name = "account.checkbook"
@@ -59,6 +60,19 @@ class account_checkbook(osv.osv):
 
         return {'value': vals}
 
+    def unlink(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+
+        for checkbook in self.browse(cr, uid, ids, context):
+            if len(checkbook.issued_check_ids):
+                raise osv.except_osv(_('Error'), _('You cannot delete this checkbook because it has Issued Checks'))
+
+            super(account_checkbook, self).unlink(cr, uid, checkbook.id, context=context)
+
+        return True
+
+
 
 account_checkbook()
 
@@ -69,7 +83,7 @@ class checkbook_check(osv.osv):
 
     _columns = {
         'name': fields.char('Check Number', size=20, required=True),
-        'checkbook_id': fields.many2one('account.checkbook', 'Checkbook number', required=True),
+        'checkbook_id': fields.many2one('account.checkbook', 'Checkbook number', ondelete='cascade', required=True),
         # Para tener una referencia a que cheque se convirtio
         #'issued_check_id': fields.many2one('account.issued.check', 'Issued Check', readonly=True),
         'state': fields.selection([

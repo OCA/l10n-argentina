@@ -45,10 +45,6 @@
         </field>
     </record>
 
-
-
-
-
     <record model="ir.ui.view" id="view_account_checkbook_tree">
 		<field name="name">account_checkbook.tree</field>
 		<field name="model">account.checkbook</field>
@@ -69,24 +65,32 @@
 		<field name="model">account.checkbook</field>
 		<field name="type">form</field>
 		<field name="arch" type="xml">
-			<form string="Checkbook">
-				<separator string="Configuration" colspan="4" />
-				<field name="name"/>
-				<field name="bank_account_id" on_change="onchange_bank_account(bank_account_id)" domain="[('partner_id','=',partner_id)]"/>
-				<field name="bank_id"/>
-				<field name="partner_id" invisible="1"/>
-				<field name="type"/>
-				<field name="account_check_id"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-				<separator string="Checks" colspan="4" />
-                <group colspan="4" col="6">
-                    <field name="check_ids" nolabel="1" colspan="2">
-                        <tree string="Available Checks">
-                            <field name="name"/>
-                        </tree>
-                    </field>
-                    <field name="issued_check_ids" nolabel="1" colspan="4"/>
+			<form string="Checkbook" version="7.0">
+                <sheet>
+                    <div class="oe_title">
+                    <h1><label for="name"/><field name="name" class="oe_inline"/></h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="bank_account_id" on_change="onchange_bank_account(bank_account_id)" domain="[('partner_id','=',partner_id)]"/>
+                        <field name="bank_id"/>
+                        <field name="partner_id" invisible="1"/>
+                    </group>
+                    <group>
+                    <field name="type"/>
+                    <field name="account_check_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
                 </group>
+                <notebook colspan="4">
+                    <page string="Checks">
+                        <label for="check_ids" class="oe_title"/>
+                        <field name="check_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
+                        <label for="issued_check_ids"/>
+                        <field name="issued_check_ids" colspan="4" nolabel="1"/>
+                    </page>
+                </notebook>
+                </sheet>
 			</form>
 		</field>
 	</record>
@@ -101,8 +105,9 @@
 	<menuitem
 		action="action_account_checkbook"
 		id="menu_checkbook"
+		sequence="40"
 		name="Checkbooks"
-		parent="l10n_ar_account_check.menu_treasury_check"
+		parent="l10n_ar_account_check.menu_treasury_issued_check_menu"
 	/>
 
 </data>

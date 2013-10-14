@@ -27,14 +27,21 @@ class wizard_create_check(osv.osv_memory):
     _description = "wizard create check"
 
     _columns = {
-        'bank_account_id': fields.many2one('res.partner.bank','Bank'),
-        'start_num': fields.char('Start number of check',size=20),
-        'end_num': fields.char('End number of check',size=20),
-        'checkbook_num': fields.char('Checkbook number',size=20),
+        'bank_account_id': fields.many2one('res.partner.bank','Bank', required=True),
+        'start_num': fields.char('Start number of check',size=20, required=True),
+        'end_num': fields.char('End number of check',size=20, required=True),
+        'checkbook_num': fields.char('Checkbook number',size=20, required=True),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+    }
+
+    _defaults = {
+        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
     }
 
     def create_checkbook(self, cr, uid, ids, context=None):
         checkbook_obj = self.pool.get('account.checkbook')
+        mod_obj = self.pool.get('ir.model.data')
+        checkbook_id = False
 
         if context is None:
             context = {}
@@ -58,8 +65,20 @@ class wizard_create_check(osv.osv_memory):
                     'check_ids': checks
                     }
 
-            checkbook_obj.create(cr, uid, checkbook_vals, context)
+            checkbook_id = checkbook_obj.create(cr, uid, checkbook_vals, context)
         
-        return { 'type': 'ir.actions.act_window_close' }
+        if not checkbook_id:
+            return { 'type': 'ir.actions.act_window_close' }
+
+        return {
+            'domain': [('id','=', str(checkbook_id))],
+            'name': 'Checkbook',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'account.checkbook',
+            'view_id': False,
+            'context': "{'type':'out_invoice'}",
+            'type': 'ir.actions.act_window'
+        }
 
 wizard_create_check()
