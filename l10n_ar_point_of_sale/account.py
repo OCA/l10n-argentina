@@ -36,3 +36,40 @@ class account_tax(osv.osv):
             }
 
 account_tax()
+
+class account_move(osv.osv):
+    _name = "account.move"
+    _inherit = "account.move"
+
+
+    # Heredamos para que no ponga el nombre del internal_number
+    # al asiento contable, sino que siempre siga la secuencia
+    def post(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        valid_moves = self.validate(cr, uid, ids, context)
+
+        if not valid_moves:
+            raise osv.except_osv(_('Integrity Error !'), _('You can not validate a non-balanced entry !\nMake sure you have configured payment terms properly !\nThe latest payment term line should be of the type "Balance" !'))
+        obj_sequence = self.pool.get('ir.sequence')
+        for move in self.browse(cr, uid, valid_moves, context=context):
+            if move.name =='/':
+                new_name = False
+                journal = move.journal_id
+
+                if journal.sequence_id:
+                    c = {'fiscalyear_id': move.period_id.fiscalyear_id.id}
+                    new_name = obj_sequence.next_by_id(cr, uid, journal.sequence_id.id, c)
+                else:
+                    raise osv.except_osv(_('Error'), _('No sequence defined on the journal !'))
+
+                if new_name:
+                    self.write(cr, uid, [move.id], {'name':new_name})
+
+        cr.execute('UPDATE account_move '\
+                   'SET state=%s '\
+                   'WHERE id IN %s',
+                   ('posted', tuple(valid_moves),))
+        return True
+
+account_move()

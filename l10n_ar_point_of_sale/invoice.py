@@ -148,10 +148,10 @@ class invoice(osv.osv):
             ('out_refund','Customer Refund'),
             ('in_refund','Supplier Refund'),
             ],'Type', readonly=True, select=True, change_default=True),
-        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale'),
+        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale', readonly=True, states={'draft':[('readonly',False)]}),
         'is_debit_note': fields.boolean('Debit Note'),
-        'denomination_id' : fields.many2one('invoice.denomination','Denomination'),
-        'internal_number': fields.char('Invoice Number', size=32, help="Unique number of the invoice, computed automatically when the invoice is created."),
+        'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True, states={'draft':[('readonly',False)]}),
+        'internal_number': fields.char('Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created."),
         'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
             store={
                 'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
@@ -207,6 +207,9 @@ class invoice(osv.osv):
 
             if not denomination_id:
                 raise osv.except_osv(_('Error!'), _('Denomination not set in invoice'))
+
+            if not inv.fiscal_position:
+                raise osv.except_osv(_('Error!'), _('Fiscal Position not set in invoice'))
 #                if inv.pos_ar_id.denomination_id:
 #                    self.write(cr, uid, inv.id, {'denomination_id' : inv.pos_ar_id.denomination_id.id})
 #                    denomination_id = inv.pos_ar_id.denomination_id.id
@@ -236,117 +239,115 @@ class invoice(osv.osv):
             raise osv.except_osv( _('Error'),
                                 _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
+
+    def _update_reference(self, cr, uid, obj_inv, ref, context=None):
+
+        move_id = obj_inv.move_id and obj_inv.move_id.id or False
+        cr.execute('UPDATE account_move SET ref=%s ' \
+                'WHERE id=%s AND (ref is null OR ref = \'\')',
+                (ref, move_id))
+        cr.execute('UPDATE account_move_line SET ref=%s ' \
+                'WHERE move_id=%s AND (ref is null OR ref = \'\')',
+                (ref, move_id))
+        cr.execute('UPDATE account_analytic_line SET ref=%s ' \
+                'FROM account_move_line ' \
+                'WHERE account_move_line.move_id = %s ' \
+                    'AND account_analytic_line.move_id = account_move_line.id',
+                    (ref, move_id))
+        return True
+
+    def get_next_invoice_number(self, cr, uid, invoice, context=None):
+        """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
+
+        # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
+        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s and is_debit_note=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type, invoice.is_debit_note))
+        last_number = cr.fetchone()
+
+        # Si no devuelve resultados, es porque es el primero
+        if not last_number or not last_number[0]:
+            next_number = 1
+        else:
+            next_number = last_number[0] + 1
+
+        return next_number
+
     def action_number(self, cr, uid, ids, context=None):
-        pos_ar_obj = self.pool.get('pos.ar')
+
         if context is None:
             context = {}
-        #TODO: not correct fix but required a frech values before reading it.
+
+        next_number = None
+        invoice_vals = {}
+        invtype = None
+
+        #TODO: not correct fix but required a fresh values before reading it.
+        # Esto se usa para forzar a que recalcule los campos funcion
         self.write(cr, uid, ids, {})
 
         for obj_inv in self.browse(cr, uid, ids, context=context):
             id = obj_inv.id
             invtype = obj_inv.type
-            move_id = obj_inv.move_id and obj_inv.move_id.id or False
+            #move_id = obj_inv.move_id and obj_inv.move_id.id or False
             reference = obj_inv.reference or ''
-
-#del        self.write(cr, uid, ids, {'internal_number':number})
-#add:
-        #~ si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
-        #~ si el usuario hizo un ingreso dejo ese numero
-            internal_number = False
-            pos_ar = obj_inv.pos_ar_id.id
-            pos_ar_name = False
-            if pos_ar:
-                pos_ar_name = pos_ar_obj.name_get(cr, uid, [pos_ar])[0][1]
 
             self._check_fiscal_values(cr, uid, obj_inv)
 
-            if not obj_inv.internal_number:
-                max_number = []
-                if obj_inv.type in ('out_invoice', 'out_refund', 'out_debit'):
-                    cr.execute("select max(to_number(internal_number, '99999999')) from account_invoice where internal_number ~ '^[0-9]+$' and pos_ar_id=%s and state in %s and type='out_invoice'", (pos_ar, ('open', 'paid', 'cancel',)))
-                    max_number = cr.fetchone()
-                if not max_number:
-                    internal_number = '%08d' % 1
-                    self.write(cr, uid, id, {'internal_number' : internal_number })
-                else:
-                    if not max_number[0]:
-                        max_number = 0
-                    else:
-                        max_number = max_number[0]
-                    internal_number = '%08d' % ( int(max_number) + 1)
-                    self.write(cr, uid, id, {'internal_number' : internal_number })
-            else :
-                # Si es factura de proveedor
-                if obj_inv.type in ['in_invoice', 'in_refund', 'in_debit']:
-                    m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
-                    if not m:
-                        raise osv.except_osv( _('Error'),
-                                            _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+            # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
+            # si el usuario hizo un ingreso dejo ese numero
+            internal_number = False
+            next_number = False
+
+            # Si son de Cliente
+            if invtype in ('out_invoice', 'out_refund'):
+
+                pos_ar = obj_inv.pos_ar_id
+                next_number = self.get_next_invoice_number(cr, uid, obj_inv, context=context)
+
+                # Nos fijamos si el usuario dejo en blanco el campo de numero de factura
+                if obj_inv.internal_number:
                     internal_number = obj_inv.internal_number
-#                    # Chequeamos que la posicion fiscal y la denomination_id coincidan
-#                    if obj_inv.fiscal_position.denom_supplier_id.id != obj_inv.denomination_id.id:
-#                        raise osv.except_osv( _('Error'),
-#                                            _('The invoice denomination does not corresponds with this fiscal position.'))
-#
-#                    # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
-#                    if obj_inv.fiscal_position.id != obj_inv.partner_id.property_account_position.id:
-#                        raise osv.except_osv( _('Error'),
-#                                            _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
-                # Si es de cliente
-                else:
-                    try:
-                        int(obj_inv.internal_number)
-                    except :
-                        raise osv.except_osv( _('Error'),
-                                            _('The Invoice Number can not contain characters'))
-                    internal_number = ('%08d' % int(obj_inv.internal_number))
+                # Lo ponemos como en Proveedores, o sea, A0001-00000001
+                if not internal_number:
+                    internal_number = '%s-%08d' % (pos_ar.name, next_number)
 
-#                    # Chequeamos que la posicion fiscal y la denomination_id coincidan
-#                    if obj_inv.fiscal_position.denomination_id.id != obj_inv.denomination_id.id:
-#                        raise osv.except_osv( _('Error'),
-#                                            _('The invoice denomination does not corresponds with this fiscal position.'))
-#
-#                    # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
-#                    if obj_inv.fiscal_position.id != obj_inv.partner_id.property_account_position.id:
-#                        raise osv.except_osv( _('Error'),
-#                                            _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
+                m = re.match('^[0-9]{4}-[0-9]{8}$', internal_number)
+                if not m:
+                    raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
-                self.write(cr, uid, id, {'internal_number' : internal_number})
-#end add
-            if invtype in ('in_invoice', 'in_refund', 'in_debit'):
-                if not reference:
-#mod                #self._convert_ref(cr, uid, internal_number)   
-                    ref = internal_number 
-                else:
-                    ref = reference
+                # Escribimos el internal number
+                invoice_vals['internal_number'] = internal_number
+
+            # Si son de Proveedor
             else:
-#mod            #ref = self._convert_ref(cr, uid, number)
-                ref = pos_ar_name + ' ' + internal_number
+                m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
+                if not m:
+                    raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
-            cr.execute('UPDATE account_move SET ref=%s ' \
-                    'WHERE id=%s AND (ref is null OR ref = \'\')',
-                    (ref, move_id))
-            cr.execute('UPDATE account_move_line SET ref=%s ' \
-                    'WHERE move_id=%s AND (ref is null OR ref = \'\')',
-                    (ref, move_id))
-            cr.execute('UPDATE account_analytic_line SET ref=%s ' \
-                    'FROM account_move_line ' \
-                    'WHERE account_move_line.move_id = %s ' \
-                        'AND account_analytic_line.move_id = account_move_line.id',
-                        (ref, move_id))
+            # Escribimos los campos necesarios de la factura
+            self.write(cr, uid, obj_inv.id, invoice_vals)
 
-            for inv_id, name in self.name_get(cr, uid, [id]):
+            if not reference:
+                invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
+                ref = invoice_name
+            else:
+                ref = reference
+
+            # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
+            self._update_reference(cr, uid, obj_inv, ref, context=context)
+
+
+            for inv_id, name in self.name_get(cr, uid, [id], context=context):
                 ctx = context.copy()
-                if obj_inv.type in ('out_invoice', 'out_refund'):
+                if invtype in ('out_invoice', 'out_refund'):
                     ctx = self.get_log_context(cr, uid, context=ctx)
                 message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
                 self.log(cr, uid, inv_id, message, context=ctx)
+
         return True
 
 
-    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
+    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
 
         #devuelve los ids de las invoice modificadas
         inv_ids = super(invoice , self).refund(cr, uid, ids, date, period_id, description, journal_id)
@@ -417,9 +418,28 @@ class account_invoice_tax(osv.osv):
     _inherit = "account.invoice.tax"
 
     _columns = {
-        'tax_id': fields.many2one('account.tax', 'Account Tax', readonly=True),
+        'tax_id': fields.many2one('account.tax', 'Account Tax', required=True),
         'is_exempt': fields.boolean('Is Exempt', readonly=True),
             }
+
+    def tax_id_change(self, cr, uid, ids, tax_id, invoice_type):
+        tax_obj = self.pool.get('account.tax')
+
+        tax = tax_obj.browse(cr, uid, tax_id)
+
+        val = {}
+        val['name'] = tax.description
+        if invoice_type in ('out_invoice','in_invoice'):
+            val['base_code_id'] = tax.base_code_id.id
+            val['tax_code_id'] = tax.tax_code_id.id
+            val['account_id'] = tax.account_collected_id.id
+        else:
+            val['base_code_id'] = tax.ref_base_code_id.id
+            val['tax_code_id'] = tax.ref_tax_code_id.id
+            val['account_id'] = tax.account_paid_id.id
+
+        return {'value': val}
+
 
     def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
         return tax_grouped
@@ -434,7 +454,7 @@ class account_invoice_tax(osv.osv):
         company_currency = inv.company_id.currency_id.id
 
         for line in inv.invoice_line:
-            for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, (line.price_unit* (1-(line.discount or 0.0)/100.0)), line.quantity, inv.address_invoice_id.id, line.product_id, inv.partner_id)['taxes']:
+            for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, (line.price_unit* (1-(line.discount or 0.0)/100.0)), line.quantity, line.product_id, inv.partner_id)['taxes']:
                 val={}
                 # TODO: Tal vez se pueda cambiar el boolean is_exempt por un type (selection)
                 # para despues incluir impuestos internos, retenciones, percepciones, o sea,
@@ -455,14 +475,16 @@ class account_invoice_tax(osv.osv):
                     val['base_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['base'] * tax['base_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
                     val['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['amount'] * tax['tax_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
                     val['account_id'] = tax['account_collected_id'] or line.account_id.id
+                    val['account_analytic_id'] = tax['account_analytic_collected_id']
                 else:
                     val['base_code_id'] = tax['ref_base_code_id']
                     val['tax_code_id'] = tax['ref_tax_code_id']
                     val['base_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['base'] * tax['ref_base_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
                     val['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['amount'] * tax['ref_tax_sign'], context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
                     val['account_id'] = tax['account_paid_id'] or line.account_id.id
+                    val['account_analytic_id'] = tax['account_analytic_paid_id']
 
-                key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
+                key = (val['tax_code_id'], val['base_code_id'], val['account_id'], val['account_analytic_id'])
                 if not key in tax_grouped:
                     tax_grouped[key] = val
                 else:

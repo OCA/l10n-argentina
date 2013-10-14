@@ -8,33 +8,30 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-              <data>
-                    <field name="journal_id" position="replace"/>
-                    <field name="number" position="replace">
-                        <field  name="denomination_id" invisible="1"/>
-                        <field  name="pos_ar_id" required="1" 
-                                attrs="{'readonly':[('state', '!=', 'draft')]}"/>
-                        <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
-                        <field name="is_debit_note" invisible="1"/>
-                        <newline/>
+                <data>
+                    <field name="number" position="replace"/>
+                    <field name="type" position="before">
+                        <label for="internal_number" class="oe_edit_only" string="Invoice Number"/>
+                        <h2>
+                            <field name="denomination_id" class="oe_inline" required="1" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                        </h2>
                     </field>
-                    <field name="currency_id" position="before">
-                        <field name="journal_id"/>
-                    </field>
-                    <xpath expr="//button[@string='Refund Invoice']" position="replace" >
-                      <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
-                        states='open,paid' attrs="{'invisible':['|', ('type','=','out_refund'), ('is_debit_note','=',True)]}"/>
-                    </xpath>
-                    <field name="amount_untaxed" position="before">
-                        <field name="amount_taxed"/>
-                        <label string="" colspan="2"/>
-                        <field name="amount_no_taxed"/>
-                        <label string="" colspan="2"/>
-                        <field name="amount_exempt"/>
-                        <label string="" colspan="2"/>
-                        <separator colspan="2"/>
-                        <label string="" colspan="2"/>
-                    </field>
+                   <field name="account_id" position="after">
+                       <field name="pos_ar_id"/>
+                       <field name="is_debit_note" invisible="1"/>
+                   </field>
+                   <field name="amount_untaxed" position="replace">
+                       <field name="amount_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_no_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                   </field>
+                   <xpath expr="//field[@name='tax_line']/tree/field[@name='name']" position="after">
+                        <field name="tax_id" domain="[('tax_group','=','other'), ('type_tax_use','in',['sale','all'])]" on_change="tax_id_change(tax_id,parent.type)"/>
+                        <field name="base_code_id" invisible="1"/>
+                        <field name="tax_code_id" invisible="1"/>
+                   </xpath>
                 </data>
             </field>
         </record>
@@ -48,8 +45,8 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="number" position="replace">
-                        <field name="denomination_id" string="Denomination" widget="selection"/>
-                        <field name="internal_number"/>
+                        <field name="internal_number" filter_domain="['|','|','|', ('internal_number','ilike',self), ('origin','ilike',self), ('supplier_invoice_number', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                        <field name="denomination_id" string="Denomination"/>
                         <field name="pos_ar_id" string="POS"/>
                     </field>
                 </data>
@@ -76,18 +73,24 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
-                    <field name="journal_id" position="replace"/>
-                    <field name="number" position="replace">
-                        <group>
-                            <field  name="denomination_id" 
-                                    attrs="{'readonly':[('state', '!=', 'draft')]}"/>
-                            <field name="internal_number" attrs="{'readonly':[('state', '!=', 'draft')]}" required="1"/>
-                            <field name="is_debit_note" invisible="1"/>
-                        </group>
-                    </field>
-                    <field name="currency_id" position="before">
-                        <field name="journal_id"/>
-                    </field>
+                    <field name="number" position="replace"/>
+                    <xpath expr="//form/sheet/div[@class='oe_title']" position="replace">
+                        <h1>
+                            <label string="Draft Invoice" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
+                            <label string="Draft Refund" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_refund')]}"/>
+                            <label string="Invoice" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_invoice')]}"/>
+                            <label string="Refund" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_refund')]}"/>
+                        </h1>
+                        <h2>
+                            <field name="denomination_id" class="oe_inline" required="1" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            <field name="internal_number" class="oe_inline" required="1" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                        </h2>
+                    </xpath>
+
+                   <field name="account_id" position="after">
+                       <field name="is_debit_note" invisible="1"/>
+                   </field>
+
                     <xpath expr="//button[@string='Ask Refund']" position="replace" >
                       <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
                         states='open,paid' attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True)]}"/>
@@ -95,6 +98,12 @@
                     <field name="fiscal_position" position="attributes">
                         <attribute name="required">1</attribute>
                     </field>
+                   <field name="amount_untaxed" position="replace">
+                       <field name="amount_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_no_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                   </field>
             </field>
         </record>
 
@@ -110,7 +119,7 @@
             <field name="view_mode">tree,form,calendar,graph</field>
             <field eval="False" name="view_id"/>
             <field name="domain">[('type','=','out_invoice'), ('is_debit_note','=', True)]</field>
-            <field name="context">{'type':'out_invoice', 'journal_type': 'sale', 'is_debit_note': True}</field>
+            <field name="context">{'default_type':'out_invoice', 'journal_type': 'sale', 'default_is_debit_note': True}</field>
             <field name="search_view_id" ref="account.view_account_invoice_filter"/>
             <field name="help">With Customer Debit Notes you can manage the debit notes for your customers. A debit note is a document that increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account.</field>
         </record>
@@ -139,7 +148,7 @@
             <field name="view_mode">tree,form,calendar,graph</field>
             <field eval="False" name="view_id"/>
             <field name="domain">[('type','=','in_invoice'), ('is_debit_note','=', True)]</field>
-            <field name="context">{'type':'in_invoice', 'journal_type': 'purchase', 'is_debit_note': True}</field>
+            <field name="context">{'default_type':'in_invoice', 'journal_type': 'purchase', 'default_is_debit_note': True}</field>
             <field name="search_view_id" ref="account.view_account_invoice_filter"/>
             <field name="help">With Supplier Debit Notes you can manage the debit notes for your suppliers. A debit note is a document that increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account.</field>
         </record>
