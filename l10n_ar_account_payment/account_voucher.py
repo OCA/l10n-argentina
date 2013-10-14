@@ -20,22 +20,35 @@
 ##############################################################################
 
 from osv import osv, fields
+from tools.translate import _
 
 class account_voucher(osv.osv):
 
     _name = "account.voucher"
     _inherit = "account.voucher"
+
     _columns = {
       'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
     }
 
+    def _get_payment_lines_amount(self, cr, uid, payment_line_ids, context=None):
+        payment_line_obj = self.pool.get('payment.mode.receipt.line')
+        amount = 0.0
+
+        for payment_line in payment_line_ids:
+            # Si tiene id, y no tiene amount, leemos el amount
+            if payment_line[1] and not payment_line[2]:
+                am = payment_line_obj.read(cr, uid, payment_line[1], ['amount'], context=context)['amount']
+                if am:
+                    amount += float(am)
+            elif payment_line[2]:
+                amount += payment_line[2]['amount']
+
+        return amount
+
     def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, context=None):
 
-        amount = 0.0
-        for payment_line in payment_line_ids:
-            if payment_line[2]:
-                amount += payment_line[2]['amount']
-        
+        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
         return {'value': {'amount': amount}}
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, journal_id, amount, currency_id, ttype, date, context=None):
@@ -77,18 +90,25 @@ class account_voucher(osv.osv):
 
                 amount += payment_line.amount
 
-        self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
+        if context.get('zero_check', False):
+            self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
         return amount
 
     def proforma_voucher(self, cr, uid, ids, context=None):
         # Escribimos la cantidad calculada
         amount = 0.0
+        if not context:
+            context = {}
+
         amount = self._hook_get_amount(cr, uid, ids, amount, context=context)
 
         self.write(cr, uid, ids, {'amount': amount}, context=context)
         self.action_move_line_create(cr, uid, ids, context=context)
         return True
 
+
+    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
+        return move_lines
 
     # Heredada para agregar un hook y los asientos para varias formas de pago
     def create_move_lines(self, cr, uid, voucher_id, move_id, company_currency, current_currency, context=None):
@@ -116,10 +136,12 @@ class account_voucher(osv.osv):
         if total_credit < 0: total_debit = -total_credit; total_credit = 0.0
         sign = total_debit - total_credit < 0 and -1 or 1
 
-
         # Creamos una move_line por payment_line
         move_lines = []
         for pl in voucher.payment_line_ids:
+            if pl.amount == 0.0:
+                continue
+
             amount_in_company_currency =  self.pool.get('res.currency').compute(cr, uid, pl.currency.id, voucher.company_id.currency_id.id, pl.amount, context=context)
 
             debit = credit = 0.0
@@ -131,8 +153,6 @@ class account_voucher(osv.osv):
             if credit < 0: debit = -credit; credit = 0.0
             sign = debit - credit < 0 and -1 or 1
 
-
-            #set the first line of the voucher
             move_line = {
                     'name': pl.name or '/',
                     'debit': debit,
@@ -143,15 +163,25 @@ class account_voucher(osv.osv):
                     'period_id': voucher.period_id.id,
                     'partner_id': voucher.partner_id.id,
                     'currency_id': company_currency <> current_currency and  current_currency or False,
-                    'amount_currency': company_currency <> current_currency and sign * voucher.amount or 0.0,
+                    'amount_currency': company_currency <> current_currency and sign * pl.amount or 0.0,
                     'date': voucher.date,
                     'date_maturity': voucher.date_due
             }
 
-            print move_line
             move_lines.append(move_line)
 
-        # TODO: Recorrer las lineas y hacer un chequeo de debit y credit contra total_debit y total_credit
+        # Creamos un hook para agregar los demas asientos contables de otros modulos
+        self.create_move_line_hook(cr, uid, voucher.id, move_id, move_lines, context=context)
+
+        # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
+        amount_credit = 0.0
+        amount_debit = 0.0
+        for line in move_lines:
+            amount_credit += line['credit']
+            amount_debit += line['debit']
+
+        if amount_credit != total_credit or amount_debit != total_debit:
+            raise osv.except_osv(_('Voucher Error!'), _('Voucher Paid Amount and sum of different payment mode must be equal'))
 
         return move_lines
 
