@@ -128,25 +128,25 @@ class account_voucher(osv.osv):
 
         return {'value': {'amount': amount}}
 
-    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
-
-        print 'Hook Get amount en Cheques'
-        amount = super(account_voucher, self)._hook_get_amount(cr, uid, ids, amount, context=context)
-
-        amount_issued_checks = 0.0
-        amount_third_checks = 0.0
-        amount_third_receipt_checks = 0.0
-        for voucher in self.browse(cr, uid, ids, context=context):
-            for check in voucher.issued_check_ids:
-                amount_issued_checks += check.amount
-            for check in voucher.third_check_ids:
-                amount_third_checks += check.amount
-            for check in voucher.third_check_receipt_ids:
-                amount_third_receipt_checks += check.amount
-
-        amount += amount_issued_checks + amount_third_checks + amount_third_receipt_checks
-        print 'Amount: ', amount_issued_checks, amount_third_checks, amount_third_receipt_checks, amount
-        return amount
+#    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
+#
+#        print 'Hook Get amount en Cheques'
+#        amount = super(account_voucher, self)._hook_get_amount(cr, uid, ids, amount, context=context)
+#
+#        amount_issued_checks = 0.0
+#        amount_third_checks = 0.0
+#        amount_third_receipt_checks = 0.0
+#        for voucher in self.browse(cr, uid, ids, context=context):
+#            for check in voucher.issued_check_ids:
+#                amount_issued_checks += check.amount
+#            for check in voucher.third_check_ids:
+#                amount_third_checks += check.amount
+#            for check in voucher.third_check_receipt_ids:
+#                amount_third_receipt_checks += check.amount
+#
+#        amount += amount_issued_checks + amount_third_checks + amount_third_receipt_checks
+#        print 'Amount: ', amount_issued_checks, amount_third_checks, amount_third_receipt_checks, amount
+#        return amount
 
 #    def action_move_line_create(self, cr, uid, ids, context=None):
 #        voucher_obj = self.pool.get('account.voucher').browse(cr, uid, ids)[0]

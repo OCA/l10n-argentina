@@ -76,7 +76,7 @@ class account_issued_check(osv.osv):
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
-        currency_pool = self.pool.get('res.currency')
+        currency_obj = self.pool.get('res.currency')
 
         # Buscamos la cuenta contable para el asiento del cheque
         # Esta cuenta se corresponde con la cuenta de banco de donde
