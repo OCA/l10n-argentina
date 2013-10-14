@@ -2,11 +2,9 @@
 <openerp>
     <data>
 
-        <menuitem id="menu_treasury_root" name="Treasury"
-                  web_icon="images/treasury.png"
-                  web_icon_hover="images/treasury-hover.png"/>
-        <menuitem id="menu_treasury_check" name="Checks" parent="menu_treasury_root"/>
-        <menuitem id="menu_treasury_configuration" name="Configuration" parent="menu_treasury_root"/>
+        <menuitem id="menu_treasury_root" name="Treasury" sequence="60"/>
+        <menuitem id="menu_treasury_issued_check_menu" name="Issued Checks" parent="menu_treasury_root" sequence="10"/>
+        <menuitem id="menu_treasury_configuration" name="Configuration" parent="menu_treasury_root" sequence="30"/>
 
         <!-- Cheques Configuracion -->
 
@@ -189,12 +187,6 @@
             <field name="view_mode">calendar,form</field>
             <field name="view_id" ref="view_account_issued_check_issued_calendar"/>
         </record>
-
-        <menuitem
-            id="menu_treasury_issued_check_menu"
-            name="Issued Checks"
-            parent="menu_treasury_check"
-        />
 
         <menuitem
             action="action_issued_check"
@@ -428,22 +420,12 @@
 
 
 
-        <menuitem
-            id="menu_treasury_third_check_menu"
-            name="Third Checks"
-            parent="menu_treasury_check"
-        />
+        <menuitem id="menu_treasury_third_check_menu" name="Third Checks" parent="menu_treasury_root" sequence="20"/>
 
-        <menuitem
-            action="action_third_check"
-            id="menu_treasury_third_check"
-            name="Third Checks"
-            parent="menu_treasury_third_check_menu"
-        />
+        <menuitem action="action_third_check" id="menu_treasury_third_check" name="Third Checks" sequence="5" parent="menu_treasury_third_check_menu" />
 
 
-        <menuitem
-            action="action_third_check_calendar_payment_date"
+        <menuitem action="action_third_check_calendar_payment_date"
             id="menu_treasury_third_check_calendar_payment"
             name="Calendar By Payment Date"
             parent="menu_treasury_third_check_menu"

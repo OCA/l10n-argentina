@@ -78,9 +78,6 @@ class account_issued_check(osv.osv):
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
         currency_pool = self.pool.get('res.currency')
 
-        context_multi_currency = context.copy()
-        context_multi_currency.update({'date': voucher.date})
-
         # Buscamos la cuenta contable para el asiento del cheque
         # Esta cuenta se corresponde con la cuenta de banco de donde
         # pertenece el cheque
@@ -89,30 +86,23 @@ class account_issued_check(osv.osv):
             raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
-        company_currency = voucher.journal_id.company_id.currency_id.id
+        company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        credit = 0.0
-        debit = 0.0
-        if voucher.type in ('purchase', 'payment'):
-            credit = currency_pool.compute(cr, uid, current_currency, company_currency, check.amount, context=context_multi_currency)
-        # TODO: Deberia ser siempre voucher.type = 'purchase' porque son
-        # cheques propios. Pero por las dudas, dejamos este codigo
-        # hasta que se pruebe y testee mas
-        elif voucher.type in ('sale', 'receipt'):
-            debit = currency_pool.compute(cr, uid, current_currency, company_currency, check.amount, context=context_multi_currency)
+        amount_in_company_currency = currency_obj.compute(cr, uid, current_currency, voucher.company_id.currency_id.id, check.amount, context=context)
 
-        if debit < 0:
-            credit = -debit
-            debit = 0.0
-        if credit < 0:
-            debit = -credit
-            credit = 0.0
+        if voucher.type in ('purchase', 'payment'):
+            credit = amount_in_company_currency
+        elif voucher.type in ('sale', 'receipt'):
+            debit = amount_in_company_currency
+        if debit < 0: credit = -debit; debit = 0.0
+        if credit < 0: debit = -credit; credit = 0.0
         sign = debit - credit < 0 and -1 or 1
+
 
         # Creamos la linea contable perteneciente al cheque
         move_line = {
-            'name': 'Ch. ' + check.number or '/',
+            'name': 'Issued Check ' + check.number or '/',
             'debit': debit,
             'credit': credit,
             'account_id': account_id,
@@ -181,11 +171,8 @@ class account_third_check(osv.osv):
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
-        currency_pool = self.pool.get('res.currency')
+        currency_obj = self.pool.get('res.currency')
         check_config_obj = self.pool.get('account.check.config')
-
-        context_multi_currency = context.copy()
-        context_multi_currency.update({'date': voucher.date})
 
         # Buscamos la configuracion de cheques
         res = check_config_obj.search(cr, uid, [('company_id', '=', voucher.company_id.id)])
@@ -195,27 +182,23 @@ class account_third_check(osv.osv):
         config = check_config_obj.browse(cr, uid, res[0])
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
-        company_currency = voucher.journal_id.company_id.currency_id.id
+        company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        credit = 0.0
-        debit = 0.0
-        if voucher.type in ('purchase', 'payment'):
-            credit = currency_pool.compute(cr, uid, current_currency, company_currency, check.amount, context=context_multi_currency)
-        elif voucher.type in ('sale', 'receipt'):
-            debit = currency_pool.compute(cr, uid, current_currency, company_currency, check.amount, context=context_multi_currency)
+        amount_in_company_currency = currency_obj.compute(cr, uid, current_currency, voucher.company_id.currency_id.id, check.amount, context=context)
 
-        if debit < 0:
-            credit = -debit
-            debit = 0.0
-        if credit < 0:
-            debit = -credit
-            credit = 0.0
+        debit = credit = 0.0
+        if voucher.type in ('purchase', 'payment'):
+            credit = amount_in_company_currency
+        elif voucher.type in ('sale', 'receipt'):
+            debit = amount_in_company_currency
+        if debit < 0: credit = -debit; debit = 0.0
+        if credit < 0: debit = -credit; credit = 0.0
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente al cheque
         move_line = {
-            'name': 'Ch. ' + check.number or '/',
+            'name': _('Third Check ') + check.number or '/',
             'debit': debit,
             'credit': credit,
             'account_id': config.account_id.id,
@@ -234,16 +217,17 @@ class account_third_check(osv.osv):
         # Transicion efectuada al validar un pago de cliente que contenga
         # cheques
         for check in self.browse(cr, uid, ids):
-            # TODO: Si no tiene voucher, deberia lanzar una excepcion
-            if check.voucher_id:
-                source_partner_id = check.voucher_id.partner_id.id
-            else:
-                source_partner_id = None
+            voucher = check.voucher_id
+            if not voucher:
+                raise osv.except_osv(_('Check Error!'), _('Check has to be associated with a voucher'))
 
+            partner_id = voucher.partner_id.id
             vals = {}
-            vals['source_partner_id'] = source_partner_id
-            if not check.origin:
-                vals['origin'] = check.voucher_id.number
+            if voucher.type == 'receipt':
+                vals['source_partner_id'] = partner_id
+
+            #if not check.origin:
+                #vals['origin'] = context.get('voucher_number', '')
             vals['state'] = 'wallet'
 
             # Si es cheque comun tomamos la fecha de emision
@@ -259,8 +243,11 @@ class account_third_check(osv.osv):
         # cheques de terceros
         vals = {'state': 'delivered'}
         for check in self.browse(cr, uid, ids):
+            voucher = check.voucher_id
+
             if not check.endorsement_date:
-                vals['endorsement_date'] = time.strftime('%Y-%m-%d')
+                vals['endorsement_date'] = voucher.date or time.strftime('%Y-%m-%d')
+            vals['destiny_partner_id'] = check.voucher_id.partner_id.id
 
             check.write(vals)
         return True

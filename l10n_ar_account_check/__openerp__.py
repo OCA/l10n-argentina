@@ -18,12 +18,12 @@
 {
     'name': 'Account Checks',
     'version': '1.0',
-    'author': 'Ignacio E. Parszyk',
+    'author': 'E-MIPS/Eynes',
     'description': """
     Allows to manage checks
     """,
     'category': 'Generic Modules/Accounting',
-    'website': 'http://thymbra.com',
+    'website': 'http://www.e-mips.com.ar http://www.eynes.com.ar',
     'depends': [
         'account',
         'account_voucher',
