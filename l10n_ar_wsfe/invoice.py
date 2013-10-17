@@ -468,6 +468,8 @@ class account_invoice(osv.osv):
                 cbte_nro = cbte_nro + 1
 
             date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
+            formatted_date_invoice = date_invoice.strftime('%Y%m%d')
+            date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
 
             detalle['invoice_id'] = inv.id
 
@@ -477,6 +479,10 @@ class account_invoice(osv.osv):
             detalle['CbteDesde'] = cbte_nro
             detalle['CbteHasta'] = cbte_nro
             detalle['CbteFch'] = date_invoice.strftime('%Y%m%d')
+            if service:
+                detalle['FchServDesde'] = formatted_date_invoice
+                detalle['FchServHasta'] = formatted_date_invoice
+                detalle['FchVtoPago'] = date_due
             # TODO: Cambiar luego por la currency de la factura
             detalle['MonId'] = 'PES'
             detalle['MonCotiz'] = 1
@@ -499,7 +505,8 @@ class account_invoice(osv.osv):
                     if eitax.tax_code_id.id == tax.tax_code_id.id:
                         found = True
                         if eitax.exempt_operations:
-                            importe_operaciones_exentas += tax.base
+                            pass
+                            #importe_operaciones_exentas += tax.base
                         else:
                             importe_iva += tax.amount
                             importe_neto += tax.base

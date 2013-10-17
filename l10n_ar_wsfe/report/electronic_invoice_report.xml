@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<openerp>
+<data noupdate="0">
+
+    <record id="electronic_invoice_report_id" model="ir.actions.report.xml">
+        <field name="name">Electronic Invoice</field>
+        <field name="type">ir.actions.report.xml</field>
+        <field name="model">account.invoice</field>
+        <field name="report_name">electronic_invoice</field>
+        <field name="report_type">aeroo</field>
+        <field name="in_format">oo-odt</field>
+        <field name="parser_loc">l10n_ar_wsfe/report/parser.py</field>
+        <field name="report_rml">l10n_ar_wsfe/report/invoice_template.odt</field>
+        <field name="parser_state">loc</field>
+        <field name="tml_source">file</field>
+    </record>
+
+    <ir_set>
+        <field eval="'action'" name="key"/>
+        <field eval="'client_print_multi'" name="key2"/>
+        <field eval="['account.invoice']" name="models"/>
+        <field name="name">electronic_invoice</field>
+        <field eval="'ir.actions.report.xml,'+str(electronic_invoice_report_id)" name="value"/>
+        <field eval="True" name="isobject"/>
+        <field eval="True" name="replace"/>
+    </ir_set>
+
+</data>
+</openerp>
+
