@@ -9,7 +9,6 @@
       <field name="type">form</field>
       <field name="inherit_id" ref="l10n_ar_account_check.view_vendor_receipt_check_form"/>
       <field name="arch" type="xml">
-        <data>
           <page string="Journal Items" position="before">
             <page string="Retentions">
               <separator string="Supported Retentions"/>
@@ -119,8 +118,6 @@
         </data>
       </field>
     </record>
-
-
 
   </data>
 </openerp>
