@@ -46,28 +46,13 @@ class retention_tax_line(osv.osv):
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
         'partner_id': fields.related('voucher_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
         'vat': fields.related('voucher_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
-        'certificate_no': fields.char('Certificate No.', required=True, size=32),
+        'certificate_no': fields.char('Certificate No.', required=False, size=32),
         'state_id': fields.many2one('res.country.state', string="State/Province"),
     }
 
     _defaults = {
         #'date': lambda *a: time.strftime('%Y-%m-%d'),
     }
-
-#    def create(self, cr, uid, vals, context=None):
-#        import pdb
-#        pdb.set_trace()
-#        voucher_obj = self.pool.get('account.voucher')
-#        print 'Create vals, antes: ', vals
-#        if 'voucher_id' in vals:
-#            voucher_id = vals['voucher_id']
-#            res = voucher_obj.read(cr, uid, voucher_id, ['date'], context=context)
-#            print res
-#            if 'date' in vals and not vals['date']:
-#                vals['date'] = res['date']
-#
-#        print 'Create: ', vals
-#        return super(retention_tax_line, self).create(cr, uid, vals, context)
 
     def onchange_retention(self, cr, uid, ids, retention_id, context):
         if not retention_id:
@@ -88,9 +73,86 @@ class retention_tax_line(osv.osv):
 
         return {'value': vals}
 
-    #TODO: Calculo del base_amount y todo eso. Ver invoice.py:1582
-    #def compute(self, cr, uid, ids, etc, etc):
-    #   pass
+    def create_voucher_move_line(self, cr, uid, retention, voucher, context=None):
+        voucher_obj = self.pool.get('account.voucher')
+
+        move_lines = []
+
+        if retention.amount == 0.0:
+            return move_lines
+
+        # Chequeamos si esta seteada la fecha, sino le ponemos la fecha del voucher
+        retention_vals = {}
+        if not retention.date:
+            retention_vals['date'] = voucher.date
+
+        company_currency = voucher.company_id.currency_id.id
+        current_currency = voucher.currency_id.id
+
+        tax_amount_in_company_currency =  voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.amount, context=context)
+        base_amount_in_company_currency =  voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.base, context=context)
+
+        debit = credit = 0.0
+
+       # Lo escribimos en el objeto retention_tax_line
+        retention_vals['tax_amount'] = tax_amount_in_company_currency
+        retention_vals['base_amount'] = base_amount_in_company_currency
+
+        #retention_obj.write(cr, uid, retention.id, retention_vals)
+
+        debit = credit = 0.0
+        if voucher.type in ('purchase', 'payment'):
+            credit = tax_amount_in_company_currency
+        elif voucher.type in ('sale', 'receipt'):
+            debit = tax_amount_in_company_currency
+        if debit < 0: credit = -debit; debit = 0.0
+        if credit < 0: debit = -credit; credit = 0.0
+        sign = debit - credit < 0 and -1 or 1
+
+        # Creamos la linea contable perteneciente a la retencion
+        move_line = {
+            'name': retention.name or '/',
+            'debit': debit,
+            'credit': credit,
+            'account_id': retention.account_id.id,
+            'tax_code_id': retention.tax_code_id.id,
+            'tax_amount': tax_amount_in_company_currency,
+            #'move_id': move_id,
+            'journal_id': voucher.journal_id.id,
+            'period_id': voucher.period_id.id,
+            'partner_id': voucher.partner_id.id,
+            'currency_id': company_currency <> current_currency and  current_currency or False,
+            'amount_currency': company_currency <> current_currency and sign * retention.amount or 0.0,
+            'date': voucher.date,
+            'date_maturity': voucher.date_due
+        }
+
+        move_lines.append(move_line)
+
+        # ...y ahora creamos la linea contable perteneciente a la base imponible de la retencion
+        # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
+        move_line = {
+            'name': retention.name + '(Base Imp)',
+            'ref': voucher.name,
+            'debit': 0.0,
+            'credit': 0.0,
+            'account_id': retention.account_id.id,
+            'tax_code_id': retention.base_code_id.id,
+            'tax_amount': base_amount_in_company_currency,
+            #'move_id': move_id,
+            'journal_id': voucher.journal_id.id,
+            'period_id': voucher.period_id.id,
+            'partner_id': voucher.partner_id.id,
+            'currency_id': False, #company_currency <> current_currency and  current_currency or False,
+            'amount_currency': 0.0, #company_currency <> current_currency and sign * retention.amount or 0.0,
+            'date': voucher.date,
+            'date_maturity': voucher.date_due
+        }
+
+        move_lines.append(move_line)
+        return move_lines
+
+
 
 retention_tax_line()
 
@@ -99,122 +161,180 @@ class account_voucher(osv.osv):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
 
-#    def _total_amount(self, cr, uid, ids, name, arg, context=None):
-#        vouchers = super(account_voucher, self)._total_amount(cr, uid, ids, name, arg, context=context)
-#
-#        for v in vouchers:
-#            voucher = self.browse(cr, uid, v)
-#            amount = 0.0
-#            # Sumamos los importes de las retenciones
-#            for r in voucher.retention_ids:
-#                amount += r.amount
-#
-#            vouchers[v] += amount
-#        return vouchers
-
     _columns = {
             'retention_ids': fields.one2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft':[('readonly', False)]}),
-              #'amount': fields.function(_total_amount, method=True, type='float',  string='Paid Amount'),
             }
 
-    def onchange_retentions(self, cr, uid, ids, retention_ids, context):
-        #res={'value':{'amount':1.0}}
-        res={'value':{}}
-        return res
+    def _get_retention_amount(self, cr, uid, retention_ids, context=None):
+        retention_line_obj = self.pool.get('retention.tax.line')
+        amount = 0.0
+
+        for retention_line in retention_ids:
+            if retention_line[0] == 4 and retention_line[1] and not retention_line[2]:
+                am = retention_line_obj.read(cr, uid, retention_line[1], ['amount'], context=context)['amount']
+                if am:
+                    amount += float(am)
+            if retention_line[2]:
+                amount += retention_line[2]['amount']
+
+        return amount
+
+
+    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context=None):
+
+        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
+        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
+        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
+        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
+        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+
+        return {'value': {'amount': amount}}
+
+    def onchange_third_receipt_checks(self, cr, uid, ids, amount, payment_line_ids, third_check_receipt_ids, retention_ids, context=None):
+
+        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
+        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
+        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+
+        return {'value': {'amount': amount}}
+
+    def onchange_issued_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context=None):
+
+        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
+        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
+        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
+        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+
+        return {'value': {'amount': amount}}
+
+    def onchange_third_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context=None):
+
+        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
+        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
+        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
+        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+
+        return {'value': {'amount': amount}}
+
+    def onchange_retentions(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context=None):
+
+        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
+        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
+        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
+        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
+        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+
+        return {'value': {'amount': amount}}
 
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
+        retention_line_obj = self.pool.get("retention.tax.line")
         move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
+        voucher = self.pool.get('account.voucher').browse(cr,uid,voucher_id,context)
 
-        currency_pool = self.pool.get('res.currency')
-        retention_obj = self.pool.get('retention.tax.line')
+        for ret in voucher.retention_ids:
 
-        v = self.browse(cr, uid, voucher_id)
+            res = retention_line_obj.create_voucher_move_line(cr, uid, ret, voucher, context=context)
+            if res:
+                res[0]['move_id'] = move_id
+                res[1]['move_id'] = move_id
+                move_lines.append(res[0])
+                move_lines.append(res[1])
 
-        context_multi_currency = context.copy()
-        context_multi_currency.update({'date': v.date})
-
-        for r in v.retention_ids:
-            if r.amount == 0.0:
-                continue
-
-            # Chequeamos si esta seteada la fecha, sino le ponemos la fecha del voucher
-            retention_vals = {}
-            if not r.date:
-                retention_vals['date'] = v.date
- 
-            # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
-            company_currency = v.journal_id.company_id.currency_id.id
-            current_currency = v.currency_id.id
-
-            debit = 0.0
-            credit = 0.0
-            # TODO: is there any other alternative then the voucher type ??
-            # -for sale, purchase we have but for the payment and receipt we do not have as based on the bank/cash journal we can not know its payment or receipt
-            # Calculamos el tax_amount y el base_amount basados en las currency de la compania y del voucher
-            # TODO: Esto tendriamos que hacerlo en el mismo objeto retention_tax_line
-            tax_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.amount, context=context_multi_currency, round=False)
-            base_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.base, context=context_multi_currency, round=False)
-
-
-           # Lo escribimos en el objeto retention_tax_line
-            retention_vals['tax_amount'] = tax_amount
-            retention_vals['base_amount'] = base_amount
-
-            retention_obj.write(cr, uid, r.id, retention_vals)
-
-            if v.type in ('purchase', 'payment'):
-                credit = tax_amount
-            elif v.type in ('sale', 'receipt'):
-                debit = tax_amount
-            if debit < 0:
-                credit = -debit
-                debit = 0.0
-            if credit < 0:
-                debit = -credit
-                credit = 0.0
-            sign = debit - credit < 0 and -1 or 1
-
-            # Creamos la linea contable perteneciente a la retencion
-            move_line = {
-                'name': r.name or '/',
-                'debit': debit,
-                'credit': credit,
-                'account_id': r.account_id.id,
-                'tax_code_id': r.tax_code_id.id,
-                'tax_amount': tax_amount,
-                'move_id': move_id,
-                'journal_id': v.journal_id.id,
-                'period_id': v.period_id.id,
-                'partner_id': v.partner_id.id,
-                'currency_id': company_currency <> current_currency and  current_currency or False,
-                'amount_currency': company_currency <> current_currency and sign * r.amount or 0.0,
-                'date': v.date,
-                'date_maturity': v.date_due
-            }
-
-            move_lines.append(move_line)
-
-            # ...y ahora creamos la linea contable perteneciente a la base imponible de la retencion
-            # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
-            move_line = {
-                'name': r.name + '(Base Imp)',
-                'ref': v.name,
-                'debit': 0.0,
-                'credit': 0.0,
-                'account_id': r.account_id.id,
-                'tax_code_id': r.base_code_id.id,
-                'tax_amount': base_amount,
-                'move_id': move_id,
-                'journal_id': v.journal_id.id,
-                'period_id': v.period_id.id,
-                'partner_id': v.partner_id.id,
-                'currency_id': company_currency <> current_currency and  current_currency or False,
-                'amount_currency': company_currency <> current_currency and sign * r.amount or 0.0,
-                'date': v.date,
-                'date_maturity': v.date_due
-            }
-
-            move_lines.append(move_line)
         return move_lines
+
+#    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
+#        move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
+#
+#        currency_pool = self.pool.get('res.currency')
+#        retention_obj = self.pool.get('retention.tax.line')
+#
+#        v = self.browse(cr, uid, voucher_id)
+#
+#        context_multi_currency = context.copy()
+#        context_multi_currency.update({'date': v.date})
+#
+#        for r in v.retention_ids:
+#            if r.amount == 0.0:
+#                continue
+#
+#            # Chequeamos si esta seteada la fecha, sino le ponemos la fecha del voucher
+#            retention_vals = {}
+#            if not r.date:
+#                retention_vals['date'] = v.date
+#
+#            # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
+#            company_currency = v.journal_id.company_id.currency_id.id
+#            current_currency = v.currency_id.id
+#
+#            debit = 0.0
+#            credit = 0.0
+#            # TODO: is there any other alternative then the voucher type ??
+#            # -for sale, purchase we have but for the payment and receipt we do not have as based on the bank/cash journal we can not know its payment or receipt
+#            # Calculamos el tax_amount y el base_amount basados en las currency de la compania y del voucher
+#            # TODO: Esto tendriamos que hacerlo en el mismo objeto retention_tax_line
+#            tax_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.amount, context=context_multi_currency, round=False)
+#            base_amount = currency_pool.compute(cr, uid, v.currency_id.id, company_currency, r.base, context=context_multi_currency, round=False)
+#
+#
+#           # Lo escribimos en el objeto retention_tax_line
+#            retention_vals['tax_amount'] = tax_amount
+#            retention_vals['base_amount'] = base_amount
+#
+#            retention_obj.write(cr, uid, r.id, retention_vals)
+#
+#            if v.type in ('purchase', 'payment'):
+#                credit = tax_amount
+#            elif v.type in ('sale', 'receipt'):
+#                debit = tax_amount
+#            if debit < 0:
+#                credit = -debit
+#                debit = 0.0
+#            if credit < 0:
+#                debit = -credit
+#                credit = 0.0
+#            sign = debit - credit < 0 and -1 or 1
+#
+#            # Creamos la linea contable perteneciente a la retencion
+#            move_line = {
+#                'name': r.name or '/',
+#                'debit': debit,
+#                'credit': credit,
+#                'account_id': r.account_id.id,
+#                'tax_code_id': r.tax_code_id.id,
+#                'tax_amount': tax_amount,
+#                'move_id': move_id,
+#                'journal_id': v.journal_id.id,
+#                'period_id': v.period_id.id,
+#                'partner_id': v.partner_id.id,
+#                'currency_id': company_currency <> current_currency and  current_currency or False,
+#                'amount_currency': company_currency <> current_currency and sign * r.amount or 0.0,
+#                'date': v.date,
+#                'date_maturity': v.date_due
+#            }
+#
+#            move_lines.append(move_line)
+#
+#            # ...y ahora creamos la linea contable perteneciente a la base imponible de la retencion
+#            # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
+#            move_line = {
+#                'name': r.name + '(Base Imp)',
+#                'ref': v.name,
+#                'debit': 0.0,
+#                'credit': 0.0,
+#                'account_id': r.account_id.id,
+#                'tax_code_id': r.base_code_id.id,
+#                'tax_amount': base_amount,
+#                'move_id': move_id,
+#                'journal_id': v.journal_id.id,
+#                'period_id': v.period_id.id,
+#                'partner_id': v.partner_id.id,
+#                'currency_id': company_currency <> current_currency and  current_currency or False,
+#                'amount_currency': company_currency <> current_currency and sign * r.amount or 0.0,
+#                'date': v.date,
+#                'date_maturity': v.date_due
+#            }
+#
+#            move_lines.append(move_line)
+#        return move_lines
 
 account_voucher()

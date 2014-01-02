@@ -2,65 +2,18 @@
 <openerp>
   <data>
 
-    <!-- Supplier Payment -->
-    <record id="view_vendor_payment_retention_form" model="ir.ui.view">
-      <field name="name">account.voucher.payment.retention.form.inherit</field>
-      <field name="model">account.voucher</field>
-      <field name="type">form</field>
-      <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_payment_voucher_form"/>
-      <field name="arch" type="xml">
-        <data>
-          <page string="Journal Items" position="before">
-            <page string="Retentions">
-              <separator string="Applied Retentions"/>
-              <field name="retention_ids" nolabel="1" colspan="4" on_change="onchange_retentions(retention_ids, context)">
-                <tree string="Retention Lines">
-                  <field name="date" />
-                  <field name="retention_id" string="Retention Type" />
-                  <field name="certificate_no" />
-                  <field name="base" />
-                  <field name="amount" />
-                  <field name="state_id" />
-                </tree>
-                <form string="Retention Lines">
-                  <group colspan="4" col="6">
-                    <group colspan="4">
-                      <field name="retention_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_retention(retention_id, context)" colspan="4"/>
-                      <field name="name" colspan="4"/>
-                      <field name="certificate_no" colspan="4"/>
-                      <field name="date" />
-                      <field name="state_id" />
-                      <label colspan="4" string="Keep it empty if the date is the same as the voucher." />
-                    </group>
-                    <group colspan="2">
-                      <separator string="Amount"/>
-                      <field name="base" colspan="4"/>
-                      <field name="amount" colspan="4"/>
-                    </group>
-                  </group>
-                  <field name="account_id" invisible="1" />
-                  <field name="base_code_id" invisible="1" />
-                  <field name="tax_code_id" invisible="1" />
-                </form>
-              </field>
-            </page>
-          </page>
-        </data>
-      </field>
-    </record>
-
     <!-- Customer Payment -->
     <record id="view_vendor_receipt_retention_form" model="ir.ui.view">
       <field name="name">account.voucher.receipt.retention.form.inherit</field>
       <field name="model">account.voucher</field>
       <field name="type">form</field>
-      <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_receipt_voucher_form"/>
+      <field name="inherit_id" ref="l10n_ar_account_check.view_vendor_receipt_check_form"/>
       <field name="arch" type="xml">
         <data>
           <page string="Journal Items" position="before">
             <page string="Retentions">
               <separator string="Supported Retentions"/>
-              <field name="retention_ids" nolabel="1" colspan="4" on_change="onchange_retentions(retention_ids, context)">
+              <field name="retention_ids" on_change="onchange_retentions(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)" nolabel="1" colspan="4">
                 <tree string="Retention Lines">
                   <field name="date" />
                   <field name="retention_id" string="Retention Type" />
@@ -92,9 +45,82 @@
               </field>
             </page>
           </page>
+
+          <field name="payment_line_ids" position= "attributes">
+            <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)</attribute>
+          </field>
+
+          <field name="third_check_receipt_ids" position= "attributes">
+            <attribute name="on_change">onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)</attribute>
+          </field>
+
+
         </data>
       </field>
     </record>
+
+    <!-- Supplier Payment -->
+    <record id="view_vendor_payment_retention_form" model="ir.ui.view">
+      <field name="name">account.voucher.payment.retention.form.inherit</field>
+      <field name="model">account.voucher</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_payment_form"/>
+      <field name="arch" type="xml">
+        <data>
+
+          <page string="Journal Items" position="before">
+            <page string="Retentions">
+              <separator string="Applied Retentions"/>
+              <field name="retention_ids" on_change="onchange_retentions(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)" nolabel="1" colspan="4">
+                <tree string="Retention Lines">
+                  <field name="date" />
+                  <field name="retention_id" string="Retention Type" />
+                  <field name="certificate_no" />
+                  <field name="base" sum="Base"/>
+                  <field name="amount" sum="Total"/>
+                  <field name="state_id" />
+                </tree>
+                <form string="Retention Lines">
+                  <group colspan="4" col="6">
+                    <group colspan="4">
+                      <field name="retention_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_retention(retention_id, context)" colspan="4"/>
+                      <field name="name" colspan="4"/>
+                      <field name="certificate_no" colspan="4"/>
+                      <field name="date" />
+                      <field name="state_id" />
+                      <label colspan="4" string="Keep it empty if the date is the same as the voucher." />
+                    </group>
+                    <group colspan="2">
+                      <separator string="Amount"/>
+                      <field name="base" colspan="4"/>
+                      <field name="amount" colspan="4"/>
+                    </group>
+                  </group>
+                  <field name="account_id" invisible="1" />
+                  <field name="base_code_id" invisible="1" />
+                  <field name="tax_code_id" invisible="1" />
+                </form>
+              </field>
+            </page>
+          </page>
+          <field name="payment_line_ids" position= "attributes">
+            <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)</attribute>
+          </field>
+
+          <field name="issued_check_ids" position= "attributes">
+            <attribute name="on_change">onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)</attribute>
+          </field>
+
+          <field name="third_check_ids" position= "attributes">
+            <attribute name="on_change">onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)</attribute>
+          </field>
+
+
+        </data>
+      </field>
+    </record>
+
+
 
   </data>
 </openerp>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data noupdate="1">
+  <data noupdate="0">
 
   <!-- TODO: Hacer esto como templates para luego ser instalado, deberia estar en el modulo de localizacion -->
   <!-- Retenciones Tax Code -->
@@ -218,6 +218,7 @@
     <field name="description">Retencion IVA Sufrida</field>
     <field name="sequence">30</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_iva"/>
     <field name="account_paid_id" ref="retencion_iva"/>
     <field name="base_code_id" ref="operaciones_con_retencion_iva_sufrida"/>
@@ -238,6 +239,7 @@
     <field name="description">Retencion IVA Efectuada</field>
     <field name="sequence">30</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_iva_a_depositar"/>
     <field name="account_paid_id" ref="retencion_iva_a_depositar"/>
     <field name="base_code_id" ref="operaciones_con_retencion_iva_efectuada"/>
@@ -258,6 +260,7 @@
     <field name="description">Ret IIBB CABA Sufrida</field>
     <field name="sequence">31</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_iibb_caba"/>
     <field name="account_paid_id" ref="retencion_iibb_caba"/>
     <field name="base_code_id" ref="operaciones_con_retencion_iibb_caba_sufrida"/>
@@ -278,6 +281,7 @@
     <field name="description">Retencion IIBB CABA Efectuada</field>
     <field name="sequence">31</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_iibb_caba_a_depositar"/>
     <field name="account_paid_id" ref="retencion_iibb_caba_a_depositar"/>
     <field name="base_code_id" ref="operaciones_con_retencion_iibb_caba_efectuada"/>
@@ -298,6 +302,7 @@
     <field name="description">Retenciones Ganancias Sufrida</field>
     <field name="sequence">34</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_ganancias"/>
     <field name="account_paid_id" ref="retencion_ganancias"/>
     <field name="base_code_id" ref="operaciones_con_retencion_ganancias_sufrida"/>
@@ -318,6 +323,7 @@
     <field name="description">Retenciones Ganancias Efectuada</field>
     <field name="sequence">35</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_ganancias_a_depositar"/>
     <field name="account_paid_id" ref="retencion_ganancias_a_depositar"/>
     <field name="base_code_id" ref="operaciones_con_retencion_ganancias_efectuada"/>
@@ -338,6 +344,7 @@
     <field name="description">Retenciones SUSS Sufrida</field>
     <field name="sequence">34</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_suss"/>
     <field name="account_paid_id" ref="retencion_suss"/>
     <field name="base_code_id" ref="operaciones_con_retencion_suss_sufrida"/>
@@ -358,6 +365,7 @@
     <field name="description">Retenciones SUSS Efectuada</field>
     <field name="sequence">35</field>
     <field name="type">none</field>
+    <field name="tax_group">retention</field>
     <field name="account_collected_id" ref="retencion_suss_a_depositar"/>
     <field name="account_paid_id" ref="retencion_suss_a_depositar"/>
     <field name="base_code_id" ref="operaciones_con_retencion_suss_efectuada"/>

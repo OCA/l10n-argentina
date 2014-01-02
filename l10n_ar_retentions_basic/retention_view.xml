@@ -40,6 +40,20 @@
     </field>
   </record>
 
+  <!-- Tree View for retention.retention -->
+  <record id="view_retention_retention_filter" model="ir.ui.view">
+    <field name="name">retention.retention.filter</field>
+    <field name="model">retention.retention</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search string="Retentions">
+        <field name="name" />
+        <field name="type_tax_use" />
+        <field name="state_id" />
+      </search>
+    </field>
+  </record>
+
   <!-- Search View for retention.tax.line -->
   <record id="view_retention_tax_line_search" model="ir.ui.view">
     <field name="name">retention.tax.line.search</field>
@@ -99,6 +113,7 @@
     <field name="help">Here you can define Retentions and their configuration to be used in Customer Payents or Supplier Payments</field>
     <field name="view_type">form</field>
     <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="view_retention_retention_filter"/>
   </record>
 
   <record id="action_retention_retention_tree_view" model="ir.actions.act_window.view">
