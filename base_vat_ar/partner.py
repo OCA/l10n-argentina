@@ -55,14 +55,23 @@ class res_partner(osv.osv):
         for partner in self.browse(cr, uid, ids, context=context):
             if not partner.vat:
                 continue
-            if partner.country:
-                vat_country = partner.country.code.lower()
+            if partner.country_id:
+                vat_country = partner.country_id.code.lower()
                 vat_number = partner.vat
             else:
                 vat_country, vat_number = partner.vat[:2].lower(), partner.vat[2:].replace(' ', '')
-            if not hasattr(self, 'check_vat_' + vat_country):
-                return False
-            if partner.document_type_id and partner.document_type_id.verification_required:
+            if partner.document_type_id:
+                if partner.document_type_id.verification_required:
+                    check = getattr(self, 'check_vat_' + vat_country)
+                    if not check(vat_number):
+                        return False
+                else:
+                    return True
+
+            else:
+                if not hasattr(self, 'check_vat_' + vat_country):
+                    return True
+
                 check = getattr(self, 'check_vat_' + vat_country)
                 if not check(vat_number):
                     return False
@@ -74,7 +83,6 @@ class res_partner(osv.osv):
         """
         Check VAT Routine for Argentina.
         """
-        print "chequeando CUIT de Argentina...."
         if len(vat) != 11: return False
         try: 
             int(vat)
