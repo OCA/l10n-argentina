@@ -216,6 +216,9 @@ class invoice(osv.osv):
 #                else:
 #                    raise osv.except_osv(_('Error!'), _('Denomination not set neither in invoice nor point of sale'))
 #            else:
+            if not inv.pos_ar_id:
+                raise osv.except_osv(_('Error!'), _('You have to select a Point of Sale.'))
+
             if inv.pos_ar_id.denomination_id.id != denomination_id:
                 raise osv.except_osv(_('Error!'), _('Point of sale has not the same denomination as the invoice.'))
 
@@ -280,17 +283,27 @@ class invoice(osv.osv):
         invoice_vals = {}
         invtype = None
 
-        #TODO: not correct fix but required a fresh values before reading it.
+        #TODO: not correct fix but required a fresh values before reading it
         # Esto se usa para forzar a que recalcule los campos funcion
         self.write(cr, uid, ids, {})
 
         for obj_inv in self.browse(cr, uid, ids, context=context):
+            partner_country = obj_inv.partner_id.country_id and obj_inv.partner_id.country_id.id or False
+            company_country = obj_inv.company_id.country_id and obj_inv.company_id.country_id.id or False
+
             id = obj_inv.id
             invtype = obj_inv.type
+
+            if invtype in ('in_invoice', 'in_refund'):
+                local = (partner_country == company_country) or partner_country == False
+            else:
+                local = True
+
             #move_id = obj_inv.move_id and obj_inv.move_id.id or False
             reference = obj_inv.reference or ''
 
-            self._check_fiscal_values(cr, uid, obj_inv)
+            if local:
+                self._check_fiscal_values(cr, uid, obj_inv)
 
             # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
             # si el usuario hizo un ingreso dejo ese numero
@@ -320,9 +333,10 @@ class invoice(osv.osv):
 
             # Si son de Proveedor
             else:
-                m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
-                if not m:
-                    raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                if local:
+                    m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
+                    if not m:
+                        raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
             # Escribimos los campos necesarios de la factura
             self.write(cr, uid, obj_inv.id, invoice_vals)

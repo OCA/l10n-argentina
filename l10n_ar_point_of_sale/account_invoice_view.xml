@@ -104,6 +104,12 @@
                        <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                        <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                    </field>
+                   <xpath expr="//field[@name='tax_line']/tree/field[@name='name']" position="after">
+                        <field name="tax_id" domain="[('tax_group','=','other'), ('type_tax_use','in',['purchase','all'])]" on_change="tax_id_change(tax_id,parent.type)"/>
+                        <field name="base_code_id" invisible="1"/>
+                        <field name="tax_code_id" invisible="1"/>
+                   </xpath>
+
             </field>
         </record>
 

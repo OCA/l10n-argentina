@@ -42,11 +42,11 @@ class purchase_order(osv.osv):
         'invoiced_rate': fields.function(_invoiced_rate2, method=True, string='Invoiced', type='float'),
     }
 
-    def action_invoice_create(self, cr, uid, ids, *args):
+    def action_invoice_create(self, cr, uid, ids, context=None):
         invoice_obj = self.pool.get('account.invoice')
 
         # Llamamos a la funcion original y obtenemos el id de la invoice creada
-        inv_id = super(purchase_order, self).action_invoice_create(cr, uid, ids, *args)
+        inv_id = super(purchase_order, self).action_invoice_create(cr, uid, ids, context=context)
 
         # Browseamos la orden de compra
         order = self.browse(cr, uid, ids[0])
