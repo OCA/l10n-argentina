@@ -48,7 +48,6 @@
                     <field name="account_id"/>
                     <field name="bank_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                    <newline/>
                     <group expand="0" string="Group By...">
                       <filter string="Account" context="{'group_by':'account_id'}"/>
                       <filter string="type" context="{'group_by':'type'}"/>

@@ -31,6 +31,12 @@ class account_voucher(osv.osv):
       'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
     }
 
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        if context is None: context = {}
+        return [(r['id'], (str("%s - %.2f" % (r['number'], r['amount'])) or '')) for r in self.read(cr, uid, ids, ['number', 'amount'], context, load='_classic_write')]
+
     def _get_payment_lines_amount(self, cr, uid, payment_line_ids, context=None):
         payment_line_obj = self.pool.get('payment.mode.receipt.line')
         amount = 0.0
@@ -123,6 +129,20 @@ class account_voucher(osv.osv):
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
         return move_lines
 
+    def _convert_paid_amount_in_company_currency(self, cr, uid, voucher, amount, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        ctx = context.copy()
+        ctx.update({'date': voucher.date})
+        #make a new call to browse in order to have the right date in the context, to get the right currency rate
+        voucher = self.browse(cr, uid, voucher.id, context=ctx)
+        ctx.update({
+          'voucher_special_currency': voucher.payment_rate_currency_id and voucher.payment_rate_currency_id.id or False,
+          'voucher_special_currency_rate': voucher.currency_id.rate * voucher.payment_rate,})
+        res = self.pool.get('res.currency').compute(cr, uid, voucher.currency_id.id, voucher.company_id.currency_id.id, amount, context=ctx)
+        return res
+
     # Heredada para agregar un hook y los asientos para varias formas de pago
     def create_move_lines(self, cr, uid, voucher_id, move_id, company_currency, current_currency, context=None):
         '''
@@ -155,7 +175,8 @@ class account_voucher(osv.osv):
             if pl.amount == 0.0:
                 continue
 
-            amount_in_company_currency =  self.pool.get('res.currency').compute(cr, uid, pl.currency.id, voucher.company_id.currency_id.id, pl.amount, context=context)
+            amount_in_company_currency =  self._convert_paid_amount_in_company_currency(cr, uid, voucher, pl.amount, context=context)
+            #self.pool.get('res.currency').compute(cr, uid, pl.currency.id, voucher.company_id.currency_id.id, pl.amount, context=context)
 
             debit = credit = 0.0
             if voucher.type in ('purchase', 'payment'):
@@ -193,7 +214,7 @@ class account_voucher(osv.osv):
             amount_credit += line['credit']
             amount_debit += line['debit']
 
-        if amount_credit != total_credit or amount_debit != total_debit:
+        if round(amount_credit, 3) != round(total_credit, 3) or round(amount_debit, 3) != round(total_debit, 3):
             raise osv.except_osv(_('Voucher Error!'), _('Voucher Paid Amount and sum of different payment mode must be equal'))
 
         return move_lines
@@ -220,6 +241,9 @@ class account_voucher(osv.osv):
             move_id = move_pool.create(cr, uid, self.account_move_get(cr, uid, voucher.id, context=context), context=context)
             # Get the name of the account_move just created
             name = move_pool.browse(cr, uid, move_id, context=context).name
+
+            # Escribimos el numero del voucher
+            self.write(cr, uid, [voucher.id], {'number': name})
 
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
@@ -274,3 +298,17 @@ class account_voucher(osv.osv):
         return True
 
 account_voucher()
+
+
+class account_voucher_line(osv.osv):
+    _name = 'account.voucher.line'
+    _inherit = 'account.voucher.line'
+
+
+    def onchange_amount(self, cr, uid, ids, amount, amount_unreconciled, context=None):
+        vals = {}
+        if amount:
+            vals['reconcile'] = (round(amount, 2) == round(amount_unreconciled, 2))
+        return {'value': vals}
+
+account_voucher_line()

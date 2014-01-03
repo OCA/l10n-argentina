@@ -56,7 +56,7 @@
                            widget="monetary" options="{'currency_field': 'currency_id'}"
                            on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
                 </field>
-                 <field name="journal_id" position="attributes">
+                <field name="journal_id" position="attributes">
                     <attribute name="string">Journal</attribute>
                 </field>
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="before">
