@@ -9,9 +9,9 @@
         <field name="inherit_id" ref="l10n_ar_account_check.view_account_issued_check_form"/>
         <field name="arch" type="xml">
             <data>
-                <field name="receiving_partner_id" position="before">
-                    <field name="check_id" attrs="{'readonly': [('issued','=',True)]}" on_change="on_change_check_id(check_id)" domain="[('state','=','draft')]"/>
-                    <field name="checkbook_id" invisible="1"/>
+                <field name="type" position="before">
+                    <field name="check_id" invisible="1"/>
+                    <field name="checkbook_id" readonly="1"/>
                 </field>
             </data>
         </field>
