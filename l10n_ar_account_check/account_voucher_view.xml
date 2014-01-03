@@ -16,7 +16,36 @@
                 <page string="Payment Information" position="after">
                     <page string="Checks">
                         <field name="third_check_receipt_ids" invisible="1"/>
-                        <field name="issued_check_ids" string="Issued Checks" nolabel="1" colspan="4" on_change="onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, context)"/>
+                        <field name="issued_check_ids" string="Issued Checks" nolabel="1" colspan="4" on_change="onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, context)">
+                            <tree string="Issued Checks">
+                                <field name="number"/>
+                                <field name="type"/>
+                                <field name="issue_date"/>
+                                <field name="payment_date"/>
+                                <field name="bank_id"/>
+                                <field name="amount" sum="Total Amount" />
+                            </tree>
+                            <form string="Issued Checks">
+                                <group>
+                                    <group>
+                                        <field name="number" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="type" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="amount" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="bank_id" attrs="{'readonly': [('issued','=',True)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="issue_date" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')]}"/>
+                                        <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="clearing"/>
+                                        <field name="signatory"/>
+                                        <field name="origin"/>
+                                    </group>
+                                </group>
+                                <field name="issued" invisible="1"/>
+                                <field name="receiving_partner_id" invisible="1"/>
+                            </form>
+                        </field>
                         <label for="third_check_ids"/>
                         <field name="third_check_ids" string="Third Checks" nolabel="1" colspan="4" on_change="onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, context)" domain="[('state', '=', 'wallet')]">
                            <tree string="Third Checks">
@@ -67,17 +96,14 @@
                                     <group>
                                         <field name="number"/>
                                         <field name="type"/>
+                                        <field name="amount"/>
                                         <field name="bank_id"/>
                                     </group>
                                     <group>
-                                        <field name="amount"/>
                                         <field name="receipt_date"/>
                                         <field name="issue_date"/>
                                         <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
                                                                            'required': [('type','=','postdated')]}"/>
-                                    </group>
-                                    <group string="Other Information">
-                                        <separator string="Other Information"/>
                                         <field name="clearing"/>
                                         <field name="signatory"/>
                                     </group>

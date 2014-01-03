@@ -34,10 +34,10 @@
     'update_xml': [
         'security/ir.model.access.csv',
         'wizard/add_checks_view.xml',
+        'wizard/view_check_deposit.xml',
         'account_check_view.xml',
         'account_voucher_view.xml',
         'account_third_check_workflow.xml',
-        'wizard/view_check_deposit.xml',
         'wizard/view_check_reject.xml',
         'partner_view.xml',
     ],

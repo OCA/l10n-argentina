@@ -31,9 +31,9 @@ class account_voucher(osv.osv):
         'issued_check_ids': fields.one2many('account.issued.check',
             'voucher_id', 'Issued Checks', required=False),
         'third_check_receipt_ids': fields.one2many('account.third.check',
-            'voucher_id', 'Third Checks', required=False),
+            'source_voucher_id', 'Third Checks', required=False),
         'third_check_ids': fields.many2many('account.third.check',
-            'third_check_voucher_rel', 'voucher_id', 'third_check_id',
+            'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id',
             'Third Checks'),
     }
 
@@ -201,6 +201,10 @@ class account_voucher(osv.osv):
                 res['move_id'] = move_id
                 move_lines.append(res)
                 vals = {'issued': True, 'receiving_partner_id': v.partner_id.id}
+
+                if not check.origin:
+                    vals['origin'] = v.number
+
                 if not check.issue_date:
                     vals['issue_date'] = v.date
                 check.write(vals)

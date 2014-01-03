@@ -10,9 +10,7 @@
             <field name="priority">10</field>
             <field name="arch" type="xml">
                 <field name="acc_number" position="after">
-                    <newline/>
                     <field name="account_id"/>
-                    <newline/>
                 </field>
              </field>
         </record>
@@ -24,9 +22,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="acc_number" position="after">
-                    <newline/>
                     <field name="account_id"/>
-                    <newline/>
                 </field>
             </field>
         </record>

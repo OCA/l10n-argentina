@@ -81,28 +81,35 @@
             <field name="arch" type="xml">
                 <form string="Issued Checks" version="7.0">
                     <sheet>
-                        <h1>
-                            <label string="Issued Check"/>
-                        </h1>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Issued Check"/>
+                                <field name="number" class="oe_inline"/>
+                            </h1>
+                        </div>
                         <group>
                             <group>
-                                <field name="receiving_partner_id" invisible="1"/>
-                                <field name="issued" invisible="1"/>
-                                <field name="number" attrs="{'readonly': [('issued','=',True)]}"/>
                                 <field name="type" attrs="{'readonly': [('issued','=',True)]}"/>
+                                <field name="amount" attrs="{'readonly': [('issued','=',True)]}"/>
+                                <field name="receiving_partner_id" attrs="{'readonly': [('issued','=',True)]}"/>
+                                <field name="bank_id" attrs="{'readonly': [('issued','=',True)]}"/>
                             </group>
                             <group>
+                                <field name="issue_date" attrs="{'readonly': [('issued','=',True)]}"/>
+                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')], 'readonly': [('issued','=',True)]}"/>
                                 <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1" attrs="{'readonly': [('issued','=',True)]}"/>
-                                <field name="bank_id" attrs="{'readonly': [('issued','=',True)]}"/>
-                                <field name="clearing" attrs="{'readonly': [('issued','=',True)]}"/>
                             </group>
                         </group>
-                        <separator string="Check Information"/>
-                        <group>
-                            <field name="issue_date" attrs="{'readonly': [('issued','=',True)]}"/>
-                            <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')], 'readonly': [('issued','=',True)]}"/>
-                            <field name="amount" attrs="{'readonly': [('issued','=',True)]}"/>
-                        </group>
+                        <group string="Additional Information">
+                            <group>
+                                <field name="clearing"/>
+                                <field name="signatory"/>
+                            </group>
+                            <group>
+                                <field name="origin"/>
+                                <field name="issued" readonly="1"/>
+                            </group>
+                         </group>
                     </sheet>
                 </form>
             </field>
@@ -122,13 +129,11 @@
 				   <field name="number"/>
 				   <field name="issue_date"/>
 				   <field name="receiving_partner_id"/>
-				   <newline/>
 				   <group expand="0" string="Extended Filters" colspan="10" col="6">
 					   <field name="payment_date"/>
 					   <field name="bank_id"/>
 					   <field name="amount"/>
 					</group>
-                    <newline/>
                     <group expand="0" string="Group By..." colspan="10" col="8" groups="base.group_extended">
                         <filter string="Bank Account" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'account_bank_id'}"/>
                         <filter string="Payment Date" icon="terp-go-month" domain="[]" context="{'group_by':'payment_date'}" help="Payment Date"/>
@@ -241,48 +246,43 @@
             <field name="arch" type="xml">
                <form string="Third Checks" version="7.0">
                     <header>
-                        <field name="state" widget="statusbar"/>
+                        <button name="%(action_check_deposit)d" type='action' string='Deposit Check' states='wallet' class="oe_highlight" groups="account.group_account_invoice,account.group_account_manager"/>
+                        <field name="state" widget="statusbar" statusbar_visible="wallet,deposited,delivered" statusbar_colors='{"wallet":"blue","rejected":"red"}'/>
                     </header>
                     <sheet>
-                        <h1>
-                            <label string="Third Check"/>
-                        </h1>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Third Check"/>
+                                <field name="number" class="oe_inline" attrs="{'invisible': [('state','=','draft')]}"/>
+                            </h1>
+                        </div>
                         <group>
                             <group>
-                                <field name="number"/>
                                 <field name="type"/>
-                            </group>
-                            <group>
+                                <field name="amount"/>
                                 <field name="source_partner_id"/>
                                 <field name="destiny_partner_id" attrs="{'invisible': [('state', 'not in', ('delivered', 'rejected'))]}"/>
-                            </group>
-                        </group>
-                        <separator string="Check Information"/>
-                        <group>
-                            <group>
-                                <field name="bank_id"/>
-                                <field name="amount"/>
                             </group>
                             <group>
                                 <field name="receipt_date"/>
                                 <field name="issue_date"/>
                                 <field name="endorsement_date" attrs="{'invisible': [('state', 'not in', ('wallet', 'delivered', 'rejected'))]}"/>
-                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
-                                                                   'required': [('type','=','postdated')]}"/>
-                                <field name="deposit_date" attrs="{'invisible': [('deposit_date', '!=', False)]}"/>
+                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
+                                <field name="deposit_date" attrs="{'invisible': [('state','!=','deposited')]}"/>
                             </group>
                         </group>
-                        <separator string="Other Information"/>
-                        <group>
+                        <group string="Other Information">
                             <group>
+                                <field name="bank_id"/>
+                                <field name="origin"/>
+                                <field name="dest" attrs="{'invisible': [('state','!=','delivered')]}"/>
+                            </group>
+                             <group>
                                 <field name="clearing"/>
                                 <field name="signatory"/>
-                            </group>
-                            <group>
-                                <field name="origin"/>
                                 <field name="deposit_bank_id" attrs="{'invisible': [('state', 'not in', ('deposited', 'rejected'))]}" />
                             </group>
-                        </group>
+                       </group>
                     </sheet>
                 </form>
             </field>
@@ -310,20 +310,17 @@
                            domain="[('type','=', 'postdated')]"/>
                     <field name="number" select="1" string="Check Number"/>
                     <field name="issue_date"/>
-                    <newline/>
                     <field name="origin"/>
                     <field name="source_partner_id"/>
                         <field name="payment_date"/>
                         <field name="receipt_date"/>
                     </group>
-                    <newline/>
                     <group expand="0" string="Extended Filters">
                         <field name="endorsement_date"/>
                         <field name="destiny_partner_id"/>
                         <field name="bank_id"/>
                         <field name="amount"/>
                     </group>
-                    <newline/>
                     <group expand="0" string="Group By..." colspan="4">
                         <filter string="Source Partner" icon="terp-partner"
                             domain="[]" context="{'group_by':'source_partner_id'}"/>

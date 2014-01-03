@@ -24,22 +24,31 @@ import netsvc
 class account_check_deposit(osv.osv_memory):
     _name = 'account.check.deposit'
 
-    def _get_company_partner(self, cr, uid, context=None):
-        company_obj = self.pool.get('res.company')
-        company_id =  company_obj._company_default_get(cr, uid, False, context=context)
-        partner_id = company_obj.read(cr, uid, company_id, ['partner_id'], context)['partner_id'][0]
-        return partner_id
+
+    def _get_journal(self, cr, uid, context=None):
+        journal_id = False
+        voucher_obj = self.pool.get('account.voucher')
+        model = context.get('active_model', False)
+        if model and model == 'account.third.check':
+            ids = context.get('active_ids', [])
+            vouchers = self.pool.get(model).read(cr, uid, ids, ['source_voucher_id'], context=context)
+            if vouchers and vouchers[0] and 'source_voucher_id' in vouchers[0]:
+                if vouchers[0]['source_voucher_id']:
+                    voucher_id = vouchers[0]['source_voucher_id'][0]
+                    journal_id = voucher_obj.read(cr, uid, voucher_id, ['journal_id'], context=context)['journal_id'][0]
+        return journal_id
 
     _columns = {
-        'bank_account_id': fields.many2one('res.partner.bank', 'Bank Account',
-            required=True),
+        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type','in',('cash', 'bank'))], required=True),
+        'bank_account_id': fields.many2one('res.partner.bank', 'Bank Account', required=True),
         'date': fields.date('Deposit Date', required=True),
-        'partner_id': fields.many2one("res.partner"),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
     }
 
     _defaults = {
         'date': lambda *a: time.strftime('%Y-%m-%d'),
-        'partner_id': _get_company_partner,
+        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+        'journal_id': _get_journal,
     }
 
     def view_init(self, cr , uid , fields_list, context=None):
@@ -48,7 +57,7 @@ class account_check_deposit(osv.osv_memory):
             context = {}
         for check in check_obj.browse(cr, uid, context.get('active_ids', []), context):
             if check.state != 'wallet':
-                raise osv.except_osv(_("Error"), _("The selected checks must to be in cartera.\nCheck %s is not in wallet") % (check.number))
+                raise osv.except_osv(_("Error"), _("The selected checks must be in wallet.\nCheck %s is not in wallet") % (check.number))
         pass
 
     # TODO: Esto deberiamos obtenerlo del anterior asiento contable. Tenemos
@@ -87,7 +96,7 @@ class account_check_deposit(osv.osv_memory):
         if context is None:
             context = {}
         record_ids = context.get('active_ids', [])
-        company_id = context.get('company_id', False)
+        company_id = wizard.company_id.id
 
         check_objs = third_check.browse(cr, uid, record_ids, context=context)
 
@@ -98,7 +107,6 @@ class account_check_deposit(osv.osv_memory):
             if check.payment_date > deposit_date:
                 raise osv.except_osv(_("Cannot deposit"), _("You cannot deposit check %s because Payment Date is greater than Deposit Date.") % (check.number))
 
-            company_id = check.voucher_id.journal_id.company_id.id
             account_check_id = self._get_source_account_check(cr, uid, company_id)
 
             #name = self.pool.get('ir.sequence').get_id(cr, uid,
@@ -106,7 +114,7 @@ class account_check_deposit(osv.osv_memory):
 
             move_id = self.pool.get('account.move').create(cr, uid, {
                 'name': '/',
-                'journal_id': check.voucher_id.journal_id.id,
+                'journal_id': wizard.journal_id.id,
                 'state': 'draft',
                 'period_id': period_id,
                 'date': deposit_date,
@@ -119,7 +127,7 @@ class account_check_deposit(osv.osv_memory):
                 #'centralisation': 'normal',
                 'account_id': wizard.bank_account_id.account_id.id,
                 'move_id': move_id,
-                'journal_id': check.voucher_id.journal_id.id,
+                'journal_id': wizard.journal_id.id,
                 'period_id': period_id,
                 'date': deposit_date,
                 'debit': check.amount,
@@ -133,7 +141,7 @@ class account_check_deposit(osv.osv_memory):
                 'centralisation': 'normal',
                 'account_id': account_check_id,
                 'move_id': move_id,
-                'journal_id': check.voucher_id.journal_id.id,
+                'journal_id': wizard.journal_id.id,
                 'period_id': period_id,
                 'date': deposit_date,
                 'debit': 0.0,

@@ -9,15 +9,15 @@
             <field name="arch" type="xml">
                 <form string="Check Deposit" version="7.0">
                     <group>
-                        <field name="partner_id" invisible="1"/>
-                        <field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="bank_account_id" domain="[('company_id','=',company_id)]"/>
+                        <field name="journal_id"/>
                         <field name="date"/>
                     </group>
                     <footer>
-                        <button type="special" special="cancel"
-                            string="Cancel"/>
-                        <button type="object" name="action_deposit"
-                            string="Checks Deposit" class="oe_highlight"/>
+                        <button type="object" name="action_deposit" string="Deposit" class="oe_highlight"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
                     </footer>
                 </form>
             </field>
