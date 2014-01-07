@@ -200,6 +200,31 @@ class invoice(osv.osv):
             'is_debit_note': lambda *a: False,
             }
 
+    def _check_duplicate(self, cr, uid, ids, context=None):
+        for invoice in self.read(cr, uid, ids, ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'partner_id', 'state'], context=context):
+            denomination_id = invoice['denomination_id'] and invoice['denomination_id'][0] or False
+            pos_ar_id = invoice['pos_ar_id'] and invoice['pos_ar_id'][0] or False
+            partner_id = invoice['partner_id'] and invoice['partner_id'][0] or False
+
+            # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
+            # duplicada hasta que no le pongan el numero
+            if not invoice['internal_number']:
+                return True
+
+            if invoice['type'] in ['out_invoice', 'out_refund']:
+                count = self.search_count(cr, uid, [('denomination_id','=',denomination_id), ('pos_ar_id','=',pos_ar_id), ('is_debit_note','=',invoice['is_debit_note']), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',invoice['internal_number']), ('type','=',invoice['type']), ('state','!=','cancel')])
+                if count > 1:
+                    return False
+            else:
+                count = self.search_count(cr, uid, [('denomination_id','=',denomination_id), ('is_debit_note','=',invoice['is_debit_note']), ('partner_id','=',partner_id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', invoice['internal_number']), ('type','=',invoice['type']), ('state','!=','cancel')])
+                if count > 1:
+                    return False
+        return True
+
+    _constraints = [
+        (_check_duplicate, 'Error! The Invoice is duplicated.', ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number'])
+    ]
+
     def _check_fiscal_values(self, cr, uid, inv):
         # Si es factura de cliente
         denomination_id = inv.denomination_id and inv.denomination_id.id
@@ -247,10 +272,10 @@ class invoice(osv.osv):
 
         move_id = obj_inv.move_id and obj_inv.move_id.id or False
         cr.execute('UPDATE account_move SET ref=%s ' \
-                'WHERE id=%s AND (ref is null OR ref = \'\')',
+                'WHERE id=%s', # AND (ref is null OR ref = \'\')',
                 (ref, move_id))
         cr.execute('UPDATE account_move_line SET ref=%s ' \
-                'WHERE move_id=%s AND (ref is null OR ref = \'\')',
+                'WHERE move_id=%s', # AND (ref is null OR ref = \'\')',
                 (ref, move_id))
         cr.execute('UPDATE account_analytic_line SET ref=%s ' \
                 'FROM account_move_line ' \
@@ -341,11 +366,11 @@ class invoice(osv.osv):
             # Escribimos los campos necesarios de la factura
             self.write(cr, uid, obj_inv.id, invoice_vals)
 
+            invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
             if not reference:
-                invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
                 ref = invoice_name
             else:
-                ref = reference
+                ref = '%s [%s]' % (invoice_name, reference)
 
             # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
             self._update_reference(cr, uid, obj_inv, ref, context=context)
@@ -360,6 +385,11 @@ class invoice(osv.osv):
 
         return True
 
+    def _refund_cleanup_lines(self, cr, uid, lines):
+        for line in lines:
+            if line.get('tax_id'):
+                line['tax_id'] = line['tax_id'][0]
+        return super(invoice, self)._refund_cleanup_lines(cr, uid, lines)
 
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
 
