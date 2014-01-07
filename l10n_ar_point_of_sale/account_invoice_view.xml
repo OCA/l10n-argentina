@@ -83,7 +83,7 @@
                         </h1>
                         <h2>
                             <field name="denomination_id" class="oe_inline" required="1" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
-                            <field name="internal_number" class="oe_inline" required="1" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                         </h2>
                     </xpath>
 
