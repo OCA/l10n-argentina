@@ -32,35 +32,10 @@ class account_invoice(osv.osv):
     _name = "account.invoice"
     _inherit = "account.invoice"
 
-#    def _get_internal_name(self, cr, uid, ids, field_name, arg, context=None):
-#        res = {}
-#        invoices = self.browse(cr, uid, ids, context=context)
-#        for inv in invoices:
-#            if inv.type in ['out_invoice', 'in_invoice']:
-#                type = 'FAC'
-#            elif inv.type in ['out_refund', 'in_refund']:
-#                type = 'NC'
-#            else:
-#                type = 'ND'
-#
-#            pos_ar =  ''
-#            if inv.pos_ar_id:
-#                pos_ar = inv.pos_ar_id.name
-#                if inv.denomination_id:
-#                    pos_ar = inv.denomination_id.name + pos_ar
-#
-#            if inv.state in ('open', 'paid'):
-#                res[inv.id] = type + '_' + pos_ar + '_' + inv.internal_number
-#            else:
-#                res[inv.id] = type + '_' + pos_ar + '_' + inv.state
-#
-#        return res
-
     _columns = {
         'aut_cae': fields.boolean('Autorizar', help='Pedido de autorizacion a la AFIP'),
-        'cae': fields.char('CAE', size=32, required=False, readonly=True, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)'),
-        'cae_due_date': fields.date('CAE Due Date', required=False, readonly=True,  help='Fecha de vencimiento del CAE'),
-        #'internal_name': fields.function(_get_internal_name, method=True, type='char'),
+        'cae': fields.char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)'),
+        'cae_due_date': fields.date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE'),
         #'associated_inv_ids': fields.many2many('account.invoice', )
     }
 
@@ -311,7 +286,7 @@ class account_invoice(osv.osv):
         """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
 
         # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
-        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type))
+        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s and is_debit_note=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type, invoice.is_debit_note))
         last_number = cr.fetchone()
 
         # Si no devuelve resultados, es porque es el primero
@@ -565,7 +540,7 @@ class account_invoice(osv.osv):
 
         for inv in self.browse(cr, uid, ids):
             if not inv.aut_cae:
-                self.write(cr, uid, ids, {'cae' : 'NA'})
+                #self.write(cr, uid, ids, {'cae' : 'NA'})
                 return True
 
             # Obtenemos el tipo de comprobante
