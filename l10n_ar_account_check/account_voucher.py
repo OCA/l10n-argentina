@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
+#    Copyright (C) 2008-2011  Thymbra
+#    Copyright (c) 2011-2014 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
