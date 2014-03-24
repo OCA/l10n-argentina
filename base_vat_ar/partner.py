@@ -1,24 +1,26 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
-#    Copyright (C) 2004-2010 Tiny SPRL (http://tiny.be). All Rights Reserved
-#    
+#    OpenERP, Open Source Management Solution
+#    Copyright (c) 2012-2014 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
+#    it under the terms of the GNU Affero General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 from osv import osv, fields
 from tools.translate import _
  
@@ -62,6 +64,8 @@ class res_partner(osv.osv):
                 vat_country, vat_number = partner.vat[:2].lower(), partner.vat[2:].replace(' ', '')
             if partner.document_type_id:
                 if partner.document_type_id.verification_required:
+                    if not hasattr(self, 'check_vat_' + vat_country):
+                        return True
                     check = getattr(self, 'check_vat_' + vat_country)
                     if not check(vat_number):
                         return False
