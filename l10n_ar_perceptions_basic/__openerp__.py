@@ -21,7 +21,7 @@
 {
     "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
     "version": "1.0",
-    "depends": ["base", "account" , "account_accountant", "sale" ,"purchase"],
+    "depends": ["base", "account" , "account_accountant", "sale" ,"purchase", "l10n_ar_point_of_sale"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -31,7 +31,9 @@
     1) Implementation of Perceptions Taxes for Argentina
        based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
     """,
-    "init_xml": ["perception_data.xml"],
+    "init_xml": [
+        "perception_data.xml",
+        ],
     'update_xml': [
         'security/ir.model.access.csv',
         'perception_view.xml',
