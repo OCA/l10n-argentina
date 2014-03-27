@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
+  <data noupdate="1">
 
   <!-- TODO: Hacer esto como templates para luego ser instalado, deberia estar en el modulo de localizacion -->
   <!-- Percepciones Tax Code -->
@@ -123,6 +123,7 @@
     <field name="description">Percepciones IVA Sufrida</field>
     <field name="sequence">30</field>
     <field name="type">none</field>
+    <field name="tax_group">perception</field>
     <field name="account_collected_id" ref="percepcion_iva"/>
     <field name="account_paid_id" ref="percepcion_iva"/>
     <field name="base_code_id" ref="operaciones_con_percepcion_iva_sufrida"/>
@@ -143,6 +144,7 @@
     <field name="description">Percepciones IVA Efectuada</field>
     <field name="sequence">31</field>
     <field name="type">none</field>
+    <field name="tax_group">perception</field>
     <field name="account_collected_id" ref="percepcion_iva_a_depositar"/>
     <field name="account_paid_id" ref="percepcion_iva_a_depositar"/>
     <field name="base_code_id" ref="operaciones_con_percepcion_iva_efectuada"/>
@@ -163,6 +165,7 @@
     <field name="description">Percep IIBB CABA Sufrida</field>
     <field name="sequence">31</field>
     <field name="type">none</field>
+    <field name="tax_group">perception</field>
     <field name="account_collected_id" ref="percepcion_iibb_caba"/>
     <field name="account_paid_id" ref="percepcion_iibb_caba"/>
     <field name="base_code_id" ref="operaciones_con_percepcion_iibb_caba_sufrida"/>
@@ -183,6 +186,7 @@
     <field name="description">Percepciones IIBB CABA Efectuada</field>
     <field name="sequence">32</field>
     <field name="type">none</field>
+    <field name="tax_group">perception</field>
     <field name="account_collected_id" ref="percepcion_iibb_caba_a_depositar"/>
     <field name="account_paid_id" ref="percepcion_iibb_caba_a_depositar"/>
     <field name="base_code_id" ref="operaciones_con_percepcion_iibb_caba_efectuada"/>
@@ -201,21 +205,25 @@
   <!-- Configuracion de Percepciones (perception.perception) -->
   <record id="perception_perception_iva_efectuada" model="perception.perception">
     <field name="name">Percepcion IVA Efectuada</field>
+    <field name="type">vat</field>
     <field name="tax_id" ref="tax_percepcion_iva_efectuada" />
   </record>
 
   <record id="perception_perception_iva_sufrida" model="perception.perception">
     <field name="name">Percepcion IVA Sufrida</field>
+    <field name="type">vat</field>
     <field name="tax_id" ref="tax_percepcion_iva_sufrida" />
   </record>
 
   <record id="perception_perception_iibb_caba_efectuada" model="perception.perception">
     <field name="name">Percepcion IIBB CABA Efectuada</field>
+    <field name="type">gross_income</field>
     <field name="tax_id" ref="tax_percepcion_iibb_caba_efectuada" />
   </record>
 
   <record id="perception_perception_iibb_caba_sufrida" model="perception.perception">
     <field name="name">Percepcion IIBB CABA Sufrida</field>
+    <field name="type">gross_income</field>
     <field name="tax_id" ref="tax_percepcion_iibb_caba_sufrida" />
   </record>
 
