@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data noupdate="0">
+  <data noupdate="1">
 
-  <!-- TODO: Hacer esto como templates para luego ser instalado, deberia estar en el modulo de localizacion -->
   <!-- Retenciones Tax Code -->
   <record id="retencion_iva_sufrida" model="account.tax.code">
     <field name="name">Retencion IVA Sufrida (Cobros)</field>
