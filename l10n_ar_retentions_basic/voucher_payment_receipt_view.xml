@@ -52,9 +52,6 @@
           <field name="third_check_receipt_ids" position= "attributes">
             <attribute name="on_change">onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)</attribute>
           </field>
-
-
-        </data>
       </field>
     </record>
 
@@ -63,7 +60,7 @@
       <field name="name">account.voucher.payment.retention.form.inherit</field>
       <field name="model">account.voucher</field>
       <field name="type">form</field>
-      <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_payment_form"/>
+      <field name="inherit_id" ref="l10n_ar_account_check.view_voucher_check_form"/>
       <field name="arch" type="xml">
         <data>
 
