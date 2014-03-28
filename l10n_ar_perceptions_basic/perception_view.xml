@@ -13,7 +13,6 @@
     <field name="arch" type="xml">
       <form string="Perceptions">
         <group>
-          <separator string="Configuration"/>
           <field name="name" select="1"/>
           <field name="tax_id" select="1"/>
           <field name="jurisdiccion" select="1"/>
