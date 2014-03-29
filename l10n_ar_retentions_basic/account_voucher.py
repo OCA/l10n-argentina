@@ -29,7 +29,7 @@ class retention_tax_line(osv.osv):
 
     #TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
     _columns = {
-        'name': fields.char('Retention', required=True, size=64),
+        'name': fields.char('Retention', size=64),
         'date': fields.date('Date', select=True),
         'voucher_id': fields.many2one('account.voucher', 'Voucher', ondelete='cascade'),
         'voucher_number': fields.related('voucher_id', 'number', type='char', string='Voucher No.'),
