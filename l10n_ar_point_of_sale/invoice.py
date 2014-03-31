@@ -94,7 +94,7 @@ class invoice(osv.osv):
                 ids = self.search(cr, user, [('internal_number',operator,name)] + args, limit=limit, context=context)
             if not ids:
                 try:
-                    ids = self.search(cr, user, [('pos_ar.name',operator,name)] + args, limit=limit, context=context)
+                    ids = self.search(cr, user, [('pos_ar_id.name',operator,name)] + args, limit=limit, context=context)
                 except TypeError:
                     ids = []
 
