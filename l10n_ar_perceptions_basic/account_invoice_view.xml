@@ -21,11 +21,11 @@
               </tree>
               <form string="Perception Lines" version="7.0">
                   <h1>
-                      <field name="name" class="oe_inline" readonly="1"/>
+                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
                   </h1>
                   <group>
                       <group string="Information" name="info">
-                          <field name="perception_id" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
+                          <field name="name"/>
                           <field name="state_id" />
                           <field name="date" />
                           <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
@@ -64,11 +64,11 @@
               </tree>
               <form string="Perception Lines" version="7.0">
                   <h1>
-                      <field name="name" class="oe_inline" readonly="1"/>
+                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_perception(perception_id, context)"/>
                   </h1>
                   <group>
                       <group string="Information" name="info">
-                          <field name="perception_id" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_perception(perception_id, context)"/>
+                          <field name="name"/>
                           <field name="state_id" />
                           <field name="date" />
                           <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
