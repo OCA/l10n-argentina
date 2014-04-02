@@ -44,6 +44,9 @@
     'demo': [
         'partner_demo.xml',
         ],
+    'test': [
+        'test/denomination_invoice.yml',
+    ],
     'installable': True,
     'active': False,
 }
