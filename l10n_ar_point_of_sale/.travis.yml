@@ -1,0 +1,14 @@
+language: python
+python:
+    - "2.7"
+before_install: ./travis_scripts/install_dependencies.sh
+install:
+    - wget http://nightly.openerp.com/7.0/nightly/src/openerp-7.0-latest.tar.gz -O /tmp/openerp-7.0.tgz
+    - mkdir openerp-7.0
+    - tar -xvf /tmp/openerp-7.0.tgz -C openerp-7.0 --strip=1
+before_script:
+    - ./travis_config/createdb.sh
+    - cd /tmp/openerp-7.0
+    - ./openerp-server -r postgres -d testdb --stop-after-init --log-level=test --test-enable -i sale,purchase,account_accountant
+script:
+    - ./openerp-server -r postgres -d testdb --stop-after-init --log-level=test --test-enable -i base_vat
