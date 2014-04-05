@@ -1,0 +1,178 @@
+-
+  Creamos un Tax Code
+-
+  !record {model: account.tax.code, id: vat21_tax_case}:
+    name: IVA 21
+    company_id: base.main_company
+    sign: 1
+-
+  Creamos un Tax
+-
+  !record {model: account.tax, id: vat21}:
+    name: IVA 21
+    amount: 0.21
+    type: percent
+    sequence: 1
+    company_id: base.main_company
+    type_tax_use: all
+    tax_code_id: vat21_tax_case
+-
+  Para testear la correcta asignacion de denominacion del comprobante, creamos una factura para un cliente Responsable Inscripto
+-
+  !record {model: account.invoice, id: account_invoice_test1, view: account.invoice_form}:
+    payment_term: account.account_payment_term_advance
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_2
+    reference_type: none
+    name: 'Test denomination Invoice'
+    invoice_line:
+      - product_id: product.product_product_5
+        quantity: 10.0
+        price_unit: 100.0
+        invoice_line_tax_id:
+            - vat21
+      - product_id: product.product_product_3
+        quantity: 5.0
+        price_unit: 200.0
+        invoice_line_tax_id:
+            - vat21
+-
+  Presionamos el boton para calcular los impuestos
+-
+  !python {model: account.invoice}: |
+    res = self.onchange_partner_id(cr, uid, [], 'out_invoice', ref('base.res_partner_2'), context=None)
+    inv_id=self.browse(cr, uid, ref("account_invoice_test1"))
+    self.button_reset_taxes(cr, uid, [inv_id.id])
+-
+  Chequeamos las cantidades de la factura.
+-
+  !assert {model: account.invoice, id: account_invoice_test1, string: La factura no tiene bien calculadas las cantidades}:
+    - state == 'draft'
+    - amount_total == 2420.0
+    - amount_untaxed == 2000.0
+    - amount_tax == 420.0
+-
+  Chequeamos la denominacion del comprobante que tiene que estar de acuerdo a la Posicion Fiscal del Cliente.
+-
+  !assert {model: account.invoice, id: account_invoice_test1, string: La denominacion de la factura no coincide con la Posicion Fiscal del Cliente}:
+    - denomination_id.name == 'A'
+-
+  Creamos una factura para un cliente Monotributista para testear la correcta asignacion de denominacion del comprobante
+-
+  !record {model: account.invoice, id: account_invoice_test2, view: account.invoice_form}:
+    payment_term: account.account_payment_term_advance
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_address_15
+    reference_type: none
+    name: 'Test denomination Invoice'
+    invoice_line:
+      - product_id: product.product_product_5
+        quantity: 10.0
+        price_unit: 100.0
+        invoice_line_tax_id:
+            - vat21
+      - product_id: product.product_product_3
+        quantity: 5.0
+        price_unit: 200.0
+        invoice_line_tax_id:
+            - vat21
+-
+  Presionamos el boton para calcular los impuestos
+-
+  !python {model: account.invoice}: |
+    res = self.onchange_partner_id(cr, uid, [], 'out_invoice', ref('base.res_partner_address_15'), context=None)
+    inv_id=self.browse(cr, uid, ref("account_invoice_test2"))
+    self.button_reset_taxes(cr, uid, [inv_id.id])
+-
+  Chequeamos las cantidades de la factura.
+-
+  !assert {model: account.invoice, id: account_invoice_test2, string: La factura no tiene bien calculadas las cantidades}:
+    - state == 'draft'
+    - amount_total == 2420.0
+    - amount_untaxed == 2000.0
+    - amount_tax == 420.0
+-
+  Chequeamos la denominacion del comprobante que tiene que estar de acuerdo a la Posicion Fiscal del Cliente.
+-
+  !assert {model: account.invoice, id: account_invoice_test2, string: La denominacion de la factura no coincide con la Posicion Fiscal del Cliente}:
+    - denomination_id.name == 'B'
+-
+  Creamos una factura a un Proveedor Responsable Inscripto para testear la correcta asignacion de denominacion del comprobante
+-
+  !record {model: account.invoice, id: account_invoice_test3, view: account.invoice_form}:
+    payment_term: account.account_payment_term_advance
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_3
+    reference_type: none
+    name: 'Test denomination Invoice'
+    invoice_line:
+      - product_id: product.product_product_4
+        quantity: 10.0
+        price_unit: 80.0
+        invoice_line_tax_id:
+            - vat21
+      - product_id: product.product_product_3
+        quantity: 7.0
+        price_unit: 120.0
+        invoice_line_tax_id:
+            - vat21
+-
+  Presionamos el boton para calcular los impuestos
+-
+  !python {model: account.invoice}: |
+    res = self.onchange_partner_id(cr, uid, [], 'in_invoice', ref('base.res_partner_3'), context=None)
+    inv_id=self.browse(cr, uid, ref("account_invoice_test3"))
+    self.button_reset_taxes(cr, uid, [inv_id.id])
+-
+  Chequeamos las cantidades de la factura.
+-
+  !assert {model: account.invoice, id: account_invoice_test3, string: La factura no tiene bien calculadas las cantidades}:
+    - state == 'draft'
+    - amount_total == 1984.4
+    - amount_untaxed == 1640.0
+    - amount_tax == 344.4
+-
+  Chequeamos la denominacion del comprobante que tiene que estar de acuerdo a la Posicion Fiscal del Proveedor.
+-
+  !assert {model: account.invoice, id: account_invoice_test3, string: La denominacion de la factura no coincide con la Posicion Fiscal del Proveedor}:
+    - denomination_id.name == 'A'
+-
+  Creamos una factura a un Proveedor Monotributista para testear la correcta asignacion de denominacion del comprobante
+-
+  !record {model: account.invoice, id: account_invoice_test4, view: account.invoice_form}:
+    payment_term: account.account_payment_term_advance
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_1
+    reference_type: none
+    name: 'Test denomination Invoice'
+    invoice_line:
+      - product_id: product.product_product_4
+        quantity: 10.0
+        price_unit: 80.0
+        invoice_line_tax_id:
+            - vat21
+      - product_id: product.product_product_3
+        quantity: 7.0
+        price_unit: 120.0
+        invoice_line_tax_id:
+            - vat21
+-
+  Presionamos el boton para calcular los impuestos
+-
+  !python {model: account.invoice}: |
+    res = self.onchange_partner_id(cr, uid, [], 'in_invoice', ref('base.res_partner_1'), context=None)
+    inv_id=self.browse(cr, uid, ref("account_invoice_test4"))
+    self.button_reset_taxes(cr, uid, [inv_id.id])
+-
+  Chequeamos las cantidades de la factura.
+-
+  !assert {model: account.invoice, id: account_invoice_test4, string: La factura no tiene bien calculadas las cantidades}:
+    - state == 'draft'
+    - amount_total == 1984.4
+    - amount_untaxed == 1640.0
+    - amount_tax == 344.4
+-
+  Chequeamos la denominacion del comprobante que tiene que estar de acuerdo a la Posicion Fiscal del Proveedor.
+-
+  !assert {model: account.invoice, id: account_invoice_test4, string: La denominacion de la factura no coincide con la Posicion Fiscal del Proveedor}:
+    - denomination_id.name == 'B'

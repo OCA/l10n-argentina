@@ -32,10 +32,8 @@
     This module provide :
     1) Implementation of Point of Sale for Argentina.
     """,
-    "init_xml": [
+    "data": [
         'partner_data.xml',
-        ],
-    'update_xml': [
         'pos_ar_view.xml',
         'sale_view.xml',
         'account_invoice_view.xml',
@@ -43,9 +41,12 @@
         'account_view.xml',
         'security/ir.model.access.csv',
     ],
-    'demo_xml': [
-        #'partner_demo.xml',
+    'demo': [
+        'partner_demo.xml',
         ],
+    'test': [
+        'test/denomination_invoice.yml',
+    ],
     'installable': True,
     'active': False,
 }
