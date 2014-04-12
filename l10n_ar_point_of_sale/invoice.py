@@ -30,7 +30,7 @@ import re
 class invoice(osv.osv):
     _name = "account.invoice"
     _inherit = "account.invoice"
-    _order = "internal_number desc"
+    _order = "date_invoice desc, internal_number desc"
 
     def name_get(self, cr, uid, ids, context=None):
 
@@ -458,7 +458,7 @@ class invoice(osv.osv):
                     res['value'].update({'denomination_id': denom_sup_id})
                 #para las customers invoices
                 else:
-                    pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)] , limit=1 )
+                    pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)], order='priority asc', limit=1 )
                     if len(pos):
                         res['value'].update({'pos_ar_id': pos[0]})
                         res['value'].update({'denomination_id': denomination_id})
