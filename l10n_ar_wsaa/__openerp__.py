@@ -2,7 +2,8 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
+#    Copyright (c) 2013-2014 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -18,31 +19,31 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 {
     "name": "WSAA",
     "version": "1.0",
     "depends": ["base", "account"],
-    "author": "E-MIPS",
-    "website": "http://e-mips.com.ar",
+    "author": "Proyecto Aconcagua",
+    "website": "http://proyectoaconcagua.com.ar",
     "license": "GPL-3",
-    "category": "Argentina Localization",
+    "category": "Accounting & Finance",
     "description": """
-        WSAA (Web Service de Autenticación y Autorización).
-        Este módulo nos permite el uso del WSAA para utilizar luego los demás
-        servicios disponibles por la AFIP. Este módulo es dependencia de los
-        demás módulos de Servicios Web de AFIP.
+WSAA (Web Service de Autenticación y Autorización).
+===================================================
 
-        Dependencias Python:
-        *******************
-        python-m2crypto
+Este módulo nos permite el uso del WSAA para utilizar luego los demás
+servicios disponibles por la AFIP. Este módulo es dependencia de los
+demás módulos de Servicios Web de AFIP.
+
+Dependencias Python:
+*******************
+python-m2crypto
     """,
-    "init_xml": [],
-    'update_xml': [
+    'data': [
         'wizard/wsaa_load_config_view.xml',
         'wsaa_view.xml',
     ],
-    'demo_xml': [
+    'demo': [
         'wsaa_demo.xml',
         ],
     'installable': True,

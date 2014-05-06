@@ -6,29 +6,35 @@
             <field name="name">wsaa.load.config.view</field>
             <field name="model">wsaa.load.config</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="base.res_config_view_base"/>
+            <field name="inherit_id" ref="base.res_config_installer"/>
             <field name="arch" type="xml">
                 <data>
                     <form position="attributes">
                         <attribute name="string">Configure WS Authentication Authorization</attribute>
                     </form>
-                    <separator string="title" position="attributes">
-                        <attribute name="string">Complete details of your company</attribute>
-                    </separator>
-                    <xpath expr='//separator[@string="vsep"]' position="attributes">
-                        <attribute name='string'></attribute>
-                    </xpath>                   
-                    <xpath expr="//label[@string='description']" position="attributes">
-                        <attribute name="string">OpenERP connect with the AFIP through Web Services. This Configuration is for Authentication and Authorization Web Service</attribute>
+                    <xpath expr="//footer" position="replace">
+                       <footer>
+                            <button name="execute" type="object" string="Configure"  class="oe_highlight"/>
+                            or
+                            <button string="Close" class="oe_link" special="cancel" />
+                       </footer>
                     </xpath>
-                    <group string="res_config_contents" position="replace">
-                        <field name="company_id" colspan="2"/>
-                        <separator string="Enter your files from the AFIP" colspan="4"/>
-                        <field name="certificate" colspan="4"/>
-                        <field name="key" colspan="4"/>
-                        <separator string="Approval URLs" colspan="4"/>
-                        <field name="wsaa" colspan="4"/>
-                    </group>
+
+                    <xpath expr="//separator[@string='title']" position="after" version="7.0">
+                        <separator string="Complete details of your company"/>
+                        <p>OpenERP connect with the AFIP through Web Services. This Configuration is for Authentication and Authorization Web Service</p>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="wsaa" widget="url"/>
+                        </group>
+                        <group string="Enter your files from the AFIP">
+                            <field name="certificate"/>
+                            <field name="key"/>
+                        </group>
+                    </xpath>
+                    <separator string="title" position="attributes">
+                        <attribute name="string"></attribute>
+                    </separator>
                 </data>
             </field>
         </record>
@@ -45,6 +51,7 @@
 
         <record id="wsaa_load_config_step" model="ir.actions.todo">
             <field name="action_id" ref="action_wsaa_load_config"/>
+            <field name="type">automatic</field>
         </record>
 
     </data>
