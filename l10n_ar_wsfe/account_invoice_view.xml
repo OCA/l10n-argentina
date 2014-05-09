@@ -11,11 +11,9 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-                <field name="payment_term" position="after">
-                    <group colspan="2" col="4">
-                        <field name="cae" string="CAE" readonly="1"/>
-                        <field name="cae_due_date" readonly="1"/>
-                    </group>
+                <field name="fiscal_position" position="after">
+					<field name="cae" string="CAE" readonly="1"/>
+					<field name="cae_due_date" readonly="1"/>
                 </field>
             </field>
         </record>
@@ -27,7 +25,7 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
-                <field name="date_due" position="before">
+                <field name="date_due" position="after">
                     <field name="cae" string="CAI"/>
                     <field name="cae_due_date"/>
                 </field>

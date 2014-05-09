@@ -33,7 +33,7 @@
         que publica la AFIP.
     """,
     "init_xml": [],
-    'update_xml': [
+    'data': [
         'wsfe_data.xml',
         'wsfe_view.xml',
         'account_invoice_view.xml',
