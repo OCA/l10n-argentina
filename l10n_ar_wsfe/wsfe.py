@@ -90,11 +90,9 @@ class wsfe_config(osv.osv):
 
     def get_config(self, cr, uid):
         # Obtenemos la compania que esta utilizando en este momento este usuario
-        res = self.pool.get('res.users').get_current_company(cr, uid)
-        if not res:
+        company_id = self.pool.get('res.users')._get_company(cr, uid)
+        if not company_id:
             raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
-
-        company_id = res[0][0]
 
         ids = self.search(cr, uid, [('company_id','=',company_id)])
         if not ids:

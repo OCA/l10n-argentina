@@ -22,7 +22,7 @@
 {
     "name": "WSFE (Factura Electronica)",
     "version": "2.0",
-    "depends": ["base", "account", "base_vat_ar", "l10n_ar_point_of_sale", "l10n_ar_wsaa", "report_aeroo", "report_aeroo_ooo"],
+    "depends": ["base", "account", "base_vat_ar", "l10n_ar_point_of_sale", "l10n_ar_wsaa"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -32,16 +32,14 @@
         Este módulo nos permite facturar de forma electrónica a través del Servicio Web
         que publica la AFIP.
     """,
-    "init_xml": [],
     'data': [
         'wsfe_data.xml',
         'wsfe_view.xml',
         'account_invoice_view.xml',
         'account_invoice_workflow.xml',
-        'report/electronic_invoice_report.xml',
         'wizard/wsfe_sinchronize_voucher_view.xml',
     ],
-    'demo_xml': [
+    'demo': [
         'wsfe_demo.xml',
         ],
     'test': [
