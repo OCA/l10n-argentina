@@ -23,6 +23,8 @@ from osv import osv, fields
 from tools.translate import _
 from datetime import datetime, timedelta
 from wsaa_suds import WSAA as wsaa
+from openerp import SUPERUSER_ID
+import pytz
 
 class wsaa_config(osv.osv):
     _name = "wsaa.config"
@@ -81,8 +83,11 @@ class wsaa_ta(osv.osv):
 
     def _renew_ticket(self, cr, uid, wsaa_config, service, context=None):
 
+        user_obj = self.pool.get('res.users')
+        user = user_obj.browse(cr, SUPERUSER_ID, uid)
+        tz = pytz.timezone(user.partner_id.tz) or pytz.utc
         try:
-            _wsaa = wsaa(wsaa_config.certificate, wsaa_config.key, wsaa_config.url, service)
+            _wsaa = wsaa(wsaa_config.certificate, wsaa_config.key, wsaa_config.url, service, tz)
             _wsaa.get_token_and_sign(wsaa_config.certificate, wsaa_config.key)
         except Exception, e:
             raise osv.except_osv(_('WSAA Error!'), e)

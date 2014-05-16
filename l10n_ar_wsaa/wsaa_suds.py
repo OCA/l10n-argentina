@@ -8,6 +8,8 @@ from M2Crypto import BIO, SMIME
 from suds.client import Client
 from xml.sax import SAXParseException
 import logging
+from tools.misc import ustr
+import pytz
 
 ## Configuracion del logger
 logger = logging.getLogger('afipws')
@@ -19,7 +21,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class WSAA:
-    def __init__(self, cert, private_key, wsaaurl, service):
+    def __init__(self, cert, private_key, wsaaurl, service, tz):
         """Init."""
         self.token = None
         self.sign = None
@@ -28,6 +30,7 @@ class WSAA:
         self.expiration_time = None
         self.ta = None
         self.connected = True
+        self.timezone = tz
 
         try:
             self._create_client()
@@ -62,11 +65,13 @@ class WSAA:
 
         # generationTime
         tsgen = datetime.fromtimestamp(timestamp-2400)
+        tsgen = pytz.utc.localize(tsgen).astimezone(self.timezone)
         gentime = etree.SubElement(header, 'generationTime')
         gentime.text = tsgen.isoformat()
 
         # expirationTime
         tsexp = datetime.fromtimestamp(timestamp+14400)
+        tsexp = pytz.utc.localize(tsexp).astimezone(self.timezone)
         exptime = etree.SubElement(header, 'expirationTime')
         exptime.text = tsexp.isoformat()
      
@@ -82,6 +87,7 @@ class WSAA:
 #            return None
 
         logger.debug("TRA Creado")
+        print etree.tostring(doc)
         return etree.tostring(doc)
 
 
@@ -127,7 +133,7 @@ class WSAA:
             result = self.client.service.loginCms(cms)
         except Exception, e:
             logger.exception("Excepcion al llamar a loginCms")
-            raise Exception, 'Exception al autenticar: %s' % e
+            raise Exception, 'Exception al autenticar: %s' % ustr(e)
 
         self.ta = result
         return result
