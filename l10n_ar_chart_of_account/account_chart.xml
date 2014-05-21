@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="1">
-		
+
     <!-- Account Types -->
         <record model="account.account.type" id="account_type_view">
             <field name="name">View</field>
@@ -118,7 +118,7 @@
 
         <record model="account.account.template" id="caja_pesos">
             <field name="type">liquidity</field>
-            <field name="reconcile" eval="True"/>
+            <field name="reconcile" eval="False"/>
             <field name="code">11101</field>
             <field name="user_type" ref="account_type_cash"/>
             <field name="name">Caja pesos</field>
@@ -127,7 +127,7 @@
 
         <record model="account.account.template" id="caja_monex">
             <field name="type">liquidity</field>
-            <field name="reconcile" eval="True"/>
+            <field name="reconcile" eval="False"/>
             <field name="code">11102</field>
             <field name="user_type" ref="account_type_cash"/>
             <field name="name">Caja Moneda Extranjera</field>

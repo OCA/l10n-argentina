@@ -34,7 +34,7 @@ Accounting chart for Argetina in Open ERP.
         "account_tax_code.xml",
         "account_chart.xml",
         "account_tax.xml",
-        "fiscal_templates.xml",
+        #"fiscal_templates.xml",
         "l10n_chart_ar_wizard.xml"
     ],
     "active": False,
