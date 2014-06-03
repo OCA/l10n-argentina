@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="seq_type_picking_out_ar" model="ir.sequence.type">
+            <field name="name">Picking OUT AR</field>
+            <field name="code">stock.picking.out.ar</field>
+        </record>
+ 
+        <!--
+            Sequences for pickings
+        -->
+
+        <record id="seq_picking_out_ar" model="ir.sequence">
+            <field name="name">Picking OUT AR</field>
+            <field name="code">stock.picking.out.ar</field>
+            <field name="prefix">REMITO 0003-</field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+    </data>
+</openerp>
