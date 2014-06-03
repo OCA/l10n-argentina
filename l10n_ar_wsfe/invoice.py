@@ -470,7 +470,7 @@ class account_invoice(osv.osv):
             detalle['CbteDesde'] = cbte_nro
             detalle['CbteHasta'] = cbte_nro
             detalle['CbteFch'] = date_invoice.strftime('%Y%m%d')
-            if service:
+            if concept in [2,3]:
                 detalle['FchServDesde'] = formatted_date_invoice
                 detalle['FchServHasta'] = formatted_date_invoice
                 detalle['FchVtoPago'] = date_due
