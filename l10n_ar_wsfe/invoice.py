@@ -61,34 +61,42 @@ class account_invoice(osv.osv):
 
     # Heredamos esta funcion para quitarle el post de los asientos contables
     # asi luego los podemos cancelar en caso que sea necesario
-    def action_move_create(self, cr, uid, ids, *args):
+    def action_move_create(self, cr, uid, ids, context=None):
         """Creates invoice related analytics and financial move lines"""
-
         ait_obj = self.pool.get('account.invoice.tax')
         cur_obj = self.pool.get('res.currency')
-        context = {}
-        for inv in self.browse(cr, uid, ids):
+        period_obj = self.pool.get('account.period')
+        payment_term_obj = self.pool.get('account.payment.term')
+        journal_obj = self.pool.get('account.journal')
+        move_obj = self.pool.get('account.move')
+        if context is None:
+            context = {}
+        for inv in self.browse(cr, uid, ids, context=context):
             if not inv.journal_id.sequence_id:
-                raise osv.except_osv(_('Error !'), _('Please define sequence on invoice journal'))
+                raise osv.except_osv(_('Error!'), _('Please define sequence on the journal related to this invoice.'))
             if not inv.invoice_line:
-                raise osv.except_osv(_('No Invoice Lines !'), _('Please create some invoice lines.'))
+                raise osv.except_osv(_('No Invoice Lines!'), _('Please create some invoice lines.'))
             if inv.move_id:
                 continue
 
-            if not inv.date_invoice:
-                self.write(cr, uid, [inv.id], {'date_invoice':time.strftime('%Y-%m-%d')})
-            company_currency = inv.company_id.currency_id.id
-            # create the analytical lines
-            # one move line per invoice line
-            iml = self._get_analytic_lines(cr, uid, inv.id)
-            # check if taxes are all computed
             ctx = context.copy()
             ctx.update({'lang': inv.partner_id.lang})
+            if not inv.date_invoice:
+                self.write(cr, uid, [inv.id], {'date_invoice': fields.date.context_today(self,cr,uid,context=context)}, context=ctx)
+            company_currency = self.pool['res.company'].browse(cr, uid, inv.company_id.id).currency_id.id
+            # create the analytical lines
+            # one move line per invoice line
+            iml = self._get_analytic_lines(cr, uid, inv.id, context=ctx)
+            # check if taxes are all computed
             compute_taxes = ait_obj.compute(cr, uid, inv.id, context=ctx)
             self.check_tax_lines(cr, uid, inv, compute_taxes, ait_obj)
 
-            if inv.type in ('in_invoice', 'in_refund') and abs(inv.check_total - inv.amount_total) >= (inv.currency_id.rounding/2.0):
-                raise osv.except_osv(_('Bad total !'), _('Please verify the price of the invoice !\nThe real total does not match the computed total.'))
+            # I disabled the check_total feature
+            group_check_total_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'account', 'group_supplier_inv_check_total')[1]
+            group_check_total = self.pool.get('res.groups').browse(cr, uid, group_check_total_id, context=context)
+            if group_check_total and uid in [x.id for x in group_check_total.users]:
+                if (inv.type in ('in_invoice', 'in_refund') and abs(inv.check_total - inv.amount_total) >= (inv.currency_id.rounding/2.0)):
+                    raise osv.except_osv(_('Bad Total!'), _('Please verify the price of the invoice!\nThe encoded total does not match the computed total.'))
 
             if inv.payment_term:
                 total_fixed = total_percent = 0
@@ -99,7 +107,7 @@ class account_invoice(osv.osv):
                         total_percent += line.value_amount
                 total_fixed = (total_fixed * 100) / (inv.amount_total or 1.0)
                 if (total_fixed + total_percent) > 100:
-                    raise osv.except_osv(_('Error !'), _("Cannot create the invoice !\nThe payment term defined gives a computed amount greater than the total invoiced amount."))
+                    raise osv.except_osv(_('Error!'), _("Cannot create the invoice.\nThe related payment term is probably misconfigured as it gives a computed amount greater than the total invoiced amount. In order to avoid rounding issues, the latest line of your payment term must be of type 'balance'."))
 
             # one move line per tax line
             iml += ait_obj.move_line_get(cr, uid, inv.id)
@@ -120,21 +128,21 @@ class account_invoice(osv.osv):
             # create one move line for the total and possibly adjust the other lines amount
             total = 0
             total_currency = 0
-            total, total_currency, iml = self.compute_invoice_totals(cr, uid, inv, company_currency, ref, iml)
+            total, total_currency, iml = self.compute_invoice_totals(cr, uid, inv, company_currency, ref, iml, context=ctx)
             acc_id = inv.account_id.id
 
-            name = inv['name'] or '/'
+            name = inv['name'] or inv['supplier_invoice_number'] or '/'
             totlines = False
             if inv.payment_term:
-                totlines = self.pool.get('account.payment.term').compute(cr,
-                        uid, inv.payment_term.id, total, inv.date_invoice or False)
+                totlines = payment_term_obj.compute(cr,
+                        uid, inv.payment_term.id, total, inv.date_invoice or False, context=ctx)
             if totlines:
                 res_amount_currency = total_currency
                 i = 0
+                ctx.update({'date': inv.date_invoice})
                 for t in totlines:
                     if inv.currency_id.id != company_currency:
-                        amount_currency = cur_obj.compute(cr, uid,
-                                company_currency, inv.currency_id.id, t[1])
+                        amount_currency = cur_obj.compute(cr, uid, company_currency, inv.currency_id.id, t[1], context=ctx)
                     else:
                         amount_currency = False
 
@@ -151,7 +159,7 @@ class account_invoice(osv.osv):
                         'account_id': acc_id,
                         'date_maturity': t[0],
                         'amount_currency': diff_currency_p \
-                                and  amount_currency or False,
+                                and amount_currency or False,
                         'currency_id': diff_currency_p \
                                 and inv.currency_id.id or False,
                         'ref': ref,
@@ -171,17 +179,18 @@ class account_invoice(osv.osv):
             })
 
             date = inv.date_invoice or time.strftime('%Y-%m-%d')
-            part = inv.partner_id.id
 
-            line = map(lambda x:(0,0,self.line_get_convert(cr, uid, x, part, date, context={})),iml)
+            part = self.pool.get("res.partner")._find_accounting_partner(inv.partner_id)
+
+            line = map(lambda x:(0,0,self.line_get_convert(cr, uid, x, part.id, date, context=ctx)),iml)
 
             line = self.group_lines(cr, uid, iml, line, inv)
 
             journal_id = inv.journal_id.id
-            journal = self.pool.get('account.journal').browse(cr, uid, journal_id)
+            journal = journal_obj.browse(cr, uid, journal_id, context=ctx)
             if journal.centralisation:
-                raise osv.except_osv(_('UserError'),
-                        _('Cannot create invoice move on centralised journal'))
+                raise osv.except_osv(_('User Error!'),
+                        _('You cannot create an invoice on a centralized journal. Uncheck the centralized counterpart box in the related journal from the configuration menu.'))
 
             line = self.finalize_invoice_move_lines(cr, uid, inv, line)
 
@@ -190,31 +199,30 @@ class account_invoice(osv.osv):
                 'line_id': line,
                 'journal_id': journal_id,
                 'date': date,
-                'type': entry_type,
-                'narration':inv.comment
+                'narration': inv.comment,
+                'company_id': inv.company_id.id,
             }
             period_id = inv.period_id and inv.period_id.id or False
+            ctx.update(company_id=inv.company_id.id,
+                       account_period_prefer_normal=True)
             if not period_id:
-                period_ids = self.pool.get('account.period').search(cr, uid, [('date_start','<=',inv.date_invoice or time.strftime('%Y-%m-%d')),('date_stop','>=',inv.date_invoice or time.strftime('%Y-%m-%d')), ('company_id', '=', inv.company_id.id)])
-                if period_ids:
-                    period_id = period_ids[0]
+                period_ids = period_obj.find(cr, uid, inv.date_invoice, context=ctx)
+                period_id = period_ids and period_ids[0] or False
             if period_id:
                 move['period_id'] = period_id
                 for i in line:
                     i[2]['period_id'] = period_id
 
-            move_id = self.pool.get('account.move').create(cr, uid, move, context=context)
-            new_move_name = self.pool.get('account.move').browse(cr, uid, move_id).name
+            ctx.update(invoice=inv)
+            move_id = move_obj.create(cr, uid, move, context=ctx)
+            new_move_name = move_obj.browse(cr, uid, move_id, context=ctx).name
             # make the invoice point to that move
-            self.write(cr, uid, [inv.id], {'move_id': move_id,'period_id':period_id, 'move_name':new_move_name})
-
-#            # Pass invoice in context in method post: used if you want to get the same
-#            # account move reference when creating the same invoice after a cancelled one:
-#            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':inv})
+            self.write(cr, uid, [inv.id], {'move_id': move_id,'period_id':period_id, 'move_name':new_move_name}, context=ctx)
+            # Pass invoice in context in method post: used if you want to get the same
+            # account move reference when creating the same invoice after a cancelled one:
+#            move_obj.post(cr, uid, [move_id], context=ctx)
         self._log_event(cr, uid, ids)
         return True
-
-
 
     def _check_fiscal_values(self, cr, uid, inv):
         # Si es factura de cliente
@@ -397,6 +405,7 @@ class account_invoice(osv.osv):
         wsfe_conf_obj = self.pool.get('wsfe.config')
         conf = wsfe_conf_obj.get_config(cr, uid)
         obj_precision = self.pool.get('decimal.precision')
+        company_id = self.pool.get('res.users')._get_company(cr, uid)
 
         details = []
 
@@ -448,6 +457,10 @@ class account_invoice(osv.osv):
             date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
             formatted_date_invoice = date_invoice.strftime('%Y%m%d')
             date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
+
+            company_currency_id = self.pool.get('res.company').read(cr, uid, company_id, ['currency_id'], context=context)['currency_id'][0]
+            if inv.currency_id.id != company_currency_id:
+                raise osv.except_osv(_("WSFE Error!"), _("Currency cannot be different to company currency. Also check that company currency is ARS"))
 
             detalle['invoice_id'] = inv.id
 
