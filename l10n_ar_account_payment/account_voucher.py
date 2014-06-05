@@ -115,15 +115,17 @@ class account_voucher(osv.osv):
 #        return amount
 
     def proforma_voucher(self, cr, uid, ids, context=None):
-        # Escribimos la cantidad calculada
-        #amount = 0.0
         if not context:
             context = {}
 
-        #amount = self._hook_get_amount(cr, uid, ids, amount, context=context)
+        # Chequeamos si la writeoff_amount no es negativa
+        writeoff_amount = self.read(cr, uid, ids, ['writeoff_amount'], context=context)[0]['writeoff_amount']
+
+        if round(writeoff_amount, 2) < 0.0:
+            raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with negative amount. Please check that Writeoff Amount is not negative."))
+
         self._clean_payment_lines(cr, uid, ids, context=context)
 
-        #self.write(cr, uid, ids, {'amount': amount}, context=context)
         self.action_move_line_create(cr, uid, ids, context=context)
         return True
 
