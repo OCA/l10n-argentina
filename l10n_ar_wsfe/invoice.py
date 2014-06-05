@@ -45,17 +45,16 @@ class account_invoice(osv.osv):
 
     # Esto lo hacemos porque al hacer una nota de credito, no le setea la fiscal_position
     # Ademas, seteamos el comprobante asociado
-    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None):
-        new_ids = super(account_invoice, self).refund(cr, uid, ids, date, period_id, description, journal_id)
+    def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
+        new_ids = super(account_invoice, self).refund(cr, uid, ids, date, period_id, description, journal_id, context=context)
         for id in new_ids:
             inv = self.browse(cr, uid, id)
             if not inv.fiscal_position:
                 fiscal_position = inv.partner_id.property_account_position
                 vals = {'fiscal_position':fiscal_position.id}
 
-            # TODO: Agregamos el comprobante asociado
-            # Falta terminar el codigo para hacer lo de comprobantes asociados
-            self.write(cr, uid, id, vals)
+                # TODO: Agregamos el comprobante asociado. Falta terminar el codigo para hacer lo de comprobantes asociados
+                self.write(cr, uid, id, vals)
         return new_ids
 
 
