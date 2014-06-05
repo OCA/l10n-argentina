@@ -376,6 +376,9 @@ class invoice(osv.osv):
 
             # Si son de Proveedor
             else:
+                if not obj_inv.internal_number:
+                    raise osv.except_osv( _('Error'), _('The Invoice Number should be filled'))
+
                 if local:
                     m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
                     if not m:
