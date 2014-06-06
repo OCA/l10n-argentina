@@ -406,16 +406,10 @@ class invoice(osv.osv):
 
         return True
 
-    def _refund_cleanup_lines(self, cr, uid, lines):
-        for line in lines:
-            if line.get('tax_id'):
-                line['tax_id'] = line['tax_id'][0]
-        return super(invoice, self)._refund_cleanup_lines(cr, uid, lines)
-
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
 
         #devuelve los ids de las invoice modificadas
-        inv_ids = super(invoice , self).refund(cr, uid, ids, date, period_id, description, journal_id)
+        inv_ids = super(invoice , self).refund(cr, uid, ids, date, period_id, description, journal_id, context=context)
 
         #busco los puntos de venta de las invoices anteriores
         inv_obj = self.browse(cr, uid , ids , context=None)
