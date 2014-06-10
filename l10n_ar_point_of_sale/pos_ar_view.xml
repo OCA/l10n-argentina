@@ -86,7 +86,7 @@
                         </h1>
                         <group>
                             <field name="name" select="1"/>
-                            <field name="desc" select="1" nolabel="1" height="100"/>
+                            <field name="desc" select="1"/>
                             <field name="vat_discriminated" select="1"/>
                         </group>
                     </sheet>

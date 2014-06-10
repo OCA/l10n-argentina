@@ -9,10 +9,8 @@
             <field name="inherit_id" ref="account.view_account_position_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <group>
-                        <field name="denomination_id" string="Invoice Denomination"/>
-                        <field name="denom_supplier_id" string="Supplier Denomination"/>
-                    </group>
+					<field name="denomination_id" string="Invoice Denomination"/>
+					<field name="denom_supplier_id" string="Supplier Denomination"/>
                 </field>
             </field>
         </record>
