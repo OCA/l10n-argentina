@@ -203,6 +203,13 @@ class invoice(osv.osv):
     _defaults = {
             'is_debit_note': lambda *a: False,
             }
+            
+    #Validacion para que el total de una invoice no pueda ser negativo.
+    def _check_amount_total(self,cr,uid,ids,context=None):
+        for invoice in self.read(cr,uid,ids,['amount_total'],context=context):
+            if invoice['amount_total'] < 0 :
+                return False
+        return True
 
     def _check_duplicate(self, cr, uid, ids, context=None):
         partner_obj = self.pool.get('res.partner')
@@ -240,7 +247,8 @@ class invoice(osv.osv):
         return True
 
     _constraints = [
-        (_check_duplicate, 'Error! The Invoice is duplicated.', ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number'])
+        (_check_duplicate, 'Error! The Invoice is duplicated.', ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number']),
+        (_check_amount_total, 'Error! The total amount cannot be negative',['amount_total']),
     ]
 
     def _check_fiscal_values(self, cr, uid, inv):
