@@ -1,36 +1,43 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-# 	* l10n_ar_account_check
-# Sebastian Kennedy <skennedy@e-mips.com.ar>, 2013.
+#	* l10n_ar_account_check
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.0.3\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-02-10 22:30+0000\n"
-"PO-Revision-Date: 2013-02-10 19:59-0300\n"
-"Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
-"Language-Team: Spanish; Castilian <>\n"
+"Project-Id-Version: OpenERP Server 7.0-20131109-002558\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-13 00:00+0000\n"
+"PO-Revision-Date: 2014-06-12 21:19-0300\n"
+"Last-Translator: kloss <kloss>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/account_check.py:211
+#, python-format
+msgid "Third Check "
+msgstr "Cheque de tercero"
 
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,clearing:0
 #: field:account.add.third.check,clearing:0
-#: field:account.issued.check,clearing:0 field:account.third.check,clearing:0
+#: field:account.issued.check,clearing:0
+#: field:account.third.check,clearing:0
 msgid "Clearing"
 msgstr "Clearing"
 
 #. module: l10n_ar_account_check
-#: view:account.issued.check:0 view:account.third.check:0
+#: view:account.issued.check:0
+#: view:account.third.check:0
 msgid "Group By..."
 msgstr "Agrupar por..."
 
 #. module: l10n_ar_account_check
-#: selection:account.add.third.check,state:0 view:account.third.check:0
+#: selection:account.add.third.check,state:0
+#: view:account.third.check:0
 #: selection:account.third.check,state:0
 msgid "Deposited"
 msgstr "Depositado"
@@ -47,39 +54,47 @@ msgid "Vat"
 msgstr "CUIT"
 
 #. module: l10n_ar_account_check
-#: field:account.third.check,voucher_id:0
+#: field:account.third.check,source_voucher_id:0
 msgid "Source Voucher"
-msgstr "Comprobante de Origen"
+msgstr "Voucher"
 
 #. module: l10n_ar_account_check
-#: field:account.add.issued.check,amount:0 field:account.issued.check,amount:0
+#: field:account.add.issued.check,amount:0
+#: field:account.issued.check,amount:0
 msgid "Amount Check"
 msgstr "Monto"
 
 #. module: l10n_ar_account_check
 #: view:account.third.check:0
 msgid "Third Checks..."
-msgstr "Cheques de Terceros..."
+msgstr "Cheques de terceros..."
 
 #. module: l10n_ar_account_check
 #: field:account.check.config,company_id:0
+#: field:account.check.deposit,company_id:0
 msgid "Company"
 msgstr "Compania"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_check.py:193
+#: code:addons/l10n_ar_account_check/account_check.py:190
 #, python-format
 msgid " ERROR!"
 msgstr " ERROR!"
 
 #. module: l10n_ar_account_check
-#: view:account.issued.check:0 selection:account.issued.check,type:0
-#: view:account.third.check:0 selection:account.third.check,type:0
-msgid "Post-dated"
-msgstr "Diferido"
+#: view:account.issued.check:0
+#: view:account.voucher:0
+#: field:account.voucher,issued_check_ids:0
+#: model:ir.actions.act_window,name:l10n_ar_account_check.action_issued_check
+#: model:ir.model,name:l10n_ar_account_check.model_account_issued_check
+#: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_issued_check
+#: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_issued_check_menu
+msgid "Issued Checks"
+msgstr "Cheques emitidos"
 
 #. module: l10n_ar_account_check
-#: field:account.add.third.check,amount:0 field:account.third.check,amount:0
+#: field:account.add.third.check,amount:0
+#: field:account.third.check,amount:0
 msgid "Check Amount"
 msgstr "Monto"
 
@@ -91,38 +106,44 @@ msgstr "Cuenta"
 #. module: l10n_ar_account_check
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_check_reject
 msgid "Check Reject"
-msgstr "Rechazar Cheques"
+msgstr "Rechazar cheques"
 
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,source_partner_id:0
-#: view:account.third.check:0 field:account.third.check,source_partner_id:0
+#: view:account.third.check:0
+#: field:account.third.check,source_partner_id:0
 msgid "Source Partner"
-msgstr "Partner de Origen"
+msgstr "Partner de origen"
 
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,date_out:0
 msgid "Date Issued"
-msgstr "Fecha de Emisión"
+msgstr "Fecha de emisión"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:64
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:70
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:80
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:86
 #, python-format
 msgid "Error!"
 msgstr "Error!"
 
 #. module: l10n_ar_account_check
-#: view:account.add.third.check:0 view:account.third.check:0
-#: view:account.voucher:0 field:account.voucher,third_check_ids:0
+#: view:account.add.third.check:0
+#: view:account.third.check:0
+#: view:account.voucher:0
+#: field:account.voucher,third_check_ids:0
 #: field:account.voucher,third_check_receipt_ids:0
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_third_check
+#: model:ir.model,name:l10n_ar_account_check.model_account_third_check
 #: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_third_check
 #: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_third_check_menu
 msgid "Third Checks"
-msgstr "Cheques de Terceros"
+msgstr "Cheques de terceros"
 
 #. module: l10n_ar_account_check
-#: field:account.add.issued.check,origin:0 field:account.third.check,origin:0
+#: field:account.add.issued.check,origin:0
+#: field:account.issued.check,origin:0
+#: field:account.third.check,origin:0
 msgid "Origin"
 msgstr "Origen"
 
@@ -135,19 +156,13 @@ msgid "Signatory"
 msgstr "Firmante"
 
 #. module: l10n_ar_account_check
-#: model:ir.model,name:l10n_ar_account_check.model_account_issued_check
-#: model:ir.model,name:l10n_ar_account_check.model_account_third_check
-msgid "Manage Checks"
-msgstr "Administrar Cheques"
-
-#. module: l10n_ar_account_check
 #: help:account.check.config,account_id:0
 msgid "In Argentina, Valores a Depositar is used, for example"
-msgstr "En Argentina, se utiliza Valores a Depositar,por ejemplo"
+msgstr "En Argentina, se utiliza valores a depositar,por ejemplo"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_check.py:193
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:64
+#: code:addons/l10n_ar_account_check/account_check.py:190
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:80
 #, python-format
 msgid "There is no check configuration for this Company!"
 msgstr "No hay una configuración de cheques para esta compania!"
@@ -155,7 +170,7 @@ msgstr "No hay una configuración de cheques para esta compania!"
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,date_in:0
 msgid "Date In"
-msgstr "Fecha Entrada"
+msgstr "Fecha entrada"
 
 #. module: l10n_ar_account_check
 #: view:account.voucher:0
@@ -169,14 +184,20 @@ msgid "Draft"
 msgstr "Borrador"
 
 #. module: l10n_ar_account_check
-#: view:account.issued.check:0 view:account.third.check:0
+#: view:account.issued.check:0
+#: view:account.third.check:0
 msgid "Extended Filters"
-msgstr "Filtros Extendidos"
+msgstr "Filtros extendidos"
 
 #. module: l10n_ar_account_check
 #: model:ir.model,name:l10n_ar_account_check.model_account_voucher
 msgid "Accounting Voucher"
-msgstr "Comprobante Contable"
+msgstr "Comprobante contable"
+
+#. module: l10n_ar_account_check
+#: field:account.third.check,dest:0
+msgid "Destiny"
+msgstr "Destino"
 
 #. module: l10n_ar_account_check
 #: model:ir.model,name:l10n_ar_account_check.model_account_add_issued_check
@@ -184,8 +205,14 @@ msgid "account.add.issued.check"
 msgstr "account.add.issued.check"
 
 #. module: l10n_ar_account_check
-#: field:account.add.third.check,state:0 view:account.third.check:0
-#: field:account.third.check,state:0 view:account.voucher:0
+#: view:account.issued.check:0
+msgid "Issued Check"
+msgstr "Cheque propio"
+
+#. module: l10n_ar_account_check
+#: field:account.add.third.check,state:0
+#: view:account.third.check:0
+#: field:account.third.check,state:0
 msgid "State"
 msgstr "Estado"
 
@@ -200,13 +227,15 @@ msgid "Treasury"
 msgstr "Tesoreria"
 
 #. module: l10n_ar_account_check
-#: help:account.issued.check,type:0 help:account.third.check,type:0
-msgid ""
-"If common, checks only have issued_date. If post-dated they also have "
-"payment date"
-msgstr ""
-"Los cheques comunes solo tienen Fecha de Emisión. Si son diferidos también "
-"tendrán Fecha de Pago."
+#: help:account.issued.check,type:0
+#: help:account.third.check,type:0
+msgid "If common, checks only have issued_date. If post-dated they also have payment date"
+msgstr "Los cheques comunes solo tienen fecha de emisión. Si son diferidos también tendrán fecha de pago."
+
+#. module: l10n_ar_account_check
+#: view:account.voucher:0
+msgid "onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, context)"
+msgstr "onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, context)"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.issued.check,clearing:0
@@ -220,7 +249,7 @@ msgstr "72 hs"
 #: view:account.third.check:0
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_third_check_calendar_issued_date
 msgid "Third Checks by Issue Date"
-msgstr "Cheques de Tercero por Fecha de Emisión"
+msgstr "Cheques de tercero por fecha de emisión"
 
 #. module: l10n_ar_account_check
 #: help:account.issued.check,payment_date:0
@@ -231,18 +260,19 @@ msgstr "Solo si el cheque es diferido"
 #: view:account.issued.check:0
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_issued_check_calendar_payment_date
 msgid "Issued Checks by Payment Date"
-msgstr "Cheques propios por Fecha de Pago"
+msgstr "Cheques propios por fecha de pago"
 
 #. module: l10n_ar_account_check
-#: field:account.check.deposit,date:0 field:account.check.reject,reject_date:0
+#: field:account.check.deposit,date:0
+#: field:account.check.reject,reject_date:0
 #: field:account.third.check,deposit_date:0
 msgid "Deposit Date"
-msgstr "Fecha de Depósito"
+msgstr "Fecha de depósito"
 
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,reject_debit_note:0
 msgid "Reject Debit Note"
-msgstr "Nota de Débito por rechazo"
+msgstr "Nota de débito por rechazo"
 
 #. module: l10n_ar_account_check
 #: model:ir.model,name:l10n_ar_account_check.model_account_add_third_check
@@ -250,14 +280,10 @@ msgid "account.add.third.check"
 msgstr "account.add.third.check"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:99
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:115
 #, python-format
-msgid ""
-"You cannot deposit check %s because Payment Date is greater than Deposit "
-"Date."
-msgstr ""
-"No puede depositar el cheque nro. %s porque la Fecha de Pago es mayor a la "
-"Fecha de Depósito."
+msgid "You cannot deposit check %s because Payment Date is greater than Deposit Date."
+msgstr "No puede depositar el cheque nro. %s porque la fecha de pago es mayor a la fecha de depósito."
 
 #. module: l10n_ar_account_check
 #: view:account.issued.check:0
@@ -277,7 +303,7 @@ msgid "Date Out"
 msgstr "Fecha de Salida"
 
 #. module: l10n_ar_account_check
-#: view:account.third.check:0 view:account.voucher:0
+#: view:account.third.check:0
 msgid "Other Information"
 msgstr "Otra información"
 
@@ -287,7 +313,6 @@ msgid "account.check.reject"
 msgstr "account.check.reject"
 
 #. module: l10n_ar_account_check
-#: view:account.check.config:0
 #: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_configuration
 msgid "Configuration"
 msgstr "Configuración"
@@ -300,43 +325,70 @@ msgid "Voucher"
 msgstr "Comprobante"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_reject.py:105
+#: view:account.third.check:0
+msgid "Deposit Check"
+msgstr "Depositar cheque"
+
+#. module: l10n_ar_account_check
+#: view:account.third.check:0
+msgid "Third Check"
+msgstr "Cheque de tercero"
+
+#. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/wizard/check_reject.py:112
 #, python-format
 msgid "You Must Assign expense account and amount !"
 msgstr "Debe asignar una cuenta de gastos y el monto!"
 
 #. module: l10n_ar_account_check
-#: view:account.third.check:0 field:account.third.check,endorsement_date:0
+#: view:account.third.check:0
+#: field:account.third.check,endorsement_date:0
 msgid "Endorsement Date"
-msgstr "Fecha de Endoso"
+msgstr "Fecha de endoso"
 
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,destiny_partner_id:0
-#: view:account.third.check:0 field:account.third.check,destiny_partner_id:0
+#: view:account.third.check:0
+#: field:account.third.check,destiny_partner_id:0
 msgid "Destiny Partner"
-msgstr "Partner Destino"
+msgstr "Partner de destino"
 
 #. module: l10n_ar_account_check
 #: field:account.check.reject,expense_amount:0
 msgid "Expense Amount"
-msgstr "Monto del Gasto"
+msgstr "Monto del gasto"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:99
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:142
 #, python-format
-msgid "Cannot deposit"
-msgstr "No puede depositar"
+msgid "Deposit Check %s on %s"
+msgstr "Depósito cheque %s en %s"
 
 #. module: l10n_ar_account_check
 #: view:account.issued.check:0
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_issued_check_calendar_issued_date
 msgid "Issued Checks by Issue Date"
-msgstr "Cheques propios por Fecha de Emisión"
+msgstr "Cheques propios por fecha de emisión"
 
 #. module: l10n_ar_account_check
 #: view:account.issued.check:0
 msgid "Search Issued Checks"
-msgstr "Buscar Cheques Propios"
+msgstr "Buscar cheques propios"
+
+#. module: l10n_ar_account_check
+#: view:account.issued.check:0
+msgid "Additional Information"
+msgstr "Información adicional"
+
+#. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:67
+#, python-format
+msgid ""
+"The selected checks must be in wallet.\n"
+"Check %s is not in wallet"
+msgstr ""
+"Los cheques seleccionados deben estar en cartera.\n"
+"El cheque %s no está en cartera"
 
 #. module: l10n_ar_account_check
 #: model:ir.model,name:l10n_ar_account_check.model_account_check_deposit
@@ -344,20 +396,19 @@ msgid "account.check.deposit"
 msgstr "account.check.deposit"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:51
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:96
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:112
 #, python-format
 msgid ""
 "The selected checks must to be in cartera.\n"
 "Check %s is not in wallet"
 msgstr ""
-"Los cheques seleccionados deben estar En Cartera.\n"
-"El cheque nro %s no está En Cartera"
+"Los cheques seleccionados deben estar en cartera.\n"
+"El cheque nro %s no está en cartera"
 
 #. module: l10n_ar_account_check
 #: field:account.third.check,deposit_bank_id:0
 msgid "Deposit Account"
-msgstr "Cuenta de Depósito"
+msgstr "Cuenta de depósito"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.issued.check,clearing:0
@@ -368,38 +419,34 @@ msgid "24 hs"
 msgstr "24 hs"
 
 #. module: l10n_ar_account_check
-#: view:account.add.issued.check:0 view:account.add.third.check:0
+#: view:account.add.issued.check:0
+#: view:account.add.third.check:0
 msgid "Add Checks"
 msgstr "Añadir cheques"
 
 #. module: l10n_ar_account_check
 #: field:account.third.check,receipt_date:0
 msgid "Receipt Date"
-msgstr "Fecha de Recepción"
+msgstr "Fecha de recepción"
 
 #. module: l10n_ar_account_check
 #: field:account.check.reject,no_expense:0
 msgid "No Expenses ?"
-msgstr "Sin Gastos"
+msgstr "Sin gastos"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_check.py:89
+#: code:addons/l10n_ar_account_check/account_check.py:94
 #, python-format
-msgid ""
-"Bank Account has no account configured. Please, configure an account for the "
-"bank account used for checks!"
-msgstr ""
-"La cuenta de banco no tiene una cuenta contable configurada. Por favor, "
-"configure una cuenta contable para la Cuenta de Banco."
+msgid "Bank Account has no account configured. Please, configure an account for the bank account used for checks!"
+msgstr "La cuenta de banco no tiene una cuenta contable configurada. Por favor, configure una cuenta contable para la cuenta de banco."
 
 #. module: l10n_ar_account_check
 #: field:account.check.reject,invoice_expense:0
 msgid "Invoice Expense?"
-msgstr "Facturar Gastos?"
+msgstr "Facturar gastos?"
 
 #. module: l10n_ar_account_check
 #: view:account.voucher:0
-#: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_check
 msgid "Checks"
 msgstr "Cheques"
 
@@ -408,28 +455,20 @@ msgstr "Cheques"
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_check_config
 #: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_check_config
 msgid "Check Config"
-msgstr "Configurar Cheques"
+msgstr "Configurar cheques"
 
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,number:0
-#: field:account.add.third.check,number:0 field:account.issued.check,number:0
-#: view:account.third.check:0 field:account.third.check,number:0
+#: field:account.add.third.check,number:0
+#: field:account.issued.check,number:0
+#: view:account.third.check:0
+#: field:account.third.check,number:0
 msgid "Check Number"
-msgstr "Número de Cheque"
-
-#. module: l10n_ar_account_check
-#: view:account.issued.check:0 view:account.third.check:0
-#: view:account.voucher:0
-msgid "Check Information"
-msgstr "Información del Cheque"
-
-#. module: l10n_ar_account_check
-#: field:account.check.deposit,partner_id:0
-msgid "unknown"
-msgstr "Desconocido"
+msgstr "Número de cheque"
 
 #. module: l10n_ar_account_check
 #: view:account.issued.check:0
+#: view:account.voucher:0
 msgid "Total Amount"
 msgstr "Total"
 
@@ -437,29 +476,31 @@ msgstr "Total"
 #: view:account.third.check:0
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_third_check_calendar_endorsement_date
 msgid "Third Checks by Endorsement Date"
-msgstr "Cheques de Tercero por Fecha de Endoso"
+msgstr "Cheques de tercero por fecha de endoso"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:70
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:86
 #, python-format
 msgid "Bad Treasury configuration for this Company!"
-msgstr ""
-"La configuración del módulo Tesorería no es la correcta para esta Compañía!"
+msgstr "La configuración del módulo tesorería no es la correcta para esta compañía!"
 
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,date:0
 msgid "Check Date"
-msgstr "Fecha del Cheque"
+msgstr "Fecha del cheque"
 
 #. module: l10n_ar_account_check
-#: view:account.voucher:0
-msgid "Payment Lines"
-msgstr "Líneas de Pago"
+#: view:account.issued.check:0
+#: field:account.issued.check,payment_date:0
+#: view:account.third.check:0
+#: field:account.third.check,payment_date:0
+msgid "Payment Date"
+msgstr "Fecha de pago"
 
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,date:0
 msgid "Date"
-msgstr "Fecha de Cobro"
+msgstr "Fecha de cobro"
 
 #. module: l10n_ar_account_check
 #: sql_constraint:account.check.config:0
@@ -470,32 +511,25 @@ msgstr "La configuración debe ser única por compañía!"
 #: field:account.add.issued.check,account_bank_id:0
 #: field:account.add.third.check,account_bank_id:0
 msgid "Destiny Account"
-msgstr "Cuenta Destino"
+msgstr "Cuenta destino"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
 msgid "En Cartera"
-msgstr "En Cartera"
+msgstr "En cartera"
 
 #. module: l10n_ar_account_check
-#: view:account.issued.check:0 field:account.issued.check,payment_date:0
-#: view:account.third.check:0 field:account.third.check,payment_date:0
-msgid "Payment Date"
-msgstr "Fecha de Pago"
-
-#. module: l10n_ar_account_check
-#: view:account.issued.check:0 view:account.voucher:0
-#: field:account.voucher,issued_check_ids:0
-#: model:ir.actions.act_window,name:l10n_ar_account_check.action_issued_check
-#: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_issued_check
-#: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_issued_check_menu
-msgid "Issued Checks"
-msgstr "Cheques Emitidos"
+#: view:account.issued.check:0
+#: selection:account.issued.check,type:0
+#: view:account.third.check:0
+#: selection:account.third.check,type:0
+msgid "Post-dated"
+msgstr "Diferido"
 
 #. module: l10n_ar_account_check
 #: field:account.check.reject,expense_account:0
 msgid "Expense Account"
-msgstr "Cuenta de Gastos"
+msgstr "Cuenta de gastos"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.issued.check,clearing:0
@@ -508,109 +542,110 @@ msgstr "48 hs"
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,date_changed:0
 msgid "Date Changed"
-msgstr "Fecha de Cambio"
+msgstr "Fecha de cambio"
 
 #. module: l10n_ar_account_check
 #: view:account.check.config:0
 msgid "Checks Config"
-msgstr "Configuración de Cheques"
+msgstr "Configuración de cheques"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_check.py:89
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:51
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:96
-#: code:addons/l10n_ar_account_check/wizard/check_reject.py:104
+#: code:addons/l10n_ar_account_check/account_check.py:94
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:67
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:112
+#: code:addons/l10n_ar_account_check/wizard/check_reject.py:111
 #, python-format
 msgid "Error"
 msgstr "Error"
 
 #. module: l10n_ar_account_check
-#: constraint:res.partner.bank:0
-msgid ""
-"Invalid CBU. It must be like this: 8 digits/14 digits or 8 digits-14 digits"
-msgstr ""
-"CBU Inválido. Debe tener el siguiente formato: 8 digitos/14 digitos or 8 "
-"digitos-14 digitos"
+#: code:addons/l10n_ar_account_check/account_check.py:232
+#, python-format
+msgid "Check Error!"
+msgstr "Error en el cheque!"
 
 #. module: l10n_ar_account_check
-#: field:account.add.issued.check,issued:0 field:account.issued.check,issued:0
+#: field:account.add.issued.check,issued:0
+#: field:account.issued.check,issued:0
 msgid "Issued"
 msgstr "Emitido"
 
 #. module: l10n_ar_account_check
 #: model:ir.model,name:l10n_ar_account_check.model_res_partner_bank
 msgid "Bank Accounts"
-msgstr "Cuentas Bancarias"
+msgstr "Cuentas bancarias"
 
 #. module: l10n_ar_account_check
-#: view:account.third.check:0 selection:account.third.check,state:0
+#: view:account.third.check:0
+#: selection:account.third.check,state:0
 msgid "In Wallet"
-msgstr "En Cartera"
+msgstr "En cartera"
 
 #. module: l10n_ar_account_check
-#: view:account.add.issued.check:0 view:account.add.third.check:0
+#: view:account.add.issued.check:0
+#: view:account.add.third.check:0
 msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:114
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:141
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:129
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:156
 #, python-format
 msgid "Deposit Check %s"
-msgstr "Depósito de Cheque %s"
+msgstr "Depósito de cheque %s"
 
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,receiving_partner_id:0
 #: field:account.issued.check,receiving_partner_id:0
 msgid "Receiving Entity"
-msgstr "Entidad Receptora"
+msgstr "Entidad receptora"
 
 #. module: l10n_ar_account_check
-#: selection:account.add.third.check,state:0 view:account.third.check:0
+#: selection:account.add.third.check,state:0
+#: view:account.third.check:0
 #: selection:account.third.check,state:0
 msgid "Delivered"
 msgstr "Entregado"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_voucher.py:115
-#, python-format
-msgid "Save the voucher before use checks !"
-msgstr "Guarde el comprobante antes de usar los cheques!"
-
-#. module: l10n_ar_account_check
 #: field:account.issued.check,issue_date:0
 #: field:account.third.check,issue_date:0
 msgid "Issue Date"
-msgstr "Fecha de Emisión"
+msgstr "Fecha de emisión"
 
 #. module: l10n_ar_account_check
 #: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_issued_check_calendar_payment
+#: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_third_check_calendar_payment
 msgid "Calendar By Payment Date"
-msgstr "Calendario por Fecha de Pago"
+msgstr "Calendario por fecha de pago"
 
 #. module: l10n_ar_account_check
-#: selection:account.add.third.check,state:0 view:account.third.check:0
+#: field:account.check.deposit,journal_id:0
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ar_account_check
+#: selection:account.add.third.check,state:0
+#: view:account.third.check:0
 #: selection:account.third.check,state:0
 msgid "Rejected"
 msgstr "Rechazado"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_voucher.py:228
-#: code:addons/l10n_ar_account_check/account_voucher.py:246
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_add_third_check
-#, python-format
 msgid "Add Check"
-msgstr "Agregar Cheque"
+msgstr "Agregar cheque"
 
 #. module: l10n_ar_account_check
 #: view:account.add.issued.check:0
 msgid "Add New Issued Check"
-msgstr "Añadir nuevo cheque emitido"
+msgstr "Añadir nuevo cheque propio"
 
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,bank_id:0
 #: field:account.add.third.check,bank_id:0
-#: field:account.issued.check,bank_id:0 view:account.third.check:0
+#: field:account.issued.check,bank_id:0
+#: view:account.third.check:0
 #: field:account.third.check,bank_id:0
 msgid "Bank"
 msgstr "Banco"
@@ -618,7 +653,7 @@ msgstr "Banco"
 #. module: l10n_ar_account_check
 #: model:ir.ui.menu,name:l10n_ar_account_check.menu_treasury_third_check_calendar_endorsement
 msgid "Calendar By Endorsement Date"
-msgstr "Calendario por Fecha de Endoso"
+msgstr "Calendario por fecha de endoso"
 
 #. module: l10n_ar_account_check
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_add_issued_check
@@ -629,56 +664,66 @@ msgstr "Añadir nuevo cheque"
 #: view:account.third.check:0
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_third_check_calendar_payment_date
 msgid "Third Checks by Payment Date"
-msgstr "Cheques de Tercero por Fecha de Pago"
+msgstr "Cheques de tercero por fecha de pago"
 
 #. module: l10n_ar_account_check
-#: field:account.check.deposit,bank_account_id:0 view:account.issued.check:0
+#: field:account.check.deposit,bank_account_id:0
+#: view:account.issued.check:0
 #: field:account.issued.check,account_bank_id:0
 msgid "Bank Account"
-msgstr "Cuenta Bancaria"
+msgstr "Cuenta bancaria"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:127
+#: view:account.check.config:0
+msgid "Account Check Configuration"
+msgstr "Configuración de la cuenta de cheque"
+
+#. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:115
 #, python-format
-msgid "Deposit Check %s on %s"
-msgstr "Depósito Cheque %s en %s"
+msgid "Cannot deposit"
+msgstr "No se puede depositar"
 
 #. module: l10n_ar_account_check
-#: view:account.issued.check:0 selection:account.issued.check,type:0
-#: view:account.third.check:0 selection:account.third.check,type:0
+#: view:account.issued.check:0
+#: selection:account.issued.check,type:0
+#: view:account.third.check:0
+#: selection:account.third.check,type:0
 msgid "Common"
 msgstr "Común"
 
 #. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/account_check.py:232
+#, python-format
+msgid "Check has to be associated with a voucher"
+msgstr "El cheque debe estar asociado con un voucher"
+
+#. module: l10n_ar_account_check
 #: field:account.check.config,account_id:0
 msgid "Main Check Account"
-msgstr "Cuenta Principal de Cheque"
+msgstr "Cuenta principal de cheque"
 
 #. module: l10n_ar_account_check
-#: field:account.issued.check,type:0 field:account.third.check,type:0
+#: field:account.issued.check,type:0
+#: field:account.third.check,type:0
 msgid "Check Type"
-msgstr "Tipo de Cheque"
-
-#. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/account_voucher.py:114
-#, python-format
-msgid "ATENTION !"
-msgstr "Atención!"
+msgstr "Tipo de cheque"
 
 #. module: l10n_ar_account_check
 #: model:ir.model,name:l10n_ar_account_check.model_account_check_config
 msgid "Check Account Configuration"
-msgstr "Configuración Cuentas de Cheques"
+msgstr "Configuración cuentas de cheques"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:118
-#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:132
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:133
+#: code:addons/l10n_ar_account_check/wizard/check_deposit.py:147
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_check_deposit
 #, python-format
 msgid "Check Deposit"
-msgstr "Depositar Cheque"
+msgstr "Depositar cheque"
 
 #. module: l10n_ar_account_check
 #: view:account.voucher:0
 msgid "Total"
 msgstr "Total"
+
