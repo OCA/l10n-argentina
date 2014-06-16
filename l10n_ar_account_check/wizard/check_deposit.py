@@ -100,6 +100,9 @@ class account_check_deposit(osv.osv_memory):
         period_id = self.pool.get('account.period').find(cr, uid, wizard.date)[0]
         deposit_date = wizard.date or time.strftime('%Y-%m-%d')
 
+        if not wizard.bank_account_id.account_id:
+            raise osv.except_osv(_("Error"), _("You have to configure an account on Bank Account %s: %s") % (wizard.bank_account_id.bank_name, wizard.bank_account_id.acc_number))
+
         if context is None:
             context = {}
         record_ids = context.get('active_ids', [])
