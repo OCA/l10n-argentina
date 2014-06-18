@@ -11,19 +11,23 @@
                     <group>
                         <group>
                             <field name="reject_date"/>
-                            <field name="no_expense" string="No Expense ?"/>
-                            <field name="expense_account"/>
+                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
                         </group>
                         <group>
-                            <field name="expense_amount"/>
-                            <field name="invoice_expense"/>
+                            <field name="journal_id" domain="[('type', '=', 'sale'),('company_id','=',company_id)]"/>
                         </group>
                     </group>
+                        <field name="expense_line_ids">
+                            <tree string="Expenses" editable="bottom">
+                                <field name="product_id"/>
+                                <field name="price"/>
+                            </tree>
+                        </field>
                     <footer>
                         <button type="special" special="cancel"
                             string="Cancel" icon="gtk-cancel"/>
                         <button type="object" name="action_reject"
-                            string="Checks Reject" icon="gtk-ok"/>
+                            string="Reject" icon="gtk-ok"/>
                     </footer>
                 </form>
             </field>

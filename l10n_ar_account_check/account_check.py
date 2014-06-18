@@ -76,11 +76,13 @@ class account_issued_check(osv.osv):
         'origin': fields.char('Origin', size=64),
         'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
             help="If common, checks only have issued_date. If post-dated they also have payment date"),
+        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
     }
 
     _defaults = {
         'clearing': lambda *a: '24',
         'type': 'common',
+        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher',context=c),
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
@@ -168,9 +170,11 @@ class account_third_check(osv.osv):
         'deposit_bank_id': fields.many2one('res.partner.bank',
             'Deposit Account'),
         'source_voucher_id': fields.many2one('account.voucher', 'Source Voucher', readonly=True),
+        'debit_note_id': fields.many2one('account.invoice', 'Debit Note', readonly=True, help="In case of rejection of the third check"),
         'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
             readonly=True, states={'draft': [('readonly', False)]},
             help="If common, checks only have issued_date. If post-dated they also have payment date"),
+        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
     }
 
     _defaults = {
@@ -178,6 +182,7 @@ class account_third_check(osv.osv):
         'state': lambda *a: 'draft',
         'type': lambda *a: 'common',
         'clearing': lambda *a: '24',
+        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher',context=c),
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):

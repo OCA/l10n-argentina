@@ -61,10 +61,16 @@
             <field name="signal">cartera_deposited</field>
         </record>
 
-        <record id="trans_cartera_rejected" model="workflow.transition">
-            <field name="act_from" ref="act_cartera"/>
+        <record id="trans_delivered_rejected" model="workflow.transition">
+            <field name="act_from" ref="act_delivered"/>
             <field name="act_to" ref="act_rejected"/>
-            <field name="signal">cartera_rejected</field>
+            <field name="signal">delivered_rejected</field>
+        </record>
+
+        <record id="trans_deposited" model="workflow.transition">
+            <field name="act_from" ref="act_deposited"/>
+            <field name="act_to" ref="act_rejected"/>
+            <field name="signal">deposited_rejected</field>
         </record>
 
         <record id="trans_cartera_delivered" model="workflow.transition">
