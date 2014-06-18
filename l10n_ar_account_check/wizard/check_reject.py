@@ -64,6 +64,8 @@ class account_check_reject(osv.osv_memory):
 #                ['contact', 'invoice'])
 
     def action_reject(self, cr, uid, ids, context=None):
+        check_config_obj = self.pool.get('account.check.config')
+
         if context is None:
             context = {}
 
@@ -103,9 +105,36 @@ class account_check_reject(osv.osv_memory):
 
             invoice_vals.update(vals['value'])
             lines = []
+            # Linea del cheque rechazado
+
+            res = check_config_obj.search(cr, uid, [('company_id', '=', check.company_id.id)])
+            if not len(res):
+                raise osv.except_osv(_(' ERROR!'), _('There is no check configuration for this Company!'))
+
+            config = check_config_obj.browse(cr, uid, res[0])
+
+            account_id = False
+            if check.state == 'delivered':
+                account_id = config.account_id.id
+            elif check.state == 'deposited':
+                account_id = check.deposit_bank_id.account_id.id
+
+            name = 'Check Rejected' + check.number
+            invoice_line_vals = {
+                'name': name,
+                'quantity': 1,
+            }
+
+            vals = invoice_line_obj.product_id_change(cr, uid, [], product=False, uom_id=False, qty=1, name=name, type='out_invoice', partner_id=partner.id, price_unit=check.amount, currency_id=False, context=context, company_id=check.company_id.id)
+
+            invoice_line_vals.update(vals['value'])
+            invoice_line_vals['price_unit'] = check.amount
+            invoice_line_vals['account_id'] = account_id
+            lines.append((0, 0, invoice_line_vals))
+
+            # Lineas de gastos
             for expense in wizard.expense_line_ids:
                 invoice_line_vals = {
-                    'name': 'Check Rejected' + check.number,
                     'product_id': expense.product_id.id,
                     'quantity': 1,
                 }
@@ -122,10 +151,15 @@ class account_check_reject(osv.osv_memory):
 
             # Creamos la nota de debito
             debit_note_id = invoice_obj.create(cr, uid, invoice_vals)
-            wf_service.trg_validate(uid, 'account.third.check', check.id, 'cartera_rejected', cr)
+
+            if check.state == 'delivered':
+                wf_service.trg_validate(uid, 'account.third.check', check.id, 'delivered_rejected', cr)
+            elif check.state == 'deposited':
+                wf_service.trg_validate(uid, 'account.third.check', check.id, 'deposited_rejected', cr)
 
             # Guardamos la referencia a la nota de debito del rechazo
-            third_check_obj.write(cr, uid, check.id, {'debit_note_id': debit_note_id}, context=context)
+            # TODO: Cambiar el write del state, tiene que ser por workflow.
+            third_check_obj.write(cr, uid, check.id, {'debit_note_id': debit_note_id, 'state': 'rejected'}, context=context)
 
         ir_model_data = self.pool.get('ir.model.data')
         form_res = ir_model_data.get_object_reference(cr, uid, 'l10n_ar_point_of_sale', 'view_pos_invoice_form')

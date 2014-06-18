@@ -67,7 +67,7 @@
             <field name="signal">delivered_rejected</field>
         </record>
 
-        <record id="trans_deposited" model="workflow.transition">
+        <record id="trans_deposited_rejected" model="workflow.transition">
             <field name="act_from" ref="act_deposited"/>
             <field name="act_to" ref="act_rejected"/>
             <field name="signal">deposited_rejected</field>
