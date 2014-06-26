@@ -50,7 +50,7 @@ class wsfe_request_detail(osv.osv):
     _description = "WSFE Request Detail"
 
     _columns = {
-        'name' : fields.many2one('account.invoice', 'Voucher', readonly=True),
+        'name' : fields.many2one('account.invoice', 'Voucher', required=False, readonly=True),
         'request_id' : fields.many2one('wsfe.request', 'Request', required=True),
         'concept' : fields.selection([('1', 'Products'),('2', 'Services'),('3', 'Products&Services')], 'Concept', readonly=True),
         'doctype' : fields.integer('Document Type', readonly=True),
