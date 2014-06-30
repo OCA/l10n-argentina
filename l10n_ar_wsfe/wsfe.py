@@ -151,7 +151,7 @@ class wsfe_config(osv.osv):
             # se hace el rollback por lo tanto el refund que se estaba creando ya no existe en
             # base de datos y estariamos violando una foreign key contraint. Por eso,
             # chequeamos que existe info de la invoice_id, sino lo seteamos en False
-            read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], [], context=context)
+            read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
 
             if not read_inv:
                 invoice_id = False

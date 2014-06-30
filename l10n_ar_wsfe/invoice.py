@@ -419,7 +419,7 @@ class account_invoice(osv.osv):
             doc_num = inv.partner_id.vat or '0'
 
             # Chequeamos si el concepto es producto, servicios o productos y servicios
-            product_service = [l.product_id.type for l in inv.invoice_line]
+            product_service = [l.product_id and l.product_id.type or 'consu' for l in inv.invoice_line]
 
             service = all([ps == 'service' for ps in product_service])
             products = all([ps == 'consu' or ps == 'product' for ps in product_service])
