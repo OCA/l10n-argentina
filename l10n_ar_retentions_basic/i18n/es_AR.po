@@ -1,22 +1,19 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-# 	* l10n_ar_retentions_basic
-# Sebastian Kennedy <skennedy@e-mips.com.ar>, 2013.
+#	* l10n_ar_retentions_basic
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.0.3\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-09-15 19:37+0000\n"
-"PO-Revision-Date: 2013-09-15 16:43-0300\n"
-"Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
-"Language-Team: Spanish; Castilian <>\n"
-"Language: es_AR\n"
+"Project-Id-Version: OpenERP Server 7.0-20131109-002558\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-11 20:15+0000\n"
+"PO-Revision-Date: 2014-07-11 17:19-0300\n"
+"Last-Translator: kloss <kloss>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"Plural-Forms: \n"
 
 #. module: l10n_ar_retentions_basic
 #: selection:retention.retention,jurisdiccion:0
@@ -24,49 +21,19 @@ msgid "Provincial"
 msgstr "Provincial"
 
 #. module: l10n_ar_retentions_basic
-#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_ganancias_sufrida
-msgid "Retencion Ganancias Sufrida"
-msgstr "Retencion Ganancias Sufrida"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iva_efectuada
-msgid "Operaciones con Retencion IVA Efectuada"
-msgstr "Operaciones con Retencion IVA Efectuada"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,tax_amount:0
-msgid "Tax Code Amount"
-msgstr "Cantidad del impuesto"
-
-#. module: l10n_ar_retentions_basic
 #: view:retention.tax.line:0
-msgid "Base Total"
-msgstr "Total de la base"
+msgid "Retention Tax Lines"
+msgstr "Líneas de impuesto de retención"
+
+#. module: l10n_ar_retentions_basic
+#: selection:retention.retention,type:0
+msgid "Profit"
+msgstr "Beneficio"
 
 #. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,tax_code_id:0
 msgid "Tax Code"
 msgstr "Código de impuesto"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iibb_caba_sufrida
-msgid "Operaciones con Retencion IIBB CABA Sufrida"
-msgstr "Operaciones con Retencion IIBB CABA Sufrida"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_suss_efectuada
-msgid "Retencion SUSS Efectuada (Pagos)"
-msgstr "Retencion SUSS Efectuada (Pagos)"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_suss_sufrida
-msgid "Retencion SUSS Sufrida"
-msgstr "Retencion SUSS Sufrida"
-
-#. module: l10n_ar_retentions_basic
-#: selection:retention.retention,jurisdiccion:0
-msgid "Nacional"
-msgstr "Nacional"
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iva_sufrida
@@ -79,38 +46,9 @@ msgid "Group By..."
 msgstr "Agrupar por..."
 
 #. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iva_efectuada
-msgid "Retencion IVA Efectuada (Pagos)"
-msgstr "Retencion IVA Efectuada (Pagos)"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,certificate_no:0
-msgid "Certificate No."
-msgstr "Certificado no."
-
-#. module: l10n_ar_retentions_basic
-#: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_retention_tree
-msgid ""
-"Here you can define Retentions and their configuration to be used in "
-"Customer Payents or Supplier Payments"
-msgstr ""
-"Desde aquí puede definir las retenciones y su configuración para utilizarlas "
-"en cobros a clientes y pagos a proveedores"
-
-#. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,account_id:0
 msgid "Tax Account"
 msgstr "Cuenta de impuesto"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_ganancias_efectuada
-msgid "Retencion Ganancias Efectuada (Pagos)"
-msgstr "Retencion Ganancias Efectuada (Pagos)"
-
-#. module: l10n_ar_retentions_basic
-#: model:ir.model,name:l10n_ar_retentions_basic.model_retention_tax_line
-msgid "Retention Tax Line"
-msgstr "Línea de impuesto de retención"
 
 #. module: l10n_ar_retentions_basic
 #: view:retention.tax.line:0
@@ -118,19 +56,9 @@ msgid "Province"
 msgstr "Provincia"
 
 #. module: l10n_ar_retentions_basic
-#: view:retention.tax.line:0
-msgid "Supported"
-msgstr "Soportado"
-
-#. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,base_code_id:0
 msgid "Base Code"
 msgstr "Código base"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,voucher_number:0
-msgid "Voucher No."
-msgstr "Comprobante No."
 
 #. module: l10n_ar_retentions_basic
 #: selection:retention.retention,jurisdiccion:0
@@ -138,22 +66,15 @@ msgid "Municipal"
 msgstr "Municipal"
 
 #. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,vat:0
-msgid "CIF/NIF"
-msgstr "CUIT"
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0 field:account.voucher,retention_ids:0
-#: model:ir.actions.act_window,name:l10n_ar_retentions_basic.action_retention_retention_tree
-#: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_retention_menu
-#: view:retention.retention:0
-msgid "Retentions"
-msgstr "Retenciones"
-
-#. module: l10n_ar_retentions_basic
 #: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_iibb_caba_efectuada
 msgid "Retencion IIBB CABA Efectuada"
 msgstr "Retencion IIBB CABA Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_tax_line_applied_menu
+#: view:retention.tax.line:0
+msgid "Retentions Applied"
+msgstr "Retenciones aplicadas"
 
 #. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,company_id:0
@@ -161,39 +82,90 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: l10n_ar_retentions_basic
-#: view:retention.tax.line:0
-msgid "Retention Tax Lines"
-msgstr "Líneas de impuesto de retención"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_suss_efectuada
-msgid "Retenciones SUSS Efectuada"
-msgstr "Retenciones SUSS Efectuada"
-
-#. module: l10n_ar_retentions_basic
 #: view:account.voucher:0
-msgid "Retention Lines"
-msgstr "Líneas de retención"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iibb_caba_efectuada
-msgid "Operaciones con Retencion IIBB CABA Efectuada"
-msgstr "Operaciones con Retencion IIBB CABA Efectuada"
-
-#. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,base:0
 msgid "Base"
 msgstr "Base"
 
 #. module: l10n_ar_retentions_basic
-#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_ganancias_efectuada
-msgid "Retenciones Ganancias Efectuada"
-msgstr "Retenciones Ganancias Efectuada"
+#: view:account.voucher:0
+msgid "Retention Type"
+msgstr "Tipo de retención"
 
 #. module: l10n_ar_retentions_basic
-#: view:retention.tax.line:0 field:retention.tax.line,date:0
-msgid "Date"
-msgstr "Fecha"
+#: view:retention.tax.line:0
+msgid "Applied"
+msgstr "Aplicado"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)"
+msgstr "onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "Applied Retentions"
+msgstr "Retenciones aplicadas"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.tax.line,amount:0
+msgid "Amount"
+msgstr "Cantidad"
+
+#. module: l10n_ar_retentions_basic
+#: selection:retention.retention,type:0
+msgid "VAT"
+msgstr "VAT"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.retention,state_id:0
+#: field:retention.tax.line,state_id:0
+msgid "State/Province"
+msgstr "Estado/Provincia"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.retention,jurisdiccion:0
+msgid "Jurisdiccion"
+msgstr "Jurisdicción"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.retention,tax_id:0
+msgid "Tax"
+msgstr "Impuesto"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.tax.line,partner_id:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_ar_retentions_basic
+#: view:retention.tax.line:0
+msgid "Amount Total"
+msgstr "Cantidad total"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.retention,type:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_ganancias_efectuada
+msgid "Retencion Ganancias Efectuada (Pagos)"
+msgstr "Retencion Ganancias Efectuada (Pagos)"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+#: field:account.voucher,retention_ids:0
+#: model:ir.actions.act_window,name:l10n_ar_retentions_basic.action_retention_retention_tree
+#: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_retention_menu
+#: view:retention.retention:0
+msgid "Retentions"
+msgstr "Retenciones"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.tax.line,voucher_number:0
+msgid "Voucher No."
+msgstr "Comprobante No."
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_iibb_caba_sufrida
@@ -202,13 +174,18 @@ msgstr "Retencion IIBB CABA Sufrida"
 
 #. module: l10n_ar_retentions_basic
 #: view:account.voucher:0
-msgid "Supported Retentions"
-msgstr "Retenciones soportadas"
+msgid "Retention Lines"
+msgstr "Líneas de retención"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "Retention Type"
-msgstr "Tipo de retención"
+#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_ganancias_efectuada
+msgid "Retenciones Ganancias Efectuada"
+msgstr "Retenciones Ganancias Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: view:retention.retention:0
+msgid "Configuration"
+msgstr "Configuration"
 
 #. module: l10n_ar_retentions_basic
 #: help:retention.retention,tax_id:0
@@ -216,75 +193,23 @@ msgid "Tax configuration for this retention"
 msgstr "Configuración de impuesto para la retención"
 
 #. module: l10n_ar_retentions_basic
-#: view:retention.tax.line:0
-msgid "Applied"
-msgstr "Aplicado"
-
-#. module: l10n_ar_retentions_basic
-#: model:ir.actions.act_window,name:l10n_ar_retentions_basic.action_retention_tax_tree
-msgid "Retention Tax Applied"
-msgstr "Impuesto de retención aplicado"
-
-#. module: l10n_ar_retentions_basic
-#: model:ir.module.module,shortdesc:l10n_ar_retentions_basic.module_meta_information
-msgid "Retentions for ARGENTINA (Retenciones)"
-msgstr "Retenciones para ARGENTINA"
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "Applied Retentions"
-msgstr "Retenciones aplicadas"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_suss_sufrida
-msgid "Operaciones con Retencion SUSS Sufrida"
-msgstr "Operaciones con Retencion SUSS Sufrida"
-
-#. module: l10n_ar_retentions_basic
-#: help:retention.tax.line,tax_code_id:0
-msgid "The tax basis of the tax declaration."
-msgstr "Base imponible de la declaración de impuestos"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.retention,type_tax_use:0
-msgid "Tax Application"
-msgstr "Aplicación de impuestos"
+#: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_tax_supported_tree
+#: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_tax_tree
+msgid ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"            Click to create a retention.\n"
+"          </p>\n"
+"        "
+msgstr ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"            Click to create a retention.\n"
+"          </p>\n"
+"        "
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_iva_sufrida
 msgid "Retencion IVA Sufrida"
 msgstr "Retencion IVA Sufrida"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_iva_efectuada
-msgid "Retencion IVA Efectuada"
-msgstr "Retencion IVA Efectuada"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iva_sufrida
-msgid "Operaciones con Retencion IVA Sufrida"
-msgstr "Operaciones con Retencion IVA Sufrida"
-
-#. module: l10n_ar_retentions_basic
-#: help:retention.tax.line,retention_id:0
-msgid ""
-"Retention configuration used '                                       'for "
-"this retention tax, where all the configuration resides. Accounts, Tax "
-"Codes, etc."
-msgstr ""
-"La configuración de Retención usada '                                       "
-"'para esta retención, donde todas las configuraciones residen. Cuentas, "
-"Códigos de Impuesto, etc."
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "Journal Items"
-msgstr "Apuntes contables"
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0 field:retention.tax.line,amount:0
-msgid "Amount"
-msgstr "Cantidad"
 
 #. module: l10n_ar_retentions_basic
 #: model:ir.model,name:l10n_ar_retentions_basic.model_retention_retention
@@ -293,51 +218,102 @@ msgid "Retention Configuration"
 msgstr "Configuración de la retención"
 
 #. module: l10n_ar_retentions_basic
+#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_ganancias_sufrida
+msgid "Retencion Ganancias Sufrida"
+msgstr "Retencion Ganancias Sufrida"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iibb_caba_efectuada
+msgid "Retencion IIBB CABA Efectuada (Pagos)"
+msgstr "Retencion IIBB CABA Efectuada (Pagos)"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.tax.line,tax_amount:0
+msgid "Tax Code Amount"
+msgstr "Cantidad del impuesto"
+
+#. module: l10n_ar_retentions_basic
+#: view:retention.tax.line:0
+msgid "Base Total"
+msgstr "Total de la base"
+
+#. module: l10n_ar_retentions_basic
+#: help:retention.tax.line,tax_code_id:0
+msgid "The tax basis of the tax declaration."
+msgstr "Base imponible de la declaración de impuestos"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_suss_sufrida
+msgid "Retencion SUSS Sufrida"
+msgstr "Retencion SUSS Sufrida"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.tax.line,certificate_no:0
+msgid "Certificate No."
+msgstr "Certificado no."
+
+#. module: l10n_ar_retentions_basic
+#: model:ir.model,name:l10n_ar_retentions_basic.model_retention_tax_line
+#: view:retention.tax.line:0
+msgid "Retention Tax Line"
+msgstr "Línea de impuesto de retención"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_suss_sufrida
+msgid "Retencion SUSS Sufrida (Cobros)"
+msgstr "Retencion SUSS Sufrida (Cobros)"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_suss_efectuada
+msgid "Retenciones SUSS Efectuada"
+msgstr "Retenciones SUSS Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: view:retention.tax.line:0
+#: field:retention.tax.line,date:0
+msgid "Date"
+msgstr "Fecha"
+
+#. module: l10n_ar_retentions_basic
+#: selection:retention.retention,type:0
+msgid "Gross Income"
+msgstr "Ingreso"
+
+#. module: l10n_ar_retentions_basic
+#: model:ir.actions.act_window,name:l10n_ar_retentions_basic.action_retention_tax_tree
+msgid "Retention Tax Applied"
+msgstr "Impuesto de retención aplicado"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
+msgstr "onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.retention,type_tax_use:0
+msgid "Tax Application"
+msgstr "Aplicación de impuestos"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iva_sufrida
+msgid "Operaciones con Retencion IVA Sufrida"
+msgstr "Operaciones con Retencion IVA Sufrida"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "Journal Items"
+msgstr "Apuntes contables"
+
+#. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_sufrida
 msgid "Operaciones con Retencion Sufrida"
 msgstr "Operaciones con Retencion Sufrida"
 
 #. module: l10n_ar_retentions_basic
-#: model:ir.module.module,description:l10n_ar_retentions_basic.module_meta_information
-msgid ""
-"\n"
-"    This module provide :\n"
-"    1) Implementation of Retentions Taxes for Argentina\n"
-"       based on tax objects of OpenERP like account.tax and account.tax."
-"code.\n"
-"    "
-msgstr ""
-"\n"
-"    Este módulo provee :\n"
-"    1) Implementación de los Impuestos de Retención para Argentina\n"
-"       basados en los objetos de Impuestos de OpenERP como account.tax y "
-"account.tax.code.\n"
-"    "
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,partner_id:0
-msgid "Partner"
-msgstr "Partner"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iibb_caba_sufrida
-msgid "Retencion IIBB CABA Sufrida (Cobros)"
-msgstr "Retencion IIBB CABA Sufrida (Cobros)"
-
-#. module: l10n_ar_retentions_basic
-#: help:retention.tax.line,base_code_id:0
-msgid "The account basis of the tax declaration."
-msgstr "Cuenta base de la declaración de impuestos"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_suss_efectuada
-msgid "Operaciones con Retencion SUSS Efectuada"
-msgstr "Operaciones con Retencion SUSS Efectuada"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.retention,state_id:0 field:retention.tax.line,state_id:0
-msgid "State/Province"
-msgstr "Estado/Provincia"
+#: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_tax_line_supported_menu
+#: view:retention.tax.line:0
+msgid "Retentions Supported"
+msgstr "Retenciones soportadas"
 
 #. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,base_amount:0
@@ -355,24 +331,9 @@ msgid "Keep it empty if the date is the same as the voucher."
 msgstr "Dejar vacío si la fecha es la misma que la del comprobante."
 
 #. module: l10n_ar_retentions_basic
-#: field:retention.retention,jurisdiccion:0
-msgid "Jurisdiccion"
-msgstr "Jurisdicción"
-
-#. module: l10n_ar_retentions_basic
-#: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_tax_line_supported_menu
-msgid "Retentions Supported"
-msgstr "Retenciones soportadas"
-
-#. module: l10n_ar_retentions_basic
 #: model:ir.model,name:l10n_ar_retentions_basic.model_account_voucher
 msgid "Accounting Voucher"
-msgstr "Comprobante Contable"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.retention,tax_id:0
-msgid "Tax"
-msgstr "Impuesto"
+msgstr "Voucher de contabilidad"
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_ganancias_sufrida
@@ -380,19 +341,9 @@ msgid "Retencion Ganancias Sufrida (Cobros)"
 msgstr "Retencion Ganancias Sufrida (Cobros)"
 
 #. module: l10n_ar_retentions_basic
-#: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_tax_line_applied_menu
-msgid "Retentions Applied"
-msgstr "Retenciones aplicadas"
-
-#. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,voucher_id:0
 msgid "Voucher"
 msgstr "Comprobante"
-
-#. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_suss_sufrida
-msgid "Retencion SUSS Sufrida (Cobros)"
-msgstr "Retencion SUSS Sufrida (Cobros)"
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_ganancias_efectuada
@@ -400,9 +351,109 @@ msgid "Operaciones con Retencion Ganancias Efectuada"
 msgstr "Operaciones con Retencion Ganancias Efectuada"
 
 #. module: l10n_ar_retentions_basic
-#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iibb_caba_efectuada
-msgid "Retencion IIBB CABA Efectuada (Pagos)"
-msgstr "Retencion IIBB CABA Efectuada (Pagos)"
+#: view:account.voucher:0
+msgid "Information"
+msgstr "Información"
+
+#. module: l10n_ar_retentions_basic
+#: view:retention.tax.line:0
+msgid "Supported"
+msgstr "Soportado"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iva_efectuada
+msgid "Operaciones con Retencion IVA Efectuada"
+msgstr "Operaciones con Retencion IVA Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "Amounts"
+msgstr "Cantidad"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iibb_caba_sufrida
+msgid "Operaciones con Retencion IIBB CABA Sufrida"
+msgstr "Operaciones con Retencion IIBB CABA Sufrida"
+
+#. module: l10n_ar_retentions_basic
+#: selection:retention.retention,jurisdiccion:0
+msgid "Nacional"
+msgstr "Nacional"
+
+#. module: l10n_ar_retentions_basic
+#: selection:retention.retention,type:0
+msgid "Other"
+msgstr "Otro"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iva_efectuada
+msgid "Retencion IVA Efectuada (Pagos)"
+msgstr "Retencion IVA Efectuada (Pagos)"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)"
+msgstr "onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)"
+
+#. module: l10n_ar_retentions_basic
+#: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_retention_tree
+msgid "Here you can define Retentions and their configuration to be used in Customer Payents or Supplier Payments."
+msgstr "Defina las retenciones y su configuración que serán utilizadas en los cobros a clientes y pagos a proveedores"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_iibb_caba_efectuada
+msgid "Operaciones con Retencion IIBB CABA Efectuada"
+msgstr "Operaciones con Retencion IIBB CABA Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_suss_sufrida
+msgid "Operaciones con Retencion SUSS Sufrida"
+msgstr "Operaciones con Retencion SUSS Sufrida"
+
+#. module: l10n_ar_retentions_basic
+#: help:retention.tax.line,retention_id:0
+msgid "Retention configuration used '                                       'for this retention tax, where all the configuration resides. Accounts, Tax Codes, etc."
+msgstr "La configuración de Retención usada '                                       'para esta retención, donde todas las configuraciones residen. Cuentas, Códigos de Impuesto, etc."
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_suss_efectuada
+msgid "Retencion SUSS Efectuada (Pagos)"
+msgstr "Retencion SUSS Efectuada (Pagos)"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iibb_caba_sufrida
+msgid "Retencion IIBB CABA Sufrida (Cobros)"
+msgstr "Retencion IIBB CABA Sufrida (Cobros)"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
+msgstr "onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
+
+#. module: l10n_ar_retentions_basic
+#: help:retention.tax.line,base_code_id:0
+msgid "The account basis of the tax declaration."
+msgstr "Cuenta base de la declaración de impuestos"
+
+#. module: l10n_ar_retentions_basic
+#: view:account.voucher:0
+msgid "Supported Retentions"
+msgstr "Retenciones soportadas"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_iva_efectuada
+msgid "Retencion IVA Efectuada"
+msgstr "Retencion IVA Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_suss_efectuada
+msgid "Operaciones con Retencion SUSS Efectuada"
+msgstr "Operaciones con Retencion SUSS Efectuada"
+
+#. module: l10n_ar_retentions_basic
+#: field:retention.tax.line,vat:0
+msgid "CIF/NIF"
+msgstr "CUIT"
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_ganancias_sufrida
@@ -415,17 +466,13 @@ msgid "Operaciones con Retencion Efectuada"
 msgstr "Operaciones con Retencion Efectuada"
 
 #. module: l10n_ar_retentions_basic
-#: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_tax_supported_tree
-#: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_tax_tree
-msgid "Ayuda"
-msgstr "Ayuda"
+#: view:account.voucher:0
+msgid "Total"
+msgstr "Total"
 
 #. module: l10n_ar_retentions_basic
-#: view:retention.tax.line:0
-msgid "Amount Total"
-msgstr "Cantidad total"
-
-#. module: l10n_ar_retentions_basic
-#: field:retention.retention,name:0 field:retention.tax.line,name:0
+#: field:retention.retention,name:0
+#: field:retention.tax.line,name:0
 msgid "Retention"
 msgstr "Retención"
+
