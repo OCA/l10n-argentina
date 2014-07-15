@@ -32,7 +32,7 @@ class retention_tax_line(osv.osv):
         'name': fields.char('Retention', size=64),
         'date': fields.date('Date', select=True),
         'voucher_id': fields.many2one('account.voucher', 'Voucher', ondelete='cascade'),
-        'voucher_number': fields.related('voucher_id', 'number', type='char', string='Voucher No.'),
+        'voucher_number': fields.char('Reference', size=64),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
                                       domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
         'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
@@ -44,8 +44,8 @@ class retention_tax_line(osv.osv):
         'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
         'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        'partner_id': fields.related('voucher_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
-        'vat': fields.related('voucher_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
+        'partner_id': fields.many2one('res.partner', 'Partner', required=True),
+        'vat': fields.related('partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
         'certificate_no': fields.char('Certificate No.', required=False, size=32),
         'state_id': fields.many2one('res.country.state', string="State/Province"),
     }
@@ -239,6 +239,14 @@ class account_voucher(osv.osv):
                 res[1]['move_id'] = move_id
                 move_lines.append(res[0])
                 move_lines.append(res[1])
+
+            # Escribimos valores del voucher en la retention tax line
+            ret_vals = {
+                    'voucher_number': voucher.number,
+                    'partner_id': voucher.partner_id.id,
+            }
+
+            retention_line_obj.write(cr, uid, ret.id, ret_vals, context=context)
 
         return move_lines
 

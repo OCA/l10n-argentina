@@ -16,6 +16,7 @@
                 <tree string="Retention Lines">
                   <field name="date" />
                   <field name="retention_id" string="Retention Type" />
+                  <field name="partner_id" invisible="1"/>
                   <field name="certificate_no" />
                   <field name="base" />
                   <field name="amount" />
@@ -23,7 +24,7 @@
 
                 <form string="Retention Lines" version="7.0">
                     <h1>
-                        <field name="name" class="oe_inline" readonly="1"/>
+                        <field name="name" class="oe_inline"/>
                     </h1>
                   <group>
                       <group string="Information" name="info">
@@ -73,6 +74,7 @@
                 <tree string="Retention Lines">
                   <field name="date" />
                   <field name="retention_id" string="Retention Type" />
+                  <field name="partner_id" invisible="1"/>
                   <field name="certificate_no" />
                   <field name="base" sum="Base"/>
                   <field name="amount" sum="Total"/>
@@ -80,7 +82,7 @@
                 </tree>
                 <form string="Retention Lines" version="7.0">
                     <h1>
-                        <field name="name" class="oe_inline" readonly="1"/>
+                        <field name="name" class="oe_inline" />
                     </h1>
                   <group>
                       <group string="Information" name="info">
