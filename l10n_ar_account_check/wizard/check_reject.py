@@ -47,7 +47,7 @@ class account_check_reject(osv.osv_memory):
         return res and res[0] or False
 
     _columns = {
-        'reject_date': fields.date('Deposit Date', required=True),
+        'reject_date': fields.date('Reject Date', required=True),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True),
         'expense_line_ids': fields.one2many('check.reject.expense', 'reject_id', 'Expenses'),
         'company_id': fields.many2one('res.company', 'Company', required=True),
