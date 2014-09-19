@@ -10,10 +10,15 @@
             <field name="inherit_id" ref="account_payment.view_payment_order_form"/>
             <field name="arch" type="xml">
                 <data>
+                    <button name="cancel" position="after">
+                        <button name="action_view_vouchers" string="Show Vouchers" states="done" type="object"/>
+                    </button>
                     <field name="date_scheduled" position="attributes">
                         <attribute name="attrs">{'readonly':['|', ('date_prefered','!=','fixed'), ('state','in',('open', 'done'))]}</attribute>
                     </field>
-                    <field name="mode" position="replace"/>
+                    <field name="mode" position="replace">
+                        <field name="journal_id"/>
+                    </field>
                     <xpath expr="//field[@name='line_ids']/form/notebook/page[@string='Payment']/group/field[@name='move_line_id']" position="after">
                         <field name="mode"/>
                     </xpath>
