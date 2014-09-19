@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report auto="True" id="account_payment.payment_order1" model="payment.order" name="payment.order.plan" rml="l10n_ar_payment_plan/report/order.rml" string="Payment Order"/>
+    </data>
+</openerp>

@@ -11,7 +11,7 @@
             <field name="arch" type="xml">
                 <data>
                     <button name="cancel" position="after">
-                        <button name="action_view_vouchers" string="Show Vouchers" states="done" type="object"/>
+                        <button name="action_view_vouchers" string="Show Vouchers" states="done" type="object" groups="account.group_account_invoice,account.group_account_manager"/>
                     </button>
                     <field name="date_scheduled" position="attributes">
                         <attribute name="attrs">{'readonly':['|', ('date_prefered','!=','fixed'), ('state','in',('open', 'done'))]}</attribute>
