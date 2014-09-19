@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -19,24 +19,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    "name": "Planificacion de Pagos",
-    "version": "1.0",
-    "depends": ["base", "purchase", "account" , "account_accountant", "account_payment" ],
-    "author": "Aconcagua Team",
-    "website": "http://www.proyectoaconcagua.com.ar",
-    "license": "GPL-3",
-    "category": "",
-    "description": """
-      Modulo de planificacion de pagos con posibilidad de crear de forma semi automatica los vouchers a partir de la planificacion realizada.
-    """,
-    "data": [
-        "account_payment_view.xml",
-    ],
-    'demo': [
-        ],
-    'test': [
-    ],
-    'installable': True,
-    'active': False,
-}
+
+import account_payment
