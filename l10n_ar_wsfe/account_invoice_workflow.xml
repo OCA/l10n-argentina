@@ -15,7 +15,7 @@ action_aut_cae()</field>
         <record id="account.act_open" model="workflow.activity">
             <field name="wkf_id" ref="account.wkf"/>
             <field name="name">open</field>
-            <field name="action">action_open()</field>
+            <field name="action">invoice_validate()</field>
             <field name="kind">function</field>
         </record>
 

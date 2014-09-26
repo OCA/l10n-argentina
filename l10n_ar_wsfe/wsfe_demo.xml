@@ -9,21 +9,21 @@
         <record id="wsfe_pos_A0001_demo" model="pos.ar">
             <field name="name">0001</field>
             <field name="priority">1</field>
-            <field name="shop_id" ref="sale.shop"/>
+            <field name="shop_id" ref="sale.sale_shop_1"/>
             <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
         </record>
 
         <record id="wsfe_pos_B0001_demo" model="pos.ar">
             <field name="name">0001</field>
             <field name="priority">1</field>
-            <field name="shop_id" ref="sale.shop"/>
+            <field name="shop_id" ref="sale.sale_shop_1"/>
             <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
         </record>
 
         <record id="wsfe_pos_A0002_not_electronic_demo" model="pos.ar">
             <field name="name">0002</field>
             <field name="priority">1</field>
-            <field name="shop_id" ref="sale.shop"/>
+            <field name="shop_id" ref="sale.sale_shop_1"/>
             <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
         </record>
 

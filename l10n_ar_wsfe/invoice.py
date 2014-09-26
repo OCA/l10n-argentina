@@ -321,12 +321,22 @@ class account_invoice(osv.osv):
         self.write(cr, uid, ids, {})
 
         for obj_inv in self.browse(cr, uid, ids, context=context):
+            partner_country = obj_inv.partner_id.country_id and obj_inv.partner_id.country_id.id or False
+            company_country = obj_inv.company_id.country_id and obj_inv.company_id.country_id.id or False
+
             id = obj_inv.id
             invtype = obj_inv.type
+
+            if invtype in ('in_invoice', 'in_refund'):
+                local = (partner_country == company_country) or partner_country == False
+            else:
+                local = True
+
             reference = obj_inv.reference or ''
 
-            # Chequeamos los valores fiscales
-            self._check_fiscal_values(cr, uid, obj_inv)
+            if local:
+                # Chequeamos los valores fiscales
+                self._check_fiscal_values(cr, uid, obj_inv)
 
             # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
             # si el usuario hizo un ingreso dejo ese numero
@@ -370,18 +380,23 @@ class account_invoice(osv.osv):
 
             # Si son de Proveedor
             else:
-                m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
-                if not m:
-                    raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                if not obj_inv.internal_number:
+                    raise osv.except_osv( _('Error'), _('The Invoice Number should be filled'))
+
+                if local:
+                    m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
+                    if not m:
+                        raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+
 
             # Escribimos los campos necesarios de la factura
             self.write(cr, uid, obj_inv.id, invoice_vals)
 
+            invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
             if not reference:
-                invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
                 ref = invoice_name
             else:
-                ref = reference
+                ref = '%s [%s]' % (invoice_name, reference)
 
             # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
             self._update_reference(cr, uid, obj_inv, ref, context=context)
@@ -651,10 +666,6 @@ class account_invoice(osv.osv):
                 index += 1
 
         return invoices_approbed
-
-    def action_open(self, cr, uid, ids, context={}, *args):
-        self.write(cr, uid, ids, {'state':'open'}, context=context)
-        return True
 
 account_invoice()
 
