@@ -44,7 +44,7 @@ class retention_tax_line(osv.osv):
         'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
         'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        'partner_id': fields.many2one('res.partner', 'Partner', required=True),
+        'partner_id': fields.many2one('res.partner', 'Partner', required=False),
         'vat': fields.related('partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
         'certificate_no': fields.char('Certificate No.', required=False, size=32),
         'state_id': fields.many2one('res.country.state', string="State/Province"),
