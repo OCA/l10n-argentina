@@ -69,7 +69,6 @@ class account_check_reject(osv.osv_memory):
         if context is None:
             context = {}
 
-        wf_service = netsvc.LocalService('workflow')
         third_check_obj = self.pool.get('account.third.check')
         invoice_obj = self.pool.get('account.invoice')
         invoice_line_obj = self.pool.get('account.invoice.line')
@@ -152,10 +151,12 @@ class account_check_reject(osv.osv_memory):
             # Creamos la nota de debito
             debit_note_id = invoice_obj.create(cr, uid, invoice_vals)
 
+            # TODO: Chequear que es lo mismo el estado en el que este, asi quitamos
+            # este if que parece no tener sentido
             if check.state == 'delivered':
-                wf_service.trg_validate(uid, 'account.third.check', check.id, 'delivered_rejected', cr)
+                third_check_obj.reject_check(cr, uid, [check.id], context=context)
             elif check.state == 'deposited':
-                wf_service.trg_validate(uid, 'account.third.check', check.id, 'deposited_rejected', cr)
+                third_check_obj.reject_check(cr, uid, [check.id], context=context)
 
             # Guardamos la referencia a la nota de debito del rechazo
             # TODO: Cambiar el write del state, tiene que ser por workflow.

@@ -90,8 +90,7 @@ class account_check_deposit(osv.osv_memory):
     # todo en un asiento por cuenta bancaria. Por ahora, esta hecho para
     # uno por asiento.
     def action_deposit(self, cr, uid, ids, context=None):
-        third_check = self.pool.get('account.third.check')
-        wf_service = netsvc.LocalService('workflow')
+        third_check_obj = self.pool.get('account.third.check')
 
         move_line = self.pool.get('account.move.line')
 
@@ -108,7 +107,7 @@ class account_check_deposit(osv.osv_memory):
         record_ids = context.get('active_ids', [])
         company_id = wizard.company_id.id
 
-        check_objs = third_check.browse(cr, uid, record_ids, context=context)
+        check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
 
         for check in check_objs:
             if check.state != 'wallet':
@@ -163,7 +162,7 @@ class account_check_deposit(osv.osv_memory):
             check_vals = {'deposit_bank_id': wizard.bank_account_id.id, 'deposit_date': deposit_date}
             check.write(check_vals)
 
-            wf_service.trg_validate(uid, 'account.third.check', check.id, 'cartera_deposited', cr)
+            third_check_obj.deposit_check(cr, uid, [check.id], context=context)
 
             # Se postea el asiento llamando a la funcion post de account_move.
             # TODO: Se podria poner un check en el wizard para que elijan si postear

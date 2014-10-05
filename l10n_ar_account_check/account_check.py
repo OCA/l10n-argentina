@@ -229,7 +229,7 @@ class account_third_check(osv.osv):
 
         return move_line
 
-    def wkf_cartera(self, cr, uid, ids, context=None):
+    def to_wallet(self, cr, uid, ids, context=None):
         # Transicion efectuada al validar un pago de cliente que contenga
         # cheques
         for check in self.browse(cr, uid, ids):
@@ -254,7 +254,13 @@ class account_third_check(osv.osv):
             check.write(vals)
         return True
 
-    def wkf_delivered(self, cr, uid, ids, context=None):
+    def return_wallet(self, cr, uid, ids, context=None):
+        # Transicion efectuada al romper conciliacion en un pago a proveedores que tiene cheques de tercero entregados
+        vals = {'state': 'wallet', 'endorsement_date': False, 'destiny_partner_id': False, 'dest': False}
+        self.write(cr, uid, ids, vals)
+        return True
+
+    def check_delivered(self, cr, uid, ids, context=None):
         # Transicion efectuada al validar un pago a proveedores que entregue
         # cheques de terceros
         voucher_obj = self.pool.get('account.voucher')
@@ -273,7 +279,7 @@ class account_third_check(osv.osv):
             check.write(vals)
         return True
 
-    def wkf_deposited(self, cr, uid, ids, context=None):
+    def deposit_check(self, cr, uid, ids, context=None):
         # Transicion efectuada via wizard
         for check in self.browse(cr, uid, ids):
             check.write({
@@ -281,7 +287,7 @@ class account_third_check(osv.osv):
             })
         return True
 
-    def wkf_rejected(self, cr, uid, ids, context=None):
+    def reject_check(self, cr, uid, ids, context=None):
         for check in self.browse(cr, uid, ids):
             check.write({
                 'state': 'rejected',

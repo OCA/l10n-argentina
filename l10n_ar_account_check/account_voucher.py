@@ -165,11 +165,9 @@ class account_voucher(osv.osv):
 #        return super(account_voucher, self).action_move_line_create(cr, uid, ids, context=None)
 
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
-        wf_service = netsvc.LocalService('workflow')
         move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
 
-        third_check_pool = self.pool.get('account.third.check')
-        issued_check_pool = self.pool.get('account.issued.check')
+        third_check_obj = self.pool.get('account.third.check')
 
         # Voucher en cuestion que puede ser un Recibo u Orden de Pago
         v = self.browse(cr, uid, voucher_id)
@@ -179,10 +177,10 @@ class account_voucher(osv.osv):
                 if check.amount == 0.0:
                     continue
 
-                res = third_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = third_check_obj.create_voucher_move_line(cr, uid, check, v, context=context)
                 res['move_id'] = move_id
                 move_lines.append(res)
-                wf_service.trg_validate(uid, 'account.third.check', check.id, 'draft_cartera', cr)
+                third_check_obj.to_wallet(cr, uid, [check.id], context=context)
 
         elif v.type in ('purchase', 'payment'):
             # Cheques recibidos de terceros que los damos a un proveedor
@@ -190,10 +188,10 @@ class account_voucher(osv.osv):
                 if check.amount == 0.0:
                     continue
 
-                res = third_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = third_check_obj.create_voucher_move_line(cr, uid, check, v, context=context)
                 res['move_id'] = move_id
                 move_lines.append(res)
-                wf_service.trg_validate(uid, 'account.third.check', check.id, 'cartera_delivered', cr)
+                third_check_obj.check_delivered(cr, uid, [check.id], context=context)
 
             # Cheques propios que los damos a un proveedor
             for check in v.issued_check_ids:
@@ -226,5 +224,15 @@ class account_voucher(osv.osv):
 #            third_obj.write(cr, uid, check_ids, {'voucher_id': ids[0]}, context)
 #
 #        return True
-#
+
+    def cancel_voucher(self, cr, uid, ids, context=None):
+        third_check_obj = self.pool.get('account.third.check')
+        res = super(account_voucher, self).cancel_voucher(cr, uid, ids, context=context)
+
+        for voucher in self.browse(cr, uid, ids, context=context):
+            for third_check in voucher.third_check_ids:
+                third_check_obj.return_wallet(cr, uid, [third_check.id], context=context)
+
+        return res
+
 account_voucher()
