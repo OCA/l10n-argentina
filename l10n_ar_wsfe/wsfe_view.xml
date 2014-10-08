@@ -20,6 +20,7 @@
 							<field name="company_id" select="1"/>
 							<field name="cuit" select="1"/>
 							<field name="url" select="1"/>
+							<field name="homologation"/>
 						</group>
 						<notebook colspan="4">
 							<page string="Points Of Sale">
@@ -82,6 +83,7 @@
 					<field name="company_id" select="1"/>
 					<field name="cuit" select="1" />
 					<field name="url" select="1" />
+                    <field name="homologation"/>
 				</tree>
 			</field>
 		</record>

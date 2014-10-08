@@ -50,6 +50,7 @@ class wsfe_config(osv.osv):
     _columns = {
         'cuit': fields.related('company_id', 'partner_id', 'vat', type='char', string='Cuit'),
         'url' : fields.char('URL for WSFE', size=60, required=True),
+        'homologation' : fields.boolean('Homologation', help="If true, there will be some validations that are disabled, for example, invoice number correlativeness"),
         'point_of_sale_ids': fields.many2many('pos.ar', 'pos_ar_wsfe_rel', 'wsfe_config_id', 'pos_ar_id', 'Points of Sale'),
         'vat_tax_ids' : fields.one2many('wsfe.tax.codes', 'wsfe_config_id' ,'Taxes', domain=[('from_afip', '=', True)]),
         'exempt_operations_tax_ids' : fields.one2many('wsfe.tax.codes', 'wsfe_config_id' ,'Taxes', domain=[('from_afip', '=', False), ('exempt_operations', '=', True)]),
@@ -63,6 +64,7 @@ class wsfe_config(osv.osv):
 
     _defaults = {
         'company_id' : lambda self, cr, uid, context=None: self.pool.get('res.users')._get_company(cr, uid, context=context),
+        'homologation': lambda *a: False,
         }
 
     def create(self, cr, uid, vals, context):

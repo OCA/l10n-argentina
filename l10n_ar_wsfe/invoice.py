@@ -355,11 +355,12 @@ class account_invoice(osv.osv):
                     invoice_vals['aut_cae'] = True
                     fe_next_number = self._get_next_wsfe_number(cr, uid, obj_inv, context=context)
 
-                    # HACK: Para realizar pruebas sin tener que crear una factura previa con el nro correspondiente,
-                    # podemos comentar las siguientes dos lineas y descomentar la tercera.
-                    if fe_next_number != next_number:
-                        raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
-                    #next_number = fe_next_number
+                    # Si es homologacion, no hacemos el chequeo del numero
+                    if not conf.homologation:
+                        if fe_next_number != next_number:
+                            raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
+                    else:
+                        next_number = fe_next_number
 
                 # Si no es Factura Electronica...
                 else:
