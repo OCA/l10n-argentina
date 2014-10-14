@@ -21,8 +21,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
  
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>, Anibal Alejandro Guanca <aguanca@e-mips.com.ar>"
 
