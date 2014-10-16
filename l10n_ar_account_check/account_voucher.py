@@ -167,6 +167,7 @@ class account_voucher(osv.osv):
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
         move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
 
+        issued_check_pool = self.pool.get('account.issued.check')
         third_check_obj = self.pool.get('account.third.check')
 
         # Voucher en cuestion que puede ser un Recibo u Orden de Pago
