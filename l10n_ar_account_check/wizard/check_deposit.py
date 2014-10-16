@@ -85,6 +85,23 @@ class account_check_deposit(osv.osv_memory):
 
         raise osv.except_osv(_('Error!'), _('Bad Treasury configuration for this Company!'))
 
+    def onchange_bank_account(self, cr, uid, ids, bank_account_id, context=None):
+
+        bank_obj = self.pool.get('res.partner.bank')
+        res = {'value': {}}
+
+        if not bank_account_id:
+            return res
+
+        if not context:
+            context = {}
+
+        bank_acc = bank_obj.browse(cr, uid, bank_account_id, context)
+
+        if bank_acc.journal_id:
+            res['value']['journal_id'] = bank_acc.journal_id.id
+        return res
+
     # TODO: Hacer un refactoring para poder depositar varios al mismo tiempo,
     # pero antes averiguar si se tiene que hacer un asiento por cada uno o
     # todo en un asiento por cuenta bancaria. Por ahora, esta hecho para
