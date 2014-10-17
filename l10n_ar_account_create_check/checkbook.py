@@ -72,6 +72,15 @@ class account_checkbook(osv.osv):
 
         return True
 
+    def _get_next_available_check(self, cr, uid, checkbook_id, context=None):
+        check_obj = self.pool.get("account.checkbook.check")
+
+        check_ids = check_obj.search(cr, uid, [('state', '=', 'draft'), ('checkbook_id', '=', checkbook_id)], order="id asc", context=context)
+
+        if check_ids:
+            return check_ids[0]
+        return False
+
 
 
 account_checkbook()
