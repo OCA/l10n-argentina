@@ -106,7 +106,7 @@ class account_voucher(osv.osv):
 
         return {'value': {'amount': amount}}
 
-    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, context=None):
+    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], context=None):
 
         amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
         amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
