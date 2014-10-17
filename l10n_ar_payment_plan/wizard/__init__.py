@@ -2,6 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
+#    Copyright (c) 2014 E-MIPS (http://www.e-mips.com.ar)
 #    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
 #
@@ -20,6 +21,5 @@
 #
 ##############################################################################
 
-import account_payment
-import report
-import wizard
+
+import create_payment_lines

@@ -10,12 +10,16 @@
             <field name="inherit_id" ref="account_payment.view_payment_order_form"/>
             <field name="arch" type="xml">
                 <data>
+                    <button name="open" position="before">
+                        <button name="%(action_create_payment_lines)d" string="Select Invoices" states="draft" type="action"/>
+                    </button>
                     <button name="cancel" position="after">
                         <button name="action_view_vouchers" string="Show Vouchers" states="done" type="object" groups="account.group_account_invoice,account.group_account_manager"/>
                     </button>
                     <field name="date_scheduled" position="attributes">
                         <attribute name="attrs">{'readonly':['|', ('date_prefered','!=','fixed'), ('state','in',('open', 'done'))]}</attribute>
                     </field>
+                    <xpath expr="//sheet/div[@class='oe_button_box']" position="replace"/>
                     <field name="mode" position="replace">
                         <field name="journal_id"/>
                     </field>

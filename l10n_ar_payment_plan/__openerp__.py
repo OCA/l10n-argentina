@@ -31,6 +31,7 @@
       Modulo de planificacion de pagos con posibilidad de crear de forma semi automatica los vouchers a partir de la planificacion realizada.
     """,
     "data": [
+        "wizard/create_payment_lines_view.xml",
         "account_payment_view.xml",
         "account_payment_report.xml",
     ],
