@@ -21,7 +21,7 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
-from openerp import netsvc
+from openerp.tools.translate import _
 
 import openerp.addons.decimal_precision as dp
 
@@ -53,6 +53,15 @@ class payment_order(osv.osv):
         'total_pay': fields.function(_total_pay, string="Total Pay", type='float'),
     }
  
+
+    def unlink(self, cr, uid, ids, context=None):
+        for order in self.browse(cr, uid, ids, context=context):
+            for line in order.line_ids:
+                if line.voucher_id.state=='posted':
+                    raise osv.except_osv(_('Invalid Action!'), _('You cannot delete Payment Orders that has confirmed payments!'))
+
+        return osv.osv.unlink(self, cr, uid, ids, context=context)
+
 
     def set_done(self, cr, uid, ids, *args):
         res = super(payment_order, self).set_done(cr, uid, ids, args)
@@ -118,14 +127,16 @@ class payment_order(osv.osv):
         vou_ids = []
         for order in self.browse(cr, uid, ids, context=context):
             vou_ids += [line.voucher_id.id for line in order.line_ids]
+
         #choose the view_mode accordingly
         if len(vou_ids)>1:
             result['domain'] = "[('id','in',["+','.join(map(str, vou_ids))+"])]"
         else:
-            res = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_voucher_tree')
-            res2 = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_vendor_payment_form')
-            result['views'] = [(res and res[1] or False, 'tree'), (res2 and res2[1] or False, 'from')]
-            result['res_id'] = vou_ids and vou_ids[0] or False
+           result['res_id'] = vou_ids and vou_ids[0] or False
+
+        res = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_voucher_tree')
+        res2 = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_vendor_payment_form')
+        result['views'] = [(res and res[1] or False, 'tree'), (res2 and res2[1] or False, 'form')]
         return result
 
 payment_order()
