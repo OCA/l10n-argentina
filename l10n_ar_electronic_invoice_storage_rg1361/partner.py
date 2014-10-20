@@ -27,6 +27,12 @@ class account_fiscal_position (osv.osv):
 
     _columns = {
         'afip_code' : fields.char('AFIP Code', size=2),
+        'operation_code': fields.selection([('Z', 'Exports to free zone'),
+                                            ('X', 'Overseas Exports'),
+                                            ('E', 'Exempt Operation'),
+                                            ('N', 'No Taxed Operation'),
+                                            (' ', 'Internal')], 'Operation Code',
+                                            required=False, help="""This code is used for SIRED. It will be set in invoices, but it could be changed."""),
     }
 
 account_fiscal_position()

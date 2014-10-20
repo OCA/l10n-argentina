@@ -21,4 +21,5 @@
 import partner
 import product
 import res_currency
+import invoice
 import wizard

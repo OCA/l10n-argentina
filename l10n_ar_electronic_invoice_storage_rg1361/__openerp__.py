@@ -31,6 +31,7 @@
         'partner_view.xml',
         'res_currency_view.xml',
         'product_view.xml',
+        'account_invoice_view.xml',
         'wizard/create_sired_files_view.xml',
     ],
     'demo_xml': [],

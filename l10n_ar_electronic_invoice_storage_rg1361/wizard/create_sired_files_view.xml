@@ -13,6 +13,8 @@
           <label string="This wizard allows you to create files to import to SIAp for SIRED. The files generated will be attached to corresponding period." colspan="4"/>
           <separator colspan="4"/>
           <field name="period_id"/>
+          <separator string="Validation Errors" colspan="4"/>
+          <field name="notes" readonly="1" nolabel="1" colspan="4"/>
           <group col="2" colspan="4">
             <button icon='gtk-cancel' special="cancel" string="Cancel" />
             <button name="create_files" string="Generate" colspan="1" type="object" icon="gtk-ok" />
