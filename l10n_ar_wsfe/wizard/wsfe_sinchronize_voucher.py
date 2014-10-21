@@ -23,6 +23,7 @@ from tools.translate import _
 import decimal_precision as dp
 import netsvc
 import time
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class wsfe_sinchronize_voucher(osv.osv_memory):
     """
@@ -37,8 +38,8 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         'voucher_number': fields.integer('Number', required=True),
 
         'document_type': fields.many2one('res.document.type', 'Document Type', readonly=True),
-        'document_number': fields.integer('Document Number', readonly=True),
-        'date_invoice': fields.date('Date Invoice', readonly=False),
+        'document_number': fields.char('Document Number', readonly=True),
+        'date_invoice': fields.date('Date Invoice', readonly=True),
         'amount_total': fields.float(digits_compute=dp.get_precision('Account'), string="Total", readonly=True),
         'amount_no_taxed': fields.float(digits_compute=dp.get_precision('Account'), string="No Taxed", readonly=True),
         #'amount_untaxed': fields.float(digits_compute=dp.get_precision('Account'), string="Untaxed", readonly=True),
@@ -47,8 +48,8 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         'amount_exempt': fields.float(digits_compute=dp.get_precision('Account'), string="Amount Exempt", readonly=True),
         #'currency': fields.many2one('res.currency', string="Currency", readonly=True),
         'cae': fields.char('CAE', size=32, required=False, readonly=True),
-        'cae_due_date': fields.date('CAE Due Date', readonly=False),
-        'date_process': fields.datetime('Date Processed', readonly=False),
+        'cae_due_date': fields.date('CAE Due Date', readonly=True),
+        'date_process': fields.datetime('Date Processed', readonly=True),
 
         'infook': fields.boolean('Info OK'),
         'invoice_id': fields.many2one('account.invoice', 'Invoice'),
@@ -58,32 +59,44 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         'infook': lambda *a: False,
         }
 
-    def get_voucher_info(self, cr, uid, ids, context=None):
-        wsfe_conf_obj = self.pool.get('wsfe.config')
+    def onchange_voucher(self, cr, uid, ids, voucher_type, pos_id, voucher_number, context=None):
 
-        # Obtenemos los datos puestos por el usuario
-        data = self.browse(cr, uid, ids[0], context=context)
+        if not context:
+            context = {}
+
+        if not voucher_type or not pos_id or not voucher_number:
+            return {}
+
+        wsfe_conf_obj = self.pool.get('wsfe.config')
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
+        pos_obj = self.pool.get('pos.ar')
 
         conf = wsfe_conf_obj.get_config(cr, uid)
-        voucher_type = int(data.voucher_type.code)
-        pos = int(data.pos_id.name)
-        number = data.voucher_number
+        reads = voucher_type_obj.read(cr, uid, voucher_type, ['code'], context=context)['code']
+        if reads:
+            voucher_type = int(reads)
+
+        reads = pos_obj.read(cr, uid, pos_id, ['name'], context=context)['name']
+        if reads:
+            pos = int(reads)
+
+        number = voucher_number
 
         res = wsfe_conf_obj.get_voucher_info(cr, uid, [conf.id], pos, voucher_type, number, context=context)
 
         doc_ids = self.pool.get('res.document.type').search(cr, uid, [('afip_code', '=', str(res['DocTipo']))])
         document_type = doc_ids and doc_ids[0] or False
 
-        di = time.strptime(str(res['CbteFch']), '%Y%m%d')
-        dd = time.strptime(str(res['FchVto']), '%Y%m%d')
-        dpr = time.strptime(str(res['FchProceso']), '%Y%m%d%H%M%S')
+        di = time.strftime(DEFAULT_SERVER_DATE_FORMAT, time.strptime(str(res['CbteFch']), '%Y%m%d'))
+        dd = time.strftime(DEFAULT_SERVER_DATE_FORMAT, time.strptime(str(res['FchVto']), '%Y%m%d'))
+        dpr = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT, time.strptime(str(res['FchProceso']), '%Y%m%d%H%M%S'))
 
         # TODO: Tandriamos que filtrar las invoices por Tipo de Comprobante tambien
         # para ello podemos agregar un par de campos mas para usarlos como filtros,
         # por ejemplo, is_debit_note y type
         vals = {
             'document_type': document_type,
-            'document_number': res['DocNro'],
+            'document_number': str(res['DocNro']),
             'date_invoice': di,#str(res['CbteFch']),
             'amount_total': res['ImpTotal'],
             'amount_no_taxed':res['ImpTotConc'],
@@ -92,14 +105,13 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
             'amount_tax':res['ImpIVA'] + res['ImpTrib'],
             'amount_exempt':res['ImpOpEx'],
             #'currency':,
-            'cae':res['CodAutorizacion'],
+            'cae':str(res['CodAutorizacion']),
             'cae_due_date': dd,
             'date_process': dpr,
             'infook': True,
         }
 
-        self.write(cr, uid, ids, vals)
-        return True
+        return {'value': vals}
 
     def relate_invoice(self, cr, uid, ids, context=None):
         wsfe_conf_obj = self.pool.get('wsfe.config')
@@ -110,6 +122,9 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         # Obtenemos los datos puestos por el usuario
         data = self.browse(cr, uid, ids[0], context=context)
         inv = data.invoice_id
+
+        if not data.infook:
+            raise osv.except_osv(_("WSFE Error"), _("Sinchronize process is not correct!"))
 
         # Hacemos un par de chequeos, por las dudas
         electronic_pos_ids = [p.id for p in conf.point_of_sale_ids]
