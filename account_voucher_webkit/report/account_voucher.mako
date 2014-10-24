@@ -105,7 +105,7 @@
 					<table class="shipping_address" width="100%">
 					<tr>
 						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line.move_line_id.ref or '' | entity}
+							${ line.invoice_id and (line.invoice_id.denomination_id.name + ' ' + line.invoice_id.internal_number) or line.ref or '' | entity}
 						</td>
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
@@ -146,7 +146,7 @@
 					<table class="shipping_address" width="100%">
 					<tr>
 						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line.move_line_id.ref or '' | entity}
+							${ line.invoice_id and (line.invoice_id.denomination_id.name + ' ' + line.invoice_id.internal_number) or line.ref or '' | entity}
 						</td>
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
@@ -216,7 +216,7 @@
 				<table class="shipping_address" width="100%">
 					<tr>
 						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line_cr.move_line_id.ref or '' | entity}
+							${ line_cr.invoice_id and (line_cr.invoice_id.denomination_id.name + ' ' + line_cr.invoice_id.internal_number) or line_cr.ref or '' | entity}
 						</td>
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line_cr.name or '' | entity}
@@ -257,7 +257,7 @@
 					<table class="shipping_address" width="100%">
 					<tr>
 						<td width="25%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line.move_line_id.ref or '' | entity}
+							${ line.invoice_id and (line.invoice_id.denomination_id.name + ' ' + line.invoice_id.internal_number) or line.ref or '' | entity}
 						</td>
 						<td width="27%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
