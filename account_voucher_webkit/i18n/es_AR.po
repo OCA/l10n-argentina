@@ -1,0 +1,160 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_voucher_webkit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20131109-002558\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-23 11:33+0000\n"
+"PO-Revision-Date: 2014-05-23 08:37-0300\n"
+"Last-Translator: kloss <kloss>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:60
+msgid "Ref : "
+msgstr "Ref : "
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:346
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:397
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:449
+msgid "Fecha de pago"
+msgstr "Fecha de pago"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:80
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:191
+msgid "Comprobante"
+msgstr "Comprobante"
+
+#. module: account_voucher_webkit
+#: model:ir.actions.report.xml,name:account_voucher_webkit.report_account_voucher
+msgid "Print voucher"
+msgstr "Imprimir egreso de caja / recibo"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:55
+msgid "CUIT : "
+msgstr "CUIT : "
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:95
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:206
+msgid "Neto a cobrar"
+msgstr "Neto a cobrar"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:98
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:209
+msgid "Conciliated"
+msgstr "Conciliado"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:500
+msgid "Certificado Nro."
+msgstr "Certificado Nro."
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:92
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:203
+msgid "Saldo"
+msgstr "Saldo"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:503
+msgid "Base"
+msgstr "Base"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:52
+msgid "Partner : "
+msgstr "Empresa : "
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:305
+msgid "Date"
+msgstr "Fecha"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:86
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:197
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:497
+msgid "Fecha"
+msgstr "Fecha"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:83
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:194
+msgid "Asiento"
+msgstr "Asiento"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:308
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:352
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:403
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:455
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:506
+msgid "Amount"
+msgstr "Cantidad"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:89
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:200
+msgid "Cantidad original"
+msgstr "Cantidad original"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:343
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:394
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:446
+msgid "Fecha de emision"
+msgstr "Fecha de emision"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:47
+msgid "Header"
+msgstr "Encabezado"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:494
+msgid "Retencion"
+msgstr "Retencion"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:302
+msgid "Payment mode"
+msgstr "Forma de pago"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:138
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:179
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:249
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:290
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:330
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:380
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:431
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:483
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:534
+msgid "Total"
+msgstr "Total"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:349
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:400
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:452
+msgid "Banco"
+msgstr "Banco"
+
+#. module: account_voucher_webkit
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:340
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:391
+#: report:addons/account_voucher_webkit/report/account_voucher.mako:443
+msgid "Nro. de cheque"
+msgstr "Nro. de cheque"
+

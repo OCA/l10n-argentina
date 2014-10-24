@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="account_voucher_header" model="ir.header_webkit">
+            <field name="footer_html"><![CDATA[
+			<html>
+			   <head>
+			       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+			       <script>
+			           function subst() {
+			           var vars={};
+			           var x=document.location.search.substring(1).split('&');
+			           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+			           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+			           for(var i in x) {
+			           var y = document.getElementsByClassName(x[i]);
+			           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+			               }
+			           }
+			       </script>
+			       <style type="text/css">
+			       
+			           ${css}
+			       </style>
+			   </head>
+			   <body style="border:0; margin: 0;" onload="subst()">
+			       <table class="header" style="border-top: 1px solid black; width: 100%">
+			           <tr >
+			               <td style="text-align:center;font-size:12;" >${ company.rml_footer or ''}</td> 
+			           </tr>
+			           <tr >
+			               <td style="text-align:center;font-size:12;" >Contact : ${ user.name }</td>
+			           </tr>
+			       </table> ${_debug or ''|n} </body>
+			</html>
+			            ]]></field>
+			            <field name="orientation">Portrait</field>
+			            <field name="format">A4</field>
+			            <field name="html"><![CDATA[
+			<html>
+			   <head>
+			       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+			       <script>
+			           function subst() {
+			           var vars={};
+			           var x=document.location.search.substring(1).split('&');
+			           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+			           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+			           for(var i in x) {
+			           var y = document.getElementsByClassName(x[i]);
+			           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+			               }
+			           }
+			       </script>
+			       <style type="text/css">
+			       
+			           ${css}
+			       </style>
+			   </head>
+			   <body style="border:0; margin: 0;" onload="subst()">
+			       <table class="header" style="border-bottom: 1px solid black; width: 100%">
+			           <tr >
+			               <td style="text-align:left;font-size:12;" width="20%">${ helper.embed_image('png',company.logo,200,50)|n }</td>
+			               <td style="text-align:right;font-size:12;" width="80%"></br></br>${ company.rml_header1 }</td>
+			           </tr>
+			       </table> ${_debug or ''|n} </body>
+			       <p style="text-align:left;font-size:12;">${company.name}</p></br></br></br>  
+			       <table width="100%">
+        	<tr>
+        	 	<td style="text-align:left;font-size:10;" width="25%">
+            			Phone: ${company.phone or ''}
+        	 	</td>  
+				<td width="75%"></td>      	
+        	</tr>
+        	
+        	<tr>
+        		<td style="text-align:left;font-size:10; border-bottom: 1px solid black;" width="25%">
+        	 	    Mail: ${company.email}  
+        		</td>
+        		<td width="75%"></td> 	
+        	</tr>      
+       </table>       
+			</html>]]>
+			            </field>
+			            <field eval="45.0" name="margin_top"/>
+			            <field eval="25.0" name="margin_bottom"/>
+			            <field name="css"><![CDATA[
+			
+			body, table, td, span, div {
+			    font-family: Helvetica, Arial;
+			}
+			 
+			body {
+			font-family:Arial;
+			font-size:11px; 
+			
+			}
+			
+			
+			.header {
+			    margin-left:0;
+			    text-align:left;
+			    width:300px;
+			    font-size:12;
+			}
+			.title {
+			font-size:12px;
+			font-weight: bold;
+			font-family: Helvetica, Arial;
+			}
+			
+			
+			.basic_table{
+			width:100%;
+			text-align:center;
+			border:1px solid black;
+			border-collapse: collapse;
+			font-family: Helvetica;
+			}
+			            
+			.basic_table td {
+			border:1px solid black;
+			font-size:11px;
+			font-family: Helvetica;
+			}
+			
+			.list_table {
+			border-bottom:1px solid black;
+			font-size:11px;
+			border-collapse: collapse;
+			font-family: Helvetica;
+			font-weight: bold;
+			width:100%;
+			
+			}
+			.tbl_header{
+			    font-size:12px;
+			   	font-family: Helvetica;
+			    border:1px solid black;
+			    border-collapse: collapse;
+			}
+			.tr_bottom_line{
+			    border-bottom: thin solid black;
+			    width:100%;
+			    font-size:12px;
+			    
+			   	font-family: Helvetica;
+			}
+			.tr_bottom_line_dark_grey{
+			    border-top: thin solid #ccc;
+			    width:100%;
+			    font-size:12px;
+			    font-family: Helvetica;
+			}
+			.tr_top{
+			            border-top: 1px solid black;
+			    		width:100%;
+			    		font-size:12px;
+			            font-family: Helvetica;
+			            text-align:left;
+			            }
+	
+			.td_f12{
+			    font-size:12px;
+			    font-family: Helvetica; 
+			    
+			}
+			.shipping_address{
+               margin-top: 10px;
+               margin-bottom: 10px;
+               font-size:11px;
+               text-align:left;
+             }
+		
+		
+			
+			]]>
+			            </field>
+			            <field name="name">Sale Header</field>
+		</record>
+        <report 
+        		auto="False" 
+        		id="report_account_voucher" 
+        		model="account.voucher" 
+        		name="account.voucher.webkit"
+                file="account_voucher_webkit/report/account_voucher.mako" 
+        		string="Print voucher"
+                usage="default"
+        		report_type="webkit"
+        		webkit_header="account_voucher_header"/>
+
+    </data>
+</openerp>
