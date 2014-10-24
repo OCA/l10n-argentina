@@ -273,22 +273,6 @@ class account_invoice(osv.osv):
 
         return res+1
 
-    def _update_reference(self, cr, uid, obj_inv, ref, context=None):
-
-        move_id = obj_inv.move_id and obj_inv.move_id.id or False
-        cr.execute('UPDATE account_move SET ref=%s ' \
-                'WHERE id=%s AND (ref is null OR ref = \'\')',
-                (ref, move_id))
-        cr.execute('UPDATE account_move_line SET ref=%s ' \
-                'WHERE move_id=%s AND (ref is null OR ref = \'\')',
-                (ref, move_id))
-        cr.execute('UPDATE account_analytic_line SET ref=%s ' \
-                'FROM account_move_line ' \
-                'WHERE account_move_line.move_id = %s ' \
-                    'AND account_analytic_line.move_id = account_move_line.id',
-                    (ref, move_id))
-        return True
-
     def get_next_invoice_number(self, cr, uid, invoice, context=None):
         """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
 
