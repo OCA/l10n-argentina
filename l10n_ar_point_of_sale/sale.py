@@ -29,7 +29,8 @@ class sale_shop(osv.osv):
     _name = "sale.shop"
     _inherit = "sale.shop"
     _columns = {
-        'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
+        #'pos_ar_ids' : fields.one2many('pos.ar','shop_id','Points of Sales'),
+        'pos_ar_ids' : fields.many2many('pos.ar','sale_shop_pos_ar_rel', 'shop_id', 'pos_ar_id' ,'Points of Sales'),
     }
 sale_shop()
 

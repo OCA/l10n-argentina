@@ -9,17 +9,18 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="sale.view_shop_form"/>
             <field name="arch" type="xml">
-                <field name="project_id" position="after">
-                    <separator string="POS AR"/>
-                    <field name="pos_ar_ids" nolabel="1">
-                        <tree string="Points of Sales">
-                            <field name="name" />
-                            <field name="desc" />
-                            <field name="denomination_id" />
-                            <field name="priority" />
-                        </tree>
-                    </field>
-                </field>
+                <group name="shop" position="after">
+                    <group name="pos_ar">
+                        <field name="pos_ar_ids" nolabel="1">
+                            <tree string="Points of Sales">
+                                <field name="name" />
+                                <field name="desc" />
+                                <field name="denomination_id" />
+                                <field name="priority" />
+                            </tree>
+                        </field>
+                    </group>
+                </group>
             </field>
         </record>
     </data>

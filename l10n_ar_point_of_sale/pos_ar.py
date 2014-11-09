@@ -48,7 +48,7 @@ class pos_ar(osv.osv):
         'name' : fields.char('Nro', required=True, size=6),
         'desc' : fields.char('Description', required=False, size=180),
         'priority' : fields.integer('Priority', required=True, size=6),
-        'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
+        #'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
         'denomination_id': fields.many2one('invoice.denomination', 'Denomination'),
     }
 
