@@ -21,15 +21,12 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp import models, fields
 
-
-class account_fiscal_position (osv.osv):
+class account_fiscal_position (models.Model):
     _name = "account.fiscal.position"
     _inherit = "account.fiscal.position"
     _description = ""
-    _columns = {
-        'denomination_id' : fields.many2one('invoice.denomination','Denomination', required=True),
-        'denom_supplier_id' : fields.many2one('invoice.denomination','Denomination', required=True),
-    }
-account_fiscal_position()
+
+    denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
+    denom_supplier_id = fields.Many2one('invoice.denomination', string='Supplier Denomination', required=True)

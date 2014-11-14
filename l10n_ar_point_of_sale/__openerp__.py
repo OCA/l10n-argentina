@@ -22,30 +22,29 @@
 ##############################################################################
 {
     "name": "Point of Sale ARGENTINA",
-    "version": "1.0",
-    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant", "base_vat_ar" ],
-    "author": "E-MIPS",
-    "website": "http://e-mips.com.ar",
+    "version": "1.1",
+    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant" ],
+    "author": "Proyecto Aconcagua",
+    "website": "http://proyectoaconcagua.com.ar",
     "license": "GPL-3",
-    "category": "Own Modules",
+    "category": "Aconcagua",
     "description": """
-    This module provide :
-    1) Implementation of Point of Sale for Argentina.
+    Modulo base para normativas de facturacion Argentina
     """,
     "data": [
-        'partner_data.xml',
+        #'partner_data.xml',
         'pos_ar_view.xml',
-        'sale_view.xml',
+        #'sale_view.xml',
         'account_invoice_view.xml',
         'partner_view.xml',
         'account_view.xml',
-        'security/ir.model.access.csv',
+        #'security/ir.model.access.csv',
     ],
     'demo': [
-        'partner_demo.xml',
+        #'partner_demo.xml',
         ],
     'test': [
-        'test/denomination_invoice.yml',
+        #'test/denomination_invoice.yml',
     ],
     'installable': True,
     'active': False,

@@ -21,30 +21,26 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp import models, fields, _
+from openerp.osv import osv
 
-class account_tax(osv.osv):
+class account_tax(models.Model):
     _name = 'account.tax'
     _inherit = 'account.tax'
     _description = 'Tax'
-    _columns = {
-        'tax_group': fields.selection( [('vat','VAT'), ('perception','Perception'), ('retention','Retention'), ('internal','Internal Tax'), ('other','Other')], 'Tax Group', required=True,
-            help="This is tax categorization."),
-        'other_group': fields.char('Other Group', size=64),
-        'is_exempt': fields.boolean('Exempt', help="Check this if this Tax represent Tax Exempts"),
-        }
 
-    _defaults = {
-            'is_exempt': False,
-            'tax_group': 'vat',
-            }
+    tax_group = fields.Selection( [('vat','VAT'),
+                                   ('perception','Perception'),
+                                   ('retention','Retention'),
+                                   ('internal','Internal Tax'),
+                                   ('other','Other')], string='Tax Group', default='vat', required=True, help="This is tax categorization.")
+    other_group = fields.Char(string='Other Group', size=64)
+    is_exempt = fields.Boolean(string='Exempt', default=False, help="Check this if this Tax represent Tax Exempts")
 
-account_tax()
 
-class account_move(osv.osv):
+class account_move(models.Model):
     _name = "account.move"
     _inherit = "account.move"
-
 
     # Heredamos para que no ponga el nombre del internal_number
     # al asiento contable, sino que siempre siga la secuencia
@@ -74,6 +70,7 @@ class account_move(osv.osv):
                    'SET state=%s '\
                    'WHERE id IN %s',
                    ('posted', tuple(valid_moves),))
+        self.invalidate_cache(cr, uid, context=context)
         return True
 
 account_move()

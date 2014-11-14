@@ -21,51 +21,42 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp import models, fields, api
 
-class invoice_denomination(osv.osv):
+class invoice_denomination(models.Model):
     _name = "invoice.denomination"
     _description = "Denomination for Invoices"
-    _columns = {
-        'name' : fields.char('Denomination', required=True, size=4),
-        'desc' : fields.char('Description', required=True, size=100),
-        'vat_discriminated' : fields.boolean('Vat Discriminated in Invoices', help="If True, the vat will be discriminated at invoice report."),
-    }
-    _sql_constraints = [
-        ('code_denomination_uniq', 'unique (name)', 'The Denomination of the Invoices must be unique per company !')
-    ]
 
-    _defaults = {
-            'vat_discriminated': False,
-            }
+    # Columnas
+    # TODO: En la vista poner Placeholder 0001, 0002 o algo asi.
+    # TODO: Hacer rutina que chequee que esta bien puesto
+    name = fields.Selection([
+            ('A','A'),
+            ('B','B'),
+            ('C','C'),
+            ('M','M'),
+            ('E','E')], string="Denomination")
+    desc = fields.Char(string="Description", required=True, size=100)
+    vat_discriminated = fields.Boolean(string="Vat Discriminated in Invoices", default=False, help="If True, the vat will be discriminated at invoice report.")
 
-invoice_denomination()
 
-class pos_ar(osv.osv):
+class pos_ar(models.Model):
     _name = "pos.ar"
     _description = "Point of Sale for Argentina"
-    _columns = {
-        'name' : fields.char('Nro', required=True, size=6),
-        'desc' : fields.char('Description', required=False, size=180),
-        'priority' : fields.integer('Priority', required=True, size=6),
-        #'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
-        'denomination_id': fields.many2one('invoice.denomination', 'Denomination'),
-    }
 
-    def name_get(self, cr, uid, ids, context=None):
+    name = fields.Char(string='Number', required=True, size=6)
+    desc = fields.Char(string='Description', required=False, size=100)
+    priority = fields.Integer(string='Priority', required=True, size=6)
+    #'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
+    denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
+
+    @api.multi
+    def name_get(self):
+
         res = []
-        if not ids:
-            return []
-        for id in ids:
-            if not id:
-                continue
+        for pos in self:
+            res.append((pos.id, "%s %s" % (pos.denomination_id.name, pos.name)))
 
-            reads = self.read(cr, uid, [id], ['name', 'denomination_id'], context=context)
-            for record in reads:
-                name = record['name']
-                if record['denomination_id']:
-                    name = record['denomination_id'][1] + ' '+ name
-                res.append((record['id'], name))
         return res
 
 pos_ar()

@@ -21,27 +21,23 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
-import decimal_precision as dp
+#from osv import osv, fields
+from openerp import models, fields, api, _
+#from tools.translate import _
+import openerp.addons.decimal_precision as dp
+from openerp.exceptions import ValidationError
 import time
 import re
 
-class invoice(osv.osv):
+class invoice(models.Model):
     _name = "account.invoice"
     _inherit = "account.invoice"
     _order = "date_invoice desc, internal_number desc"
 
-    def name_get(self, cr, uid, ids, context=None):
+    @api.multi
+    def name_get(self):
 
-        if not ids:
-            return []
-
-        if not context:
-            context = {}
-
-        res = []
-        types = {
+        TYPES = {
                 'out_invoice': _('CI '),
                 'in_invoice': _('SI '),
                 'out_refund': _('CR '),
@@ -49,20 +45,23 @@ class invoice(osv.osv):
                 'out_debit': _('CD '),
                 'in_debit': _('SD '),
                 }
+        result = []
 
-        if not context.get('use_internal_number', True):
-            res = super(invoice, self).name_get( cr, uid, ids, context=context)
+        if not self._context.get('use_internal_number', True):
+            result = super(invoice, self).name_get()
         else:
-            reads = self.read(cr, uid, ids, ['pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'denomination_id'], context=context)
-            for record in reads:
-                type = record['type']
+
+            #reads = self.read(cr, uid, ids, ['pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'denomination_id'], context=context)
+
+            for inv in self:
+                type = inv.type
                 rtype = type
-                number = record['internal_number'] or ''
-                denom = record['denomination_id'] and record['denomination_id'][1] or ''
-                debit_note = record['is_debit_note']
+                number = inv.internal_number or ''
+                denom = inv.denomination_id and inv.denomination_id.name or ''
+                debit_note = inv.is_debit_note
 
                 # Chequeo de Nota de Debito
-                if type == 'out_invoice':
+                if  type == 'out_invoice':
                     if debit_note:
                         rtype = 'out_debit'
                     else:
@@ -73,249 +72,182 @@ class invoice(osv.osv):
                     else:
                         rtype = 'in_invoice'
 
-                name = types[rtype] + denom + number
-                res.append((record['id'], name))
+                name = TYPES[rtype] + denom + number
+                result.append((inv.id, name))
 
-        return res
+        return result
 
-    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
-        if not args:
-            args = []
-        if context is None:
-            context = {}
-        ids = []
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
 
-        if not context.get('use_internal_number', True):
-            return super(invoice, self).name_search( cr, user, name, args, operator, context=context, limit=limit)
+        if not self._context.get('use_internal_number', True):
+            return super(invoice, self).name_search(name, args, operator, limit=limit)
         else:
             if name:
-                ids = self.search(cr, user, [('internal_number','=',name)] + args, limit=limit, context=context)
-            if not ids:
-                ids = self.search(cr, user, [('internal_number',operator,name)] + args, limit=limit, context=context)
-            if not ids:
+                recs = self.search([('internal_number','=',name)] + args, limit=limit)
+            if not recs:
+                recs = self.search([('internal_number',operator,name)] + args, limit=limit)
+            if not recs:
                 try:
-                    ids = self.search(cr, user, [('pos_ar_id.name',operator,name)] + args, limit=limit, context=context)
+                   recs = self.search([('pos_ar_id.name',operator,name)] + args, limit=limit)
                 except TypeError:
-                    ids = []
+                   recs = []
 
-        return self.name_get(cr, user, ids, context)
+        return recs.name_get()
 
-    def _amount_all_ar(self, cr, uid, ids, name, args, context=None):
-        res = {}
+    @api.one
+    @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
+    def _amount_all_ar(self):
+        self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line)
+        self.amount_tax = sum(line.amount for line in self.tax_line)
+        self.amount_total = self.amount_untaxed + self.amount_tax
 
-        for invoice in self.browse(cr, uid, ids, context=context):
-            res[invoice.id] = {
-                'amount_untaxed': 0.0,
-                'amount_tax': 0.0,
-                'amount_total': 0.0,
-                'amount_taxed': 0.0,
-                'amount_no_taxed': 0.0,
-                'amount_exempt': 0.0
-            }
+        amount_base = 0.0
+        amount_exempt = 0.0
 
-            amount_base = 0.0
-            amount_exempt = 0.0
+        amount_exempt = sum(line.base for line in self.tax_line if line.tax_id.tax_group == 'vat' and line.is_exempt)
+        amount_base = sum(line.base for line in self.tax_line if line.tax_id.tax_group == 'vat' and not line.is_exempt)
 
-            for line in invoice.invoice_line:
-                res[invoice.id]['amount_untaxed'] += line.price_subtotal
-            for line in invoice.tax_line:
-                if line.tax_id.tax_group == 'vat':
-                    if line.is_exempt:
-                        amount_exempt += line.base
-                    else:
-                        amount_base += line.base
+        self.amount_no_taxed = self.amount_untaxed - amount_base - amount_exempt
+        self.amount_taxed = amount_base
+        self.amount_exempt = amount_exempt
 
-                res[invoice.id]['amount_tax'] += line.amount
+#    def _get_invoice_line(self, cr, uid, ids, context=None):
+#        result = {}
+#        for line in self.pool.get('account.invoice.line').browse(cr, uid, ids, context=context):
+#            result[line.invoice_id.id] = True
+#        return result.keys()
+#
+#    def _get_invoice_tax(self, cr, uid, ids, context=None):
+#        result = {}
+#        for tax in self.pool.get('account.invoice.tax').browse(cr, uid, ids, context=context):
+#            result[tax.invoice_id.id] = True
+#        return result.keys()
 
-            res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed']
-            res[invoice.id]['amount_no_taxed'] = res[invoice.id]['amount_untaxed'] - amount_base - amount_exempt
-            res[invoice.id]['amount_taxed'] = amount_base
-            res[invoice.id]['amount_exempt'] = amount_exempt
-        return res
+    pos_ar_id = fields.Many2one('pos.ar',string='Point of Sale', readonly=True, states={'draft':[('readonly',False)]})
+    is_debit_note = fields.Boolean('Debit Note', default=False)
+    denomination_id = fields.Many2one('invoice.denomination', readonly=True, states={'draft':[('readonly',False)]})
+    internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]},
+            help="Unique number of the invoice, computed automatically when the invoice is created.")
 
-    def _get_invoice_line(self, cr, uid, ids, context=None):
-        result = {}
-        for line in self.pool.get('account.invoice.line').browse(cr, uid, ids, context=context):
-            result[line.invoice_id.id] = True
-        return result.keys()
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'),
+    store=True, readonly=True, compute='_compute_amount', track_visibility='always')
 
-    def _get_invoice_tax(self, cr, uid, ids, context=None):
-        result = {}
-        for tax in self.pool.get('account.invoice.tax').browse(cr, uid, ids, context=context):
-            result[tax.invoice_id.id] = True
-        return result.keys()
+    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
 
-    _columns = {
-        'type': fields.selection([
-            ('out_invoice','Customer Invoice'),
-            ('in_invoice','Supplier Invoice'),
-            ('out_refund','Customer Refund'),
-            ('in_refund','Supplier Refund'),
-            ],'Type', readonly=True, select=True, change_default=True),
-        'pos_ar_id' : fields.many2one('pos.ar','Point of Sale', readonly=True, states={'draft':[('readonly',False)]}),
-        'is_debit_note': fields.boolean('Debit Note'),
-        'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True, states={'draft':[('readonly',False)]}),
-        'internal_number': fields.char('Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created."),
-        'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
-            store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
-                'account.invoice.tax': (_get_invoice_tax, None, 20),
-                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
-            },
-            multi='all'),
-        'amount_no_taxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='No Taxed',
-            store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
-                'account.invoice.tax': (_get_invoice_tax, None, 20),
-                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
-            },
-            multi='all'),
-        'amount_taxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Taxed',
-            store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
-                'account.invoice.tax': (_get_invoice_tax, None, 20),
-                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
-            },
-            multi='all'),
-        'amount_untaxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Untaxed',
-            store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
-                'account.invoice.tax': (_get_invoice_tax, None, 20),
-                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
-            },
-            multi='all'),
-        'amount_tax': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Tax',
-            store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
-                'account.invoice.tax': (_get_invoice_tax, None, 20),
-                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
-            },
-            multi='all'),
-        'amount_total': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Total',
-            store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
-                'account.invoice.tax': (_get_invoice_tax, None, 20),
-                'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
-            },
-            multi='all'),
-    }
-
-    _defaults = {
-            'is_debit_note': lambda *a: False,
-            }
-            
     #Validacion para que el total de una invoice no pueda ser negativo.
-    def _check_amount_total(self,cr,uid,ids,context=None):
-        for invoice in self.read(cr,uid,ids,['amount_total'],context=context):
-            if invoice['amount_total'] < 0 :
-                return False
-        return True
+    @api.one
+    @api.constrains('amount_total')
+    def _check_amount_total(self):
+        if self.amount_total < 0:
+            raise ValidationError(_('Error! The total amount cannot be negative'))
 
-    def _check_duplicate(self, cr, uid, ids, context=None):
-        partner_obj = self.pool.get('res.partner')
-        company_obj = self.pool.get('res.company')
-        for invoice in self.read(cr, uid, ids, ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'partner_id', 'state', 'company_id'], context=context):
+#    @api.one
+#    @api.constrains('denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number')
+#    def _check_duplicate(self):
+#
+#        denomination_id = self.denomination_id
+#        pos_ar_id = self.pos_ar_id
+#        partner_id = self.partner_id or False
+#        company_id = self.company_id or False
+#
+#        partner_country = partner_id.country_id
+#        company_country = company_id.country_id
+#
+#        if self.type in ('in_invoice', 'in_refund'):
+#            local = (partner_country  == company_country) or partner_country == False
+#
+#            # Si no es local, no hacemos chequeos
+#            if not local:
+#                return
+#
+#        # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
+#        # duplicada hasta que no le pongan el numero
+#        if not invoice['internal_number']:
+#            return
+#
+#        if self.type in ('out_invoice', 'out_refund'):
+#            count = self.search_count([('denomination_id','=',denomination_id.id), ('pos_ar_id','=',pos_ar_id.id), ('is_debit_note','=',self.is_debit_note), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
+#
+#            if count > 1:
+#                raise ValidationError(_('Error! The Invoice is duplicated.'))
+#        else:
+#            count = self.search_count([('denomination_id','=',denomination_id.id), ('is_debit_note','=',self.is_debit_note), ('partner_id','=',partner_id.id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
+#            if count > 1:
+#                raise ValidationError(_('Error! The Invoice is duplicated.'))
 
-            denomination_id = invoice['denomination_id'] and invoice['denomination_id'][0] or False
-            pos_ar_id = invoice['pos_ar_id'] and invoice['pos_ar_id'][0] or False
-            partner_id = invoice['partner_id'] and invoice['partner_id'][0] or False
-            company_id = invoice['company_id'] and invoice['company_id'][0] or False
-
-            partner_country = partner_obj.read(cr, uid, partner_id, ['country_id'], context=context)['country_id']
-            company_country = company_obj.read(cr, uid, company_id, ['country_id'], context=context)['country_id']
-
-            if invoice['type'] in ('in_invoice', 'in_refund'):
-                local = ((partner_country and partner_country[0]) == (company_country and company_country[0])) or partner_country == False
-
-                # Si no es local, no hacemos chequeos
-                if not local:
-                    return True
-
-            # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
-            # duplicada hasta que no le pongan el numero
-            if not invoice['internal_number']:
-                return True
-
-            if invoice['type'] in ['out_invoice', 'out_refund']:
-                count = self.search_count(cr, uid, [('denomination_id','=',denomination_id), ('pos_ar_id','=',pos_ar_id), ('is_debit_note','=',invoice['is_debit_note']), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',invoice['internal_number']), ('type','=',invoice['type']), ('state','!=','cancel')])
-                if count > 1:
-                    return False
-            else:
-                count = self.search_count(cr, uid, [('denomination_id','=',denomination_id), ('is_debit_note','=',invoice['is_debit_note']), ('partner_id','=',partner_id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', invoice['internal_number']), ('type','=',invoice['type']), ('state','!=','cancel')])
-                if count > 1:
-                    return False
-        return True
-
-    _constraints = [
-        (_check_duplicate, 'Error! The Invoice is duplicated.', ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number']),
-        (_check_amount_total, 'Error! The total amount cannot be negative',['amount_total']),
-    ]
-
-    def _check_fiscal_values(self, cr, uid, inv):
+    @api.one
+    def _check_fiscal_values(self):
         # Si es factura de cliente
-        denomination_id = inv.denomination_id and inv.denomination_id.id
-        if inv.type in ('out_invoice', 'out_refund', 'out_debit'):
+        denomination_id = self.denomination_id and self.denomination_id.id
+        if self.type in ('out_invoice', 'out_refund', 'out_debit'):
 
             if not denomination_id:
-                raise osv.except_osv(_('Error!'), _('Denomination not set in invoice'))
+                raise ValidationError(_('Denomination not set in invoice'))
 
-            if not inv.fiscal_position:
-                raise osv.except_osv(_('Error!'), _('Fiscal Position not set in invoice'))
+            if not self.fiscal_position:
+                raise ValidationError(_('Fiscal Position not set in invoice'))
 #                if inv.pos_ar_id.denomination_id:
 #                    self.write(cr, uid, inv.id, {'denomination_id' : inv.pos_ar_id.denomination_id.id})
 #                    denomination_id = inv.pos_ar_id.denomination_id.id
 #                else:
 #                    raise osv.except_osv(_('Error!'), _('Denomination not set neither in invoice nor point of sale'))
 #            else:
-            if not inv.pos_ar_id:
-                raise osv.except_osv(_('Error!'), _('You have to select a Point of Sale.'))
+            if not self.pos_ar_id:
+                raise ValidationError(_('You have to select a Point of Sale.'))
 
-            if inv.pos_ar_id.denomination_id.id != denomination_id:
-                raise osv.except_osv(_('Error!'), _('Point of sale has not the same denomination as the invoice.'))
+            if self.pos_ar_id.denomination_id.id != denomination_id:
+                raise ValidationError(_('Point of sale has not the same denomination as the invoice.'))
 
             # Chequeamos que la posicion fiscal y la denomination_id coincidan
-            if inv.fiscal_position.denomination_id.id != denomination_id:
-                raise osv.except_osv( _('Error'),
-                            _('The invoice denomination does not corresponds with this fiscal position.'))
+            if self.fiscal_position.denomination_id.id != denomination_id:
+                raise ValidationError(_('The invoice denomination does not corresponds with this fiscal position.'))
 
         # Si es factura de proveedor
         else:
             if not denomination_id:
-                raise osv.except_osv(_('Error!'), _('Denomination not set in invoice'))
+                raise ValidationError(_('Denomination not set in invoice'))
 
             # Chequeamos que la posicion fiscal y la denomination_id coincidan
-            if inv.fiscal_position.denom_supplier_id.id != inv.denomination_id.id:
-                raise osv.except_osv( _('Error'),
-                                    _('The invoice denomination does not corresponds with this fiscal position.'))
+            if self.fiscal_position.denom_supplier_id.id != self.denomination_id.id:
+                raise ValidationError(_('The invoice denomination does not corresponds with this fiscal position.'))
 
         # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
-        if inv.fiscal_position.id != inv.partner_id.property_account_position.id:
-            raise osv.except_osv( _('Error'),
-                                _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
+        if self.fiscal_position.id != self.partner_id.property_account_position.id:
+            raise ValidationError(_('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
 
-    def _update_reference(self, cr, uid, obj_inv, ref, context=None):
+    @api.one
+    def _update_reference(self, ref):
 
-        move_id = obj_inv.move_id and obj_inv.move_id.id or False
-        cr.execute('UPDATE account_move SET ref=%s ' \
+        move_id = self.move_id and self.move_id.id or False
+        self.env.cr.execute('UPDATE account_move SET ref=%s ' \
                 'WHERE id=%s', # AND (ref is null OR ref = \'\')',
                 (ref, move_id))
-        cr.execute('UPDATE account_move_line SET ref=%s ' \
+        self.env.cr.execute('UPDATE account_move_line SET ref=%s ' \
                 'WHERE move_id=%s', # AND (ref is null OR ref = \'\')',
                 (ref, move_id))
-        cr.execute('UPDATE account_analytic_line SET ref=%s ' \
+        self.env.cr.execute('UPDATE account_analytic_line SET ref=%s ' \
                 'FROM account_move_line ' \
                 'WHERE account_move_line.move_id = %s ' \
                     'AND account_analytic_line.move_id = account_move_line.id',
                     (ref, move_id))
         return True
 
-    def get_next_invoice_number(self, cr, uid, invoice, context=None):
+    @api.one
+    def get_next_invoice_number(self):
         """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
 
         # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
-        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s and is_debit_note=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type, invoice.is_debit_note))
-        last_number = cr.fetchone()
+        self.env.cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s and is_debit_note=%s", (self.pos_ar_id.id, ('open', 'paid', 'cancel',), self.type, self.is_debit_note))
+        last_number = self.env.cr.fetchone()
 
         # Si no devuelve resultados, es porque es el primero
         if not last_number or not last_number[0]:
@@ -325,36 +257,30 @@ class invoice(osv.osv):
 
         return next_number
 
-    def action_number(self, cr, uid, ids, context=None):
-
-        if context is None:
-            context = {}
+    @api.multi
+    def action_number(self):
 
         next_number = None
         invoice_vals = {}
-        invtype = None
 
         #TODO: not correct fix but required a fresh values before reading it
         # Esto se usa para forzar a que recalcule los campos funcion
-        self.write(cr, uid, ids, {})
+        self.write({})
 
-        for obj_inv in self.browse(cr, uid, ids, context=context):
-            partner_country = obj_inv.partner_id.country_id and obj_inv.partner_id.country_id.id or False
-            company_country = obj_inv.company_id.country_id and obj_inv.company_id.country_id.id or False
+        for inv in self:
+            partner_country = inv.partner_id.country_id and inv.partner_id.country_id.id or False
+            company_country = inv.company_id.country_id and inv.company_id.country_id.id or False
 
-            id = obj_inv.id
-            invtype = obj_inv.type
-
-            if invtype in ('in_invoice', 'in_refund'):
+            if self.type in ('in_invoice', 'in_refund'):
                 local = (partner_country == company_country) or partner_country == False
             else:
                 local = True
 
             #move_id = obj_inv.move_id and obj_inv.move_id.id or False
-            reference = obj_inv.reference or ''
+            reference = inv.reference or ''
 
             if local:
-                self._check_fiscal_values(cr, uid, obj_inv)
+                inv._check_fiscal_values()
 
             # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
             # si el usuario hizo un ingreso dejo ese numero
@@ -362,14 +288,14 @@ class invoice(osv.osv):
             next_number = False
 
             # Si son de Cliente
-            if invtype in ('out_invoice', 'out_refund'):
+            if inv.type in ('out_invoice', 'out_refund'):
 
-                pos_ar = obj_inv.pos_ar_id
-                next_number = self.get_next_invoice_number(cr, uid, obj_inv, context=context)
+                pos_ar = inv.pos_ar_id
+                next_number = self.get_next_invoice_number()[0]
 
                 # Nos fijamos si el usuario dejo en blanco el campo de numero de factura
-                if obj_inv.internal_number:
-                    internal_number = obj_inv.internal_number
+                if inv.internal_number:
+                    internal_number = inv.internal_number
 
                 # Lo ponemos como en Proveedores, o sea, A0001-00000001
                 if not internal_number:
@@ -377,41 +303,32 @@ class invoice(osv.osv):
 
                 m = re.match('^[0-9]{4}-[0-9]{8}$', internal_number)
                 if not m:
-                    raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                    raise ValidationError(_('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
                 # Escribimos el internal number
                 invoice_vals['internal_number'] = internal_number
 
             # Si son de Proveedor
             else:
-                if not obj_inv.internal_number:
-                    raise osv.except_osv( _('Error'), _('The Invoice Number should be filled'))
+                if not inv.internal_number:
+                    raise ValidationError(_('The Invoice Number should be filled'))
 
                 if local:
-                    m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
+                    m = re.match('^[0-9]{4}-[0-9]{8}$', inv.internal_number)
                     if not m:
-                        raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                        raise ValidationError(_('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
             # Escribimos los campos necesarios de la factura
-            self.write(cr, uid, obj_inv.id, invoice_vals)
+            inv.write(invoice_vals)
 
-            invoice_name = self.name_get(cr, uid, [obj_inv.id])[0][1]
+            invoice_name = inv.name_get()[0][1]
             if not reference:
                 ref = invoice_name
             else:
                 ref = '%s [%s]' % (invoice_name, reference)
 
             # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
-            self._update_reference(cr, uid, obj_inv, ref, context=context)
-
-
-            for inv_id, name in self.name_get(cr, uid, [id], context=context):
-                ctx = context.copy()
-                if invtype in ('out_invoice', 'out_refund'):
-                    ctx = self.get_log_context(cr, uid, context=ctx)
-                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
-                self.log(cr, uid, inv_id, message, context=ctx)
-
+            inv._update_reference(ref)
         return True
 
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
@@ -480,14 +397,12 @@ class invoice(osv.osv):
 invoice()
 
 
-class account_invoice_tax(osv.osv):
+class account_invoice_tax(models.Model):
     _name = "account.invoice.tax"
     _inherit = "account.invoice.tax"
 
-    _columns = {
-        'tax_id': fields.many2one('account.tax', 'Account Tax', required=True),
-        'is_exempt': fields.boolean('Is Exempt', readonly=True),
-            }
+    tax_id = fields.Many2one('account.tax', string='Account Tax', required=True)
+    is_exempt = fields.Boolean(string='Is Exempt', readonly=True)
 
     def tax_id_change(self, cr, uid, ids, tax_id, invoice_type):
         tax_obj = self.pool.get('account.tax')
@@ -508,53 +423,65 @@ class account_invoice_tax(osv.osv):
         return {'value': val}
 
 
-    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
+    @api.v8
+    def hook_compute_invoice_taxes(self, invoice, tax_grouped):
         return tax_grouped
 
-    def compute(self, cr, uid, invoice_id, context=None):
+    @api.v8
+    def compute(self, invoice):
         tax_grouped = {}
-        tax_obj = self.pool.get('account.tax')
-        cur_obj = self.pool.get('res.currency')
-        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
-        cur = inv.currency_id
-        company_currency = inv.company_id.currency_id.id
 
-        ctx = context.copy()
-        if not 'date' in ctx:
-            ctx['date'] = inv.date_invoice or time.strftime('%Y-%m-%d')
+        #tax_obj = self.pool.get('account.tax')
+        #cur_obj = self.pool.get('res.currency')
 
-        for line in inv.invoice_line:
-            for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, (line.price_unit* (1-(line.discount or 0.0)/100.0)), line.quantity, line.product_id, inv.partner_id)['taxes']:
-                val={}
+        #inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
+        currency = invoice.currency_id.with_context(date=invoice.date_invoice or fields.Date.context_today(invoice))
+        company_currency = invoice.company_id.currency_id
+
+        for line in invoice.invoice_line:
+            taxes = line.invoice_line_tax_id.compute_all(
+                    (line.price_unit * (1-(line.discount or 0.0)/100.0)),
+                    line.quantity, line.product_id, invoice.partner_id)['taxes']
+            for tax in taxes:
                 # TODO: Tal vez se pueda cambiar el boolean is_exempt por un type (selection)
                 # para despues incluir impuestos internos, retenciones, percepciones, o sea,
                 # distintos tipos de impuestos
-                is_exempt = tax_obj.read(cr, uid, tax['id'], ['is_exempt'], context)['is_exempt']
-                val['invoice_id'] = inv.id
-                val['name'] = tax['name']
-                val['amount'] = tax['amount']
-                val['manual'] = False
-                val['sequence'] = tax['sequence']
-                val['is_exempt'] = is_exempt
-                val['base'] = tax['price_unit'] * line['quantity']
-                val['tax_id'] = tax['id']
+                tax_browse = self.env['account.tax'].browse(tax['id'])
+                val = {
+                    'invoice_id': invoice.id,
+                    'name': tax['name'],
+                    'amount': tax['amount'],
+                    'manual': False,
+                    'sequence': tax['sequence'],
+                    'is_exempt': tax_browse.is_exempt,
+                    'base': currency.round(tax['price_unit'] * line['quantity']),
+                    'tax_id': tax['id'],
+                }
 
-                if inv.type in ('out_invoice','in_invoice'):
+                if invoice.type in ('out_invoice','in_invoice'):
                     val['base_code_id'] = tax['base_code_id']
                     val['tax_code_id'] = tax['tax_code_id']
-                    val['base_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['base'] * tax['base_sign'], context=ctx, round=False)
-                    val['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['amount'] * tax['tax_sign'], context=ctx, round=False)
+                    val['base_amount'] = currency.compute(val['base'] * tax['base_sign'], company_currency, round=False)
+                    val['tax_amount'] = currency.compute(val['amount'] * tax['tax_sign'], company_currency, round=False)
                     val['account_id'] = tax['account_collected_id'] or line.account_id.id
                     val['account_analytic_id'] = tax['account_analytic_collected_id']
                 else:
                     val['base_code_id'] = tax['ref_base_code_id']
                     val['tax_code_id'] = tax['ref_tax_code_id']
-                    val['base_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['base'] * tax['ref_base_sign'], context=ctx, round=False)
-                    val['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, val['amount'] * tax['ref_tax_sign'], context=ctx, round=False)
+                    val['base_amount'] = currency.compute(val['base'] * tax['ref_base_sign'], company_currency, round=False)
+                    val['tax_amount'] = currency.compute(val['amount'] * tax['ref_tax_sign'], company_currency, round=False)
                     val['account_id'] = tax['account_paid_id'] or line.account_id.id
                     val['account_analytic_id'] = tax['account_analytic_paid_id']
 
-                key = (val['tax_code_id'], val['base_code_id'], val['account_id'], val['account_analytic_id'])
+                # If the taxes generate moves on the same financial account as the invoice line
+                # and no default analytic account is defined at the tax level, propagate the
+                # analytic account from the invoice line to the tax line. This is necessary
+                # in situations were (part of) the taxes cannot be reclaimed,
+                # to ensure the tax move is allocated to the proper analytic account.
+                if not val.get('account_analytic_id') and line.account_analytic_id and val['account_id'] == line.account_id.id:
+                    val['account_analytic_id'] = line.account_analytic_id.id
+
+                key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
                 if not key in tax_grouped:
                     tax_grouped[key] = val
                 else:
@@ -564,14 +491,12 @@ class account_invoice_tax(osv.osv):
                     tax_grouped[key]['tax_amount'] += val['tax_amount']
 
         for t in tax_grouped.values():
-            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
-            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
-            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
-            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+            t['base'] = currency.round(t['base'])
+            t['amount'] = currency.round(t['amount'])
+            t['base_amount'] = currency.round(t['base_amount'])
+            t['tax_amount'] = currency.round(t['tax_amount'])
 
         # Agregamos un hook por si otros modulos quieren agregar sus taxes
-        tax_grouped = self.hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, ctx)
+        tax_grouped = self.hook_compute_invoice_taxes(invoice, tax_grouped)
 
         return tax_grouped
-
-account_invoice_tax()
