@@ -34,6 +34,14 @@
                         </tree>
                     </field>
                 </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
             </field>
         </record>
  
@@ -70,6 +78,15 @@
                             <field name="amount" sum="Total"/>
                         </tree>
                     </field>
+                </xpath>
+
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
                 </xpath>
             </field>
         </record>

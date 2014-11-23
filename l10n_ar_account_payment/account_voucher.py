@@ -301,6 +301,19 @@ class account_voucher(osv.osv):
 
         return True
 
+    def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
+
+        default = super(account_voucher, self).recompute_voucher_lines(cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=context)
+
+        ml_obj = self.pool.get('account.move.line')
+
+        for vals in default['value']['line_dr_ids']+default['value']['line_cr_ids']:
+            if vals['move_line_id']:
+                reads = ml_obj.read(cr, uid, vals['move_line_id'], ['invoice', 'ref'], context=context)
+                vals['invoice_id'] = reads['invoice'] and reads['invoice'][0] or False
+                vals['ref'] = reads['ref']
+        return default
+
 account_voucher()
 
 
@@ -308,6 +321,11 @@ class account_voucher_line(osv.osv):
     _name = 'account.voucher.line'
     _inherit = 'account.voucher.line'
 
+
+    _columns = {
+        'invoice_id': fields.many2one('account.invoice', string='Invoice'),
+        'ref': fields.char('Reference', size=64),
+    }
 
     def onchange_amount(self, cr, uid, ids, amount, amount_unreconciled, context=None):
         vals = {}
