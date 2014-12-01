@@ -158,42 +158,42 @@ class invoice(osv.osv):
         'internal_number': fields.char('Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created."),
         'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
             store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
                 'account.invoice.tax': (_get_invoice_tax, None, 20),
                 'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
             },
             multi='all'),
         'amount_no_taxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='No Taxed',
             store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
                 'account.invoice.tax': (_get_invoice_tax, None, 20),
                 'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
             },
             multi='all'),
         'amount_taxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Taxed',
             store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
                 'account.invoice.tax': (_get_invoice_tax, None, 20),
                 'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
             },
             multi='all'),
         'amount_untaxed': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Untaxed',
             store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
                 'account.invoice.tax': (_get_invoice_tax, None, 20),
                 'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
             },
             multi='all'),
         'amount_tax': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Tax',
             store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
                 'account.invoice.tax': (_get_invoice_tax, None, 20),
                 'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
             },
             multi='all'),
         'amount_total': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Total',
             store={
-                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 20),
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
                 'account.invoice.tax': (_get_invoice_tax, None, 20),
                 'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id'], 20),
             },
@@ -554,7 +554,7 @@ class account_invoice_tax(osv.osv):
                     val['account_id'] = tax['account_paid_id'] or line.account_id.id
                     val['account_analytic_id'] = tax['account_analytic_paid_id']
 
-                key = (val['tax_code_id'], val['base_code_id'], val['account_id'], val['account_analytic_id'])
+                key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
                 if not key in tax_grouped:
                     tax_grouped[key] = val
                 else:
