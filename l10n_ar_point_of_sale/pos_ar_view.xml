@@ -22,7 +22,8 @@
                                 <field name="denomination_id" select="1"/>
                             </group>
                             <group>
-                                <field name="priority" colspan="2"/>
+                                <field name="priority"/>
+                                <field name="shop_id"/>
                             </group>
                         </group>
                         <group string="Description">
@@ -42,6 +43,7 @@
                     <field name="name"/>
                     <field name="denomination_id"/>
                     <field name="priority"/>
+                    <field name="shop_id"/>
                 </tree>
             </field>
         </record>

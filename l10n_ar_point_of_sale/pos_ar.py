@@ -48,6 +48,7 @@ class pos_ar(models.Model):
     desc = fields.Char(string='Description', required=False, size=100)
     priority = fields.Integer(string='Priority', required=True, size=6)
     #'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
+    shop_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True)
     denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
 
     @api.multi
