@@ -2,7 +2,7 @@
 <openerp>
     <data>
     
-        <record model="ir.ui.view" id="account.check_deposit_form_view">
+        <record model="ir.ui.view" id="account_check_deposit_form_view">
             <field name="name">account.check.deposit.wizard.form</field>
             <field name="model">account.check.deposit</field>
             <field name="type">form</field>
