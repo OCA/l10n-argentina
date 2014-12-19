@@ -46,8 +46,9 @@ class stock_picking(osv.osv):
 
             pos_ar_obj = self.pool.get('pos.ar')
             
-            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order_to_pick.shop_id.id), ('denomination_id', '=', denom_id.id)])
-            
+            possible_pos = [pos.id for pos in order_to_pick.shop_id.pos_ar_ids]
+            res_pos = pos_ar_obj.search(cr, uid,[('id', 'in', possible_pos), ('denomination_id', '=', denom_id.id)], order="priority asc")
+             
             if not len(res_pos):
                 raise osv.except_osv( _('Error'),
                                       _('You need to set up a Shop and/or a Fiscal Position')) 
