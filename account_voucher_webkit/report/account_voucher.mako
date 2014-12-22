@@ -5,6 +5,33 @@
             </style>
 </head>
 <body>
+    <%!
+    def _get_line_name(l):
+        if not l.invoice_id.id:
+            return l.ref
+
+        elif l.invoice_id:
+            invoice = l.invoice_id
+            type = ''
+            if invoice.type == 'in_invoice':
+                if invoice.is_debit_note:
+                    type = 'ND'
+                else:
+                    type = 'FAC'
+            elif invoice.type == 'in_refund':
+                type = 'NC'
+            elif invoice.type == 'out_refund':
+                type = 'NC'
+            elif invoice.type == 'out_invoice':
+                if invoice.is_debit_note:
+                    type = 'ND'
+                else:
+                    type = 'FAC'
+
+            return type + ' ' + ((invoice.denomination_id and invoice.denomination_id.name) or '') + invoice.internal_number
+
+        return l.ref
+    %>
     %for o in objects:
     <% setLang(o.partner_id.lang) %>
 		<table width="100%">
@@ -105,7 +132,7 @@
 					<table class="shipping_address" width="100%">
 					<tr>
 						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line.invoice_id and (line.invoice_id.denomination_id.name + ' ' + line.invoice_id.internal_number) or line.ref or '' | entity}
+							${ _get_line_name(line) or '' | entity}
 						</td>
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
@@ -146,7 +173,7 @@
 					<table class="shipping_address" width="100%">
 					<tr>
 						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line.invoice_id and (line.invoice_id.denomination_id.name + ' ' + line.invoice_id.internal_number) or line.ref or '' | entity}
+							${ _get_line_name(line) or '' | entity}
 						</td>
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
@@ -216,7 +243,7 @@
 				<table class="shipping_address" width="100%">
 					<tr>
 						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line_cr.invoice_id and (line_cr.invoice_id.denomination_id.name + ' ' + line_cr.invoice_id.internal_number) or line_cr.ref or '' | entity}
+							${ _get_line_name(line_cr) or '' | entity}
 						</td>
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line_cr.name or '' | entity}
@@ -257,7 +284,7 @@
 					<table class="shipping_address" width="100%">
 					<tr>
 						<td width="25%" align="left" style="border-bottom:1px solid lightGrey;">
-							${ line.invoice_id and (line.invoice_id.denomination_id.name + ' ' + line.invoice_id.internal_number) or line.ref or '' | entity}
+							${ _get_line_name(line) or '' | entity}
 						</td>
 						<td width="27%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
