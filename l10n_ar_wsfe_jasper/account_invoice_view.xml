@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+        <record id="wsfe_account_invoice_form_jasper" model="ir.ui.view">
+            <field name="name">wsfe.account.invoice.form.inherit.jasper</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="l10n_ar_wsfe.wsfe_account_invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="cae_due_date" position="after">
+					<field name="bar_code" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
