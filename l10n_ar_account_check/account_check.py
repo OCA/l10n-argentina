@@ -176,6 +176,8 @@ class account_third_check(osv.osv):
             help="If common, checks only have issued_date. If post-dated they also have payment date"),
         'note': fields.text('Additional Information'),
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
+        'signatory_vat': fields.char('Signatory VAT', size=64),
+        'signatory_account': fields.char('Signatory account', size=64),
     }
 
     _defaults = {
