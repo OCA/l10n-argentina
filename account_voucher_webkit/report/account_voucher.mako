@@ -103,27 +103,31 @@
 		<h1><b>Comprobantes cancelados</b></h1>
 		<table width="100%" class="basic_table">
         	<tr>
-        		<td width="22%" class="title">
+        		<td width="48%" class="title">
                     ${_("Comprobante")}
           		</td>
+<!--
         		<td width="26%" class="title">
                     ${_("Asiento")}
           		</td>
+-->
         		<td width="10%" class="title">
                     ${_("Fecha")}
           		</td>
         		<td width="14%" class="title">
                     ${_("Cantidad original")}
           		</td>
-        		<td width="10%" class="title">
+        		<td width="12%" class="title">
                     ${_("Saldo")}
           		</td>
-        		<td width="10%" class="title">
+        		<td width="16%" class="title">
                     ${_("Neto a cobrar")}
           		</td>
+<!--
         		<td width="8%" class="title">
                     ${_("Conciliado")}
           		</td>
+-->
              </tr>
 		</table>
 		%if o.type == 'payment':
@@ -131,24 +135,27 @@
 				%for line in o.line_dr_ids:
 					<table class="shipping_address" width="100%">
 					<tr>
-						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
+						<td width="48%" align="left" style="border-bottom:1px solid lightGrey;">
 							${ _get_line_name(line) or '' | entity}
 						</td>
+<!--
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
 						</td>
+-->
 						<td width="10%" align="center" style="border-bottom:1px solid lightGrey;">
 							${ line.date_original or '' | entity}
 						</td>
 						<td width="14%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line.amount_original or '' | entity}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="12%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ saldo(line.amount_original, line.amount)}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="16%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line.amount or '' | entity}
 						</td>
+<!--
 						<td width="8%" align="right" style="border-bottom:1px solid lightGrey;">
 							%if line.reconcile is True:
 								<b>Verdadero</b>
@@ -156,6 +163,7 @@
 								<b>Falso</b>
 							%endif
 						</td>
+-->
 					 </tr>
 				</table>
 				%endfor
@@ -172,24 +180,27 @@
 				%for line in o.line_cr_ids:
 					<table class="shipping_address" width="100%">
 					<tr>
-						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
+						<td width="48%" align="left" style="border-bottom:1px solid lightGrey;">
 							${ _get_line_name(line) or '' | entity}
 						</td>
+<!--
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
 						</td>
+-->
 						<td width="10%" align="center" style="border-bottom:1px solid lightGrey;">
 							${ line.date_original or '' | entity}
 						</td>
 						<td width="14%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line.amount_original or '' | entity}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="12%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ saldo(line.amount_original, line.amount)}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="16%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line.amount or '' | entity}
 						</td>
+<!--
 						<td width="8%" align="right" style="border-bottom:1px solid lightGrey;">
 							%if line.reconcile is True:
 								<b>Verdadero</b>
@@ -197,6 +208,7 @@
 								<b>Falso</b>
 							%endif
 						</td>
+-->
 					 </tr>
 				</table>
 				%endfor
@@ -214,27 +226,31 @@
 		<h1><b>Detalle de creditos</b></h1>
 		<table width="100%" class="basic_table">
         	<tr>
-        		<td width="22%" class="title">
+        		<td width="48%" class="title">
                     ${_("Comprobante")}
           		</td>
+<!--
         		<td width="26%" class="title">
                     ${_("Asiento")}
           		</td>
+-->
         		<td width="10%" class="title">
                     ${_("Fecha")}
           		</td>
         		<td width="14%" class="title">
                     ${_("Cantidad original")}
           		</td>
-        		<td width="10%" class="title">
+        		<td width="12%" class="title">
                     ${_("Saldo")}
           		</td>
-        		<td width="10%" class="title">
+        		<td width="16%" class="title">
                     ${_("Neto a cobrar")}
           		</td>
+<!--
         		<td width="8%" class="title">
                     ${_("Conciliado")}
           		</td>
+-->
              </tr>
 		</table>
 		%if o.type == 'payment':
@@ -242,24 +258,27 @@
 				%for line_cr in o.line_cr_ids:
 				<table class="shipping_address" width="100%">
 					<tr>
-						<td width="22%" align="left" style="border-bottom:1px solid lightGrey;">
+						<td width="48%" align="left" style="border-bottom:1px solid lightGrey;">
 							${ _get_line_name(line_cr) or '' | entity}
 						</td>
+<!--
 						<td width="26%" style="border-bottom:1px solid lightGrey;">
 							${ line_cr.name or '' | entity}
 						</td>
+-->
 						<td width="10%" align="center" style="border-bottom:1px solid lightGrey;">
 							${ line_cr.date_original or '' | entity}
 						</td>
 						<td width="14%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line_cr.amount_original or '' | entity}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="12%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ saldo(line.amount_original, line.amount)}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="16%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line_cr.amount or '' | entity}
 						</td>
+<!--
 						<td width="8%" align="right" style="border-bottom:1px solid lightGrey;">
 							%if line_cr.reconcile is True:
 								<b>Verdadero</b>
@@ -267,6 +286,7 @@
 								<b>Falso</b>
 							%endif
 						</td>
+-->
 					 </tr>
 				</table>
 				%endfor
@@ -283,24 +303,27 @@
 				%for line in o.line_dr_ids:
 					<table class="shipping_address" width="100%">
 					<tr>
-						<td width="25%" align="left" style="border-bottom:1px solid lightGrey;">
+						<td width="48%" align="left" style="border-bottom:1px solid lightGrey;">
 							${ _get_line_name(line) or '' | entity}
 						</td>
+<!--
 						<td width="27%" style="border-bottom:1px solid lightGrey;">
 							${ line.name or '' | entity}
 						</td>
+-->
 						<td width="10%" align="center" style="border-bottom:1px solid lightGrey;">
 							${ line.date_original or '' | entity}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="14%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line.amount_original or '' | entity}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="12%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ saldo(line.amount_original, line.amount)}
 						</td>
-						<td width="10%" align="right" style="border-bottom:1px solid lightGrey;">$ 
+						<td width="16%" align="right" style="border-bottom:1px solid lightGrey;">$ 
 							${ line.amount or '' | entity}
 						</td>
+<!--
 						<td width="8%" align="right" style="border-bottom:1px solid lightGrey;">
 							%if line.reconcile is True:
 								<b>Verdadero</b>
@@ -308,6 +331,7 @@
 								<b>Falso</b>
 							%endif
 						</td>
+-->
 					 </tr>
 				</table>
 				%endfor
