@@ -29,6 +29,9 @@
                     <xpath expr="//field[@name='line_ids']/tree/field[@name='name']" position="attributes">
                         <attribute name="invisible">1</attribute>
                     </xpath>
+                    <xpath expr="//field[@name='line_ids']/tree/field[@name='amount_currency']" position="attributes">
+                        <attribute name="string">Amount Residual</attribute>
+                    </xpath>
                      <xpath expr="//field[@name='line_ids']/tree/field[@name='amount_currency']" position="after">
                         <field name="amount_retained"/>
                         <field name="mode" domain="[('type','=','payment')]"/>

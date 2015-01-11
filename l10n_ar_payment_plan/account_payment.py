@@ -105,7 +105,7 @@ class payment_order(osv.osv):
                 }
 
 
-                res = voucher_obj.onchange_payment_line(cr, uid, ids, 0.0, payment_line_ids, [], [], [], context=context)
+                res = voucher_obj.onchange_payment_line(cr, uid, ids, 0.0, payment_line_ids, context=context)
                 voucher_vals['amount'] = res['value']['amount']
 
                 voucher_id = voucher_obj.create(cr, uid, voucher_vals, context=context)
@@ -129,14 +129,17 @@ class payment_order(osv.osv):
             vou_ids += [line.voucher_id.id for line in order.line_ids]
 
         #choose the view_mode accordingly
-        if len(vou_ids)>1:
-            result['domain'] = "[('id','in',["+','.join(map(str, vou_ids))+"])]"
-        else:
-           result['res_id'] = vou_ids and vou_ids[0] or False
-
         res = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_voucher_tree')
         res2 = mod_obj.get_object_reference(cr, uid, 'account_voucher', 'view_vendor_payment_form')
-        result['views'] = [(res and res[1] or False, 'tree'), (res2 and res2[1] or False, 'form')]
+        if len(vou_ids)>1:
+            result['domain'] = "[('id','in',["+','.join(map(str, vou_ids))+"])]"
+            result['views'] = [(res and res[1] or False, 'tree'), (res2 and res2[1] or False, 'form')]
+        else:
+            result['res_id'] = vou_ids and vou_ids[0] or False
+            result['view_mode'] = "tree,form"
+            result['views'] = [(res2 and res2[1] or False, 'form')]
+
+
         return result
 
 payment_order()
