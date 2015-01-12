@@ -42,6 +42,7 @@ python-m2crypto
     'data': [
         'wizard/wsaa_load_config_view.xml',
         'wsaa_view.xml',
+        'security/ir.model.access.csv',
     ],
     'demo': [
         'wsaa_demo.xml',
