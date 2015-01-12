@@ -49,6 +49,7 @@ class account_check_deposit(osv.osv_memory):
         'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type','in',('cash', 'bank'))], required=True),
         'bank_account_id': fields.many2one('res.partner.bank', 'Bank Account', required=True),
         'date': fields.date('Deposit Date', required=True),
+        'voucher_number': fields.char('Voucher Number', size=32),
         'company_id': fields.many2one('res.company', 'Company', required=True),
     }
 
@@ -138,6 +139,11 @@ class account_check_deposit(osv.osv_memory):
             #name = self.pool.get('ir.sequence').get_id(cr, uid,
                     #check.voucher_id.journal_id.id)
 
+            if wizard.voucher_number:
+                move_ref = _('Deposit Check %s [%s]') % (check.number, wizard.voucher_number)
+            else:
+                move_ref = _('Deposit Check %s') % (check.number)
+
             move_id = self.pool.get('account.move').create(cr, uid, {
                 'name': '/',
                 'journal_id': wizard.journal_id.id,
@@ -145,7 +151,7 @@ class account_check_deposit(osv.osv_memory):
                 'period_id': period_id,
                 'date': deposit_date,
                 #'to_check': True,
-                'ref': _('Deposit Check %s') % check.number,
+                'ref': move_ref,
             })
 
             move_line.create(cr, uid, {
