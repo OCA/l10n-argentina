@@ -62,25 +62,20 @@
     <field name="type">search</field>
     <field name="arch" type="xml">
       <search string="Retention Tax Lines">
-        <group col="10" colspan="4">
-          <filter icon="terp-check" name="applied" string="Applied" domain="[('retention_id.type_tax_use', '=', 'purchase')]" help="Retentions Applied" />
-          <filter icon="gtk-cancel" name="supported" string="Supported" domain="[('retention_id.type_tax_use', '=', 'sale')]" help="Retentions Supported" />
-          <separator orientation="vertical"/>
           <field name="name"/>
           <field name="date"/>
           <field name="partner_id"/>
           <field name="certificate_no"/>
-          <newline/>
           <field name="voucher_number"/>
           <field name="retention_id"/>
           <field name="state_id"/>
           <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-        </group>
-        <newline/>
-        <group expand="0" string="Group By..." colspan="4" col="4" groups="base.group_extended">
-          <filter string="Province" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state_id'}"/>
-          <filter string="Date" name="group_date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
-        </group>
+          <filter icon="terp-check" name="applied" string="Applied" domain="[('retention_id.type_tax_use', '=', 'purchase')]" help="Retentions Applied" />
+          <filter icon="gtk-cancel" name="supported" string="Supported" domain="[('retention_id.type_tax_use', '=', 'sale')]" help="Retentions Supported" />
+          <group expand="0" string="Group By...">
+              <filter string="Province" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state_id'}"/>
+              <filter string="Date" name="group_date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
+          </group>
       </search>
     </field>
   </record>
