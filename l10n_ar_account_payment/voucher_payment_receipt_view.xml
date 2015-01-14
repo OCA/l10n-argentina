@@ -22,6 +22,19 @@
                 <field name="journal_id" position="attributes">
                     <attribute name="string">Journal</attribute>
                 </field>
+                <field name="reference" position="replace">
+                    <field name="number"/>
+                </field>
+                <xpath expr="//h1" position="replace">
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                            <b><label string="Receipt Number"/></b>
+                        </div>
+                        <h1>
+                            <field name="reference" required="1"/>
+                        </h1>
+                    </div>
+                </xpath>
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="before">
                     <label for="payment_line_ids"/>
                     <field name="payment_line_ids" on_change="onchange_payment_line(amount, payment_line_ids, context)">
@@ -88,6 +101,19 @@
                     <field name="invoice_id"/>
                     <field name="ref"/>
                 </xpath>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_voucher_tree_reference">
+            <field name="name">account.voucher.l10n_ar.tree</field>
+            <field name="model">account.voucher</field>
+            <field name="inherit_id" ref="account_voucher.view_voucher_tree"/>
+            <field name="arch" type="xml">
+                <field name="number" position="replace"/>
+                <field name="journal_id" position="after">
+                    <field name="number"/>
+                </field>
             </field>
         </record>
  
