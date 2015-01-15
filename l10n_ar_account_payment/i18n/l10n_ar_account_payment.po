@@ -1,0 +1,253 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_account_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-14 22:30+0000\n"
+"PO-Revision-Date: 2015-01-14 22:30+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt,name:0
+msgid "Mode of Payment"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: selection:payment.mode.receipt,type:0
+msgid "Receipt"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:account.voucher:0
+msgid "Receipt Number"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt.line,amount_currency:0
+msgid "Payment amount in the partner currency"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:payment.mode.receipt:0
+msgid "Group By..."
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt.line,amount:0
+msgid "Payment amount in the company currency"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:account.voucher,journal_sequence:0
+msgid "Book"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,amount_currency:0
+msgid "Amount in Partner Currency"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: code:addons/l10n_ar_account_payment/account_voucher.py:224
+#, python-format
+msgid "Voucher Error!"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt,type:0
+msgid "Type"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,move_line_id:0
+msgid "Entry line"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt,company_id:0
+msgid "Company"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt,bank_id:0
+msgid "Bank account"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,company_currency:0
+msgid "Company Currency"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: model:ir.actions.act_window,name:l10n_ar_account_payment.action_payment_mode_receipt_form
+#: model:ir.ui.menu,name:l10n_ar_account_payment.menu_action_payment_mode_receipt_form
+#: view:payment.mode.receipt:0
+#: field:payment.mode.receipt.line,payment_mode_id:0
+msgid "Payment Mode Receipt"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,date:0
+msgid "Payment Date"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:account.voucher:0
+msgid "Payment Methods"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt,currency:0
+msgid "The currency the field is expressed in."
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: selection:payment.mode.receipt,type:0
+msgid "Payment"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt.line,move_line_id:0
+msgid "This Entry Line will be referred for the information of the ordering customer."
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: code:addons/l10n_ar_account_payment/account_voucher.py:224
+#, python-format
+msgid "Voucher Paid Amount and sum of different payment mode must be equal"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:payment.mode.receipt:0
+#: field:payment.mode.receipt,account_id:0
+msgid "Account"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:account.voucher:0
+msgid "Payment Number"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt,name:0
+msgid "Name"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: code:addons/l10n_ar_account_payment/invoice.py:39
+#, python-format
+msgid "Pay Invoice"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,amount:0
+msgid "Amount"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: model:ir.model,name:l10n_ar_account_payment.model_payment_mode_receipt_line
+msgid "Payment mode receipt lines"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,name:0
+msgid "Mode"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: code:addons/l10n_ar_account_payment/account_voucher.py:126
+#, python-format
+msgid "Validate Error!"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: code:addons/l10n_ar_account_payment/account_voucher.py:126
+#, python-format
+msgid "Cannot validate a voucher with negative amount. Please check that Writeoff Amount is not negative."
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:account.voucher:0
+msgid "Total"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:account.voucher.line,ref:0
+msgid "Reference"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: model:ir.model,name:l10n_ar_account_payment.model_payment_mode_receipt
+msgid "Payment Mode for Payment/Receipt"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:payment.mode.receipt:0
+msgid "type"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: model:ir.model,name:l10n_ar_account_payment.model_account_voucher
+msgid "Accounting Voucher"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: model:ir.model,name:l10n_ar_account_payment.model_account_voucher_line
+msgid "Voucher Lines"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt,currency:0
+#: field:payment.mode.receipt.line,currency:0
+msgid "Currency"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt.line,name:0
+msgid "Payment reference"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:payment.mode.receipt.line,voucher_id:0
+msgid "Voucher"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:account.voucher.line,invoice_id:0
+#: model:ir.model,name:l10n_ar_account_payment.model_account_invoice
+msgid "Invoice"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:account.voucher:0
+msgid "Paid Amount"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: field:account.voucher,payment_line_ids:0
+msgid "Payments Lines"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt,bank_id:0
+msgid "Bank Account for the Payment Mode"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: help:payment.mode.receipt.line,date:0
+msgid "If no payment date is specified, the bank will treat this payment line directly"
+msgstr ""
+
+#. module: l10n_ar_account_payment
+#: view:account.voucher:0
+msgid "Journal"
+msgstr ""
+

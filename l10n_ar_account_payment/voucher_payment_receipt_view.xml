@@ -14,7 +14,7 @@
                 -->
                 <field name="amount" position="replace"/>
                 <field name="journal_id" position="after">
-                    <field name="journal_sequence" required="1" widget="selection" domain="[('code','=','voucher.receipt')]"/>
+                    <field name="journal_sequence" required="1" domain="[('code','=','voucher.receipt')]"/>
                     <field name="amount" class="oe_inline"
                            string="Paid Amount"
                            widget="monetary" options="{'currency_field': 'currency_id'}"

@@ -225,6 +225,21 @@ class account_voucher(osv.osv):
 
         return move_lines
 
+    def _update_move_reference(self, cr, uid, move_id, ref, context=None):
+
+        cr.execute('UPDATE account_move SET ref=%s ' \
+                'WHERE id=%s', (ref, move_id))
+
+        cr.execute('UPDATE account_move_line SET ref=%s ' \
+                'WHERE move_id=%s', (ref, move_id))
+
+        cr.execute('UPDATE account_analytic_line SET ref=%s ' \
+                'FROM account_move_line ' \
+                'WHERE account_move_line.move_id = %s ' \
+                    'AND account_analytic_line.move_id = account_move_line.id',
+                    (ref, move_id))
+        return True
+
     def action_move_line_create(self, cr, uid, ids, context=None):
         '''
         Confirm the vouchers given in ids and create the journal entries for each of them
@@ -255,6 +270,7 @@ class account_voucher(osv.osv):
                 if not voucher.reference:
                     ref = self.pool.get('ir.sequence').next_by_id(cr, uid, voucher.journal_sequence.id, context=context)
                     voucher_vals['reference'] = ref
+                    self._update_move_reference(cr, uid, move_id, ref, context=context)
 
             self.write(cr, uid, [voucher.id], voucher_vals, context=context)
 
