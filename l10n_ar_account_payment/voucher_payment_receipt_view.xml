@@ -14,6 +14,7 @@
                 -->
                 <field name="amount" position="replace"/>
                 <field name="journal_id" position="after">
+                    <field name="journal_sequence" required="1" widget="selection" domain="[('code','=','voucher.receipt')]"/>
                     <field name="amount" class="oe_inline"
                            string="Paid Amount"
                            widget="monetary" options="{'currency_field': 'currency_id'}"
@@ -31,7 +32,7 @@
                             <b><label string="Receipt Number"/></b>
                         </div>
                         <h1>
-                            <field name="reference" required="1"/>
+                            <field name="reference"/>
                         </h1>
                     </div>
                 </xpath>
@@ -71,7 +72,21 @@
                 </field>
                 -->
                 <field name="amount" position="replace"/>
+                <field name="reference" position="replace"/>
+
+                <field name="account_id" position="before">
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                            <b><label string="Payment Number"/></b>
+                        </div>
+                        <h1>
+                            <field name="reference"/>
+                        </h1>
+                    </div>
+                </field>
+
                 <field name="journal_id" position="after">
+                    <field name="journal_sequence" required="1" domain="[('code','=','voucher.payment')]"/>
                     <field name="amount" class="oe_inline"
                            string="Paid Amount"
                            widget="monetary" options="{'currency_field': 'currency_id'}"

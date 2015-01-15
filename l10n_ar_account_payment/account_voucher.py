@@ -31,13 +31,14 @@ class account_voucher(osv.osv):
 
     _columns = {
       'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
+      'journal_sequence': fields.many2one('ir.sequence', 'Book', readonly=True, states={'draft':[('readonly',False)]}),
     }
 
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
             return []
         if context is None: context = {}
-        return [(r['id'], (str("%s - %.2f" % (r['number'], r['amount'])) or '')) for r in self.read(cr, uid, ids, ['number', 'amount'], context, load='_classic_write')]
+        return [(r['id'], (str("%s - %.2f" % (r['reference'], r['amount'])) or '')) for r in self.read(cr, uid, ids, ['reference', 'amount'], context, load='_classic_write')]
 
     def _get_payment_lines_amount(self, cr, uid, payment_line_ids, context=None):
         payment_line_obj = self.pool.get('payment.mode.receipt.line')
@@ -127,6 +128,7 @@ class account_voucher(osv.osv):
         self._clean_payment_lines(cr, uid, ids, context=context)
 
         self.action_move_line_create(cr, uid, ids, context=context)
+
         return True
 
 
@@ -247,7 +249,14 @@ class account_voucher(osv.osv):
             name = move_pool.browse(cr, uid, move_id, context=context).name
 
             # Escribimos el numero del voucher
-            self.write(cr, uid, [voucher.id], {'number': name})
+            # Seteamos el numero de la OP
+            voucher_vals = {'number': 'name'}
+            if voucher.type in ('payment', 'receipt'):
+                if not voucher.reference:
+                    ref = self.pool.get('ir.sequence').next_by_id(cr, uid, voucher.journal_sequence.id, context=context)
+                    voucher_vals['reference'] = ref
+
+            self.write(cr, uid, [voucher.id], voucher_vals, context=context)
 
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
