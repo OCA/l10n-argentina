@@ -106,6 +106,8 @@
                                                                            'required': [('type','=','postdated')]}"/>
                                         <field name="clearing"/>
                                         <field name="signatory"/>
+                                        <field name="signatory_vat"/>
+                                        <field name="signatory_account"/>
                                     </group>
                                 </group>
                                 <field name="state" invisible="1"/>
