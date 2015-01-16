@@ -58,7 +58,7 @@
 						<h1><b>EGRESO DE CAJA  ${ (o.number) or ''}</b></h1>
 					%endif
 					%if o.type == 'receipt':
-						<h1><b>RECIBO OFICIAL NRO.  ${ (o.number) or ''}</b></h1>
+						<h1><b>RECIBO OFICIAL NRO.  ${ (o.ref) or ''}</b></h1>
 					%endif
           		</td>
             </tr>
