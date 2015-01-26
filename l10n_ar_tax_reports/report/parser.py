@@ -173,10 +173,11 @@ class Parser(report_sxw.rml_parse):
                 line['vat'] = l.partner_id.vat
                 line['fiscal_position'] = l.partner_id.property_account_position.name
                 line['invoice_type'] = self.get_invoice_type(l.invoice)
-                if l.invoice.type in ('out_invoice', 'out_debit', 'out_refund'):
-                    line['invoice_number'] = '%s-%08d' % (l.invoice.pos_ar_id.name, int(l.invoice.internal_number))
-                else:
-                    line['invoice_number'] = l.invoice.internal_number
+#                if l.invoice.type in ('out_invoice', 'out_debit', 'out_refund'):
+#                    line['invoice_number'] = '%s-%08d' % (l.invoice.pos_ar_id.name, int(l.invoice.internal_number))
+#                else:
+#                    line['invoice_number'] = l.invoice.internal_number
+                line['invoice_number'] = l.invoice.internal_number
                 line['taxes'] = []
                 line['taxes'] += ['']*len(tax_code_ids)
                 line['total'] = l.invoice.amount_total*sign
@@ -246,11 +247,13 @@ class Parser(report_sxw.rml_parse):
 
         if inv.type in ('out_invoice', 'in_invoice'):
             type = "F"
+        # TODO: No existe mas out_debit ni in_debit. Corregir.
         elif inv.type in ('out_debit', 'in_debit'):
             type = "ND"
         else:
             type = "NC"
 
+        # TODO: Habria que ver si son comprobantes de Clientes o Proveedores, en lugar de mirar por los campos.
         if inv.pos_ar_id and inv.pos_ar_id.denomination_id:
             denomination = inv.pos_ar_id.denomination_id.name
         elif inv.denomination_id:
