@@ -92,19 +92,19 @@ class order(report_sxw.rml_parse):
         cr = self.cr
         cr.execute('select sum(amount) from payment_mode_receipt_line where voucher_id=%s',(voucher_id,))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
 
     def _show_cheques_propios(self, uid, voucher_id, context=None):
         cr = self.cr
         cr.execute('select sum(amount) from account_issued_check where voucher_id=%s',(voucher_id,))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
 
     def _show_cheques_recibo_terceros(self, uid, voucher_id, context=None):
         cr = self.cr
         cr.execute('select sum(amount) from account_third_check where source_voucher_id=%s',(voucher_id,))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
 
     def _show_cheques_terceros(self, uid, voucher_id, context=None):
         cr = self.cr
@@ -112,25 +112,25 @@ class order(report_sxw.rml_parse):
         cr.execute('select sum(tc.amount) from third_check_voucher_rel tr, account_third_check tc \
                     where tr.third_check_id=tc.id and tr.dest_voucher_id=%s',(voucher_id,))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
         
     def _show_comprobantes_cr(self, uid, voucher_id, context=None):
         cr = self.cr
         cr.execute('select sum(amount) from account_voucher_line where voucher_id=%s and type=%s',(voucher_id,'cr',))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
         
     def _show_comprobantes_dr(self, uid, voucher_id, context=None):
         cr = self.cr
         cr.execute('select sum(amount) from account_voucher_line where voucher_id=%s and type=%s',(voucher_id,'dr',))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
         
     def _show_retenciones(self, uid, voucher_id, context=None):
         cr = self.cr
         cr.execute('select sum(amount) from retention_tax_line where voucher_id=%s',(voucher_id,))
         aux = cr.fetchone()
-        return aux[0]
+        return aux[0] or 0.0
         
     def _saldo(self, original, amount, context=None):
         return original - amount

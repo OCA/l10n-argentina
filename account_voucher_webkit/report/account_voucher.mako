@@ -91,15 +91,17 @@
         		<td colspan="2">
                     %if o.type == 'receipt':
                     Recibimos de ${ o.partner_id.name or ''|entity} la cantidad de 
-                    ${ amount_to_text_sp(o.amount, 'peso')} cuyo importe una vez hecho efectivo sera acreditado en su cuenta segun 
+                    ${ amount_to_text_sp(o.amount, 'peso')} (${o.amount}) cuyo importe una vez hecho efectivo sera acreditado en su cuenta segun
                     detalle / al pie de este recibo.
                     %endif
                     %if o.type == 'payment':
-						La cantidad de ${ amount_to_text_sp(o.amount, 'peso')}
+						La cantidad de ${ amount_to_text_sp(o.amount, 'peso')} (${o.amount})
 					%endif
           		</td>
              </tr>
 		</table>
+
+		%if (o.type == 'payment' and o.line_dr_ids) or (o.type == 'receipt' and o.line_cr_ids):
 		<h1><b>Comprobantes cancelados</b></h1>
 		<table width="100%" class="basic_table">
         	<tr>
@@ -130,6 +132,7 @@
 -->
              </tr>
 		</table>
+        %endif
 		%if o.type == 'payment':
 			%if o.line_dr_ids:
 				%for line in o.line_dr_ids:
@@ -170,7 +173,7 @@
 				<table class="shipping_address" width="100%">
 					<tr>
 						<td colspan="6" align="right">
-							${_("Total")} $ ${ show_comprobantes_dr(user.id, o.id)}
+							<b>${_("Total")} $ ${ show_comprobantes_dr(user.id, o.id)}</b>
 						</td>
 					 </tr>
 				</table>
@@ -215,7 +218,7 @@
 				<table class="shipping_address" width="100%">
 					<tr>
 						<td colspan="6" align="right">
-							${_("Total")} $ ${ show_comprobantes_cr(user.id, o.id)}
+							<b>${_("Total")} $ ${ show_comprobantes_cr(user.id, o.id)}</b>
 						</td>
 					 </tr>
 				</table>
@@ -223,6 +226,7 @@
 		%endif
 			
 
+		%if (o.type == 'payment' and o.line_cr_ids) or (o.type == 'receipt' and o.line_dr_ids):
 		<h1><b>Detalle de creditos</b></h1>
 		<table width="100%" class="basic_table">
         	<tr>
@@ -253,6 +257,7 @@
 -->
              </tr>
 		</table>
+        %endif
 		%if o.type == 'payment':
 			%if o.line_cr_ids:
 				%for line_cr in o.line_cr_ids:
@@ -293,7 +298,7 @@
 				<table class="shipping_address" width="100%">
 					<tr>
 						<td colspan="6" align="right">
-							${_("Total")} $ ${ show_comprobantes_cr(user.id, o.id)}
+							<b>${_("Total")} $ ${ show_comprobantes_cr(user.id, o.id)}</b>
 						</td>
 					 </tr>
 				</table>
@@ -338,7 +343,7 @@
 				<table class="shipping_address" width="100%">
 					<tr>
 						<td colspan="6" align="right">
-							${_("Total")} $ ${ show_comprobantes_dr(user.id, o.id)}
+							<b>${_("Total")} $ ${ show_comprobantes_dr(user.id, o.id)}</b>
 						</td>
 					 </tr>
 				</table>
@@ -378,12 +383,12 @@
 		<table class="shipping_address" width="100%">
         	<tr>
         		<td colspan="6" align="right">
-                    ${_("Total")} $ ${ show_formas_de_pago(user.id, o.id)}
+                    <b>${_("Total")} $ ${ show_formas_de_pago(user.id, o.id)}</b>
           		</td>
              </tr>
 		</table>
 		%endif
-		%if o.type == 'payment':
+		%if o.type == 'payment' and o.issued_check_ids:
 		<h1><b>Detalle de cheques propios</b></h1>
 		<table width="100%" class="basic_table">
         	<tr>
@@ -428,7 +433,7 @@
 		<table class="shipping_address" width="100%">
         	<tr>
         		<td colspan="6" align="right">
-                    ${_("Total")} $ ${ show_cheques_propios(user.id, o.id)}
+                    <b>${_("Total")} $ ${ show_cheques_propios(user.id, o.id)}</b>
           		</td>
              </tr>
 		</table>
@@ -479,7 +484,7 @@
 			<table class="shipping_address" width="100%">
 				<tr>
 					<td colspan="6" align="right">
-						${_("Total")} $ ${ show_cheques_recibo_terceros(user.id, o.id)}
+						<b>${_("Total")} $ ${ show_cheques_recibo_terceros(user.id, o.id)}</b>
 					</td>
 				 </tr>
 			</table>
@@ -531,7 +536,7 @@
 			<table class="shipping_address" width="100%">
 				<tr>
 					<td colspan="6" align="right">
-						${_("Total")} $ ${ show_cheques_terceros(user.id, o.id)}
+						<b>${_("Total")} $ ${ show_cheques_terceros(user.id, o.id)}</b>
 					</td>
 				 </tr>
 			</table>
@@ -582,11 +587,29 @@
 			<table class="shipping_address" width="100%">
 				<tr>
 					<td colspan="6" align="right">
-						${_("Total")} $ ${ show_retenciones(user.id, o.id)}
+						<b>${_("Total")} $ ${ show_retenciones(user.id, o.id)}</b>
 					</td>
 				 </tr>
 			</table>
 		%endif
 	%endfor
+
+    <table width="100%">
+       <tr>
+        %if o.writeoff_amount>0.0:
+            %if o.type=='payment':
+                <td colspan="6" align="left">
+                    <h4>${_("A cuenta de Anadelia:")} $ ${o.writeoff_amount}</h4>
+                </td>
+            %endif
+        %endif
+        </tr>
+        <tr>
+            <td colspan="6" align="left">
+                <h3>${_("Total Comprobante")} $ ${o.amount}</h3>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>
