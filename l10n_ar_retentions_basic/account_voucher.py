@@ -75,6 +75,7 @@ class retention_tax_line(osv.osv):
 
     def create_voucher_move_line(self, cr, uid, retention, voucher, context=None):
         voucher_obj = self.pool.get('account.voucher')
+        retention_obj = self.pool.get('retention.tax.line')
 
         move_lines = []
 
@@ -94,11 +95,11 @@ class retention_tax_line(osv.osv):
 
         debit = credit = 0.0
 
-       # Lo escribimos en el objeto retention_tax_line
-        retention_vals['tax_amount'] = tax_amount_in_company_currency
-        retention_vals['base_amount'] = base_amount_in_company_currency
+        # Lo escribimos en el objeto retention_tax_line
+        #retention_vals['tax_amount'] = tax_amount_in_company_currency
+        #retention_vals['base_amount'] = base_amount_in_company_currency
 
-        #retention_obj.write(cr, uid, retention.id, retention_vals)
+        retention_obj.write(cr, uid, retention.id, retention_vals)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -133,7 +134,7 @@ class retention_tax_line(osv.osv):
         # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
         move_line = {
             'name': retention.name + '(Base Imp)',
-            'ref': voucher.name,
+            #'ref': voucher.name,
             'debit': 0.0,
             'credit': 0.0,
             'account_id': retention.account_id.id,
@@ -242,7 +243,7 @@ class account_voucher(osv.osv):
 
             # Escribimos valores del voucher en la retention tax line
             ret_vals = {
-                    'voucher_number': voucher.number,
+                    'voucher_number': voucher.reference,
                     'partner_id': voucher.partner_id.id,
             }
 
