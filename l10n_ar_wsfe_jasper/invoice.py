@@ -36,7 +36,7 @@ class account_invoice(osv.osv):
         res = {}
         for inv in self.browse(cr, uid, ids, context=context):
             cuit = inv.company_id.partner_id.vat
-            pos = '0005'
+            pos = '0002'
             
             eivoucher_obj = self.pool.get('wsfe.voucher_type')
             aux_res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
