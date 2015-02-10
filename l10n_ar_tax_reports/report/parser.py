@@ -158,6 +158,7 @@ class Parser(report_sxw.rml_parse):
         #ids = account_obj.search(self.cr, self.uid, [('invoice','!=',False), ('tax_code_id','!=',False)])
         lines = {}
         total_invoiced = 0.0
+        total_no_taxed = 0.0
         for l in account_obj.browse(self.cr, self.uid, line_ids):
             line = {}
 
@@ -180,8 +181,10 @@ class Parser(report_sxw.rml_parse):
                 line['invoice_number'] = l.invoice.internal_number
                 line['taxes'] = []
                 line['taxes'] += ['']*len(tax_code_ids)
+                line['no_taxed'] = l.invoice.amount_no_taxed*sign
                 line['total'] = l.invoice.amount_total*sign
                 total_invoiced += line['total']
+                total_no_taxed += line['no_taxed']
                 lines[l.move_id.id] = line
 
             for i, t_id in enumerate(tax_code_ids):
@@ -203,6 +206,7 @@ class Parser(report_sxw.rml_parse):
         line2['invoice_type'] = ""
         line2['invoice_number'] = ""
         line2['taxes'] = []
+        line2['no_taxed'] = total_no_taxed
         line2['total'] = total_invoiced
 
         # Obtenemos los totales
@@ -246,10 +250,10 @@ class Parser(report_sxw.rml_parse):
             return ""
 
         if inv.type in ('out_invoice', 'in_invoice'):
-            type = "F"
-        # TODO: No existe mas out_debit ni in_debit. Corregir.
-        elif inv.type in ('out_debit', 'in_debit'):
-            type = "ND"
+            if inv.is_debit_note:
+                type = "ND"
+            else:
+                type = "F"
         else:
             type = "NC"
 
