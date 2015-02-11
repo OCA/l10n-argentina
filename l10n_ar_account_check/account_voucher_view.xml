@@ -28,21 +28,21 @@
                             <form string="Issued Checks">
                                 <group>
                                     <group>
-                                        <field name="number" attrs="{'readonly': [('issued','=',True)]}"/>
-                                        <field name="type" attrs="{'readonly': [('issued','=',True)]}"/>
-                                        <field name="amount" attrs="{'readonly': [('issued','=',True)]}"/>
-                                        <field name="bank_id" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="number"/>
+                                        <field name="type"/>
+                                        <field name="amount"/>
+                                        <field name="bank_id"/>
+                                        <field name="company_id" invisible="0"/>
                                     </group>
                                     <group>
-                                        <field name="issue_date" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="issue_date"/>
                                         <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')]}"/>
-                                        <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1" attrs="{'readonly': [('issued','=',True)]}"/>
+                                        <field name="account_bank_id" domain="[('company_id', '=', company_id)]" required="1"/>
                                         <field name="clearing"/>
                                         <field name="signatory"/>
                                         <field name="origin"/>
                                     </group>
                                 </group>
-                                <field name="issued" invisible="1"/>
                                 <field name="receiving_partner_id" invisible="1"/>
                             </form>
                         </field>
