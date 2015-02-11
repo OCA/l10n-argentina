@@ -250,7 +250,7 @@
                <form string="Third Checks" version="7.0">
                     <header>
                         <button name="%(action_check_deposit)d" type='action' string='Deposit Check' states='wallet' class="oe_highlight" groups="account.group_account_invoice,account.group_account_manager"/>
-                        <field name="state" widget="statusbar" statusbar_visible="wallet,deposited,delivered" statusbar_colors='{"wallet":"blue","rejected":"red"}'/>
+                        <field name="state" widget="statusbar" statusbar_visible="wallet,deposited,delivered" statusbar_colors='{"wallet":"blue","rejected":"red","cancel":"red"}'/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -313,6 +313,8 @@
                             string="Deposited" domain="[('state','=','deposit')]"/>
                         <filter icon="gtk-cancel" name="rejected"
                             string="Rejected" domain="[('state','=','rejected')]"/>
+                        <filter icon="gtk-cancel" name="cancel"
+                            string="Cancelled" domain="[('state','=','cancel')]"/>
                        <separator orientation="vertical"/>
                        <filter icon="terp-check" string="Common" name="common"
                            domain="[('type','=', 'common')]"/>

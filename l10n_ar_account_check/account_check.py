@@ -132,7 +132,6 @@ class account_issued_check(osv.osv):
     def cancel_check(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
 
-
     def unlink(self, cr, uid, ids, context=None):
 
         for check in self.read(cr, uid, ids, ['state', 'voucher_id'], context=context):
@@ -168,6 +167,7 @@ class account_third_check(osv.osv):
                 ('deposited', 'Deposited'),
                 ('delivered', 'Delivered'),
                 ('rejected', 'Rejected'),
+                ('cancel', 'Cancelled'),
             ), 'State', readonly=True),
         'bank_id': fields.many2one('res.bank', 'Bank', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         #'vat': fields.char('Vat', size=15, required=True),
@@ -270,10 +270,22 @@ class account_third_check(osv.osv):
             check.write(vals)
         return True
 
-    def return_wallet(self, cr, uid, ids, context=None):
-        # Transicion efectuada al romper conciliacion en un pago a proveedores que tiene cheques de tercero entregados
-        vals = {'state': 'wallet', 'endorsement_date': False, 'destiny_partner_id': False, 'dest': False}
-        self.write(cr, uid, ids, vals)
+    def unlink(self, cr, uid, ids, context=None):
+
+        for check in self.read(cr, uid, ids, ['state', 'source_voucher_id'], context=context):
+            if check['state'] != 'draft':
+                raise osv.except_osv(_('Check Error'), _('You cannot delete a third check that is not in Draft state [See %s].') % (check['source_voucher_id'][1]))
+
+        return super(account_third_check, self).unlink(cr, uid, ids, context)
+ 
+    def cancel_check(self, cr, uid, ids, context=None):
+
+        # Todos los cheques tienen que estar en draft o wallet
+        for check in self.read(cr, uid, ids, ['state'], context=context):
+            if check['state'] not in ('draft', 'wallet'):
+                raise osv.except_osv(_("Third Check Error!"), _("You cannot cancel check if it is not in Draft or in Wallet"))
+
+        self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
         return True
 
     def check_delivered(self, cr, uid, ids, context=None):
