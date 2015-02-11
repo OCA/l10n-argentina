@@ -72,16 +72,17 @@ class account_issued_check(osv.osv):
             ), 'Clearing'),
         'account_bank_id': fields.many2one('res.partner.bank', 'Bank Account'),
         'voucher_id': fields.many2one('account.voucher', 'Voucher'),
-        'issued': fields.boolean('Issued'),
         'origin': fields.char('Origin', size=64),
         'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
             help="If common, checks only have issued_date. If post-dated they also have payment date"),
-        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
+        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True),
+        'state': fields.selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State')
     }
 
     _defaults = {
         'clearing': lambda *a: '24',
         'type': 'common',
+        'state': 'draft',
         'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher',context=c),
     }
 
@@ -113,7 +114,7 @@ class account_issued_check(osv.osv):
 
         # Creamos la linea contable perteneciente al cheque
         move_line = {
-            'name': 'Issued Check ' + check.number or '/',
+            'name': _('Issued Check %s') % check.number or '/',
             'debit': debit,
             'credit': credit,
             'account_id': account_id,
@@ -128,6 +129,18 @@ class account_issued_check(osv.osv):
 
         return move_line
 
+    def cancel_check(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
+
+
+    def unlink(self, cr, uid, ids, context=None):
+
+        for check in self.read(cr, uid, ids, ['state', 'voucher_id'], context=context):
+            if check['state'] != 'draft':
+                raise osv.except_osv(_('Check Error'), _('You cannot delete an issued check that is not in Draft state [See %s].') % (check['voucher_id'][1]))
+
+        return super(account_issued_check, self).unlink(cr, uid, ids, context)
+        
 account_issued_check()
 
 

@@ -67,9 +67,9 @@
                     <field name="payment_date"/>
                     <field name="account_bank_id" />
                     <field name="bank_id"/>
-                    <field name="issued"/>
                     <field name="amount" sum="Total Amount" />
                     <field name="type" invisible="1"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -80,6 +80,9 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Issued Checks" version="7.0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,issued" statusbar_colors='{"cancel":"red"}'/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <h1>
@@ -89,15 +92,15 @@
                         </div>
                         <group>
                             <group>
-                                <field name="type" attrs="{'readonly': [('issued','=',True)]}"/>
-                                <field name="amount" attrs="{'readonly': [('issued','=',True)]}"/>
-                                <field name="receiving_partner_id" attrs="{'readonly': [('issued','=',True)]}"/>
-                                <field name="bank_id" attrs="{'readonly': [('issued','=',True)]}"/>
+                                <field name="type"/>
+                                <field name="amount"/>
+                                <field name="receiving_partner_id"/>
+                                <field name="bank_id"/>
                             </group>
                             <group>
-                                <field name="issue_date" attrs="{'readonly': [('issued','=',True)]}"/>
-                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')], 'readonly': [('issued','=',True)]}"/>
-                                <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1" attrs="{'readonly': [('issued','=',True)]}"/>
+                                <field name="issue_date"/>
+                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
+                                <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
                             </group>
                         </group>
                         <group string="Additional Information">
@@ -107,7 +110,6 @@
                             </group>
                             <group>
                                 <field name="origin"/>
-                                <field name="issued" readonly="1"/>
                             </group>
                          </group>
                     </sheet>
