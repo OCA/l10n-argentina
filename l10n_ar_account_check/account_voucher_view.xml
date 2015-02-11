@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-    <!-- Payment -->
+    <!-- Payment-->
 
         <record id="view_voucher_check_form" model="ir.ui.view">
             <field name="name">account.voucher.check.form.inherit</field>
