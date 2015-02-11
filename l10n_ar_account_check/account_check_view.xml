@@ -232,6 +232,7 @@
                     <field name="bank_id"/>
                     <field name="amount"/>
                     <field name="deposit_bank_id"/>
+                    <field name="deposit_slip"/>
                     <field name="type"/>
                     <field name="state"/>
                 </tree>
@@ -269,6 +270,7 @@
                                 <field name="endorsement_date" attrs="{'invisible': [('state', 'not in', ('wallet', 'delivered', 'rejected'))]}"/>
                                 <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
                                 <field name="deposit_date" attrs="{'invisible': [('state','!=','deposited')]}"/>
+                                <field name="deposit_slip"/>
                             </group>
                         </group>
                         <group string="Other Information">
@@ -340,6 +342,8 @@
                        <separator orientation="vertical"/>
                         <filter string="Bank" icon="terp-accessories-archiver" domain="[('state','!=','draft')]"
                             context="{'group_by':'bank_id'}"/>
+                        <filter string="Deposit Slip" icon="terp-stock_effects-object-colorize" domain="[]"
+                            context="{'group_by':'deposit_slip'}"/>
                         <filter string="State" icon="terp-stock_effects-object-colorize" domain="[]"
                             context="{'group_by':'state'}"/>
                     </group>

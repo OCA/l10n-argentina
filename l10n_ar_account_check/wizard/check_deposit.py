@@ -182,7 +182,7 @@ class account_check_deposit(osv.osv_memory):
                 'state': 'valid',
             })
 
-            check_vals = {'deposit_bank_id': wizard.bank_account_id.id, 'deposit_date': deposit_date}
+            check_vals = {'deposit_bank_id': wizard.bank_account_id.id, 'deposit_date': deposit_date, 'deposit_slip': wizard.voucher_number}
             check.write(check_vals)
 
             third_check_obj.deposit_check(cr, uid, [check.id], context=context)

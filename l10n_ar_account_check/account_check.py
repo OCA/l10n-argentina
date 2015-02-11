@@ -178,6 +178,7 @@ class account_third_check(osv.osv):
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
         'signatory_vat': fields.char('Signatory VAT', size=64),
         'signatory_account': fields.char('Signatory account', size=64),
+        'deposit_slip': fields.char('Deposit Slip', size=64),
     }
 
     _defaults = {
