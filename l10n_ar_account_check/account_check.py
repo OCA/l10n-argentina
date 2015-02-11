@@ -246,8 +246,7 @@ class account_third_check(osv.osv):
         return move_line
 
     def to_wallet(self, cr, uid, ids, context=None):
-        # Transicion efectuada al validar un pago de cliente que contenga
-        # cheques
+        # Funcion llamada al validar un pago de cliente que contenga cheques
         for check in self.browse(cr, uid, ids):
             voucher = check.source_voucher_id
             if not voucher:
@@ -269,6 +268,19 @@ class account_third_check(osv.osv):
 
             check.write(vals)
         return True
+
+    def return_wallet(self, cr, uid, ids, context=None):
+
+        # Todos los cheques tienen que estar en delivered
+        for check in self.read(cr, uid, ids, ['state'], context=context):
+            if check['state'] != 'delivered':
+                raise osv.except_osv(_("Third Check Error!"), _("You cannot return to wallet a check if it is not in Delivered state"))
+
+        vals = {'state': 'wallet', 'endorsement_date': False, 'destiny_partner_id': False, 'dest': ''}
+
+        self.write(cr, uid, ids, vals, context=context)
+        return True
+
 
     def unlink(self, cr, uid, ids, context=None):
 
@@ -302,7 +314,7 @@ class account_third_check(osv.osv):
             vals['destiny_partner_id'] = voucher.partner_id.id
 
             if not check.dest:
-                vals['dest'] = voucher.number
+                vals['dest'] = voucher.reference
 
             check.write(vals)
         return True
