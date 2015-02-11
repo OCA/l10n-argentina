@@ -259,7 +259,7 @@ class account_third_check(osv.osv):
                 vals['source_partner_id'] = partner_id
 
             if not check.origin:
-                vals['origin'] = voucher.number
+                vals['origin'] = voucher.reference
             vals['state'] = 'wallet'
 
             # Si es cheque comun tomamos la fecha de emision

@@ -214,7 +214,7 @@ class account_voucher(osv.osv):
                 vals = {'state': 'issued', 'receiving_partner_id': v.partner_id.id}
 
                 if not check.origin:
-                    vals['origin'] = v.number
+                    vals['origin'] = v.reference
 
                 if not check.issue_date:
                     vals['issue_date'] = v.date
