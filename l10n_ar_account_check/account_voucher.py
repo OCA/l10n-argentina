@@ -131,45 +131,13 @@ class account_voucher(osv.osv):
 
         return {'value': {'amount': amount}}
 
-#    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
-#
-#        print 'Hook Get amount en Cheques'
-#        amount = super(account_voucher, self)._hook_get_amount(cr, uid, ids, amount, context=context)
-#
-#        amount_issued_checks = 0.0
-#        amount_third_checks = 0.0
-#        amount_third_receipt_checks = 0.0
-#        for voucher in self.browse(cr, uid, ids, context=context):
-#            for check in voucher.issued_check_ids:
-#                amount_issued_checks += check.amount
-#            for check in voucher.third_check_ids:
-#                amount_third_checks += check.amount
-#            for check in voucher.third_check_receipt_ids:
-#                amount_third_receipt_checks += check.amount
-#
-#        amount += amount_issued_checks + amount_third_checks + amount_third_receipt_checks
-#        print 'Amount: ', amount_issued_checks, amount_third_checks, amount_third_receipt_checks, amount
-#        return amount
-
-#    def action_move_line_create(self, cr, uid, ids, context=None):
-#        voucher_obj = self.pool.get('account.voucher').browse(cr, uid, ids)[0]
-#        wf_service = netsvc.LocalService('workflow')
-#        if voucher_obj.type == 'payment':
-#            if voucher_obj.issued_check_ids:
-#                for check in voucher_obj.issued_check_ids:
-#                    vals = {'issued': True, 'receiving_partner_id': voucher_obj.partner_id.id}
-#                    if not check.issue_date:
-#                        vals['issue_date'] = voucher_obj.date
-#                    check.write(vals)
-#
-#        return super(account_voucher, self).action_move_line_create(cr, uid, ids, context=None)
-
     def unlink(self, cr, uid, ids, context=None):
 
         # Borramos los issued check asociados al voucher
-        for v in self.read(cr, uid, ids, ['issued_check_ids'], context=context):
+        for v in self.read(cr, uid, ids, ['issued_check_ids', 'third_check_receipt_ids'], context=context):
             
             self.pool.get('account.issued.check').unlink(cr, uid, v['issued_check_ids'], context=context)
+            self.pool.get('account.third.check').unlink(cr, uid, v['third_check_receipt_ids'], context=context)
 
         return super(account_voucher, self).unlink(cr, uid, ids, context=context)
  
@@ -242,8 +210,10 @@ class account_voucher(osv.osv):
         res = super(account_voucher, self).cancel_voucher(cr, uid, ids, context=context)
 
         for voucher in self.browse(cr, uid, ids, context=context):
-            for third_check in voucher.third_check_ids:
-                third_check_obj.return_wallet(cr, uid, [third_check.id], context=context)
+
+            # Cancelamos los cheques de tercero en recibos
+            third_checks = [c.id for c in voucher.third_check_receipt_ids]
+            third_check_obj.cancel_check(cr, uid, third_checks, context=context)
 
             # Cancelamos los cheques emitidos
             issued_checks = [c.id for c in voucher.issued_check_ids]
@@ -253,12 +223,17 @@ class account_voucher(osv.osv):
 
     def action_cancel_draft(self, cr, uid, ids, context=None):
         issued_check_obj = self.pool.get('account.issued.check')
+        third_check_obj = self.pool.get('account.third.check')
 
         res = super(account_voucher, self).action_cancel_draft(cr, uid, ids, context=context)
-        # A draft los cheques emitidos
         for voucher in self.browse(cr, uid, ids, context=context):
+            # A draft los cheques emitidos
             issued_checks = [c.id for c in voucher.issued_check_ids]
             issued_check_obj.write(cr, uid, issued_checks, {'state':'draft'}, context=context)
+
+            # A draft los cheques de tercero en cobros
+            third_checks = [c.id for c in voucher.third_check_receipt_ids]
+            third_check_obj.write(cr, uid, third_checks, {'state':'draft'}, context=context)
 
         return res
 
