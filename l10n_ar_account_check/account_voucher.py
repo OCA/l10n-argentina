@@ -212,8 +212,12 @@ class account_voucher(osv.osv):
         for voucher in self.browse(cr, uid, ids, context=context):
 
             # Cancelamos los cheques de tercero en recibos
-            third_checks = [c.id for c in voucher.third_check_receipt_ids]
-            third_check_obj.cancel_check(cr, uid, third_checks, context=context)
+            third_receipt_checks = [c.id for c in voucher.third_check_receipt_ids]
+            third_check_obj.cancel_check(cr, uid, third_receipt_checks, context=context)
+
+            # Volvemos a cartera los cheques de tercero en pagos
+            third_checks = [c.id for c in voucher.third_check_ids]
+            third_check_obj.return_wallet(cr, uid, third_checks, context=context)
 
             # Cancelamos los cheques emitidos
             issued_checks = [c.id for c in voucher.issued_check_ids]
