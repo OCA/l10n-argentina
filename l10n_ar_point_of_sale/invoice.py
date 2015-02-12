@@ -346,9 +346,7 @@ class invoice(osv.osv):
             invtype = obj_inv.type
 
             if invtype in ('in_invoice', 'in_refund'):
-                local = (partner_country == company_country) or partner_country == False
-            else:
-                local = True
+                local = obj_inv.fiscal_position.local
 
             #move_id = obj_inv.move_id and obj_inv.move_id.id or False
             reference = obj_inv.reference or ''

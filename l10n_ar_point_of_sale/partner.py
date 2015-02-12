@@ -29,7 +29,12 @@ class account_fiscal_position (osv.osv):
     _inherit = "account.fiscal.position"
     _description = ""
     _columns = {
+        'local' : fields.boolean('Local Fiscal Rules', help="Check this if it corresponds to apply local fiscal rules, like invoice number validation, etc"),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination', required=True),
         'denom_supplier_id' : fields.many2one('invoice.denomination','Denomination', required=True),
+    }
+
+    _defaults = {
+        'local': True,
     }
 account_fiscal_position()
