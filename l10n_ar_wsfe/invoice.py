@@ -311,10 +311,9 @@ class account_invoice(osv.osv):
             id = obj_inv.id
             invtype = obj_inv.type
 
+            # Chequeamos si es local por medio de la posicion fiscal
             if invtype in ('in_invoice', 'in_refund'):
-                local = (partner_country == company_country) or partner_country == False
-            else:
-                local = True
+                local = obj_inv.fiscal_position.local
 
             reference = obj_inv.reference or ''
 
