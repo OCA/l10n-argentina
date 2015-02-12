@@ -145,6 +145,10 @@ class account_issued_check(osv.osv):
         return super(account_issued_check, self).create(cr, uid, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
+
+        if not ids:
+            return super(account_issued_check, self).unlink(cr, uid, ids, context=context)
+
         sql = 'select check_id from account_issued_check where id = ' + str(ids[0])
         cr.execute(sql)
         aux_check_id = cr.fetchone()
