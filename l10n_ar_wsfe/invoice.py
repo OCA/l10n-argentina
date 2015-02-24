@@ -312,6 +312,7 @@ class account_invoice(osv.osv):
             invtype = obj_inv.type
 
             # Chequeamos si es local por medio de la posicion fiscal
+            local = True
             if invtype in ('in_invoice', 'in_refund'):
                 local = obj_inv.fiscal_position.local
 
