@@ -37,15 +37,14 @@ class account_bank_statement_line(osv.osv):
     }
     
     def bank_line_on_change_amount(self, cr, uid, ids, type, amount, context=None):
-        print 'signos'
         """
         Force withdrawal movements to be negative and deposit ones to
         be positive.
         """
-        if type == 'expense':
-            amount = -abs(amount)
+        if type == 'expenses':
+            amount = -amount
         elif type == 'income':
-            amount = abs(amount)
+            amount = amount
 
         return { 'value': { 'amount': amount } }
 
@@ -154,6 +153,11 @@ class account_bank_statement(osv.osv):
             company_currency_id = st.journal_id.company_id.currency_id.id
             if not self.check_status_condition(cr, uid, st.state, journal_type=j_type):
                 continue
+                
+            #~ if j_type in 'bank' and st.total_entry_encoding != st.balance_end_real:
+                #~ raise osv.except_osv(_('Error !'),
+                        #~ _('Verifique que el saldo final sea igual a las transacciones realizadas.'))
+            #~ self.balance_check(cr, uid, st.id, journal_type=j_type, context=context)
             
             if (not st.journal_id.default_credit_account_id) \
                     or (not st.journal_id.default_debit_account_id):
