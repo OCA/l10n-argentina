@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_payment_mode_receipt_form1" model="ir.ui.view">
+			<field name="name">payment.mode.receipt.form1</field>
+			<field name="model">payment.mode.receipt</field>
+			<field name="inherit_id" ref="l10n_ar_account_payment.view_payment_mode_receipt_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="/form/group/group/field[@name='currency']" position="after">
+					<field name="journal_id"/>
+				</xpath>
+			</field>
+		</record>
+
+    </data>
+</openerp>
