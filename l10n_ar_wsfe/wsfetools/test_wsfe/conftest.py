@@ -1,3 +1,8 @@
+import sys, os
+
+# HACK para que los modulos se importen correctamente
+sys.path.append(os.getcwd())
+
 from wsfe_suds import WSFEv1
 from wsfex_suds import WSFEX
 from wsaa_suds import WSAA

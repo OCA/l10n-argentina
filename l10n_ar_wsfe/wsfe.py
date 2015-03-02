@@ -45,9 +45,9 @@ class wsfe_tax_codes(osv.osv):
 class wsfe_config(osv.osv):
     _name = "wsfe.config"
     _description = "Configuration for WSFE"
-    _rec_name = 'cuit'
 
     _columns = {
+        'name': fields.char('Name', size=64, required=True),
         'cuit': fields.related('company_id', 'partner_id', 'vat', type='char', string='Cuit'),
         'url' : fields.char('URL for WSFE', size=60, required=True),
         'homologation' : fields.boolean('Homologation', help="If true, there will be some validations that are disabled, for example, invoice number correlativeness"),
@@ -59,7 +59,7 @@ class wsfe_config(osv.osv):
     }
 
     _sql_constraints = [
-        ('company_uniq', 'unique (company_id)', 'The configuration must be unique per company !')
+        #('company_uniq', 'unique (company_id)', 'The configuration must be unique per company !')
     ]
 
     _defaults = {
@@ -89,6 +89,10 @@ class wsfe_config(osv.osv):
             vals['wsaa_ticket_id'] = ta_id
 
         return super(wsfe_config, self).create(cr, uid, vals, context)
+
+    # TODO: Cuando se borra esta configuracion
+    # debemos borrar el wsaa.ta correspondiente
+    #def unlink(self, cr, uid, ids):
 
     def get_config(self, cr, uid):
         # Obtenemos la compania que esta utilizando en este momento este usuario

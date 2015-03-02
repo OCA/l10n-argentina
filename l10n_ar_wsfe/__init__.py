@@ -19,6 +19,7 @@
 #
 ##############################################################################
 import wsfe
+import wsfex
 import invoice
 import wizard
 import wsfe_request

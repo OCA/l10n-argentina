@@ -14,7 +14,7 @@
 				<form string="Config Electronic Invoice" version="7.0">
 					<sheet>
 						<h1>
-							<label string="Configuration"/>
+							<field name="name"/>
 						</h1>
 						<group>
 							<field name="company_id" select="1"/>
@@ -80,6 +80,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="Config Electronic Invoice">
+					<field name="name"/>
 					<field name="company_id" select="1"/>
 					<field name="cuit" select="1" />
 					<field name="url" select="1" />
@@ -97,6 +98,60 @@
 				<field name="view_mode">tree,form</field>
 		</record>
 
+		<!-- ***********************-->
+		<!-- * WSFEX Configuration *-->
+		<!-- ***********************-->
+		<!-- Form View for wsfex.config -->
+		<record id="view_wsfex_config_form" model="ir.ui.view">
+			<field name="name">wsfex.config.form</field>
+			<field name="model">wsfex.config</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Config WSFEX" version="7.0">
+					<sheet>
+						<h1>
+							<field name="name"/>
+						</h1>
+						<group>
+							<field name="company_id" select="1"/>
+							<field name="cuit" select="1"/>
+							<field name="url" select="1"/>
+							<field name="homologation"/>
+						</group>
+						<notebook colspan="4">
+							<page string="Points Of Sale">
+							  <field name="point_of_sale_ids" nolabel="1"/>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- Tree View for electronic_invoice_config -->
+		<record id="view_wsfex_config_tree" model="ir.ui.view">
+			<field name="name">wsfex.config.tree</field>
+			<field name="model">wsfex.config</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Config WSFEX">
+					<field name="name"/>
+					<field name="company_id" select="1"/>
+					<field name="cuit" select="1" />
+					<field name="url" select="1" />
+                    <field name="homologation"/>
+				</tree>
+			</field>
+		</record>
+
+		<!--Window Action para wsfex_config-->
+		<record model="ir.actions.act_window" id="action_wsfex_config">
+				<field name="name">WSFEX Config</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="res_model">wsfex.config</field>
+				<field name="view_type">form</field>
+				<field name="view_mode">tree,form</field>
+		</record>
 
 		<!-- ***************** -->
 		<!-- * Voucher Types * -->
@@ -248,10 +303,9 @@
 		</record>
 
 		<menuitem id="voucher_type_menu" name="Voucher Types" parent="l10n_ar_wsaa.base_afipws" sequence="30" action="action_wsfe_voucher_type_tree"/>
-
 		<menuitem id="wsfe_request_menu" name="WSFE Request" parent="l10n_ar_wsaa.base_afipws" sequence="20" action="action_wsfe_request_tree"/>
-
 		<menuitem id="wsfe_config_menu" name="WSFE Configuration" parent="l10n_ar_wsaa.base_afipws" sequence="10" action="action_wsfe_config"/>
+		<menuitem id="wsfex_config_menu" name="WSFEX Configuration" parent="l10n_ar_wsaa.base_afipws" sequence="15" action="action_wsfex_config"/>
 
 	</data>
 </openerp>
