@@ -49,11 +49,16 @@ class account_voucher(osv.osv):
                         amount = line.amount * sign
                     else:
                         amount = line.amount * sign
+                    
+                    if line.date:
+                        aux_date = line.date
+                    else:
+                        aux_date = voucher.date
                         
                     st_line = {
                         'name': line.payment_mode_id.name,
                         'date': vou.date,
-                        'payment_date': line.date,
+                        'payment_date': aux_date,
                         'amount': amount,
                         'account_id': aux_account,
                         'state': 'draft',

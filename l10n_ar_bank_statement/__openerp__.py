@@ -36,7 +36,7 @@
                 'bank_import_statement_lines_view.xml',
                 'account_voucher_view.xml',
                 #~ 'payment_mode_receipt_view.xml',
-                #'wizard/project_import_wizard_view.xml',
+                'wizard/project_import_wizard_view.xml',
             ],
         "installable": True,
         'active': False

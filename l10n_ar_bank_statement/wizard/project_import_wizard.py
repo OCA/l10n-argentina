@@ -29,244 +29,138 @@ from datetime import datetime
 import xlrd
 
 from tools import DEFAULT_SERVER_DATETIME_FORMAT
+from datetime import date, timedelta
 
-#~ TO_READ = {
-    #~ 'Project': ['Name'],
-    #~ 'Resource': ['UID', 'Name', 'Group'],
-    #~ 'Task': ['UID', 'Name', 'Priority', 'Start', 'Finish', 'ExtendedAttribute', 'OutlineLevel'],
-    #~ 'Assignment': ['TaskUID', 'ResourceUID'],
-#~ }
 
 class project_import(osv.osv_memory):
     _name = "project.import"
     _description = "Import Project"
 
-    def get_value(self, element, tag):
-        value = element.getElementsByTagName(tag) or False
-        return value and value[0].firstChild.nodeValue
-
-    def save_file(self, name, value):
-        path = os.path.abspath(os.path.dirname(__file__))
-        path += '/xml/%s' % name
-        f = open(path, 'wb+')
-        try:
-            f.write(base64.decodestring(value))
-        finally:
-            f.close()
-        return path
-
     _columns = {
-        'file': fields.binary('File', filename="filename"),
         'filename': fields.char('Filename', size=256),
         }
         
-    def read_xml(self, path):
-        xmldoc = minidom.parse(path)
-        res = {}
-        
-        for index in TO_READ:
-            res[index] = []
-            for value in xmldoc.getElementsByTagName(index):
-                res[index].append(dict([(tag, self.get_value(value, tag)) for tag in TO_READ[index]]))
-
-        return res
-    
-    # Creamos empleado, recurso y usuario asociado.
-    #~ def create_employee(self, cr, uid, data, context=None):
-#~ 
-        #~ user_obj = self.pool.get('res.users')
-        #~ resource_obj = self.pool.get('resource.resource')
-        #~ job_obj = self.pool.get('hr.job')
-        #~ employee_obj = self.pool.get('hr.employee')
-        #~ 
-        #~ # Chequeamos si el usuario ya existe
-        #~ user_id = user_obj.search(cr, uid, [('import_id', '=', int(data['UID']))], context=context)
-#~ 
-        #~ # Si no existe lo creamos y agregamos a la categoria
-        #~ if not user_id:
-            #~ user_id = user_obj.create(cr, uid, {
-                #~ 'import_id': data['UID'],
-                #~ 'name': data['Name'],
-                #~ 'login': data['Name']
-            #~ }, context=context)
-        #~ else:
-            #~ user_id = user_id[0]
-            #~ 
-        #~ # Chequeamos si el recurso ya existe
-        #~ resource_id = resource_obj.search(cr, uid, [('import_id', '=', int(data['UID']))], context=context)
-#~ 
-        #~ # Si no existe lo creamos y agregamos a la categoria
-        #~ if not resource_id:
-            #~ resource_id = resource_obj.create(cr, uid, {
-                #~ 'import_id': data['UID'],
-                #~ 'name': data['Name'],
-                #~ 'user_id': user_id
-            #~ }, context=context)
-        #~ else:
-            #~ resource_id = resource_id[0]
-        #~ 
-        #~ job_id = False
-        #~ 
-        #~ if data['Group']:
-        #~ 
-            #~ # Chequeamos si existe el trabajo
-            #~ job_id = job_obj.search(cr, uid, [('name', 'ilike', data['Group'])], context=context)
-#~ 
-            #~ # Si no existe la creamos
-            #~ if not job_id:
-                #~ job_id = job_obj.create(cr, uid, {'name': data['Group']}, context=context)
-            #~ else:
-                #~ job_id = job_id[0]
-#~ 
-        #~ # Chequeamos si el empleado ya existe
-        #~ employee_id = employee_obj.search(cr, uid, [('import_id', '=', int(data['UID']))], context=context)
-#~ 
-        #~ # Si no existe lo creamos y agregamos a la categoria
-        #~ if not employee_id:
-            #~ employee_id = employee_obj.create(cr, uid, {
-                #~ 'import_id': data['UID'],
-                #~ 'name': data['Name'],
-                #~ 'job_id': job_id,
-                #~ 'resource_id': resource_id
-            #~ }, context=context)
-        #~ else:
-            #~ employee_id = employee_id[0]
-        #~ 
-        #~ return user_id
-#~ 
-    #~ def create_project(self, cr, uid, data, members, context=None):
-        #~ 
-        #~ project_obj = self.pool.get('project.project')
-        #~ 
-        #~ # Chequeamos si existe el proyecto
-        #~ project_id = project_obj.search(cr, uid, [('name', 'ilike', data['Name'])], context=context)
-#~ 
-        #~ # Si no existe lo creamos
-        #~ if not project_id:
-            #~ project_id = project_obj.create(cr, uid, {
-                #~ 'name': data['Name'][:-4],
-                #~ 'members': [(6, 0, members)]
-            #~ }, context=context)
-        #~ else:
-            #~ project_id = project_id[0]
-            #~ 
-        #~ return project_id
-#~ 
-    #~ def _find_parent_id(self, last_parent_ids, outline_level):
-        #~ for index in range(len(last_parent_ids)-1,-1,-1):
-            #~ if last_parent_ids[index][0] == outline_level-1:
-                #~ return last_parent_ids[index][1]
-#~ 
-    #~ def create_task_or_phase(self, cr, uid, data, project_id, last_parent_ids, context=None):
-        #~ 
-        #~ task_obj = self.pool.get('project.task')
-        #~ phase_obj = self.pool.get('project.phase')
-        #~ 
-        #~ current_id = int(data['UID'])
-#~ 
-        #~ if data['ExtendedAttribute']:
-            #~ task_id = task_obj.search(cr, uid, [('import_id', '=', current_id)], context=context)
-        #~ else:
-            #~ task_id = phase_obj.search(cr, uid, [('import_id', '=', current_id)], context=context)
-        #~ 
-        #~ if not len(task_id):
-            #~ 
-            #~ insert_data = {
-                #~ 'import_id': current_id,
-                #~ 'name': data['Name'],
-                #~ 'project_id': project_id,
-                #~ 'date_start': data['Start'],
-                #~ 'date_end': data['Finish']
-            #~ }
-            #~ 
-            #~ start_date = datetime.strptime(data['Start'], '%Y-%m-%dT%H:%M:%S')
-            #~ finish_date = datetime.strptime(data['Finish'], '%Y-%m-%dT%H:%M:%S')
-            #~ duration = (finish_date - start_date).days
-            #~ 
-            #~ if data['ExtendedAttribute']:
-                #~ insert_data.update({
-                    #~ 'phase_id': self._find_parent_id(last_parent_ids, data['OutlineLevel'])
-                #~ })
-                #~ task_obj.create(cr, uid, insert_data, context=context)
-                #~ 
-                #~ return 
-            #~ else:
-                #~ insert_data.update({
-                    #~ 'duration': duration
-                #~ })
-                #~ 
-                #~ if data['OutlineLevel'] > 1:
-                    #~ insert_data['parent_id'] = self._find_parent_id(last_parent_ids, data['OutlineLevel'])
-                #~ 
-                #~ return phase_obj.create(cr, uid, insert_data, context=context)
-#~ 
-        #~ return task_id[0]
-        #~ 
-    #~ def create_assignment(self, cr, uid, data, context=None):
-        #~ 
-        #~ task_obj = self.pool.get('project.task')
-        #~ user_obj = self.pool.get('res.users')        
-        #~ 
-        #~ task_id = task_obj.search(cr, uid, [('import_id', '=', int(data['TaskUID']))], context=context)
-        #~ if not task_id:
-            #~ return
-        #~ else:
-            #~ task_id = task_id[0]
-        #~ 
-        #~ user_id = user_obj.search(cr, uid, [('import_id', '=', int(data['ResourceUID']))], context=context)
-        #~ if not user_id:
-            #~ return
-        #~ else:
-            #~ user_id = user_id[0]
-        #~ 
-        #~ task_obj.write(cr, uid, task_id, {'user_id': user_id}, context=context)
-        #~ 
-        #~ return
+    def read_file(self, cr, uid, ids, context=None):
+        print 'read'
+        aux_vou = self.pool.get('account.voucher').search(cr, uid, [('state','=','posted')], context=context) 
+        #~ aux_vou = []
+        stl = []
+        aux_analytic = ''
+        print aux_vou
+        print 'f'
+        for vou_id in aux_vou:
+            vou = self.pool.get('account.voucher').browse(cr, uid, vou_id, context=context)
+            print vou.number
             
-	def read(path):
-		book = xlrd.open_workbook(path)
-		sheet = book.sheet_by_index(0)
-		res = []
-		for row in range(1, sheet.nrows):
-			res.append({
-				'date': sheet.cell_value(row, 0),
-				'description': sheet.cell_value(row, 1),
-				#'name': sheet.cell_value(row, 3)
-			})
-			
-		print res
-			
-		return res
-		
-    def read_file(self, cr, uid, id, context=None):
-    
-        for form in self.browse(cr, uid, id, context=context):
-            selected_file = form.file
-            if not selected_file:
-                raise osv.except_osv(('Error 501'),('You must select at least one file before continue'))
-        
-            path = self.save_file(form.filename, form.file)
-            result = self.read_xml(path)
+            if vou.type in 'receipt':
+                sign = 1
+                aux_account = vou.partner_id.property_account_receivable.id
+            if vou.type in 'payment':
+                sign = -1
+                
+                aux_account = vou.partner_id.property_account_payable.id
             
-            self.read(path)
-            #~ users = []
-            #~ for employee in result['Resource']:
-                #~ users.append(self.create_employee(cr, uid, employee, context))
-                #~ 
-            #~ for project in result['Project']:
-                #~ project_id = self.create_project(cr, uid, project, users, context)
-#~ 
-            #~ last_parent_ids = []
-            #~ for task in result['Task']:
-                #~ task['OutlineLevel'] = int(task['OutlineLevel'])
-                #~ inserted = self.create_task_or_phase(cr, uid, task, project_id, last_parent_ids, context)
-                #~ 
-                #~ if inserted:
-                    #~ last_parent_ids.append((task['OutlineLevel'], inserted))
-                #~ 
-            #~ for assignment in result['Assignment']:
-                #~ self.create_assignment(cr, uid, assignment, context)
+            for line in vou.payment_line_ids:
+                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'bank':
+                    aux_name = line.voucher_id.number
                     
+                    if sign:
+                        amount = line.amount * sign
+                    else:
+                        amount = line.amount * sign
+                        
+                    #~ aux_name = 'Linea de pago' + ' - ' + line.payment_mode_id.name
+                    #~ cr.execute('select id from account_bank_statement_line where voucher_id=%s and name=%s',(line.voucher_id.id,aux_name,))
+                    #~ po = cr.fetchone()
+                    
+                    #~ if not po:
+                    st_line = {
+                        'name': line.payment_mode_id.name,
+                        'date': vou.date,
+                        'payment_date': line.date,
+                        'amount': amount,
+                        'account_id': aux_account,
+                        'state': 'draft',
+                        'type': vou.type,
+                        'bank_statement': True,
+                        'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
+                        'ref_voucher_id': vou.id,
+                        'creation_type': 'system',
+                        #~ 'ref': vou.reference,
+                        'ref': vou.number,
+                        'journal_id': line.payment_mode_id.journal_id.id,
+                    }
+
+                    st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
+
+            for check in vou.third_check_receipt_ids:
+                if check.state in ('deposited'):
+                    if check.type in 'common':
+                        aux_payment_date = check.issue_date
+                    elif check.payment_date:
+                        aux_payment_date = check.payment_date
+                    else:
+                        aux_payment_date = deposit_date
+                        
+                    if check.clearing in '24':
+                        aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
+                    elif check.clearing in '48':
+                        aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=2)
+                    elif check.clearing in '72':
+                        aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=3)
+                    
+                    #~ aux_name = 'Cheque de tercero ' + check.number
+                    #~ cr.execute('select id from account_bank_statement_line where voucher_id=%s and name=%s',(check.voucher_id.id,aux_name,))
+                    #~ po = cr.fetchone()
+                    
+                    #~ if not po:
+                    st_line = {
+                        'name': 'Cheque de tercero ' + check.number,
+                        'issue_date': check.issue_date,
+                        'payment_date': aux_payment_date,
+                        'amount': check.amount,
+                        'account_id': check.deposit_bank_id.account_id.id,
+                        'state': 'draft',
+                        'type': 'receipt',
+                        'bank_statement': True,
+                        'partner_id': check.deposit_bank_id.partner_id.id,
+                        'creation_type': 'system',
+                        'ref_voucher_id': check.source_voucher_id.id,
+                        'ref': check.source_voucher_id.number,
+                        'journal_id': check.deposit_bank_id.journal_id.id,
+                    }
+
+                    st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
+            
+            for issued_check in vou.issued_check_ids:
+                if issued_check.type in 'common':
+                    aux_payment_date = issued_check.issue_date
+                else:
+                    aux_payment_date = issued_check.payment_date
+                
+                #~ aux_name = 'Cheque nro ' + issued_check.number
+                #~ cr.execute('select id from account_bank_statement_line where voucher_id=%s and name=%s',(issued_check.voucher_id.id,aux_name,))
+                #~ po = cr.fetchone()
+                
+                #~ if not po:
+                st_line = {
+                    'name': 'Cheque nro ' + issued_check.number,
+                    'issue_date': issued_check.issue_date,
+                    'payment_date': aux_payment_date,
+                    'amount': issued_check.amount*-1,
+                    'account_id': aux_account,
+                    'ref': vou.number,
+                    'state': 'draft',
+                    'type': 'payment',
+                    'bank_statement': True,
+                    'partner_id': vou.partner_id and vou.partner_id.id,
+                    'ref_voucher_id': vou.id,
+                    'creation_type': 'system',
+                    'journal_id': issued_check.account_bank_id.journal_id.id,
+                }
+
+                st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)    
+
         return {'type': 'ir.actions.act_window_close'}
 
 project_import()

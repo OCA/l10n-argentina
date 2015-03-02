@@ -10,8 +10,6 @@
             <form string="Import">
               <separator string="Import" colspan="4"/>
               <group col="4" colspan="4">
-                <field name="file" filename="filename"/>
-                <newline/>
                 <field name="filename"/>
                 <newline/>
                 <button icon='gtk-cancel' special="cancel" string="Cancelar" />
@@ -31,7 +29,7 @@
             <field name="target">new</field>
         </record>
         
-        <menuitem action="action_project_import_wizard" id="menu_project_import" parent="base.menu_main_pm" sequence="30"/>
+        <menuitem action="action_project_import_wizard" id="menu_project_import" parent="account.menu_finance_bank_and_cash" sequence="30"/>
             
   </data>
 </openerp>

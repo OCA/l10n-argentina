@@ -20,6 +20,7 @@
 
 from osv import osv, fields
 from tools.translate import _
+from datetime import date, timedelta
 
 class account_bank_statement_line(osv.osv):
     
@@ -213,3 +214,100 @@ class account_bank_statement(osv.osv):
 
 account_bank_statement()
 
+class account_check_deposit(osv.osv_memory):
+    _inherit = 'account.check.deposit'
+    
+    def action_deposit(self, cr, uid, ids, context=None):
+        third_check_obj = self.pool.get('account.third.check')
+        
+        aux = super(account_check_deposit, self).action_deposit(cr, uid, ids, context)
+        record_ids = context.get('active_ids', [])
+        
+        check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
+
+        for check in check_objs:
+            
+            if check.type in 'common':
+                aux_payment_date = check.issue_date
+            elif check.payment_date:
+                aux_payment_date = check.payment_date
+            else:
+                aux_payment_date = deposit_date
+                
+            if check.clearing in '24':
+                aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
+            elif check.clearing in '48':
+                aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=2)
+            elif check.clearing in '72':
+                aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=3)
+
+            st_line = {
+                'name': 'Cheque de tercero ' + check.number,
+                'issue_date': check.issue_date,
+                'payment_date': aux_payment_date,
+                'amount': check.amount,
+                'account_id': check.deposit_bank_id.account_id.id,
+                'state': 'draft',
+                'type': 'receipt',
+                'bank_statement': True,
+                'partner_id': check.deposit_bank_id.partner_id.id,
+                'creation_type': 'system',
+                'ref_voucher_id': check.source_voucher_id.id,
+                'ref': check.source_voucher_id.number,
+                'journal_id': check.deposit_bank_id.journal_id.id,
+            }
+
+            st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
+            
+        return True
+        
+account_check_deposit()
+
+class account_check_reject(osv.osv_memory):
+    _inherit = 'account.check.reject'
+    
+    def action_reject(self, cr, uid, ids, context=None):
+        third_check_obj = self.pool.get('account.third.check')
+        
+        aux = super(account_check_deposit, self).action_reject(cr, uid, ids, context)
+        record_ids = context.get('active_ids', [])
+        
+        check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
+
+        for check in check_objs:
+            
+            if check.type in 'common':
+                aux_payment_date = check.issue_date
+            elif check.payment_date:
+                aux_payment_date = check.payment_date
+            else:
+                aux_payment_date = deposit_date
+                
+            if check.clearing in '24':
+                aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
+            elif check.clearing in '48':
+                aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=2)
+            elif check.clearing in '72':
+                aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=3)
+
+            st_line = {
+                'name': 'Cheque de tercero ' + check.number,
+                'issue_date': check.issue_date,
+                'payment_date': aux_payment_date,
+                'amount': check.amount,
+                'account_id': check.deposit_bank_id.account_id.id,
+                'state': 'draft',
+                'type': 'receipt',
+                'bank_statement': True,
+                'partner_id': check.deposit_bank_id.partner_id.id,
+                'creation_type': 'system',
+                'ref_voucher_id': check.source_voucher_id.id,
+                'ref': check.source_voucher_id.number,
+                'journal_id': check.deposit_bank_id.journal_id.id,
+            }
+
+            st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
+            
+        return True
+        
+account_check_reject()
