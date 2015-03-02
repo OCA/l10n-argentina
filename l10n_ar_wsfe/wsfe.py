@@ -21,7 +21,7 @@
 
 from osv import osv, fields
 from tools.translate import _
-from wsfe_suds import WSFEv1 as wsfe
+from wsfetools.wsfe_suds import WSFEv1 as wsfe
 from datetime import datetime
 import time
 
