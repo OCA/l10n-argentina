@@ -108,6 +108,19 @@ class wsfex_dst_cuit_codes(osv.osv):
 
 wsfex_dst_cuit_codes()
 
+class wsfex_export_type_codes(osv.osv):
+    _name = "wsfex.export_type.codes"
+    _description = "WSFEX Export Type Codes"
+    _order = 'code'
+
+    _columns = {
+        'code' : fields.integer('Code', required=True),
+        'name' : fields.char('Desc', required=True, size=64),
+        'wsfex_config_id' : fields.many2one('wsfex.config'),
+    }
+
+wsfex_export_type_codes()
+
 class wsfex_voucher_type_codes(osv.osv):
     _name = "wsfex.voucher_type.codes"
     _description = "WSFEX Voucher Type Codes"
@@ -140,6 +153,7 @@ class wsfex_config(osv.osv):
         'incoterms_ids' : fields.one2many('wsfex.incoterms.codes', 'wsfex_config_id' , 'Incoterms'),
         'dst_cuit_ids' : fields.one2many('wsfex.dst_cuit.codes', 'wsfex_config_id' , 'DST CUIT'),
         'voucher_type_ids' : fields.one2many('wsfex.voucher_type.codes', 'wsfex_config_id' , 'Voucher Type'),
+        'export_type_ids' : fields.one2many('wsfex.export_type.codes', 'wsfex_config_id' , 'Export Type'),
         'company_id' : fields.many2one('res.company', 'Company Name' , required=True),
     }
 
@@ -285,6 +299,41 @@ class wsfex_config(osv.osv):
             #~ Si los codigos estan en la db los modifico
             else :
                 wsfex_param_obj.write(cr, uid , res_c[0] , {'name': r.Idi_Ds, 'wsfex_config_id': ids[0]})
+
+        return True
+
+    def get_wsfex_export_types(self, cr, uid , ids , context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfex = wsfex(conf.cuit, token, sign, conf.url)
+        res = _wsfex.FEXGetPARAM("Tipo_Expo") 
+
+        wsfex_param_obj = self.pool.get('wsfex.export_type.codes')
+
+#        # Chequeamos los errores
+#        msg = self.check_errors(cr, uid, res, raise_exception=False, context=context)
+#        if msg:
+#            # TODO: Hacer un wrapping de los errores, porque algunos son
+#            # largos y se imprimen muy mal en pantalla
+#            raise osv.except_osv(_('Error reading taxes'), msg)
+
+        # Armo un lista con los codigos de los Impuestos
+        for r in res['response'][0]:
+            # El servicio de AFIP me devuelve dentro de la lista
+            # unos valores None
+            if not r:
+                continue
+            res_c = wsfex_param_obj.search(cr, uid , [('code','=', r.Tex_Id )])
+
+            # Si no tengo los codigos de esos Impuestos en la db, los creo
+            if not len(res_c):
+                wsfex_param_obj.create(cr, uid , {'code': r.Tex_Id, 'name': r.Tex_Ds, 'wsfex_config_id': ids[0]} , context={})
+            #~ Si los codigos estan en la db los modifico
+            else :
+                wsfex_param_obj.write(cr, uid , res_c[0] , {'name': r.Tex_Ds, 'wsfex_config_id': ids[0]})
 
         return True
 

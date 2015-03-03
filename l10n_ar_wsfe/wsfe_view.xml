@@ -171,6 +171,18 @@
                             </div>
 							</page>
 
+							<page string="Export Type">
+							  <field name="export_type_ids" nolabel="1">
+                                <tree string="WSFEX Export Types" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_export_types" type="object" string="Get Export Types" groups="account.group_account_user"/>
+                            </div>
+							</page>
+
 							<page string="Incoterms">
 							  <field name="incoterms_ids" nolabel="1">
                                 <tree string="WSFEX Incoterms" editable="top">
