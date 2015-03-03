@@ -89,7 +89,7 @@ class WSFEX:
         if event:
             res['event'] = event
 
-        if 'ResultGet' in result:
+        if 'FEXResultGet' in result:
             res['response'] = result.FEXResultGet
 
         return res
@@ -114,7 +114,7 @@ class WSFEX:
         if event:
             res['event'] = event
 
-        if 'ResultGet' in result:
+        if 'FEXResultGet' in result:
             res['response'] = result.FEXResultGet
 
         return res
@@ -122,7 +122,7 @@ class WSFEX:
     # Funcion para todos los metodos de Parametros
     # @param_func: Nombre del parametro que se necesita obtener:
     # Disponibles:
-    # Metodo codigos de unidades de medida "Umed"
+    # Metodo codigos de unidades de medida "UMed"
     # Metodo codigos de idiomas "Idiomas"
     # Metodo codigos de paises "DST_pais"
     # Metodo codigos de Incoterms "Incoterms"
@@ -148,7 +148,7 @@ class WSFEX:
         if event:
             res['event'] = event
 
-        if 'ResultGet' in result:
+        if 'FEXResultGet' in result:
             res['response'] = result.FEXResultGet
 
         return res
@@ -179,9 +179,6 @@ class WSFEX:
             else:
                 logger.warning("Campo %s no se encuentra en tipo ClsFEXRequest" % k)
 
-        print fexrequest
-
-
         for item in Cmp['Items']:
             feitem = self.client.factory.create('ns0:Item')
             for k, v in item.iteritems():
@@ -208,7 +205,7 @@ class WSFEX:
         if event:
             res['event'] = event
 
-        if 'ResultGet' in result:
+        if 'FEXResultGet' in result:
             res['response'] = result.FEXResultGet
 
         return res

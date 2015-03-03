@@ -122,6 +122,93 @@
 							<page string="Points Of Sale">
 							  <field name="point_of_sale_ids" nolabel="1"/>
 							</page>
+							<page string="Currencies">
+							  <field name="currency_ids" nolabel="1">
+                                <tree string="WSFEX Currencies" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                    <field name="currency_id"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_currencies" type="object" string="Get Currencies" groups="account.group_account_user"/>
+                            </div>
+							</page>
+							<page string="Units of Measure">
+							  <field name="uom_ids" nolabel="1">
+                                <tree string="WSFEX UoMs" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                    <field name="uom_id"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_uoms" type="object" string="Get Units of Measure" groups="account.group_account_user"/>
+                            </div>
+							</page>
+							<page string="Countries">
+							  <field name="country_ids" nolabel="1">
+                                <tree string="WSFEX Countries" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                    <field name="country_id"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_countries" type="object" string="Get Countries" groups="account.group_account_user"/>
+                            </div>
+							</page>
+							<page string="Languages">
+							  <field name="lang_ids" nolabel="1">
+                                <tree string="WSFEX Langs" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                    <field name="lang_id"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_langs" type="object" string="Get Languages" groups="account.group_account_user"/>
+                            </div>
+							</page>
+
+							<page string="Incoterms">
+							  <field name="incoterms_ids" nolabel="1">
+                                <tree string="WSFEX Incoterms" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                    <field name="incoterms_id"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_incoterms" type="object" string="Get Incoterms" groups="account.group_account_user"/>
+                            </div>
+							</page>
+
+							<page string="DST CUIT">
+							  <field name="dst_cuit_ids" nolabel="1">
+                                <tree string="WSFEX DST CUIT" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_dst_cuits" type="object" string="Get DST CUIT" groups="account.group_account_user"/>
+                            </div>
+							</page>
+
+							<page string="Voucher Types">
+							  <field name="voucher_type_ids" nolabel="1">
+                                <tree string="WSFEX Voucher Type" editable="top">
+                                    <field name="name" readonly="1"/>
+                                    <field name="code" readonly="1"/>
+                                    <field name="voucher_type_id"/>
+                                </tree>
+                            </field>
+                            <div class="oe_right oe_button_box" name="import_buttons">
+                                <button name="get_wsfex_voucher_types" type="object" string="Get Voucher Type" groups="account.group_account_user"/>
+                            </div>
+							</page>
+
 						</notebook>
 					</sheet>
 				</form>

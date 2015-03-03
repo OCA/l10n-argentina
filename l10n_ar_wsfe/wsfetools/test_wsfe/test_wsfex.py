@@ -16,10 +16,10 @@ logger = logging.getLogger('afipws')
 #    assert argauth.Token != None
 #    assert argauth.Sign != None
 
-def test_get_param_mon(wsfex):
-    """Funcion para testear la creacion de un usuario."""
-    result = wsfex.FEXGetPARAM("MON") 
-    print result
+#def test_get_param_mon(wsfex):
+#    """Funcion para testear la creacion de un usuario."""
+#    result = wsfex.FEXGetPARAM("MON") 
+#    print result
 
 #def test_get_param_cbte_tipo(wsfex):
 #    """Funcion para testear la creacion de un usuario."""
@@ -36,11 +36,31 @@ def test_get_param_mon(wsfex):
 #    result = wsfex.FEXGetPARAM("PtoVenta") 
 #    print result
 #
+#def test_get_param_idiomas(wsfex):
+#    """Funcion para testear la creacion de un usuario."""
+#    result = wsfex.FEXGetPARAM("Idiomas") 
+#    print result
+#
 #def test_get_param_dst(wsfex):
 #    """Funcion para testear la creacion de un usuario."""
 #    result = wsfex.FEXGetPARAM("DST_pais") 
 #    print result
 #
+#def test_get_param_incoterms(wsfex):
+#    """Funcion para testear la creacion de un usuario."""
+#    result = wsfex.FEXGetPARAM("Incoterms") 
+#    print result
+#
+#def test_get_param_dst_cuit(wsfex):
+#    """Funcion para testear la creacion de un usuario."""
+#    result = wsfex.FEXGetPARAM("DST_CUIT") 
+#    print result
+
+def test_get_param_cotizacion(wsfex):
+    """Funcion para testear la creacion de un usuario."""
+    result = wsfex.FEXGetPARAM("Cbte_Tipo") 
+    print result
+
 #def test_get_last_id(wsfex):
 #    """."""
 #    result = wsfex.FEXGetLast_ID() 
