@@ -19,8 +19,7 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from openerp.osv import osv, fields
 import base64
 from tempfile import TemporaryFile
 

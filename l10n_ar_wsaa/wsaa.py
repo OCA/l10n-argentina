@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 from datetime import datetime, timedelta
 from wsaa_suds import WSAA as wsaa
 from openerp import SUPERUSER_ID

@@ -8,7 +8,7 @@ from M2Crypto import BIO, SMIME
 from suds.client import Client
 from xml.sax import SAXParseException
 import logging
-from tools.misc import ustr
+from openerp.tools.misc import ustr
 import pytz
 
 ## Configuracion del logger
@@ -54,7 +54,7 @@ class WSAA:
         root = etree.Element('loginTicketRequest')
         doc = etree.ElementTree(root)
         root.set('version', '1.0')
-        
+
         # Creamos los childs de loginTicketRequest
         header = etree.SubElement(root, 'header')
 
@@ -74,11 +74,11 @@ class WSAA:
         tsexp = pytz.utc.localize(tsexp).astimezone(self.timezone)
         exptime = etree.SubElement(header, 'expirationTime')
         exptime.text = tsexp.isoformat()
-     
+
         # service
         serv = etree.SubElement(root, 'service')
         serv.text = self.service
-        
+
 #        try:
 #            f = open('tra.xml', 'w')
 #            doc.write(f, xml_declaration=True, encoding='UTF-8', pretty_print=True)
@@ -151,7 +151,7 @@ class WSAA:
 
         # Parseamos el resultado
         root = etree.XML(ta)
-        
+
         # Buscamos el expirationTime
         header = root.find('header')
         exptime = header.find('expirationTime')
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # Vemos si ya expiro
     if datetime.now() > expiration_time:
         print "Certificado expirado"
-        
+
     print 'Token: ', token
     print 'Sign: ', sign
     print 'Expiration Time: ', expiration_time.strftime("%d/%m/%Y %H:%M:%S")
