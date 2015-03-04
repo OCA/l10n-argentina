@@ -75,6 +75,7 @@
           <group expand="0" string="Group By...">
               <filter string="Province" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state_id'}"/>
               <filter string="Date" name="group_date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
+              <filter string="Retention" icon="terp-stock_effects-object-colorize" domain="[]"  context="{'group_by':'retention_id'}"/>
           </group>
       </search>
     </field>
