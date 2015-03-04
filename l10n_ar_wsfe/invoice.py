@@ -37,11 +37,35 @@ class account_invoice(osv.osv):
         'cae': fields.char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)'),
         'cae_due_date': fields.date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE'),
         #'associated_inv_ids': fields.many2many('account.invoice', )
+        # Campos para facturas de exportacion. Aca ninguno es requerido,
+        # eso lo hacemos en la vista ya que depende de si es o no factura de exportacion
+        'export_type_id': fields.many2one('wsfex.export_type.codes', 'Export Type'),
+        'dst_country_id': fields.many2one('wsfex.dst_country.codes', 'Dest Country'),
+        'dst_cuit_id': fields.many2one('wsfex.dst_cuit.codes', 'Country CUIT'),
+        'shipping_perm_ids': fields.one2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions'),
     }
 
     _defaults = {
         'aut_cae': lambda *a: False,
     }
+
+    def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
+            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
+        res =   super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
+                date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
+            country_id = partner.country_id.id or False
+            if country_id:
+                dst_country = self.pool.get('wsfex.dst_country.codes').search(cr, uid, [('country_id','=',country_id)])
+
+                if dst_country:
+                    res['value'].update({'dst_country_id': dst_country[0]})
+        return res
+
+
+
 
     # Esto lo hacemos porque al hacer una nota de credito, no le setea la fiscal_position
     # Ademas, seteamos el comprobante asociado

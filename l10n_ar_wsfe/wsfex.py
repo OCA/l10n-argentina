@@ -25,6 +25,18 @@ from wsfetools.wsfex_suds import WSFEX as wsfex
 from datetime import datetime
 import time
 
+class wsfex_shipping_permission(osv.osv):
+    _name = "wsfex.shipping.permission"
+    _description = "WSFEX Currency Codes"
+
+    _columns = {
+        'name' : fields.char('Code', required=True, size=16),
+        'invoice_id' : fields.many2one('account.invoice', 'Invoice'),
+        'dst_country_id' : fields.many2one('wsfex.dst_country.codes', 'Dest Country', required=True),
+    }
+
+wsfex_shipping_permission()
+
 class wsfex_currency_codes(osv.osv):
     _name = "wsfex.currency.codes"
     _description = "WSFEX Currency Codes"
@@ -98,7 +110,7 @@ wsfex_incoterms_codes()
 class wsfex_dst_cuit_codes(osv.osv):
     _name = "wsfex.dst_cuit.codes"
     _description = "WSFEX DST CUIT Codes"
-    _order = 'code'
+    _order = 'name'
 
     _columns = {
         'code' : fields.float('Code', digits=(12,0), required=True),
