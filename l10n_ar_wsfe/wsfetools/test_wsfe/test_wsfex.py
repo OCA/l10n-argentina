@@ -66,47 +66,47 @@ def test_get_param_cotizacion(wsfex):
 #    result = wsfex.FEXGetLast_ID() 
 #    print result
 
-#def test_invoice_sin_permiso_embarque(wsfex):
-#    """Funcion para testear la autorizacion de un comprobante."""
-#
-#    # Obtenemos la ultima factura realizada
-#    cbte_tipo = 19 # Factura de exportacion
-#
-#    # Llamamos a la funcion
-#    pto_venta = 1
-#    ultimo = wsfex.FEXGetLast_CMP(pto_venta, cbte_tipo)
-#    print 'Ultimo: ', ultimo
-#    Id = int(datetime.strftime(datetime.now(), '%Y%m%d%H%M%S'))
-#    today = datetime.strftime(datetime.now(), '%Y%m%d')
-#
-#    Cmp = {
-#        'Id' : Id,
-#        'Cbte_Tipo' : cbte_tipo,
-#        'Fecha_cbte' : today,
-#        'Punto_vta' : pto_venta,
-#        'Cbte_nro' : ultimo+1,
-#        'Tipo_expo' : 2, #Exportacion de bienes
-#        'Permiso_existente' : '',
-#        'Dst_cmp' : 250, # Tierra del fuego
-#        'Cliente' : "Juan Carlos SH",
-#        'Domicilio_cliente' : "Calle ABC 123",
-#        'Cuit_pais_cliente' : 0,
-#        'Id_impositivo' : '30-71098129-5',
-#        'Moneda_Id' : "PES",
-#        'Moneda_ctz' : 1.000000,
-#        'Imp_total' : 1000,
-#        'Idioma_cbte' : 1,
-#        'Items' : [{
-#            'Pro_codigo' : '1',
-#            'Pro_ds' : "Producto exportacion test",
-#            'Pro_qty' : 1,
-#            'Pro_umed' : 98,
-#            'Pro_precio_uni' : 1000,
-#            'Pro_total_item' : 1000,
-#            'Pro_bonificacion' : 0,
-#        }]
-#    }
-#
+def test_invoice_sin_permiso_embarque(wsfex):
+    """Funcion para testear la autorizacion de un comprobante."""
+
+    # Obtenemos la ultima factura realizada
+    cbte_tipo = 19 # Factura de exportacion
+
+    # Llamamos a la funcion
+    pto_venta = 1
+    ultimo = wsfex.FEXGetLast_CMP(pto_venta, cbte_tipo)['response']
+    print 'Ultimo: ', ultimo
+    Id = int(datetime.strftime(datetime.now(), '%Y%m%d%H%M%S'))
+    today = datetime.strftime(datetime.now(), '%Y%m%d')
+
+    Cmp = {
+        'Id' : Id,
+        'Cbte_Tipo' : cbte_tipo,
+        'Fecha_cbte' : today,
+        'Punto_vta' : pto_venta,
+        'Cbte_nro' : ultimo+1,
+        'Tipo_expo' : 2, #Exportacion de bienes
+        'Permiso_existente' : '',
+        'Dst_cmp' : 250, # Tierra del fuego
+        'Cliente' : "Juan Carlos SH",
+        'Domicilio_cliente' : "Calle ABC 123",
+        'Cuit_pais_cliente' : 0,
+        'Id_impositivo' : '30710981295',
+        'Moneda_Id' : "PES",
+        'Moneda_ctz' : 1.000000,
+        'Imp_total' : 1000,
+        'Idioma_cbte' : 1,
+        'Items' : [{
+            'Pro_codigo' : '1',
+            'Pro_ds' : "Producto exportacion test",
+            'Pro_qty' : 1,
+            'Pro_umed' : 98,
+            'Pro_precio_uni' : 1000,
+            'Pro_total_item' : 1000,
+            'Pro_bonificacion' : 0,
+        }]
+    }
+
 ##    Cmp = {
 ##        'Id' : 1,
 ##        'Cbte_Tipo' : 19,
@@ -134,5 +134,6 @@ def test_get_param_cotizacion(wsfex):
 ##        }]
 ##    }
 #
-#    res = wsfex.FEXAuthorize(Cmp)
-#    return res
+    res = wsfex.FEXAuthorize(Cmp)
+    print res
+    return res

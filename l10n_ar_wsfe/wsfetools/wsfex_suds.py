@@ -5,6 +5,7 @@ import urllib2
 import logging
 
 logger = logging.getLogger('suds.client')
+logger.setLevel(logging.DEBUG)
  
 WSFEXURLv1_HOMO = "https://wswhomo.afip.gov.ar/wsfex/service.asmx?wsdl"
 WSAAURL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl" # homologacion (pruebas)
@@ -114,8 +115,8 @@ class WSFEX:
         if event:
             res['event'] = event
 
-        if 'FEXResultGet' in result:
-            res['response'] = result.FEXResultGet
+        if 'FEXResult_LastCMP' in result:
+            res['response'] = result.FEXResult_LastCMP.Cbte_nro
 
         return res
 
@@ -162,13 +163,6 @@ class WSFEX:
         if not self.connected:
             self._create_client()
         
-        # Obtenemos el argauth para pasar por parametro
-        argauth = self.get_argauth()
-        if not argauth:
-            return False
-
-        import pdb
-        pdb.set_trace()
 
         fexrequest = self.client.factory.create('ns0:ClsFEXRequest')
         for k, v in Cmp.iteritems():
@@ -190,9 +184,7 @@ class WSFEX:
             fexrequest.Items.Item.append(feitem)
 
         # Llamamos a la funcion
-        import ipdb
-        ipdb.set_trace()
-        result = self.client.service.FEXAuthorize(argauth, fexrequest)
+        result = self.client.service.FEXAuthorize(self.argauth, fexrequest)
         logger.debug('Result =>\n %s', result)
 
         res = {}
