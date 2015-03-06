@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2007-2011 E-MIPS (http://www.e-mips.com.ar) 
+#    Copyright (C) 2007-2011 E-MIPS (http://www.e-mips.com.ar)
 #    All Rights Reserved. Contact: info@e-mips.com.ar
 #
 #
@@ -20,9 +20,11 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
+
 
 class perception_perception(osv.osv):
+
     """Objeto que define las percepciones que pueden utilizarse
 
        Configura las percepciones posibles. Luego a partir de estos objetos
@@ -31,30 +33,28 @@ class perception_perception(osv.osv):
        una factura, ya sea, de proveedor o de cliente. Y a partir de estas se
        crean los asientos correspondientes.
        De este objeto se toma la configuracion para generar las perception.tax y
-       las account.invoice.tax con datos como monto, base imponible, 
+       las account.invoice.tax con datos como monto, base imponible,
        nro de certificado, etc."""
     _name = "perception.perception"
     _description = "Perception Configuration"
 
-
     _columns = {
-            'name': fields.char('Perception', required=True, size=64),
-            'tax_id': fields.many2one('account.tax', 'Tax', required=True, help="Tax configuration for this perception"),
-            'type_tax_use': fields.related('tax_id', 'type_tax_use', type='char', string='Tax Application', readonly=True),
-            'state_id': fields.many2one('res.country.state', 'State/Province'),
-            'type': fields.selection([('vat', 'VAT'),
-                                      ('gross_income', 'Gross Income'),
-                                      ('profit', 'Profit'),
-                                      ('other', 'Other')], 'Type'),
-            'jurisdiccion': fields.selection([('nacional', 'Nacional'),
-                                              ('provincial', 'Provincial'),
-                                              ('municipal', 'Municipal')], 'Jurisdiccion'),
-            }
+        'name': fields.char('Perception', required=True, size=64),
+        'tax_id': fields.many2one('account.tax', 'Tax', required=True, help="Tax configuration for this perception"),
+        'type_tax_use': fields.related('tax_id', 'type_tax_use', type='char', string='Tax Application', readonly=True),
+        'state_id': fields.many2one('res.country.state', 'State/Province'),
+        'type': fields.selection([('vat', 'VAT'),
+                                  ('gross_income', 'Gross Income'),
+                                  ('profit', 'Profit'),
+                                  ('other', 'Other')], 'Type'),
+        'jurisdiccion': fields.selection([('nacional', 'Nacional'),
+                                          ('provincial', 'Provincial'),
+                                          ('municipal', 'Municipal')], 'Jurisdiccion'),
+    }
 
     _defaults = {
-            'jurisdiccion': 'nacional',
-            'type': 'vat'
-            }
+        'jurisdiccion': 'nacional',
+        'type': 'vat'
+    }
 
 perception_perception()
-

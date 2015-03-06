@@ -19,21 +19,22 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-import decimal_precision as dp
+from openerp.osv import osv, fields
+from openerp.addons import decimal_precision as dp
 import time
+
 
 class perception_tax_line(osv.osv):
     _name = "perception.tax.line"
     _description = "Perception Tax Line"
 
-    #TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
+    # TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
     _columns = {
         'name': fields.char('Perception', required=True, size=64),
         'date': fields.date('Date', select=True),
         'invoice_id': fields.many2one('account.invoice', 'Invoice', ondelete='cascade'),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
-                                      domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
+                                      domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')]),
         'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
         'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
         'perception_id': fields.many2one('perception.perception', 'Perception Configuration', required=True, help="Perception configuration used '\
@@ -87,8 +88,8 @@ class account_invoice(osv.osv):
     _inherit = 'account.invoice'
 
     _columns = {
-            'perception_ids': fields.one2many('perception.tax.line', 'invoice_id', 'Perception', readonly=True, states={'draft':[('readonly', False)]}),
-            }
+        'perception_ids': fields.one2many('perception.tax.line', 'invoice_id', 'Perception', readonly=True, states={'draft': [('readonly', False)]}),
+    }
 
     def finalize_invoice_move_lines(self, cr, uid, invoice_browse, move_lines):
         """finalize_invoice_move_lines(cr, uid, invoice, move_lines) -> move_lines
@@ -121,8 +122,8 @@ class account_invoice(osv.osv):
                 'journal_id': invoice_browse.journal_id.id,
                 'period_id': invoice_browse.period_id.id,
                 'partner_id': invoice_browse.partner_id.id,
-                'currency_id': company_currency <> current_currency and  current_currency or False,
-                'amount_currency': company_currency <> current_currency and sign * p.amount or 0.0,
+                'currency_id': company_currency != current_currency and current_currency or False,
+                'amount_currency': company_currency != current_currency and sign * p.amount or 0.0,
                 'date': invoice_browse.date_invoice or time.strftime('%Y-%m-%d'),
                 'date_maturity': invoice_browse.date_due or False,
             }
@@ -131,7 +132,7 @@ class account_invoice(osv.osv):
             if not p.date:
                 plt_obj.write(cr, uid, p.id, {'date': move_line['date']})
 
-            move_lines.insert(len(move_lines)-1, (0, 0, move_line))
+            move_lines.insert(len(move_lines) - 1, (0, 0, move_line))
         return move_lines
 
 account_invoice()
@@ -162,7 +163,7 @@ class account_invoice_tax(osv.osv):
 
         # Recorremos las percepciones y las computamos como account.invoice.tax
         for line in inv.perception_ids:
-            val={}
+            val = {}
             tax = line.perception_id.tax_id
             val['invoice_id'] = inv.id
             val['name'] = line.name
@@ -177,7 +178,7 @@ class account_invoice_tax(osv.osv):
             tax_amount, base_amount = percep_tax_line_obj._compute(cr, uid, line.perception_id.id, invoice_id,
                                                                    val['base'], val['amount'], context)
 
-            if inv.type in ('out_invoice','in_invoice'):
+            if inv.type in ('out_invoice', 'in_invoice'):
                 val['base_code_id'] = line.base_code_id.id
                 val['tax_code_id'] = line.tax_code_id.id
                 val['base_amount'] = base_amount
