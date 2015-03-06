@@ -19,14 +19,15 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 from datetime import datetime
-from tools.translate import _
-import pooler
+from openerp.tools.translate import _
+from openerp import pooler
 import time
 import re
 
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>"
+
 
 class account_invoice(osv.osv):
     _name = "account.invoice"
@@ -51,12 +52,11 @@ class account_invoice(osv.osv):
             inv = self.browse(cr, uid, id)
             if not inv.fiscal_position:
                 fiscal_position = inv.partner_id.property_account_position
-                vals = {'fiscal_position':fiscal_position.id}
+                vals = {'fiscal_position': fiscal_position.id}
 
                 # TODO: Agregamos el comprobante asociado. Falta terminar el codigo para hacer lo de comprobantes asociados
                 self.write(cr, uid, id, vals)
         return new_ids
-
 
     # Heredamos esta funcion para quitarle el post de los asientos contables
     # asi luego los podemos cancelar en caso que sea necesario
@@ -81,7 +81,7 @@ class account_invoice(osv.osv):
             ctx = context.copy()
             ctx.update({'lang': inv.partner_id.lang})
             if not inv.date_invoice:
-                self.write(cr, uid, [inv.id], {'date_invoice': fields.date.context_today(self,cr,uid,context=context)}, context=ctx)
+                self.write(cr, uid, [inv.id], {'date_invoice': fields.date.context_today(self, cr, uid, context=context)}, context=ctx)
             company_currency = self.pool['res.company'].browse(cr, uid, inv.company_id.id).currency_id.id
             # create the analytical lines
             # one move line per invoice line
@@ -94,7 +94,7 @@ class account_invoice(osv.osv):
             group_check_total_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'account', 'group_supplier_inv_check_total')[1]
             group_check_total = self.pool.get('res.groups').browse(cr, uid, group_check_total_id, context=context)
             if group_check_total and uid in [x.id for x in group_check_total.users]:
-                if (inv.type in ('in_invoice', 'in_refund') and abs(inv.check_total - inv.amount_total) >= (inv.currency_id.rounding/2.0)):
+                if (inv.type in ('in_invoice', 'in_refund') and abs(inv.check_total - inv.amount_total) >= (inv.currency_id.rounding / 2.0)):
                     raise osv.except_osv(_('Bad Total!'), _('Please verify the price of the invoice!\nThe encoded total does not match the computed total.'))
 
             if inv.payment_term:
@@ -123,7 +123,7 @@ class account_invoice(osv.osv):
                 if inv.type == 'out_refund':
                     entry_type = 'cont_voucher'
 
-            diff_currency_p = inv.currency_id.id <> company_currency
+            diff_currency_p = inv.currency_id.id != company_currency
             # create one move line for the total and possibly adjust the other lines amount
             total = 0
             total_currency = 0
@@ -134,7 +134,7 @@ class account_invoice(osv.osv):
             totlines = False
             if inv.payment_term:
                 totlines = payment_term_obj.compute(cr,
-                        uid, inv.payment_term.id, total, inv.date_invoice or False, context=ctx)
+                                                    uid, inv.payment_term.id, total, inv.date_invoice or False, context=ctx)
             if totlines:
                 res_amount_currency = total_currency
                 i = 0
@@ -157,10 +157,8 @@ class account_invoice(osv.osv):
                         'price': t[1],
                         'account_id': acc_id,
                         'date_maturity': t[0],
-                        'amount_currency': diff_currency_p \
-                                and amount_currency or False,
-                        'currency_id': diff_currency_p \
-                                and inv.currency_id.id or False,
+                        'amount_currency': diff_currency_p and amount_currency or False,
+                        'currency_id': diff_currency_p and inv.currency_id.id or False,
                         'ref': ref,
                     })
             else:
@@ -170,18 +168,16 @@ class account_invoice(osv.osv):
                     'price': total,
                     'account_id': acc_id,
                     'date_maturity': inv.date_due or False,
-                    'amount_currency': diff_currency_p \
-                            and total_currency or False,
-                    'currency_id': diff_currency_p \
-                            and inv.currency_id.id or False,
+                    'amount_currency': diff_currency_p and total_currency or False,
+                    'currency_id': diff_currency_p and inv.currency_id.id or False,
                     'ref': ref
-            })
+                })
 
             date = inv.date_invoice or time.strftime('%Y-%m-%d')
 
             part = self.pool.get("res.partner")._find_accounting_partner(inv.partner_id)
 
-            line = map(lambda x:(0,0,self.line_get_convert(cr, uid, x, part.id, date, context=ctx)),iml)
+            line = map(lambda x: (0, 0, self.line_get_convert(cr, uid, x, part.id, date, context=ctx)), iml)
 
             line = self.group_lines(cr, uid, iml, line, inv)
 
@@ -189,7 +185,7 @@ class account_invoice(osv.osv):
             journal = journal_obj.browse(cr, uid, journal_id, context=ctx)
             if journal.centralisation:
                 raise osv.except_osv(_('User Error!'),
-                        _('You cannot create an invoice on a centralized journal. Uncheck the centralized counterpart box in the related journal from the configuration menu.'))
+                                     _('You cannot create an invoice on a centralized journal. Uncheck the centralized counterpart box in the related journal from the configuration menu.'))
 
             line = self.finalize_invoice_move_lines(cr, uid, inv, line)
 
@@ -216,7 +212,7 @@ class account_invoice(osv.osv):
             move_id = move_obj.create(cr, uid, move, context=ctx)
             new_move_name = move_obj.browse(cr, uid, move_id, context=ctx).name
             # make the invoice point to that move
-            self.write(cr, uid, [inv.id], {'move_id': move_id,'period_id':period_id, 'move_name':new_move_name}, context=ctx)
+            self.write(cr, uid, [inv.id], {'move_id': move_id, 'period_id': period_id, 'move_name': new_move_name}, context=ctx)
             # Pass invoice in context in method post: used if you want to get the same
             # account move reference when creating the same invoice after a cancelled one:
 #            move_obj.post(cr, uid, [move_id], context=ctx)
@@ -236,8 +232,8 @@ class account_invoice(osv.osv):
 
             # Chequeamos que la posicion fiscal y la denomination_id coincidan
             if inv.fiscal_position.denomination_id.id != denomination_id:
-                raise osv.except_osv( _('Error'),
-                            _('The invoice denomination does not corresponds with this fiscal position.'))
+                raise osv.except_osv(_('Error'),
+                                     _('The invoice denomination does not corresponds with this fiscal position.'))
 
         # Si es factura de proveedor
         else:
@@ -246,13 +242,13 @@ class account_invoice(osv.osv):
 
             # Chequeamos que la posicion fiscal y la denomination_id coincidan
             if inv.fiscal_position.denom_supplier_id.id != inv.denomination_id.id:
-                raise osv.except_osv( _('Error'),
-                                    _('The invoice denomination does not corresponds with this fiscal position.'))
+                raise osv.except_osv(_('Error'),
+                                     _('The invoice denomination does not corresponds with this fiscal position.'))
 
         # Chequeamos que la posicion fiscal de la factura y del cliente tambien coincidan
         if inv.fiscal_position.id != inv.partner_id.property_account_position.id:
-            raise osv.except_osv( _('Error'),
-                                _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
+            raise osv.except_osv(_('Error'),
+                                 _('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
         return True
 
@@ -271,7 +267,7 @@ class account_invoice(osv.osv):
 
         res = wsfe_conf_obj.get_last_voucher(cr, uid, [conf.id], pto_vta, tipo_cbte, context=context)
 
-        return res+1
+        return res + 1
 
     def get_next_invoice_number(self, cr, uid, invoice, context=None):
         """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
@@ -288,7 +284,6 @@ class account_invoice(osv.osv):
 
         return next_number
 
-
     def action_number(self, cr, uid, ids, context=None):
         wsfe_conf_obj = self.pool.get('wsfe.config')
         conf = wsfe_conf_obj.get_config(cr, uid)
@@ -300,7 +295,7 @@ class account_invoice(osv.osv):
         invoice_vals = {}
         invtype = None
 
-        #TODO: not correct fix but required a fresh values before reading it.
+        # TODO: not correct fix but required a fresh values before reading it.
         # Esto se usa para forzar a que recalcule los campos funcion
         self.write(cr, uid, ids, {})
 
@@ -358,7 +353,7 @@ class account_invoice(osv.osv):
 
                 m = re.match('^[0-9]{4}-[0-9]{8}$', internal_number)
                 if not m:
-                    raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                    raise osv.except_osv(_('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
                 # Escribimos el internal number
                 invoice_vals['internal_number'] = internal_number
@@ -366,13 +361,12 @@ class account_invoice(osv.osv):
             # Si son de Proveedor
             else:
                 if not obj_inv.internal_number:
-                    raise osv.except_osv( _('Error'), _('The Invoice Number should be filled'))
+                    raise osv.except_osv(_('Error'), _('The Invoice Number should be filled'))
 
                 if local:
                     m = re.match('^[0-9]{4}-[0-9]{8}$', obj_inv.internal_number)
                     if not m:
-                        raise osv.except_osv( _('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
-
+                        raise osv.except_osv(_('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
             # Escribimos los campos necesarios de la factura
             self.write(cr, uid, obj_inv.id, invoice_vals)
@@ -389,13 +383,13 @@ class account_invoice(osv.osv):
             # Como sacamos el post de action_move_create, lo tenemos que poner aqui
             # Lo sacamos para permitir la validacion por lote. Ver wizard account.invoice.confirm
             move_id = obj_inv.move_id and obj_inv.move_id.id or False
-            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':obj_inv})
+            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice': obj_inv})
 
             for inv_id, name in self.name_get(cr, uid, [id], context=context):
                 ctx = context.copy()
                 if invtype in ('out_invoice', 'out_refund'):
                     ctx = self.get_log_context(cr, uid, context=ctx)
-                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
+                message = _('Invoice ') + " '" + name + "' " + _("is validated.")
                 self.log(cr, uid, inv_id, message, context=ctx)
 
         return True
@@ -428,15 +422,15 @@ class account_invoice(osv.osv):
             # lineas de productos que se estan vendiendo
             concept = None
             if products:
-                concept = 1 # Productos
+                concept = 1  # Productos
             elif service:
-                concept =  2 # Servicios
+                concept = 2  # Servicios
             else:
-                concept = 3 # Productos y Servicios
+                concept = 3  # Productos y Servicios
 
             if not fiscal_position:
                 raise osv.except_osv(_('Customer Configuration Error'),
-                                    _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
+                                     _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
 
             # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
             # cuenta que inv.number == 000X-00000NN o algo similar.
@@ -469,7 +463,7 @@ class account_invoice(osv.osv):
             detalle['CbteDesde'] = cbte_nro
             detalle['CbteHasta'] = cbte_nro
             detalle['CbteFch'] = date_invoice.strftime('%Y%m%d')
-            if concept in [2,3]:
+            if concept in [2, 3]:
                 detalle['FchServDesde'] = formatted_date_invoice
                 detalle['FchServHasta'] = formatted_date_invoice
                 detalle['FchVtoPago'] = date_due
@@ -485,7 +479,6 @@ class account_invoice(osv.osv):
             importe_tributos = 0.0
             importe_total = 0.0
             importe_neto_no_gravado = inv.amount_no_taxed
-
 
             # Procesamos las taxes
             taxes = inv.tax_line
@@ -518,8 +511,8 @@ class account_invoice(osv.osv):
             # de redondeo
             prec = obj_precision.precision_get(cr, uid, 'Account')
             if round(importe_total, prec) != round(inv.amount_total, prec):
-                raise osv.except_osv(_('Error in amount_total!'), _("The total amount of the invoice does not corresponds to the total calculated." \
-                    "Maybe there is an rounding error!. (Amount Calculated: %f)") % (importe_total))
+                raise osv.except_osv(_('Error in amount_total!'), _("The total amount of the invoice does not corresponds to the total calculated."
+                                                                    "Maybe there is an rounding error!. (Amount Calculated: %f)") % (importe_total))
 
             # Detalle del array de IVA
             detalle['Iva'] = iva_array
@@ -533,7 +526,7 @@ class account_invoice(osv.osv):
             detalle['ImpTrib'] = importe_tributos
             detalle['Tributos'] = None
 
-            #print 'Detalle de facturacion: ', detalle
+            # print 'Detalle de facturacion: ', detalle
 
             # Agregamos un hook para agregar tributos o IVA que pueda ser
             # llamado de otros modulos. O mismo para modificar el detalle.
@@ -541,7 +534,7 @@ class account_invoice(osv.osv):
 
             details.append(detalle)
 
-        #print 'Detalles: ', details
+        # print 'Detalles: ', details
         return details
 
     def hook_add_taxes(self, cr, uid, inv, detalle):
@@ -577,7 +570,7 @@ class account_invoice(osv.osv):
                 invoices_approbed = self._parse_result(cr, uid, ids, result, context=context)
                 for invoice_id, invoice_vals in invoices_approbed.iteritems():
                     self.write(cr, uid, invoice_id, invoice_vals)
-            except Exception, e:
+            except Exception as e:
                 new_cr = cr.dbname
                 cr.rollback()
                 raise e
@@ -623,7 +616,7 @@ class account_invoice(osv.osv):
                 if comp['Observaciones']:
                     msg = 'Observaciones: ' + '\n'.join(comp['Observaciones'])
 
-                    ## Escribimos en el log del cliente web
+                    # Escribimos en el log del cliente web
                     #self.log(cr, uid, inv.id, msg, context)
 
                 # Chequeamos que se corresponda con la factura que enviamos a validar
@@ -646,7 +639,7 @@ class account_invoice(osv.osv):
                     invoice_vals['cae_due_date'] = comp['CAEFchVto']
                     invoices_approbed[inv.id] = invoice_vals
                     #self.write(cr, uid, inv.id, invoice_vals)
-                    #invoices_approbed.append(inv.id)
+                    # invoices_approbed.append(inv.id)
 
                 index += 1
 
@@ -659,7 +652,6 @@ class account_invoice_tax(osv.osv):
     _name = "account.invoice.tax"
     _inherit = "account.invoice.tax"
 
-
     def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
         tax_obj = self.pool.get('account.tax')
         cur_obj = self.pool.get('res.currency')
@@ -669,8 +661,8 @@ class account_invoice_tax(osv.osv):
         for t in tax_grouped.values():
             # Para solucionar el problema del redondeo con AFIP
             ta = tax_obj.browse(cr, uid, t['tax_id'], context=context)
-            t['amount'] = t['base']*ta.amount
-            t['tax_amount'] = t['base_amount']*ta.amount
+            t['amount'] = t['base'] * ta.amount
+            t['tax_amount'] = t['base_amount'] * ta.amount
 
             t['base'] = cur_obj.round(cr, uid, cur, t['base'])
             t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])

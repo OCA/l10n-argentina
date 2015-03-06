@@ -18,14 +18,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import osv, fields
-from tools.translate import _
-import decimal_precision as dp
-import netsvc
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
+from openerp.addons import decimal_precision as dp
+from openerp import netsvc
 import time
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
+
 class wsfe_sinchronize_voucher(osv.osv_memory):
+
     """
     This wizard is used to get information about a voucher informed to AFIP through WSFE
     """
@@ -57,7 +59,7 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
 
     _defaults = {
         'infook': lambda *a: False,
-        }
+    }
 
     def onchange_voucher(self, cr, uid, ids, voucher_type, pos_id, voucher_number, context=None):
 
@@ -97,15 +99,15 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         vals = {
             'document_type': document_type,
             'document_number': str(res['DocNro']),
-            'date_invoice': di,#str(res['CbteFch']),
+            'date_invoice': di,  # str(res['CbteFch']),
             'amount_total': res['ImpTotal'],
-            'amount_no_taxed':res['ImpTotConc'],
+            'amount_no_taxed': res['ImpTotConc'],
             #'amount_untaxed':res['ImpNeto'],
-            'amount_taxed':res['ImpNeto'],
-            'amount_tax':res['ImpIVA'] + res['ImpTrib'],
-            'amount_exempt':res['ImpOpEx'],
+            'amount_taxed': res['ImpNeto'],
+            'amount_tax': res['ImpIVA'] + res['ImpTrib'],
+            'amount_exempt': res['ImpOpEx'],
             #'currency':,
-            'cae':str(res['CodAutorizacion']),
+            'cae': str(res['CodAutorizacion']),
             'cae_due_date': dd,
             'date_process': dpr,
             'infook': True,
@@ -138,7 +140,7 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         inv = inv_obj.browse(cr, uid, inv.id, context)
 
         move_id = inv.move_id and inv.move_id.id or False
-        self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':inv})
+        self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice': inv})
 
         # TODO: Agregar el date_invoice para que sea el de la AFIP
         invoice_vals = {

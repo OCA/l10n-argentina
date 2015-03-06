@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 from wsfe_suds import WSFEv1 as wsfe
 from datetime import datetime
 import time
@@ -30,13 +30,13 @@ class wsfe_tax_codes(osv.osv):
     _name = "wsfe.tax.codes"
     _description = "Tax Codes"
     _columns = {
-        'code' : fields.char('Code', required=False, size=4),
-        'name' : fields.char('Desc', required=True, size=64),
-        'to_date' : fields.date('Effect Until'),
-        'from_date' : fields.date('Effective From'),
-        'tax_id' : fields.many2one('account.tax','Account Tax'),
+        'code': fields.char('Code', required=False, size=4),
+        'name': fields.char('Desc', required=True, size=64),
+        'to_date': fields.date('Effect Until'),
+        'from_date': fields.date('Effective From'),
+        'tax_id': fields.many2one('account.tax', 'Account Tax'),
         'tax_code_id': fields.many2one('account.tax.code', 'Account Tax Code'),
-        'wsfe_config_id' : fields.many2one('wsfe.config','WSFE Configuration'),
+        'wsfe_config_id': fields.many2one('wsfe.config', 'WSFE Configuration'),
         'from_afip': fields.boolean('From AFIP'),
         'exempt_operations': fields.boolean('Exempt Operations', help='Check it if this VAT Tax corresponds to vat tax exempts operations, such as to sell books, milk, etc. The taxes with this checked, will be reported to AFIP as  exempt operations (base amount) without VAT applied on this'),
     }
@@ -49,13 +49,13 @@ class wsfe_config(osv.osv):
 
     _columns = {
         'cuit': fields.related('company_id', 'partner_id', 'vat', type='char', string='Cuit'),
-        'url' : fields.char('URL for WSFE', size=60, required=True),
-        'homologation' : fields.boolean('Homologation', help="If true, there will be some validations that are disabled, for example, invoice number correlativeness"),
+        'url': fields.char('URL for WSFE', size=60, required=True),
+        'homologation': fields.boolean('Homologation', help="If true, there will be some validations that are disabled, for example, invoice number correlativeness"),
         'point_of_sale_ids': fields.many2many('pos.ar', 'pos_ar_wsfe_rel', 'wsfe_config_id', 'pos_ar_id', 'Points of Sale'),
-        'vat_tax_ids' : fields.one2many('wsfe.tax.codes', 'wsfe_config_id' ,'Taxes', domain=[('from_afip', '=', True)]),
-        'exempt_operations_tax_ids' : fields.one2many('wsfe.tax.codes', 'wsfe_config_id' ,'Taxes', domain=[('from_afip', '=', False), ('exempt_operations', '=', True)]),
-        'wsaa_ticket_id' : fields.many2one('wsaa.ta', 'Ticket Access'),
-        'company_id' : fields.many2one('res.company', 'Company Name' , required=True),
+        'vat_tax_ids': fields.one2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', True)]),
+        'exempt_operations_tax_ids': fields.one2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', False), ('exempt_operations', '=', True)]),
+        'wsaa_ticket_id': fields.many2one('wsaa.ta', 'Ticket Access'),
+        'company_id': fields.many2one('res.company', 'Company Name', required=True),
     }
 
     _sql_constraints = [
@@ -63,9 +63,9 @@ class wsfe_config(osv.osv):
     ]
 
     _defaults = {
-        'company_id' : lambda self, cr, uid, context=None: self.pool.get('res.users')._get_company(cr, uid, context=context),
+        'company_id': lambda self, cr, uid, context=None: self.pool.get('res.users')._get_company(cr, uid, context=context),
         'homologation': lambda *a: False,
-        }
+    }
 
     def create(self, cr, uid, vals, context):
 
@@ -76,14 +76,14 @@ class wsfe_config(osv.osv):
 
         # Buscamos primero el wsaa que corresponde a esta compania
         # porque hay que recordar que son unicos por compania
-        wsaa_ids = wsaa_obj.search(cr, uid, [('company_id','=', vals['company_id'])], context=context)
-        service_ids = service_obj.search(cr, uid, [('name','=', 'wsfe')], context=context)
+        wsaa_ids = wsaa_obj.search(cr, uid, [('company_id', '=', vals['company_id'])], context=context)
+        service_ids = service_obj.search(cr, uid, [('name', '=', 'wsfe')], context=context)
         if wsaa_ids:
             ta_vals = {
                 'name': service_ids[0],
                 'company_id': vals['company_id'],
-                'config_id' : wsaa_ids[0],
-                }
+                'config_id': wsaa_ids[0],
+            }
 
             ta_id = ta_obj.create(cr, uid, ta_vals, context)
             vals['wsaa_ticket_id'] = ta_id
@@ -96,12 +96,11 @@ class wsfe_config(osv.osv):
         if not company_id:
             raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
 
-        ids = self.search(cr, uid, [('company_id','=',company_id)])
+        ids = self.search(cr, uid, [('company_id', '=', company_id)])
         if not ids:
             raise osv.except_osv(_('WSFE Config Error!'), _('There is no WSFE configuration set to this company'))
 
         return self.browse(cr, uid, ids[0])
-
 
     def check_errors(self, cr, uid, res, raise_exception=True, context=None):
         msg = ''
@@ -143,7 +142,7 @@ class wsfe_config(osv.osv):
     def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
         wsfe_req_obj = self.pool.get('wsfe.request')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
-        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
+        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code', '=', voucher_type_code)])
         voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
         req_details = []
         for index, comp in enumerate(res['Comprobantes']):
@@ -163,7 +162,7 @@ class wsfe_config(osv.osv):
             det = {
                 'name': invoice_id,
                 'concept': str(detail['Concepto']),
-                'doctype': detail['DocTipo'], # TODO: Poner aca el nombre del tipo de documento
+                'doctype': detail['DocTipo'],  # TODO: Poner aca el nombre del tipo de documento
                 'docnum': str(detail['DocNro']),
                 'voucher_number': comp['CbteHasta'],
                 'voucher_date': comp['CbteFch'],
@@ -190,7 +189,7 @@ class wsfe_config(osv.osv):
             'reprocess': reprocess,
             'errors': '\n'.join(res['Errores']),
             'detail_ids': req_details,
-            }
+        }
 
         return wsfe_req_obj.create(cr, uid, vals)
 
@@ -224,34 +223,34 @@ class wsfe_config(osv.osv):
         res = res['response']
 
         result = {
-            'DocTipo' : res[0].DocTipo,
-            'DocNro' : res[0].DocNro,
-            'CbteDesde' : res[0].CbteDesde,
-            'CbteHasta' : res[0].CbteHasta,
-            'CbteFch' : res[0].CbteFch,
-            'ImpTotal' : res[0].ImpTotal,
-            'ImpTotConc' : res[0].ImpTotConc,
-            'ImpNeto' : res[0].ImpNeto,
-            'ImpOpEx' : res[0].ImpOpEx,
-            'ImpTrib' : res[0].ImpTrib,
-            'ImpIVA' : res[0].ImpIVA,
-            'FchServDesde' : res[0].FchServDesde,
-            'FchServHasta' : res[0].FchServHasta,
-            'FchVtoPago' : res[0].FchVtoPago,
-            'MonId' : res[0].MonId,
-            'MonCotiz' : res[0].MonCotiz,
-            'Resultado' : res[0].Resultado,
-            'CodAutorizacion' : res[0].CodAutorizacion,
-            'EmisionTipo' : res[0].EmisionTipo,
-            'FchVto' : res[0].FchVto,
-            'FchProceso' : res[0].FchProceso,
-            'PtoVta' : res[0].PtoVta,
-            'CbteTipo' : res[0].CbteTipo,
+            'DocTipo': res[0].DocTipo,
+            'DocNro': res[0].DocNro,
+            'CbteDesde': res[0].CbteDesde,
+            'CbteHasta': res[0].CbteHasta,
+            'CbteFch': res[0].CbteFch,
+            'ImpTotal': res[0].ImpTotal,
+            'ImpTotConc': res[0].ImpTotConc,
+            'ImpNeto': res[0].ImpNeto,
+            'ImpOpEx': res[0].ImpOpEx,
+            'ImpTrib': res[0].ImpTrib,
+            'ImpIVA': res[0].ImpIVA,
+            'FchServDesde': res[0].FchServDesde,
+            'FchServHasta': res[0].FchServHasta,
+            'FchVtoPago': res[0].FchVtoPago,
+            'MonId': res[0].MonId,
+            'MonCotiz': res[0].MonCotiz,
+            'Resultado': res[0].Resultado,
+            'CodAutorizacion': res[0].CodAutorizacion,
+            'EmisionTipo': res[0].EmisionTipo,
+            'FchVto': res[0].FchVto,
+            'FchProceso': res[0].FchProceso,
+            'PtoVta': res[0].PtoVta,
+            'CbteTipo': res[0].CbteTipo,
         }
 
         return result
 
-    def read_tax(self, cr, uid , ids , context={}):
+    def read_tax(self, cr, uid, ids, context={}):
         ta_obj = self.pool.get('wsaa.ta')
 
         conf = self.browse(cr, uid, ids)[0]
@@ -271,7 +270,7 @@ class wsfe_config(osv.osv):
 
         #~ Armo un lista con los codigos de los Impuestos
         for r in res['response']:
-            res_c = wsfe_tax_obj.search(cr, uid , [('code','=', r.Id )])
+            res_c = wsfe_tax_obj.search(cr, uid, [('code', '=', r.Id)])
 
             #~ Si tengo no los codigos de esos Impuestos en la db, los creo
             if not len(res_c):
@@ -281,10 +280,10 @@ class wsfe_config(osv.osv):
                 except ValueError:
                     td = False
 
-                wsfe_tax_obj.create(cr, uid , {'code': r.Id, 'name': r.Desc, 'to_date': td,
-                        'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True } , context={})
+                wsfe_tax_obj.create(cr, uid, {'code': r.Id, 'name': r.Desc, 'to_date': td,
+                                              'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True}, context={})
             #~ Si los codigos estan en la db los modifico
-            else :
+            else:
                 fd = datetime.strptime(r.FchDesde, '%Y%m%d')
                 #'NULL' ?? viene asi de fe_param_get_tipos_iva():
                 try:
@@ -292,13 +291,14 @@ class wsfe_config(osv.osv):
                 except ValueError:
                     td = False
 
-                wsfe_tax_obj.write(cr, uid , res_c[0] , {'code': r.Id, 'name': r.Desc, 'to_date': td ,
-                    'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True } )
+                wsfe_tax_obj.write(cr, uid, res_c[0], {'code': r.Id, 'name': r.Desc, 'to_date': td,
+                                                       'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True})
 
         return True
 
 wsfe_config()
 wsfe_tax_codes()
+
 
 class wsfe_voucher_type(osv.osv):
     _name = "wsfe.voucher_type"
@@ -309,21 +309,20 @@ class wsfe_voucher_type(osv.osv):
         'code': fields.char('Code', size=4, required=True, help='Internal Code assigned by AFIP for voucher type'),
 
         'voucher_model': fields.selection([
-            ('invoice','Factura/NC/ND'),
-            ('voucher','Recibo'),],'Voucher Model', select=True, required=True),
+            ('invoice', 'Factura/NC/ND'),
+            ('voucher', 'Recibo'), ], 'Voucher Model', select=True, required=True),
 
-        'document_type' : fields.selection([
-            ('out_invoice','Factura'),
-            ('out_refund','Nota de Credito'),
-            ('out_debit','Nota de Debito'),
-            ],'Document Type', select=True, required=True, readonly=False),
+        'document_type': fields.selection([
+            ('out_invoice', 'Factura'),
+            ('out_refund', 'Nota de Credito'),
+            ('out_debit', 'Nota de Debito'),
+        ], 'Document Type', select=True, required=True, readonly=False),
 
         'denomination_id': fields.many2one('invoice.denomination', 'Denomination', required=False),
     }
 
     """Es un comprobante que una empresa envía a su cliente, en la que se le notifica haber cargado o debitado en su cuenta una determinada suma o valor, por el concepto que se indica en la misma nota. Este documento incrementa el valor de la deuda o saldo de la cuenta, ya sea por un error en la facturación, interés por mora en el pago, o cualquier otra circunstancia que signifique el incremento del saldo de una cuenta.
 It is a proof that a company sends to your client, which is notified to be charged or debited the account a certain sum or value, the concept shown in the same note. This document increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account."""
-
 
     def get_voucher_type(self, cr, uid, voucher, context=None):
 
@@ -341,7 +340,7 @@ It is a proof that a company sends to your client, which is notified to be charg
                 if voucher.is_debit_note:
                     type = 'out_debit'
 
-            res = self.search(cr, uid, [('voucher_model','=',voucher_model), ('document_type','=',type), ('denomination_id','=',denomination_id)], context=context)
+            res = self.search(cr, uid, [('voucher_model', '=', voucher_model), ('document_type', '=', type), ('denomination_id', '=', denomination_id)], context=context)
 
             if not len(res):
                 raise osv.except_osv(_("Voucher type error!"), _("There is no voucher type that corresponds to this object"))

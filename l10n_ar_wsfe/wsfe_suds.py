@@ -16,7 +16,9 @@ logging.getLogger('suds.transport').setLevel(logging.INFO)
 logging.getLogger('suds.xsd.schema').setLevel(logging.INFO)
 logging.getLogger('suds.wsdl').setLevel(logging.INFO)
 
+
 class Error:
+
     def __init__(self, code, msg):
         self.code = code
         self.msg = msg
@@ -24,7 +26,9 @@ class Error:
     def __str__(self):
         return '%s (Err. %s)' % (self.msg, self.code)
 
+
 class Event:
+
     def __init__(self, code, msg):
         self.code = code
         self.msg = msg
@@ -32,7 +36,9 @@ class Event:
     def __str__(self):
         return '%s (Evento %s)' % (self.msg, self.code)
 
+
 class WSFEv1:
+
     def __init__(self, cuit, token, sign, wsfeurl=WSFEURLv1_HOMO):
         self.wsfeurl = wsfeurl
         self.connected = True
@@ -50,7 +56,7 @@ class WSFEv1:
         except urllib2.URLError:
             #logger.warning("WSFE: No hay conexion disponible")
             self.connected = False
-            raise Exception, 'No se puede conectar al servicio WSFE'
+            raise Exception('No se puede conectar al servicio WSFE')
 
         # Creamos el argauth
         if self.connected:
@@ -76,8 +82,6 @@ class WSFEv1:
                 event = Event(event.Code, event.Msg)
                 events.append(event)
         return events
-
-
 
     def print_services(self):
         if self.connected:
@@ -270,7 +274,6 @@ class WSFEv1:
 
         return res
 
-
     def fe_comp_ultimo_autorizado(self, pto_venta, cbte_tipo):
 
         # Llamamos a la funcion
@@ -315,11 +318,10 @@ class WSFEv1:
 
         return res
 
-
     def fe_CAE_solicitar(self, pto_vta, cbte_tipo, detalles):
 
         argcaereq = self.client.factory.create('ns0:FECAERequest')
-        #print argcaereq
+        # print argcaereq
 
         # FECAECabRequest
         argcaereq.FeCabReq.CantReg = len(detalles)
@@ -333,7 +335,7 @@ class WSFEv1:
             argdetreq = self.client.factory.create('ns0:FECAEDetRequest')
 
             for k, v in detalle.iteritems():
-                if type(v) == list:
+                if isinstance(v, list):
                     if k == 'Iva':
                         for iva in v:
                             argiva = self.client.factory.create('ns0:AlicIva')
@@ -359,7 +361,7 @@ class WSFEv1:
                 else:
                     if k in argdetreq:
                         argdetreq[k] = v
-                    #else:
+                    # else:
                         #argdetreq[k] = None
 
             if len(arrayIva):
@@ -403,7 +405,7 @@ class WSFEv1:
         return res
 
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    wsaa = WSAA()
 #    wsfe = WSFE(wsaa, CUIT)
 #    wsfe.print_services()

@@ -18,11 +18,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import osv
-from tools.translate import _
-import netsvc
+from openerp.osv import osv
+from openerp.tools.translate import _
+from openerp import netsvc
+
 
 class account_invoice_confirm(osv.osv_memory):
+
     """
     This wizard will confirm the all the selected draft invoices
     """
@@ -59,13 +61,13 @@ class account_invoice_confirm(osv.osv_memory):
         # es que deben ser del mismo Punto de Venta, el mismo Tipo de Comprobante
         # y obviamente estar en estado 'Draft'
         pos_ids = [invoice.pos_ar_id.id for invoice in data_inv]
-        same_pos = len(set(pos_ids))==1
+        same_pos = len(set(pos_ids)) == 1
 
         # Son todas del mismo Punto de Venta?
         if not same_pos:
             raise osv.except_osv(_('WSFE Error!'), _('You are trying to validate several invoices but not all of them belongs to the same point of sale'))
 
-        draft_state = [invoice.state=='draft' for invoice in data_inv]
+        draft_state = [invoice.state == 'draft' for invoice in data_inv]
 
         # Estan todas en estado 'Draft'?
         if not all(draft_state):
@@ -108,14 +110,14 @@ class account_invoice_confirm(osv.osv_memory):
         invoices_not_approbed = [j for j in context['active_ids'] if j not in invoices_approbed.keys()]
 
         # Seguimos adelante con el workflow para todas las que fueron aprobadas
-        #for invoice in inv_obj.browse(cr, uid, invoices_approbed):
+        # for invoice in inv_obj.browse(cr, uid, invoices_approbed):
         for invoice_id, invoice_vals in invoices_approbed.iteritems():
             invoice = inv_obj.browse(cr, uid, invoice_id)
 
             # Como sacamos el post de action_move_create, lo tenemos que poner aqui
             # Lo sacamos para permitir la validacion por lote. Ver wizard account.invoice.confirm
             move_id = invoice.move_id and invoice.move_id.id or False
-            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':invoice})
+            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice': invoice})
 
             inv_obj.write(cr, uid, invoice_id, invoice_vals)
 
@@ -145,7 +147,7 @@ class account_invoice_confirm(osv.osv_memory):
         # TODO: Ver que pasa con las account_analytic_lines
         return {
             'name': _('WSFE Request'),
-            'domain' : "[('id','=',%s)]"%(req_id),
+            'domain': "[('id','=',%s)]" % (req_id),
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'wsfe.request',

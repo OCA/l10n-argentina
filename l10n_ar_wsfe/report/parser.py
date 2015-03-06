@@ -25,29 +25,30 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
 ##############################################################################
-
-from report import report_sxw
-from report.report_sxw import rml_parse
+from openerp.report import report_sxw
+from openerp.report.report_sxw import rml_parse
 import random
 from datetime import datetime
 
 LINES_PER_PAGE = 18
 
+
 class Parser(report_sxw.rml_parse):
+
     def __init__(self, cr, uid, name, context):
         super(Parser, self).__init__(cr, uid, name, context)
         self.localcontext.update({
-            'random':random,
-            'hello_world':self.hello_world,
-            'invoice_number':self.invoice_number,
-            'get_lines':self.get_lines,
-            'get_pages':self.get_pages,
-            'last_page':self.last_page,
-            'get_untaxed':self.get_untaxed,
-            'get_taxed':self.get_taxed,
-            'get_total':self.get_total,
-            'get_doc_code':self.get_doc_code,
-            'get_barcode_code':self.get_barcode_code,
+            'random': random,
+            'hello_world': self.hello_world,
+            'invoice_number': self.invoice_number,
+            'get_lines': self.get_lines,
+            'get_pages': self.get_pages,
+            'last_page': self.last_page,
+            'get_untaxed': self.get_untaxed,
+            'get_taxed': self.get_taxed,
+            'get_total': self.get_total,
+            'get_doc_code': self.get_doc_code,
+            'get_barcode_code': self.get_barcode_code,
         })
         self.total_pages = 0
         self.page_number = 0
@@ -63,7 +64,7 @@ class Parser(report_sxw.rml_parse):
 
     def invoice_number(self, inv):
         return '%s-%s' % (inv.pos_ar_id.name, inv.internal_number)
-        #return '0005-%08d' % int(inv_number)
+        # return '0005-%08d' % int(inv_number)
 
     def _wrap(self, text, n=80):
         text = text.replace('\n', ' ')
@@ -83,10 +84,10 @@ class Parser(report_sxw.rml_parse):
                 lines_ppage -= len(comment_lines)
 
             count = line_obj.search(self.cr, self.uid, [('invoice_id', '=', inv.id)], count=True)
-            pages = (count/lines_ppage)
-            add = count%lines_ppage
-            #print 'Add: ', add, add+LINES_PER_PAGE%LINES_PER_PAGE
-            self.remainder_lines = lines_ppage-add
+            pages = (count / lines_ppage)
+            add = count % lines_ppage
+            # print 'Add: ', add, add+LINES_PER_PAGE%LINES_PER_PAGE
+            self.remainder_lines = lines_ppage - add
             if add:
                 pages = pages + 1
             self.total_pages = pages
@@ -98,7 +99,7 @@ class Parser(report_sxw.rml_parse):
         return xrange(self.remainder_lines)
 
     def get_lines(self, inv):
-        #print 'Denomination: ', inv.denomination_id.name
+        # print 'Denomination: ', inv.denomination_id.name
 
         # Si la denominacion es B o C, no se discrimina IVA
         vat_disc = inv.denomination_id.vat_discriminated
@@ -128,26 +129,26 @@ class Parser(report_sxw.rml_parse):
             default_uom = line.product_id.uom_id and line.product_id.uom_id.id
             q = uom_obj._compute_qty(self.cr, self.uid, line.uos_id.id, line.quantity, default_uom)
             pu = line.price_unit
-            pl = line.product_id.list_price 
+            pl = line.product_id.list_price
             discount = line.discount
-            discount2 = ((line.product_id.list_price - line.price_unit)*100)/line.product_id.list_price
+            discount2 = ((line.product_id.list_price - line.price_unit) * 100) / line.product_id.list_price
             discount2 = round(discount2, 2)
 
             taxes = line.invoice_line_tax_id
             for tax in taxes:
-                #if tax.price_include and tax.type == 'percent':
+                # if tax.price_include and tax.type == 'percent':
                 if not vat_disc:
-                    pu += round(line.price_unit*tax.amount, 4)
-                    pl += round(line.product_id.list_price*tax.amount, 4)
+                    pu += round(line.price_unit * tax.amount, 4)
+                    pl += round(line.product_id.list_price * tax.amount, 4)
                     self.taxed = False
                 else:
                     self.taxed = True
 
-            subtotal = round(q*pu*(1-(line.discount or 0.0)/100.0), 2)
+            subtotal = round(q * pu * (1 - (line.discount or 0.0) / 100.0), 2)
             self.untaxed += subtotal
 
             # Para PLOT
-            ll.append([code, desc, q, round(pu,2), discount, discount2, subtotal,round(pl,2)])
+            ll.append([code, desc, q, round(pu, 2), discount, discount2, subtotal, round(pl, 2)])
             #ll.append([code, desc, q, pu, discount, discount2, subtotal])
 
         return ll
@@ -161,7 +162,7 @@ class Parser(report_sxw.rml_parse):
     def get_total(self, inv):
         return "%.2f" % inv.amount_total
 
-    def get_doc_code(self, inv): 
+    def get_doc_code(self, inv):
         eivoucher_obj = self.pool.get('wsfe.voucher_type')
         res = eivoucher_obj.search(self.cr, self.uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
 
@@ -179,7 +180,7 @@ class Parser(report_sxw.rml_parse):
             cae_due_date = datetime.strptime(inv.cae_due_date, report_sxw.DT_FORMAT)
         else:
             cae_due_date = datetime.now()
-            cae = '0'*14
+            cae = '0' * 14
 
-        code = cuit+'%02d'%int(inv_code)+pos+cae+cae_due_date.strftime('%Y%m%d')
+        code = cuit + '%02d' % int(inv_code) + pos + cae + cae_due_date.strftime('%Y%m%d')
         return code
