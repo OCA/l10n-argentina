@@ -22,10 +22,9 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-import netsvc
 
 
 # TODO: Que pasa si no se valida la Nota de Debito???
@@ -76,7 +75,6 @@ class account_check_reject(osv.osv_memory):
         wizard = self.browse(cr, uid, ids[0], context=context)
         record_ids = context.get('active_ids', [])
         check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
-
 
         period_id = self.pool.get('account.period').find(cr, uid, wizard.reject_date)[0]
 

@@ -22,9 +22,9 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
-import netsvc
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
+
 
 class account_voucher(osv.osv):
     _name = 'account.voucher'
@@ -32,12 +32,12 @@ class account_voucher(osv.osv):
 
     _columns = {
         'issued_check_ids': fields.one2many('account.issued.check',
-            'voucher_id', 'Issued Checks', readonly=True, required=False, states={'draft':[('readonly',False)]}),
+                                            'voucher_id', 'Issued Checks', readonly=True, required=False, states={'draft': [('readonly', False)]}),
         'third_check_receipt_ids': fields.one2many('account.third.check',
-            'source_voucher_id', 'Third Checks', readonly=True, required=False, states={'draft':[('readonly',False)]}),
+                                                   'source_voucher_id', 'Third Checks', readonly=True, required=False, states={'draft': [('readonly', False)]}),
         'third_check_ids': fields.many2many('account.third.check',
-            'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id',
-            'Third Checks', readonly=True, states={'draft':[('readonly',False)]}),
+                                            'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id',
+                                            'Third Checks', readonly=True, states={'draft': [('readonly', False)]}),
     }
 
     def _amount_checks(self, cr, uid, voucher_id):
@@ -135,12 +135,12 @@ class account_voucher(osv.osv):
 
         # Borramos los issued check asociados al voucher
         for v in self.read(cr, uid, ids, ['issued_check_ids', 'third_check_receipt_ids'], context=context):
-            
+
             self.pool.get('account.issued.check').unlink(cr, uid, v['issued_check_ids'], context=context)
             self.pool.get('account.third.check').unlink(cr, uid, v['third_check_receipt_ids'], context=context)
 
         return super(account_voucher, self).unlink(cr, uid, ids, context=context)
- 
+
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
         move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
 
@@ -203,7 +203,6 @@ class account_voucher(osv.osv):
 #
 #        return True
 
-
     def cancel_voucher(self, cr, uid, ids, context=None):
         third_check_obj = self.pool.get('account.third.check')
         issued_check_obj = self.pool.get('account.issued.check')
@@ -233,11 +232,11 @@ class account_voucher(osv.osv):
         for voucher in self.browse(cr, uid, ids, context=context):
             # A draft los cheques emitidos
             issued_checks = [c.id for c in voucher.issued_check_ids]
-            issued_check_obj.write(cr, uid, issued_checks, {'state':'draft'}, context=context)
+            issued_check_obj.write(cr, uid, issued_checks, {'state': 'draft'}, context=context)
 
             # A draft los cheques de tercero en cobros
             third_checks = [c.id for c in voucher.third_check_receipt_ids]
-            third_check_obj.write(cr, uid, third_checks, {'state':'draft'}, context=context)
+            third_check_obj.write(cr, uid, third_checks, {'state': 'draft'}, context=context)
 
         return res
 

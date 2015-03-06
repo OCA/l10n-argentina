@@ -22,15 +22,14 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 import time
-import netsvc
+from openerp import netsvc
 
 
 class account_check_deposit(osv.osv_memory):
     _name = 'account.check.deposit'
-
 
     def _get_journal(self, cr, uid, context=None):
         journal_id = False
@@ -46,7 +45,7 @@ class account_check_deposit(osv.osv_memory):
         return journal_id
 
     _columns = {
-        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type','in',('cash', 'bank'))], required=True),
+        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type', 'in', ('cash', 'bank'))], required=True),
         'bank_account_id': fields.many2one('res.partner.bank', 'Bank Account', required=True),
         'date': fields.date('Deposit Date', required=True),
         'voucher_number': fields.char('Voucher Number', size=32),
@@ -55,11 +54,11 @@ class account_check_deposit(osv.osv_memory):
 
     _defaults = {
         'date': lambda *a: time.strftime('%Y-%m-%d'),
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
         'journal_id': _get_journal,
     }
 
-    def view_init(self, cr , uid , fields_list, context=None):
+    def view_init(self, cr, uid, fields_list, context=None):
         check_obj = self.pool.get('account.third.check')
         if context is None:
             context = {}
@@ -136,8 +135,8 @@ class account_check_deposit(osv.osv_memory):
 
             account_check_id = self._get_source_account_check(cr, uid, company_id)
 
-            #name = self.pool.get('ir.sequence').get_id(cr, uid,
-                    #check.voucher_id.journal_id.id)
+            # name = self.pool.get('ir.sequence').get_id(cr, uid,
+            # check.voucher_id.journal_id.id)
 
             if wizard.voucher_number:
                 move_ref = _('Deposit Check %s [%s]') % (check.number, wizard.voucher_number)
@@ -192,6 +191,6 @@ class account_check_deposit(osv.osv_memory):
             # el asiento o no.
             self.pool.get('account.move').post(cr, uid, [move_id], context=context)
 
-        return { 'type': 'ir.actions.act_window_close' }
+        return {'type': 'ir.actions.act_window_close'}
 
 account_check_deposit()

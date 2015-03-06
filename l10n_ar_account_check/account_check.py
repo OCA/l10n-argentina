@@ -23,11 +23,12 @@
 ##############################################################################
 
 import time
-from tools.translate import _
-from osv import fields, osv
+from openerp.tools.translate import _
+from openerp.osv import fields, osv
 
 
 class account_check_config(osv.osv):
+
     '''
     Account Check Config
     '''
@@ -36,9 +37,9 @@ class account_check_config(osv.osv):
 
     _columns = {
         'account_id': fields.many2one('account.account', 'Main Check Account', required=True,
-                                       help="In Argentina, Valores a Depositar is used, for example"),
+                                      help="In Argentina, Valores a Depositar is used, for example"),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-            }
+    }
 
     _sql_constraints = [
         ('company_uniq', 'UNIQUE(company_id)', 'The configuration must be unique per company!'),
@@ -48,6 +49,7 @@ account_check_config()
 
 
 class account_issued_check(osv.osv):
+
     '''
     Account Issued Check
     '''
@@ -61,20 +63,20 @@ class account_issued_check(osv.osv):
         'issue_date': fields.date('Issue Date'),
         'payment_date': fields.date('Payment Date', help="Only if this check is post dated"),
         'receiving_partner_id': fields.many2one('res.partner',
-            'Receiving Entity', required=False, readonly=True),
+                                                'Receiving Entity', required=False, readonly=True),
         'bank_id': fields.many2one('res.bank', 'Bank', required=True),
         #'on_order': fields.char('On Order', size=64),
         'signatory': fields.char('Signatory', size=64),
         'clearing': fields.selection((
-                ('24', '24 hs'),
-                ('48', '48 hs'),
-                ('72', '72 hs'),
-            ), 'Clearing'),
+            ('24', '24 hs'),
+            ('48', '48 hs'),
+            ('72', '72 hs'),
+        ), 'Clearing'),
         'account_bank_id': fields.many2one('res.partner.bank', 'Bank Account'),
         'voucher_id': fields.many2one('account.voucher', 'Voucher'),
         'origin': fields.char('Origin', size=64),
-        'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
-            help="If common, checks only have issued_date. If post-dated they also have payment date"),
+        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type',
+                                 help="If common, checks only have issued_date. If post-dated they also have payment date"),
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True),
         'state': fields.selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State')
     }
@@ -83,7 +85,7 @@ class account_issued_check(osv.osv):
         'clearing': lambda *a: '24',
         'type': 'common',
         'state': 'draft',
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher',context=c),
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher', context=c),
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
@@ -100,7 +102,7 @@ class account_issued_check(osv.osv):
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        amount_in_company_currency =  voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, check.amount, context=context)
+        amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, check.amount, context=context)
         #amount_in_company_currency = currency_obj.compute(cr, uid, current_currency, voucher.company_id.currency_id.id, check.amount, context=context)
 
         debit = credit = 0.0
@@ -108,8 +110,12 @@ class account_issued_check(osv.osv):
             credit = amount_in_company_currency
         elif voucher.type in ('sale', 'receipt'):
             debit = amount_in_company_currency
-        if debit < 0: credit = -debit; debit = 0.0
-        if credit < 0: debit = -credit; credit = 0.0
+        if debit < 0:
+            credit = -debit
+            debit = 0.0
+        if credit < 0:
+            debit = -credit
+            credit = 0.0
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente al cheque
@@ -121,8 +127,8 @@ class account_issued_check(osv.osv):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': company_currency <> current_currency and  current_currency or False,
-            'amount_currency': company_currency <> current_currency and sign * check.amount or 0.0,
+            'currency_id': company_currency != current_currency and current_currency or False,
+            'amount_currency': company_currency != current_currency and sign * check.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
@@ -139,11 +145,12 @@ class account_issued_check(osv.osv):
                 raise osv.except_osv(_('Check Error'), _('You cannot delete an issued check that is not in Draft state [See %s].') % (check['voucher_id'][1]))
 
         return super(account_issued_check, self).unlink(cr, uid, ids, context)
-        
+
 account_issued_check()
 
 
 class account_third_check(osv.osv):
+
     '''
     Account Third Check
     '''
@@ -154,41 +161,41 @@ class account_third_check(osv.osv):
     _columns = {
         'number': fields.char('Check Number', size=20, readonly=True, required=True, states={'draft': [('readonly', False)]}),
         'amount': fields.float('Check Amount', readonly=True, required=True, states={'draft': [('readonly', False)]}),
-        'receipt_date': fields.date('Receipt Date', readonly=True, required=True, states={'draft': [('readonly', False)]}), # Fecha de ingreso
-        'issue_date': fields.date('Issue Date', readonly=True, required=True, states={'draft': [('readonly', False)]}), # Fecha de emision
-        'payment_date': fields.date('Payment Date', readonly=True, states={'draft': [('readonly', False)]}), # Fecha de pago diferido
-        'endorsement_date': fields.date('Endorsement Date', readonly=True, states={'wallet': [('readonly', False)]}), # Fecha de Endoso
-        'deposit_date': fields.date('Deposit Date', readonly=True, states={'wallet': [('readonly', False)]}), # Fecha de Deposito
+        'receipt_date': fields.date('Receipt Date', readonly=True, required=True, states={'draft': [('readonly', False)]}),  # Fecha de ingreso
+        'issue_date': fields.date('Issue Date', readonly=True, required=True, states={'draft': [('readonly', False)]}),  # Fecha de emision
+        'payment_date': fields.date('Payment Date', readonly=True, states={'draft': [('readonly', False)]}),  # Fecha de pago diferido
+        'endorsement_date': fields.date('Endorsement Date', readonly=True, states={'wallet': [('readonly', False)]}),  # Fecha de Endoso
+        'deposit_date': fields.date('Deposit Date', readonly=True, states={'wallet': [('readonly', False)]}),  # Fecha de Deposito
         'source_partner_id': fields.many2one('res.partner', 'Source Partner', required=False, readonly=True, states={'draft': [('readonly', False)]}),
         'destiny_partner_id': fields.many2one('res.partner', 'Destiny Partner', states={'delivered': [('required', True)]}),
         'state': fields.selection((
-                ('draft', 'Draft'),
-                ('wallet', 'In Wallet'),
-                ('deposited', 'Deposited'),
-                ('delivered', 'Delivered'),
-                ('rejected', 'Rejected'),
-                ('cancel', 'Cancelled'),
-            ), 'State', readonly=True),
+            ('draft', 'Draft'),
+            ('wallet', 'In Wallet'),
+            ('deposited', 'Deposited'),
+            ('delivered', 'Delivered'),
+            ('rejected', 'Rejected'),
+            ('cancel', 'Cancelled'),
+        ), 'State', readonly=True),
         'bank_id': fields.many2one('res.bank', 'Bank', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         #'vat': fields.char('Vat', size=15, required=True),
         #'on_order': fields.char('On Order', size=64),
         'signatory': fields.char('Signatory', size=64),
         'clearing': fields.selection((
-                ('24', '24 hs'),
-                ('48', '48 hs'),
-                ('72', '72 hs'),
-            ), 'Clearing'),
+            ('24', '24 hs'),
+            ('48', '48 hs'),
+            ('72', '72 hs'),
+        ), 'Clearing'),
         'origin': fields.char('Origin', size=64),
         'dest': fields.char('Destiny', size=64),
         'deposit_bank_id': fields.many2one('res.partner.bank',
-            'Deposit Account'),
+                                           'Deposit Account'),
         'source_voucher_id': fields.many2one('account.voucher', 'Source Voucher', readonly=True),
         'debit_note_id': fields.many2one('account.invoice', 'Debit Note', readonly=True, help="In case of rejection of the third check"),
-        'type': fields.selection([('common', 'Common'),('postdated', 'Post-dated')], 'Check Type',
-            readonly=True, states={'draft': [('readonly', False)]},
-            help="If common, checks only have issued_date. If post-dated they also have payment date"),
+        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type',
+                                 readonly=True, states={'draft': [('readonly', False)]},
+                                 help="If common, checks only have issued_date. If post-dated they also have payment date"),
         'note': fields.text('Additional Information'),
-        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft':[('readonly',False)]}),
+        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'signatory_vat': fields.char('Signatory VAT', size=64),
         'signatory_account': fields.char('Signatory account', size=64),
         'deposit_slip': fields.char('Deposit Slip', size=64),
@@ -199,7 +206,7 @@ class account_third_check(osv.osv):
         'state': lambda *a: 'draft',
         'type': lambda *a: 'common',
         'clearing': lambda *a: '24',
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher',context=c),
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher', context=c),
     }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
@@ -224,8 +231,12 @@ class account_third_check(osv.osv):
             credit = amount_in_company_currency
         elif voucher.type in ('sale', 'receipt'):
             debit = amount_in_company_currency
-        if debit < 0: credit = -debit; debit = 0.0
-        if credit < 0: debit = -credit; credit = 0.0
+        if debit < 0:
+            credit = -debit
+            debit = 0.0
+        if credit < 0:
+            debit = -credit
+            credit = 0.0
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente al cheque
@@ -237,8 +248,8 @@ class account_third_check(osv.osv):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': company_currency <> current_currency and  current_currency or False,
-            'amount_currency': company_currency <> current_currency and sign * check.amount or 0.0,
+            'currency_id': company_currency != current_currency and current_currency or False,
+            'amount_currency': company_currency != current_currency and sign * check.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
@@ -281,7 +292,6 @@ class account_third_check(osv.osv):
         self.write(cr, uid, ids, vals, context=context)
         return True
 
-
     def unlink(self, cr, uid, ids, context=None):
 
         for check in self.read(cr, uid, ids, ['state', 'source_voucher_id'], context=context):
@@ -289,7 +299,7 @@ class account_third_check(osv.osv):
                 raise osv.except_osv(_('Check Error'), _('You cannot delete a third check that is not in Draft state [See %s].') % (check['source_voucher_id'][1]))
 
         return super(account_third_check, self).unlink(cr, uid, ids, context)
- 
+
     def cancel_check(self, cr, uid, ids, context=None):
 
         # Todos los cheques tienen que estar en draft o wallet
@@ -306,8 +316,8 @@ class account_third_check(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         vals = {'state': 'delivered'}
         for check in self.browse(cr, uid, ids):
-            voucher_ids = voucher_obj.search(cr, uid, [('third_check_ids','=',check.id)], context=context)
-            voucher = voucher_obj.browse(cr, uid, voucher_ids[0], context=context) #check.dest_voucher_id
+            voucher_ids = voucher_obj.search(cr, uid, [('third_check_ids', '=', check.id)], context=context)
+            voucher = voucher_obj.browse(cr, uid, voucher_ids[0], context=context)  # check.dest_voucher_id
 
             if not check.endorsement_date:
                 vals['endorsement_date'] = voucher.date or time.strftime('%Y-%m-%d')
