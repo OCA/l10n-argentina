@@ -22,25 +22,21 @@
 ##############################################################################
 
 {
-    "name" : "Checkbook Management",
-    "version" : "0.1",
-    "author" : "eynes.com.ar",
-    "website" : "www.eynes.com.ar",
-    "category" : "Localisation/Argentine",
+    "name": "Checkbook Management",
+    "version": "0.1",
+    "author": "eynes.com.ar",
+    "website": "www.eynes.com.ar",
+    "category": "Localisation/Argentine",
     "description": """Checkbook management for Own Checks""",
-    "license" : "AGPL-3",
-    "depends" : ["base","l10n_ar_account_check"],
-    "init_xml" : [],
-    "update_xml" : [
+    "license": "AGPL-3",
+    "depends": ["base", "l10n_ar_account_check"],
+    "init_xml": [],
+    "update_xml": [
         "security/ir.model.access.csv",
         "checkbook_view.xml",
         "account_voucher_view.xml",
         "wizard/create_checkbook_view.xml"
-        ],
+    ],
     "active": False,
     "installable": True
 }
-
-
-
-

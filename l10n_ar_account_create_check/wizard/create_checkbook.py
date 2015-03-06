@@ -21,23 +21,24 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+
 
 class wizard_create_check(osv.osv_memory):
     _name = "wizard.create.check"
     _description = "wizard create check"
 
     _columns = {
-        'bank_account_id': fields.many2one('res.partner.bank','Bank', required=True),
-        'start_num': fields.char('Start number of check',size=20, required=True),
-        'end_num': fields.char('End number of check',size=20, required=True),
-        'checkbook_num': fields.char('Checkbook number',size=20, required=True),
+        'bank_account_id': fields.many2one('res.partner.bank', 'Bank', required=True),
+        'start_num': fields.char('Start number of check', size=20, required=True),
+        'end_num': fields.char('End number of check', size=20, required=True),
+        'checkbook_num': fields.char('Checkbook number', size=20, required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
     }
 
     _defaults = {
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
     }
 
     def create_checkbook(self, cr, uid, ids, context=None):
@@ -51,29 +52,29 @@ class wizard_create_check(osv.osv_memory):
             start_num = int(form.start_num)
             end_num = int(form.end_num)
             if start_num > end_num:
-				raise osv.except_osv(_('Error creating Checkbook'), _("End number cannot be lower than Start number"))
+                raise osv.except_osv(_('Error creating Checkbook'), _("End number cannot be lower than Start number"))
 
             # Creamos los cheques numerados
             checks = []
-            for n in range(start_num, end_num+1):
+            for n in range(start_num, end_num + 1):
                 check_vals = {'name': str(n)}
-                checks.append((0,0,check_vals))
+                checks.append((0, 0, check_vals))
 
             # Creamos la chequera
             checkbook_vals = {
-                    'name': form.checkbook_num,
-                    'bank_id': form.bank_account_id.bank.id,
-                    'bank_account_id': form.bank_account_id.id,
-                    'check_ids': checks
-                    }
+                'name': form.checkbook_num,
+                'bank_id': form.bank_account_id.bank.id,
+                'bank_account_id': form.bank_account_id.id,
+                'check_ids': checks
+            }
 
             checkbook_id = checkbook_obj.create(cr, uid, checkbook_vals, context)
-        
+
         if not checkbook_id:
-            return { 'type': 'ir.actions.act_window_close' }
+            return {'type': 'ir.actions.act_window_close'}
 
         return {
-            'domain': [('id','=', str(checkbook_id))],
+            'domain': [('id', '=', str(checkbook_id))],
             'name': 'Checkbook',
             'view_type': 'form',
             'view_mode': 'tree,form',
