@@ -21,8 +21,8 @@
 {
     "name": "Tax Reports for Argentina",
     "version": "1.0",
-    "depends": ["base", "account" , "account_accountant",
-                "sale" ,"purchase", "l10n_ar_chart_of_account", "l10n_ar_account_payment",
+    "depends": ["base", "account", "account_accountant",
+                "sale", "purchase", "l10n_ar_chart_of_account", "l10n_ar_account_payment",
                 "l10n_ar_retentions_basic", "l10n_ar_perceptions_basic"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",

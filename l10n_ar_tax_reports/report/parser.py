@@ -19,21 +19,22 @@
 #
 ##############################################################################
 
-from osv import osv
-from report import report_sxw
+from openerp.osv import osv
+from openerp.report import report_sxw
 import random
-from tools.translate import _
+from openerp.tools.translate import _
+
 
 class Parser(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context):
         super(Parser, self).__init__(cr, uid, name, context)
         self.localcontext.update({
-            'hello_world':self.hello_world,
-            'get_title':self.get_title,
-            'set_period':self._set_period,
-            'get_lines':self.get_lines,
-            'get_columns':self.get_columns,
+            'hello_world': self.hello_world,
+            'get_title': self.get_title,
+            'set_period': self._set_period,
+            'get_lines': self.get_lines,
+            'get_columns': self.get_columns,
             'set_context': self._set_context,
         })
         self.period_id = None
@@ -47,7 +48,7 @@ class Parser(report_sxw.rml_parse):
         self.based_on = data['based_on']
 
     def _get_types(self):
-        #print 'Based_on: ', self.based_on
+        # print 'Based_on: ', self.based_on
         if self.based_on == 'sale':
             return ['out_invoice', 'out_refund', 'out_debit']
         else:
@@ -77,11 +78,11 @@ class Parser(report_sxw.rml_parse):
 #        "WHERE report_config_id=%s) ORDER BY code"
 
         q = "SELECT DISTINCT at.id, at.name, at.code " \
-        "FROM account_tax_code at, account_period p, account_move_line l, account_invoice i " \
-        "WHERE p.id=l.period_id AND at.id=l.tax_code_id AND p.id=%s " \
-        "AND i.type IN %s AND i.move_id=l.move_id " \
-        "AND at.id IN (SELECT tax_code_id FROM subjournal_report_taxcode_column " \
-        "WHERE report_config_id=%s) ORDER BY at.code"
+            "FROM account_tax_code at, account_period p, account_move_line l, account_invoice i " \
+            "WHERE p.id=l.period_id AND at.id=l.tax_code_id AND p.id=%s " \
+            "AND i.type IN %s AND i.move_id=l.move_id " \
+            "AND at.id IN (SELECT tax_code_id FROM subjournal_report_taxcode_column " \
+            "WHERE report_config_id=%s) ORDER BY at.code"
 
         #self.cr.execute(q, (self.period_id, tuple(types), self.period_id, tuple(types), config_id))
         self.cr.execute(q, (self.period_id, tuple(types), config_id[0]))
@@ -131,25 +132,25 @@ class Parser(report_sxw.rml_parse):
         # TODO Implementar con un select para account_invoice_tax, algo como:
         # Porque sobre algo asi, podemos usar el campo print_total para imprimir
         # el total de la base+impuesto. Aparte queda mas claro que con el Select de mas abajo.
-        #select it.id, tc_base.name, it.base_amount, tc_tax.name, it.tax_amount, (it.base_amount+it.tax_amount) as total
-        #from account_invoice_tax it, account_invoice i, account_tax_code tc_base, 
-        #account_tax_code tc_tax
-        #where it.invoice_id=i.id and i.id=22 and tc_base.id=it.base_code_id 
-        #and tc_tax.id=it.tax_code_id 
+        # select it.id, tc_base.name, it.base_amount, tc_tax.name, it.tax_amount, (it.base_amount+it.tax_amount) as total
+        # from account_invoice_tax it, account_invoice i, account_tax_code tc_base,
+        # account_tax_code tc_tax
+        # where it.invoice_id=i.id and i.id=22 and tc_base.id=it.base_code_id
+        # and tc_tax.id=it.tax_code_id
 
-        self.cr.execute("SELECT l.id FROM account_move_line l, account_invoice i, " \
-        "account_tax_code tc, account_period ap " \
-        "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  " \
-        "AND i.type IN %s " \
-        "AND ap.id=l.period_id AND ap.id=%s " \
-        + where + "ORDER BY l.date", (tuple(types), self.period_id)+where_param)
+        self.cr.execute("SELECT l.id FROM account_move_line l, account_invoice i, "
+                        "account_tax_code tc, account_period ap "
+                        "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  "
+                        "AND i.type IN %s "
+                        "AND ap.id=l.period_id AND ap.id=%s "
+                        + where + "ORDER BY l.date", (tuple(types), self.period_id) + where_param)
 
         # Obtenemos el resultado de la consulta
         res = self.cr.fetchall()
 
         if not len(res):
             raise osv.except_osv(_('Warning'), _('There were no moves for this period'))
-            #return res
+            # return res
 
         # Lineas
         line_ids = map(lambda x: x[0], res)
@@ -180,9 +181,9 @@ class Parser(report_sxw.rml_parse):
 #                    line['invoice_number'] = l.invoice.internal_number
                 line['invoice_number'] = l.invoice.internal_number
                 line['taxes'] = []
-                line['taxes'] += ['']*len(tax_code_ids)
-                line['no_taxed'] = l.invoice.amount_no_taxed*sign
-                line['total'] = l.invoice.amount_total*sign
+                line['taxes'] += [''] * len(tax_code_ids)
+                line['no_taxed'] = l.invoice.amount_no_taxed * sign
+                line['total'] = l.invoice.amount_total * sign
                 total_invoiced += line['total']
                 total_no_taxed += line['no_taxed']
                 lines[l.move_id.id] = line
@@ -190,11 +191,11 @@ class Parser(report_sxw.rml_parse):
             for i, t_id in enumerate(tax_code_ids):
                 if l.tax_code_id.id == t_id:
                     if lines[l.move_id.id]['taxes'][i] == '':
-                        lines[l.move_id.id]['taxes'][i] =l.tax_amount#*sign
+                        lines[l.move_id.id]['taxes'][i] = l.tax_amount  # *sign
                     else:
-                        lines[l.move_id.id]['taxes'][i] +=l.tax_amount#*sign
+                        lines[l.move_id.id]['taxes'][i] += l.tax_amount  # *sign
 
-        res = [v for k,v in lines.iteritems()]
+        res = [v for k, v in lines.iteritems()]
         res2 = sorted(res, key=lambda k: k['date'])
 
         line2 = {}
@@ -212,10 +213,10 @@ class Parser(report_sxw.rml_parse):
         # Obtenemos los totales
         tax_sums = self.get_sum()
 
-        line2['taxes'] += ['']*len(tax_code_ids)
+        line2['taxes'] += [''] * len(tax_code_ids)
         for i, t_id in enumerate(tax_code_ids):
             for tsum_id, sum in tax_sums:
-                if t_id==tsum_id:
+                if t_id == tsum_id:
                     line2['taxes'][i] = sum
 
         res2.append(line2)
@@ -228,16 +229,16 @@ class Parser(report_sxw.rml_parse):
         if len(tax_code_ids):
             where = " AND tc.id in %s "
             where_param = (tuple(tax_code_ids),)
- 
+
         types = self._get_types()
 
-        self.cr.execute("SELECT l.tax_code_id, sum(l.tax_amount) as sum_amount " \
-        "FROM account_move_line l, account_invoice i,  " \
-        "account_tax_code tc, account_period ap " \
-        "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  " \
-        "AND i.type IN %s " \
-        "AND ap.id=l.period_id AND ap.id=%s"+ where + \
-        "GROUP BY l.tax_code_id ORDER BY l.tax_code_id", (tuple(types), self.period_id)+where_param)
+        self.cr.execute("SELECT l.tax_code_id, sum(l.tax_amount) as sum_amount "
+                        "FROM account_move_line l, account_invoice i,  "
+                        "account_tax_code tc, account_period ap "
+                        "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  "
+                        "AND i.type IN %s "
+                        "AND ap.id=l.period_id AND ap.id=%s" + where +
+                        "GROUP BY l.tax_code_id ORDER BY l.tax_code_id", (tuple(types), self.period_id) + where_param)
 
         res = self.cr.fetchall()
         return res
@@ -267,4 +268,3 @@ class Parser(report_sxw.rml_parse):
 
     def hello_world(self, name):
         return "Hello, %s!" % name
-

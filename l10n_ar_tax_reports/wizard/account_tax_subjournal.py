@@ -18,15 +18,16 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+
 
 class account_tax_subjournal(osv.osv_memory):
     _name = "account.tax.subjournal"
     _description = "Account Tax Subjournal Report"
 
     def _get_report_id(self, cr, uid, context):
-        report_id = self.pool.get('ir.actions.report.xml').search(cr, uid, [('report_name','=','account.tax.subjournal')])
+        report_id = self.pool.get('ir.actions.report.xml').search(cr, uid, [('report_name', '=', 'account.tax.subjournal')])
         if len(report_id):
             return report_id[0]
         return False
@@ -38,12 +39,12 @@ class account_tax_subjournal(osv.osv_memory):
         'report_id': fields.many2one('ir.actions.report.xml', 'Report'),
         'based_on': fields.selection([('sale', 'Sales'),
                                       ('purchase', 'Purchases')], 'Based On', required=True)
-        }
+    }
 
     _defaults = {
-            'report_id': _get_report_id,
-            'based_on': 'sale',
-            }
+        'report_id': _get_report_id,
+        'based_on': 'sale',
+    }
 
     def create_report(self, cr, uid, ids, data, context=None):
         if context is None:

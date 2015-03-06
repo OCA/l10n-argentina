@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 
 class tax_subjournal_report_config(osv.osv):
@@ -27,31 +27,32 @@ class tax_subjournal_report_config(osv.osv):
     _description = 'Tax Subjournal Report Configuration'
 
     _columns = {
-            'name': fields.char('Name', size=64),
-            'tax_report_id': fields.many2one('ir.actions.report.xml', 'Tax Report', required=True, select=True),
-            'tax_column_ids': fields.one2many('subjournal.report.taxcode.column', 'report_config_id', 'Report Columns'),
-            'based_on': fields.selection([('sale', 'Sales'),
-                                          ('purchase', 'Purchases')], 'Based On', required=True)
-            }
+        'name': fields.char('Name', size=64),
+        'tax_report_id': fields.many2one('ir.actions.report.xml', 'Tax Report', required=True, select=True),
+        'tax_column_ids': fields.one2many('subjournal.report.taxcode.column', 'report_config_id', 'Report Columns'),
+        'based_on': fields.selection([('sale', 'Sales'),
+                                      ('purchase', 'Purchases')], 'Based On', required=True)
+    }
 
     _defaults = {
-            'based_on': 'sale',
-            }
+        'based_on': 'sale',
+    }
 
 tax_subjournal_report_config()
+
 
 class subjournal_report_taxcode_column(osv.osv):
     _name = 'subjournal.report.taxcode.column'
     _description = 'subjournal.report.taxcode.column'
 
     _columns = {
-            'name': fields.char('Name', size=32),
-            'report_config_id': fields.many2one('tax.subjournal.report.config', ondelete='cascade'),
-            'tax_code_id': fields.many2one('account.tax.code', 'Tax code'),
-            'print_total': fields.boolean('Print Total', help="If true, sum  Tax and Base amount. You should use only Tax Code and not Base Code if this is True."),
-            }
+        'name': fields.char('Name', size=32),
+        'report_config_id': fields.many2one('tax.subjournal.report.config', ondelete='cascade'),
+        'tax_code_id': fields.many2one('account.tax.code', 'Tax code'),
+        'print_total': fields.boolean('Print Total', help="If true, sum  Tax and Base amount. You should use only Tax Code and not Base Code if this is True."),
+    }
 
-    #TODO: Como tenemos el campo based_on en el report_config, podriamos
+    # TODO: Como tenemos el campo based_on en el report_config, podriamos
     # filtrar los account_tax_code por los que se aplican a compras, pero
     # esa informacion esta en account_tax.
     # Tal vez, se tenga que quitar la relacion con tax_code_id y hacerlo
@@ -64,4 +65,3 @@ class subjournal_report_taxcode_column(osv.osv):
     # correctamente si se configura correctamente.
 
 subjournal_report_taxcode_column()
-
