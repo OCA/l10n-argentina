@@ -18,25 +18,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
+
 
 class account_invoice(osv.osv):
     _name = "account.invoice"
     _inherit = "account.invoice"
- 
+
     _columns = {
         'operation_code': fields.selection([('Z', 'Exports to free zone'),
                                             ('X', 'Overseas Exports'),
                                             ('E', 'Exempt Operation'),
                                             ('N', 'No Taxed Operation'),
                                             (' ', 'Internal')], 'Operation Code',
-                                            required=False, help="""This code is used for SIRED. It will be set in invoices, but it could be changed."""),
+                                           required=False, help="""This code is used for SIRED. It will be set in invoices, but it could be changed."""),
     }
 
-    def onchange_partner_id(self, cr, uid, ids, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
+    def onchange_partner_id(self, cr, uid, ids, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False, context=None):
 
-        res =   super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+        res = super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
 
         if partner_id:
             fiscal_pool = self.pool.get('account.fiscal.position')
@@ -44,7 +45,7 @@ class account_invoice(osv.osv):
             fiscal_position_id = res['value']['fiscal_position']
 
             if fiscal_position_id:
-                fiscal_position = fiscal_pool.browse(cr, uid , fiscal_position_id)
+                fiscal_position = fiscal_pool.browse(cr, uid, fiscal_position_id)
 
                 operation_code = fiscal_position.operation_code
                 res['value']['operation_code'] = operation_code

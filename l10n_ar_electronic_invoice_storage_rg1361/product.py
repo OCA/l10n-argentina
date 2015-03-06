@@ -17,7 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 
 class product_uom(osv.osv):
@@ -26,7 +26,7 @@ class product_uom(osv.osv):
     _description = ""
 
     _columns = {
-        'afip_code' : fields.char('AFIP Code', size=3, help="Codification of the UOM given by AFIP"),
+        'afip_code': fields.char('AFIP Code', size=3, help="Codification of the UOM given by AFIP"),
     }
 
 product_uom()

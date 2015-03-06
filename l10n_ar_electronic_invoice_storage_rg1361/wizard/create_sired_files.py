@@ -20,19 +20,21 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
-from tools.misc import ustr
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
+from openerp.tools.misc import ustr
 import time
 from decimal import *
 import tempfile
-import binascii, base64
+import binascii
+import base64
 import codecs
 
 from ..fixed_width import FixedWidth
 from ..fixed_width import moneyfmt
 from fixed_width_dicts import HEAD_LINES, HEAD_TYPE2_LINES, DETAIL_LINES, SALE_LINES, SALE_TYPE2_LINES, PURCHASE_LINES, PURCHASE_TYPE2_LINES
-    
+
+
 class create_sired_files(osv.osv_memory):
     _name = 'create.sired.files'
     _description = 'Wizard Create Sired Files'
@@ -113,11 +115,11 @@ class create_sired_files(osv.osv_memory):
         if not partner.document_type_id or partner.document_type_id.afip_code == '99':
             if invoice.type in ['out_invoice', 'out_refund']:
                 if invoice.amount_total <= 1000:
-                    return '99', '0'*11
+                    return '99', '0' * 11
                 else:
                     raise osv.except_osv(_('SIRED Error!'), _('Cannot inform invoice %s%s because amount total is greater than 1000 and partner (%s) has not got document identification') % (invoice.denomination_id.name, invoice.internal_number, invoice.partner_id.name))
             else:
-                return '99', '0'*11
+                return '99', '0' * 11
 
         code = partner.document_type_id and partner.document_type_id.afip_code or False
         if not code or not partner.vat:
@@ -140,22 +142,22 @@ class create_sired_files(osv.osv_memory):
 
         head_regs = []
         fixed_width = FixedWidth(HEAD_LINES)
-        
+
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
-            
+
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
-            date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
+            date_invoice = time.strftime('%Y%m%d', date_val)  # AAAAMMDD
 
             cae_due_date = invoice.cae_due_date or invoice.date_invoice
             cae_due_date_val = time.strptime(cae_due_date, '%Y-%m-%d')
-            cae_due_date = time.strftime('%Y%m%d', cae_due_date_val) # AAAAMMDD
+            cae_due_date = time.strftime('%Y%m%d', cae_due_date_val)  # AAAAMMDD
 
             code = ''
             number = ''
             try:
                 code, number = self._get_identifier_document_code_and_number(cr, uid, invoice)
-            except Exception, e:
+            except Exception as e:
                 head_file_errors.append('Invoice Number: %s => %s' % (invoice.internal_number, e.value))
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
@@ -169,23 +171,22 @@ class create_sired_files(osv.osv_memory):
                     impuesto_liquidado += alic_iva['Importe']
 
             sign = invoice.type == 'out_invoice' and 1.0 or -1.0
-            importe_total_reg1 += invoice.amount_total*sign
-            importe_total_neto_no_gravado_reg1 += invoice.amount_no_taxed*sign
-            importe_total_neto_reg1 += invoice.amount_taxed*sign
-            importe_total_iva_reg1 += impuesto_liquidado*sign
-            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt*sign
+            importe_total_reg1 += invoice.amount_total * sign
+            importe_total_neto_no_gravado_reg1 += invoice.amount_no_taxed * sign
+            importe_total_neto_reg1 += invoice.amount_taxed * sign
+            importe_total_iva_reg1 += impuesto_liquidado * sign
+            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt * sign
 
             operation_code = ''
             try:
-                operation_code = self._get_operation_code(cr,uid, invoice)
-            except Exception, e:
+                operation_code = self._get_operation_code(cr, uid, invoice)
+            except Exception as e:
                 head_file_errors.append('Invoice Number: %s => %s' % (invoice.internal_number, e.value))
 
             tipo_responsable = invoice.fiscal_position.afip_code
             if not tipo_responsable:
                 head_file_errors.append(_('Fiscal Position %s does not have AFIP Code configured') % (invoice.fiscal_position.name))
                 tipo_responsable = ''
-
 
             codigo_moneda = invoice.currency_id.afip_code
             if not codigo_moneda:
@@ -231,9 +232,9 @@ class create_sired_files(osv.osv_memory):
 
         # Creacion del registro tipo 2 (Totales)
         company_cuit = company.partner_id.vat
-        
+
         fixed_width = FixedWidth(HEAD_TYPE2_LINES)
-        
+
         type2_reg = {
             'period': period_name,
             'amount': len(head_regs),
@@ -249,7 +250,7 @@ class create_sired_files(osv.osv_memory):
             'percep_municipales': moneyfmt(Decimal(0.0)),
             'impuestos_internos': moneyfmt(Decimal(0.0))
         }
-        
+
         fixed_width.update(**type2_reg)
         head_regs.append(fixed_width.line)
 
@@ -264,7 +265,7 @@ class create_sired_files(osv.osv_memory):
             r2 = [a for a in r]
             try:
                 f.write(''.join(r2))
-            except Exception, e:
+            except Exception as e:
                 raise e
             f.write('\r\n')
 
@@ -276,7 +277,7 @@ class create_sired_files(osv.osv_memory):
 
         data_attach = {
             'name': name,
-            'datas':binascii.b2a_base64(f.read()),
+            'datas': binascii.b2a_base64(f.read()),
             'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
@@ -295,12 +296,12 @@ class create_sired_files(osv.osv_memory):
         # encontramos una que tenga codificacion, retornamos
         # TODO: Mejorar toda esta parte de impuestos de AFIP
         for tax in line_taxes:
-            for eitax in conf.vat_tax_ids+conf.exempt_operations_tax_ids:
+            for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
                 if eitax.tax_code_id.id == tax.tax_code_id.id:
                     if eitax.exempt_operations:
                         return '0', 'E'
                     else:
-                        return tax.amount*100, 'G'
+                        return tax.amount * 100, 'G'
 
         # Si es No Gravado
         return '0', 'N'
@@ -314,11 +315,11 @@ class create_sired_files(osv.osv_memory):
 
         detail_regs = []
         fixed_width = FixedWidth(DETAIL_LINES)
-        
+
         for invoice in invoice_obj.browse(cr, uid, invoice_ids, context):
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
-            date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
+            date_invoice = time.strftime('%Y%m%d', date_val)  # AAAAMMDD
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
             voucher_type = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
@@ -342,7 +343,7 @@ class create_sired_files(osv.osv_memory):
                     'quantity': moneyfmt(Decimal(line.quantity), places=5, ndigits=12),
                     'uom': uom_code,
                     'price_unit': moneyfmt(Decimal(line.price_unit), places=3, ndigits=16),
-                    #TODO: Tener en cuenta los descuentos
+                    # TODO: Tener en cuenta los descuentos
                     'bonus_amount': moneyfmt(Decimal(0.0), places=2, ndigits=15),
                     'adjustment_amount': moneyfmt(Decimal(0.0), places=3, ndigits=16),
                     'subtotal': moneyfmt(Decimal(line.price_subtotal), places=3, ndigits=16),
@@ -375,7 +376,7 @@ class create_sired_files(osv.osv_memory):
         name = 'DETALLE_%s' % period_name
         data_attach = {
             'name': name,
-            'datas':binascii.b2a_base64(f.read()),
+            'datas': binascii.b2a_base64(f.read()),
             'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
@@ -412,28 +413,28 @@ class create_sired_files(osv.osv_memory):
 
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
-            date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
+            date_invoice = time.strftime('%Y%m%d', date_val)  # AAAAMMDD
 
             cae_due_date = invoice.cae_due_date or invoice.date_invoice
             cae_due_date_val = time.strptime(cae_due_date, '%Y-%m-%d')
-            cae_due_date = time.strftime('%Y%m%d', cae_due_date_val) # AAAAMMDD
+            cae_due_date = time.strftime('%Y%m%d', cae_due_date_val)  # AAAAMMDD
 
             code = ''
             number = ''
             try:
                 code, number = self._get_identifier_document_code_and_number(cr, uid, invoice)
-            except Exception, e:
+            except Exception as e:
                 sale_file_errors.append('Invoice Number: %s => %s' % (invoice.internal_number, e.value))
 
             # Importe total de todos los registros 1
             sign = invoice.type == 'out_invoice' and 1.0 or -1.0
-            importe_total_reg1 += invoice.amount_total*sign
-            importe_total_neto_no_gravado_reg1 += invoice.amount_no_taxed*sign
-            importe_total_neto_reg1 += invoice.amount_taxed*sign
+            importe_total_reg1 += invoice.amount_total * sign
+            importe_total_neto_no_gravado_reg1 += invoice.amount_no_taxed * sign
+            importe_total_neto_reg1 += invoice.amount_taxed * sign
             # TODO: Cuando tiene percepciones u otro impuesto la linea de abajo falla
             # Hacerla como se hizo en el archivo de compras
-            importe_total_iva_reg1 += invoice.amount_tax*sign
-            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt*sign
+            importe_total_iva_reg1 += invoice.amount_tax * sign
+            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt * sign
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
             voucher_type = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
@@ -442,8 +443,8 @@ class create_sired_files(osv.osv_memory):
 
             operation_code = ''
             try:
-                operation_code = self._get_operation_code(cr,uid, invoice)
-            except Exception, e:
+                operation_code = self._get_operation_code(cr, uid, invoice)
+            except Exception as e:
                 sale_file_errors.append('Invoice Number: %s => %s' % (invoice.internal_number, e.value))
 
             tipo_responsable = invoice.fiscal_position.afip_code
@@ -451,16 +452,13 @@ class create_sired_files(osv.osv_memory):
                 sale_file_errors.append(_('Fiscal Position %s does not have AFIP Code configured') % (invoice.fiscal_position.name))
                 tipo_responsable = ''
 
-
             codigo_moneda = invoice.currency_id.afip_code
             if not codigo_moneda:
                 sale_file_errors.append(_('Currency %s does not have AFIP Code configured') % (invoice.currency_id.name))
                 codigo_moneda = ''
 
-
-
             for alic_iva in iva_array:
-                if len(iva_array)>1 and alic_iva['exempt']:
+                if len(iva_array) > 1 and alic_iva['exempt']:
                     continue
 
                 line = {
@@ -476,7 +474,7 @@ class create_sired_files(osv.osv_memory):
                     'total': moneyfmt(Decimal(0.0)),
                     'neto_no_gravado': moneyfmt(Decimal(invoice.amount_no_taxed), places=2, ndigits=15),
                     'neto_gravado': moneyfmt(Decimal(alic_iva['BaseImp']), places=2, ndigits=15),
-                    'alic_iva': int(alic_iva['IVA']*10000),
+                    'alic_iva': int(alic_iva['IVA'] * 10000),
                     'impuesto_liquidado': moneyfmt(Decimal(alic_iva['Importe']), places=2, ndigits=15),
                     'impuesto_rni': moneyfmt(Decimal(0.0)),
                     'impuesto_op_exentas': moneyfmt(Decimal(invoice.amount_exempt), places=2, ndigits=15),
@@ -498,9 +496,9 @@ class create_sired_files(osv.osv_memory):
                 fixed_width.update(**line)
                 sale_regs.append(fixed_width.line)
 
-            # En el ultimo reg1 consignamos valores totales segun la RG            
+            # En el ultimo reg1 consignamos valores totales segun la RG
             line['total'] = moneyfmt(Decimal(invoice.amount_total), places=2, ndigits=15)
-            
+
             fixed_width.update(**line)
             sale_regs[-1] = fixed_width.line
 
@@ -508,7 +506,7 @@ class create_sired_files(osv.osv_memory):
         company_cuit = company.partner_id.vat
 
         fixed_width = FixedWidth(SALE_TYPE2_LINES)
-        
+
         type2_reg = {
             'period': period_name,
             'amount': len(invoice_ids),
@@ -524,7 +522,7 @@ class create_sired_files(osv.osv_memory):
             'percep_municipales': moneyfmt(Decimal(0.0)),
             'impuestos_internos': moneyfmt(Decimal(0.0))
         }
-        
+
         fixed_width.update(**type2_reg)
         sale_regs.append(fixed_width.line)
 
@@ -549,7 +547,7 @@ class create_sired_files(osv.osv_memory):
         name = 'VENTAS_%s' % period_name
         data_attach = {
             'name': name,
-            'datas':binascii.b2a_base64(f.read()),
+            'datas': binascii.b2a_base64(f.read()),
             'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
@@ -587,17 +585,17 @@ class create_sired_files(osv.osv_memory):
 
             # Conversiones varias
             date_val = time.strptime(invoice.date_invoice, '%Y-%m-%d')
-            date_invoice = time.strftime('%Y%m%d', date_val) # AAAAMMDD
+            date_invoice = time.strftime('%Y%m%d', date_val)  # AAAAMMDD
 
             cae_due_date = '2013-01-01'
             cae_due_date_val = time.strptime(invoice.cae_due_date or invoice.date_invoice, '%Y-%m-%d')
-            cae_due_date = time.strftime('%Y%m%d', cae_due_date_val) # AAAAMMDD
+            cae_due_date = time.strftime('%Y%m%d', cae_due_date_val)  # AAAAMMDD
 
             code = ''
             number = ''
             try:
                 code, number = self._get_identifier_document_code_and_number(cr, uid, invoice)
-            except Exception, e:
+            except Exception as e:
                 purchase_file_errors.append('Invoice Number: %s => %s' % (invoice.internal_number, e.value))
 
             # Esta chanchada es porque hay usuarios &%#$&!#$ que ponen conceptos negativos en
@@ -605,9 +603,9 @@ class create_sired_files(osv.osv_memory):
             descontar = 0.0
             if invoice.amount_no_taxed < 0.0:
                 descontar = invoice.amount_no_taxed
-                neto_no_gravado = 0.0#moneyfmt(Decimal(0.0), places=2, ndigits=15)
+                neto_no_gravado = 0.0  # moneyfmt(Decimal(0.0), places=2, ndigits=15)
             else:
-                neto_no_gravado = invoice.amount_no_taxed#moneyfmt(Decimal(invoice.amount_no_taxed), places=2, ndigits=15)
+                neto_no_gravado = invoice.amount_no_taxed  # moneyfmt(Decimal(invoice.amount_no_taxed), places=2, ndigits=15)
 
             pos_ar, invoice_number = invoice.internal_number.split('-')
             #tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, invoice, context=context)
@@ -616,7 +614,7 @@ class create_sired_files(osv.osv_memory):
             tipo_cbte = None
             if invoice.type == 'in_invoice':
                 if not invoice.is_debit_note:
-                    if invoice.denomination_id.name=='A':
+                    if invoice.denomination_id.name == 'A':
                         tipo_cbte = '01'
                     elif invoice.denomination_id.name == 'B':
                         tipo_cbte = '06'
@@ -624,14 +622,14 @@ class create_sired_files(osv.osv_memory):
                         tipo_cbte = '11'
                 # Notas de Debito
                 else:
-                    if invoice.denomination_id.name=='A':
+                    if invoice.denomination_id.name == 'A':
                         tipo_cbte = '02'
                     elif invoice.denomination_id.name == 'B':
                         tipo_cbte = '07'
                     elif invoice.denomination_id.name == 'C':
                         tipo_cbte = '12'
             elif invoice.type == 'in_refund':
-                if invoice.denomination_id.name=='A':
+                if invoice.denomination_id.name == 'A':
                     tipo_cbte = '03'
                 elif invoice.denomination_id.name == 'B':
                     tipo_cbte = '08'
@@ -645,15 +643,15 @@ class create_sired_files(osv.osv_memory):
 
             operation_code = ''
             try:
-                operation_code = self._get_operation_code(cr,uid, invoice)
-            except Exception, e:
+                operation_code = self._get_operation_code(cr, uid, invoice)
+            except Exception as e:
                 purchase_file_errors.append('Invoice Number: %s => %s' % (invoice.internal_number, e.value))
 
             # Para el IVA
             impuesto_liquidado = 0.0
             for alic_iva in iva_array:
 
-                if len(iva_array)>1 and alic_iva['exempt']:
+                if len(iva_array) > 1 and alic_iva['exempt']:
                     continue
 
                 if alic_iva['type'] == 'internal':
@@ -676,9 +674,9 @@ class create_sired_files(osv.osv_memory):
                     'number': number,
                     'partner_name': self._get_partner_name(invoice),
                     'total': moneyfmt(Decimal(0.0)),
-                    'neto_no_gravado': moneyfmt(Decimal(0.0)), #moneyfmt(Decimal(neto_no_gravado), places=2, ndigits=15),
+                    'neto_no_gravado': moneyfmt(Decimal(0.0)),  # moneyfmt(Decimal(neto_no_gravado), places=2, ndigits=15),
                     'neto_gravado': moneyfmt(Decimal(alic_iva['BaseImp']), places=2, ndigits=15),
-                    'alic_iva': int(alic_iva['IVA']*10000),
+                    'alic_iva': int(alic_iva['IVA'] * 10000),
                     'impuesto_liquidado': moneyfmt(Decimal(alic_iva['Importe']), places=2, ndigits=15),
                     'impuesto_rni': moneyfmt(Decimal(0.0), places=2, ndigits=15),
                     'impuesto_op_exentas': moneyfmt(Decimal(invoice.amount_exempt), places=2, ndigits=15),
@@ -702,12 +700,12 @@ class create_sired_files(osv.osv_memory):
 
             # Importe total de todos los registros 1
             sign = invoice.type == 'in_invoice' and 1.0 or -1.0
-            importe_total_reg1 += (invoice.amount_total+descontar)*sign
-            importe_total_neto_no_gravado_reg1 += neto_no_gravado*sign#invoice.amount_no_taxed*sign
-            importe_total_neto_reg1 += invoice.amount_taxed*sign
-            importe_total_iva_reg1 += impuesto_liquidado*sign
-            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt*sign
- 
+            importe_total_reg1 += (invoice.amount_total + descontar) * sign
+            importe_total_neto_no_gravado_reg1 += neto_no_gravado * sign  # invoice.amount_no_taxed*sign
+            importe_total_neto_reg1 += invoice.amount_taxed * sign
+            importe_total_iva_reg1 += impuesto_liquidado * sign
+            importe_total_operaciones_exentas_reg1 += invoice.amount_exempt * sign
+
             # Obtenemos los importes de percepciones
             percepciones_iva = 0.0
             percepciones_iibb = 0.0
@@ -725,7 +723,7 @@ class create_sired_files(osv.osv_memory):
                     percepciones_municipales += perc.amount
 
             # En el ultimo registro consignamos valores totales segun la RG
-            line['total'] = moneyfmt(Decimal(invoice.amount_total+descontar), places=2, ndigits=15)
+            line['total'] = moneyfmt(Decimal(invoice.amount_total + descontar), places=2, ndigits=15)
             line['percep_iva'] = moneyfmt(Decimal(percepciones_iva), places=2, ndigits=15)
             line['percep_imp_nacionales'] = moneyfmt(Decimal(percepciones_nacionales), places=2, ndigits=15)
             line['percep_iibb'] = moneyfmt(Decimal(percepciones_iibb), places=2, ndigits=15)
@@ -737,7 +735,7 @@ class create_sired_files(osv.osv_memory):
             percepciones_iibb_reg1 += percepciones_iibb
             percepciones_municipales_reg1 += percepciones_municipales
             impuestos_internos_reg1 += impuestos_internos
-            
+
             fixed_width.update(**line)
             purchase_regs[-1] = fixed_width.line
 
@@ -745,7 +743,7 @@ class create_sired_files(osv.osv_memory):
         company_cuit = company.partner_id.vat
 
         fixed_width = FixedWidth(PURCHASE_TYPE2_LINES)
-        
+
         type2_reg = {
             'period': period_name,
             'amount': len(purchase_regs),
@@ -761,7 +759,7 @@ class create_sired_files(osv.osv_memory):
             'percep_municipales': moneyfmt(Decimal(percepciones_municipales_reg1), places=2, ndigits=15),
             'impuestos_internos': moneyfmt(Decimal(impuestos_internos_reg1), places=2, ndigits=15),
         }
-        
+
         fixed_width.update(**type2_reg)
         purchase_regs.append(fixed_width.line)
 
@@ -785,7 +783,7 @@ class create_sired_files(osv.osv_memory):
         name = 'COMPRAS_%s' % period_name
         data_attach = {
             'name': name,
-            'datas':binascii.b2a_base64(f.read()),
+            'datas': binascii.b2a_base64(f.read()),
             'datas_fname': name,
             'res_model': 'account.period',
             'res_id': period_id,
@@ -812,25 +810,25 @@ class create_sired_files(osv.osv_memory):
         # Buscamos las facturas del periodo pedido
         # ordenados segun lo escrito en la RG1361/1492
         #invoice_ids = self.pool.get('account.invoice').search(cr, uid, [('period_id','=',period.id), ('state','in', ('open', 'paid'))], context=context)
-        
+
         invoice_query = "SELECT i.id " \
-        "FROM account_invoice i " \
-        "JOIN account_period p on p.id=i.period_id " \
-        "JOIN invoice_denomination d on d.id=i.denomination_id " \
-        "JOIN pos_ar pos on pos.id=i.pos_ar_id " \
-        "JOIN res_partner par on par.id=i.partner_id, wsfe_voucher_type wvt " \
-        "WHERE p.id=%(period)s AND wvt.denomination_id=i.denomination_id " \
-        "AND i.state in %(state)s " \
-        "AND ((wvt.document_type='out_debit' AND i.is_debit_note='t') OR (wvt.document_type=i.type AND i.is_debit_note='f')) " \
-        "AND i.type in %(invoice_types)s " \
-        "ORDER BY i.date_invoice, wvt.code, pos.name, i.internal_number "
+            "FROM account_invoice i " \
+            "JOIN account_period p on p.id=i.period_id " \
+            "JOIN invoice_denomination d on d.id=i.denomination_id " \
+            "JOIN pos_ar pos on pos.id=i.pos_ar_id " \
+            "JOIN res_partner par on par.id=i.partner_id, wsfe_voucher_type wvt " \
+            "WHERE p.id=%(period)s AND wvt.denomination_id=i.denomination_id " \
+            "AND i.state in %(state)s " \
+            "AND ((wvt.document_type='out_debit' AND i.is_debit_note='t') OR (wvt.document_type=i.type AND i.is_debit_note='f')) " \
+            "AND i.type in %(invoice_types)s " \
+            "ORDER BY i.date_invoice, wvt.code, pos.name, i.internal_number "
 
         cr.execute(invoice_query, {'period': period.id, 'state': ('open', 'paid',), 'invoice_types': ('out_invoice', 'out_refund',)})
         res = cr.fetchall()
         invoice_ids = [invoice_ids[0] for invoice_ids in res]
 
         period_split = period.code.split('/')
-        period_name = period_split[1]+period_split[0]
+        period_name = period_split[1] + period_split[0]
 
         # Generamos los registros de Cabecera Tipo 1 y Tipo 2
         # TODO: Implementar impuestos_internos
@@ -858,14 +856,14 @@ class create_sired_files(osv.osv_memory):
 
         # Generamos los registros de Compras Tipo 1 y Tipo 2
         purchase_invoice_query = "SELECT i.id " \
-        "FROM account_invoice i " \
-        "JOIN account_period p on p.id=i.period_id " \
-        "JOIN invoice_denomination d on d.id=i.denomination_id " \
-        "JOIN res_partner par on par.id=i.partner_id " \
-        "WHERE p.id=%(period)s " \
-        "AND i.state in %(state)s " \
-        "AND i.type in %(invoice_types)s " \
-        "ORDER BY i.date_invoice, i.internal_number "
+            "FROM account_invoice i " \
+            "JOIN account_period p on p.id=i.period_id " \
+            "JOIN invoice_denomination d on d.id=i.denomination_id " \
+            "JOIN res_partner par on par.id=i.partner_id " \
+            "WHERE p.id=%(period)s " \
+            "AND i.state in %(state)s " \
+            "AND i.type in %(invoice_types)s " \
+            "ORDER BY i.date_invoice, i.internal_number "
 
         cr.execute(purchase_invoice_query, {'period': period.id, 'state': ('open', 'paid',), 'invoice_types': ('in_invoice', 'in_refund',)})
         res = cr.fetchall()
