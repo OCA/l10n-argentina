@@ -19,9 +19,11 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
+
 
 class retention_retention(osv.osv):
+
     """Objeto que define las retenciones que pueden utilizarse
 
        Configura las retenciones posibles. Luego a partir de estos objetos
@@ -32,27 +34,25 @@ class retention_retention(osv.osv):
     _name = "retention.retention"
     _description = "Retention Configuration"
 
-    #TODO: Tal vez haya lo mejor es hacer desaparecer este objeto y agregarle
+    # TODO: Tal vez haya lo mejor es hacer desaparecer este objeto y agregarle
     # el par de campos (jurisdiccion y state_id) a account.tax y listo
     _columns = {
-            'name': fields.char('Retention', required=True, size=64),
-            'tax_id': fields.many2one('account.tax', 'Tax', required=True, help="Tax configuration for this retention"),
-            'type_tax_use': fields.related('tax_id', 'type_tax_use', type='char', string='Tax Application', readonly=True),
-            'state_id': fields.many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]"),
-            'type': fields.selection([('vat', 'VAT'),
-                                      ('gross_income', 'Gross Income'),
-                                      ('profit', 'Profit'),
-                                      ('other', 'Other')], 'Type', required=True),
+        'name': fields.char('Retention', required=True, size=64),
+        'tax_id': fields.many2one('account.tax', 'Tax', required=True, help="Tax configuration for this retention"),
+        'type_tax_use': fields.related('tax_id', 'type_tax_use', type='char', string='Tax Application', readonly=True),
+        'state_id': fields.many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]"),
+        'type': fields.selection([('vat', 'VAT'),
+                                  ('gross_income', 'Gross Income'),
+                                  ('profit', 'Profit'),
+                                  ('other', 'Other')], 'Type', required=True),
 
-            'jurisdiccion': fields.selection([('nacional', 'Nacional'),
-                                              ('provincial', 'Provincial'),
-                                              ('municipal', 'Municipal')], 'Jurisdiccion'),
-            }
+        'jurisdiccion': fields.selection([('nacional', 'Nacional'),
+                                          ('provincial', 'Provincial'),
+                                          ('municipal', 'Municipal')], 'Jurisdiccion'),
+    }
 
     _defaults = {
-            'jurisdiccion': 'nacional',
-            }
+        'jurisdiccion': 'nacional',
+    }
 
 retention_retention()
-
-

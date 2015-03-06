@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2011
-# 
+#
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,22 +19,22 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-import decimal_precision as dp
-import time
+from openerp.osv import osv, fields
+from openerp.addons import decimal_precision as dp
+
 
 class retention_tax_line(osv.osv):
     _name = "retention.tax.line"
     _description = "Retention Tax Line"
 
-    #TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
+    # TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
     _columns = {
         'name': fields.char('Retention', size=64),
         'date': fields.date('Date', select=True),
         'voucher_id': fields.many2one('account.voucher', 'Voucher', ondelete='cascade'),
         'voucher_number': fields.char('Reference', size=64),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
-                                      domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
+                                      domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')]),
         'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
         'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
         'retention_id': fields.many2one('retention.retention', 'Retention Configuration', required=True, help="Retention configuration used '\
@@ -90,8 +90,8 @@ class retention_tax_line(osv.osv):
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        tax_amount_in_company_currency =  voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.amount, context=context)
-        base_amount_in_company_currency =  voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.base, context=context)
+        tax_amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.amount, context=context)
+        base_amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.base, context=context)
 
         debit = credit = 0.0
 
@@ -106,8 +106,12 @@ class retention_tax_line(osv.osv):
             credit = tax_amount_in_company_currency
         elif voucher.type in ('sale', 'receipt'):
             debit = tax_amount_in_company_currency
-        if debit < 0: credit = -debit; debit = 0.0
-        if credit < 0: debit = -credit; credit = 0.0
+        if debit < 0:
+            credit = -debit
+            debit = 0.0
+        if credit < 0:
+            debit = -credit
+            credit = 0.0
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente a la retencion
@@ -122,8 +126,8 @@ class retention_tax_line(osv.osv):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': company_currency <> current_currency and  current_currency or False,
-            'amount_currency': company_currency <> current_currency and sign * retention.amount or 0.0,
+            'currency_id': company_currency != current_currency and current_currency or False,
+            'amount_currency': company_currency != current_currency and sign * retention.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
@@ -144,15 +148,14 @@ class retention_tax_line(osv.osv):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': False, #company_currency <> current_currency and  current_currency or False,
-            'amount_currency': 0.0, #company_currency <> current_currency and sign * retention.amount or 0.0,
+            'currency_id': False,  # company_currency <> current_currency and  current_currency or False,
+            'amount_currency': 0.0,  # company_currency <> current_currency and sign * retention.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
 
         move_lines.append(move_line)
         return move_lines
-
 
 
 retention_tax_line()
@@ -163,8 +166,8 @@ class account_voucher(osv.osv):
     _inherit = 'account.voucher'
 
     _columns = {
-            'retention_ids': fields.one2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft':[('readonly', False)]}),
-            }
+        'retention_ids': fields.one2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft': [('readonly', False)]}),
+    }
 
     def _get_retention_amount(self, cr, uid, retention_ids, context=None):
         retention_line_obj = self.pool.get('retention.tax.line')
@@ -179,7 +182,6 @@ class account_voucher(osv.osv):
                 amount += retention_line[2]['amount']
 
         return amount
-
 
     def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], retention_ids=[], context=None):
 
@@ -230,7 +232,7 @@ class account_voucher(osv.osv):
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
         retention_line_obj = self.pool.get("retention.tax.line")
         move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
-        voucher = self.pool.get('account.voucher').browse(cr,uid,voucher_id,context)
+        voucher = self.pool.get('account.voucher').browse(cr, uid, voucher_id, context)
 
         for ret in voucher.retention_ids:
 
@@ -243,8 +245,8 @@ class account_voucher(osv.osv):
 
             # Escribimos valores del voucher en la retention tax line
             ret_vals = {
-                    'voucher_number': voucher.reference,
-                    'partner_id': voucher.partner_id.id,
+                'voucher_number': voucher.reference,
+                'partner_id': voucher.partner_id.id,
             }
 
             retention_line_obj.write(cr, uid, ret.id, ret_vals, context=context)
