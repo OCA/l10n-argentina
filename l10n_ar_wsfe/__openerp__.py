@@ -41,14 +41,14 @@
         'security/ir.model.access.csv',
     ],
     'init_xml': [
-        'wsfe_demo.xml',
-        ],
+        # 'wsfe_demo.xml',
+    ],
     'test': [
         'test/invoice_customer.yml',
         'test/refund_customer.yml',
         'test/invoice_supplier.yml',
         'test/invoice_massive.yml',
-        ],
+    ],
     'installable': True,
     'active': False,
 }
