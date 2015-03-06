@@ -22,30 +22,31 @@
 ##############################################################################
 
 import time
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 
 class payment_mode_receipt(osv.osv):
-    _name= 'payment.mode.receipt'
-    _description= 'Payment Mode for Payment/Receipt'
+    _name = 'payment.mode.receipt'
+    _description = 'Payment Mode for Payment/Receipt'
     _columns = {
         'name': fields.char('Name', size=64, required=True, help='Mode of Payment'),
         'bank_id': fields.many2one('res.partner.bank', "Bank account", required=False, help='Bank Account for the Payment Mode'),
-        'account_id':fields.many2one('account.account','Account', required=True),
+        'account_id': fields.many2one('account.account', 'Account', required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-        'currency' : fields.many2one('res.currency', "Currency", required=True, help="The currency the field is expressed in."),
+        'currency': fields.many2one('res.currency', "Currency", required=True, help="The currency the field is expressed in."),
         'type': fields.selection([('payment', 'Payment'), ('receipt', 'Receipt')], 'Type', required=True),
     }
     _defaults = {
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
     }
 
 payment_mode_receipt()
 
+
 class payment_mode_receipt_line(osv.osv):
-    _name= 'payment.mode.receipt.line'
-    _description= 'Payment mode receipt lines'
-    
+    _name = 'payment.mode.receipt.line'
+    _description = 'Payment mode receipt lines'
+
     def _get_company_currency(self, cr, uid, context=None):
         user_obj = self.pool.get('res.users')
         currency_obj = self.pool.get('res.currency')
@@ -55,7 +56,7 @@ class payment_mode_receipt_line(osv.osv):
             return user.company_id.currency_id.id
         else:
             return currency_obj.search(cr, uid, [('rate', '=', 1.0)])[0]
-    
+
     def _get_date(self, cr, uid, context=None):
         if context is None:
             context = {}
@@ -68,16 +69,16 @@ class payment_mode_receipt_line(osv.osv):
                 date = order.date_scheduled
         return date
 
-    _columns= {
+    _columns = {
         'name': fields.char('Mode', size=64, required=True, readonly=True, help='Payment reference'),
         'payment_mode_id': fields.many2one('payment.mode.receipt', 'Payment Mode Receipt', required=False, select=True),
         'amount': fields.float('Amount', digits=(16, 2), required=False, help='Payment amount in the company currency'),
         'amount_currency': fields.float('Amount in Partner Currency', digits=(16, 2), required=False, help='Payment amount in the partner currency'),
-        'currency': fields.many2one('res.currency','Currency', required=False),
+        'currency': fields.many2one('res.currency', 'Currency', required=False),
         'company_currency': fields.many2one('res.currency', 'Company Currency', readonly=False),
         'date': fields.date('Payment Date', help="If no payment date is specified, the bank will treat this payment line directly"),
         'move_line_id': fields.many2one('account.move.line', 'Entry line', domain=[('reconcile_id', '=', False), ('account_id.type', '=', 'payable')], help='This Entry Line will be referred for the information of the ordering customer.'),
-        'voucher_id' : fields.many2one('account.voucher', 'Voucher'),
+        'voucher_id': fields.many2one('account.voucher', 'Voucher'),
     }
 
     # TODO: Hacer la parte de multicurrency
@@ -85,8 +86,10 @@ class payment_mode_receipt_line(osv.osv):
     _defaults = {
         'amount': 0.0,
         'company_currency': _get_company_currency,
-        'date': _get_date   }
+        'date': _get_date
+    }
 
+payment_mode_receipt_line()
 
 #    def onchange_amount(self, cr, uid, ids, sss, amount, voucher_amount, rate, partner_id, journal_id, currency_id, ttype, date, payment_rate_currency_id, company_id, context=None):
 #
@@ -97,8 +100,3 @@ class payment_mode_receipt_line(osv.osv):
 #        self.pool.get('account.voucher').onchange_amount(cr, uid, [], amount, rate, partner_id, journal_id, currency_id, ttype, date, payment_rate_currency_id, company_id, context=context)
 
         #return {'value': {'parent.amount': 200}}
-
-
-
-
-payment_mode_receipt_line()
