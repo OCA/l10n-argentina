@@ -12,7 +12,6 @@ def solve_type_with_null_values(cr):
 
 @openupgrade.migrate()
 def migrate(cr, version):
-    import ipdb; ipdb.set_trace()
     if not version:
         return
     solve_type_with_null_values(cr)
