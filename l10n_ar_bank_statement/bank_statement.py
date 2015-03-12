@@ -183,12 +183,11 @@ class account_bank_statement(osv.osv):
             for st_line in st.line_ids:
                 if st_line.state in 'draft':
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'statement_id': ''})
-                #~ elif st_line.state in ('open','conciliated'):
                 else:
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'state': 'conciliated'})
                     aux_conciliated += st_line.amount
                     
-                if (st_line.type in 'expenses' or st_line.type in 'income') and st_line.state in 'open':
+                if (st_line.type in 'expenses' or st_line.type in 'income') and st_line.state in ('open','conciliated'):
                     if st_line.analytic_account_id:
                         if not st.journal_id.analytic_journal_id:
                             raise osv.except_osv(_('No Analytic Journal !'),_("You have to assign an analytic journal on the '%s' journal!") % (st.journal_id.name,))

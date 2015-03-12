@@ -53,7 +53,7 @@ class account_voucher(osv.osv):
                     if line.date:
                         aux_date = line.date
                     else:
-                        aux_date = voucher.date
+                        aux_date = vou.date
                         
                     st_line = {
                         'name': line.payment_mode_id.name,
