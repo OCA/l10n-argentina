@@ -137,62 +137,82 @@ class Parser(report_sxw.rml_parse):
         #where it.invoice_id=i.id and i.id=22 and tc_base.id=it.base_code_id 
         #and tc_tax.id=it.tax_code_id 
 
-        self.cr.execute("SELECT l.id FROM account_move_line l, account_invoice i, " \
-        "account_tax_code tc, account_period ap " \
-        "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  " \
-        "AND i.type IN %s " \
-        "AND ap.id=l.period_id AND ap.id=%s " \
-        + where + "ORDER BY l.date", (tuple(types), self.period_id)+where_param)
+
+        # Esta consulta permite ver también aquellas facturas que se cargaron totalmente como Importes No Gravados.
+        self.cr.execute("SELECT l.move_id AS move_id, l.date as date, i.id as invoice_id, l.id AS line_id, l.tax_code_id AS tax_code_id, " \
+                "l.credit AS credit, l.debit AS debit, l.tax_amount AS tax_amount, " \
+        "p.id AS partner_id FROM account_move_line l, account_invoice i, " \
+        "account_period ap, res_partner p, account_account a " \
+        "WHERE i.partner_id=p.id AND i.move_id=l.move_id AND l.account_id=a.id " \
+        "AND i.type IN %s AND ap.id=l.period_id AND ap.id=%s " \
+        "AND a.type not in ('payable', 'receivable') ORDER BY l.date", (tuple(types), self.period_id))
+
+#        self.cr.execute("SELECT l.id FROM account_move_line l, account_invoice i, " \
+#        "account_tax_code tc, account_period ap " \
+#        "WHERE i.move_id=l.move_id AND tc.id=l.tax_code_id  " \
+#        "AND i.type IN %s " \
+#        "AND ap.id=l.period_id AND ap.id=%s " \
+#        + where + "ORDER BY l.date", (tuple(types), self.period_id)+where_param)
 
         # Obtenemos el resultado de la consulta
-        res = self.cr.fetchall()
+        res = self.cr.dictfetchall()
 
         if not len(res):
             raise osv.except_osv(_('Warning'), _('There were no moves for this period'))
             #return res
 
-        # Lineas
-        line_ids = map(lambda x: x[0], res)
+#        # Lineas
+#        line_ids = map(lambda x: x[0], res)
 
-        account_obj = self.pool.get('account.move.line')
-        #ids = account_obj.search(self.cr, self.uid, [('invoice','!=',False), ('tax_code_id','!=',False)])
+        move_line_obj = self.pool.get('account.move.line')
+        invoice_obj = self.pool.get('account.invoice')
         lines = {}
         total_invoiced = 0.0
         total_no_taxed = 0.0
-        for l in account_obj.browse(self.cr, self.uid, line_ids):
+
+        for l in res:
             line = {}
+
+            move_line = move_line_obj.browse(self.cr, self.uid, l['line_id'])
+            # TODO: Por ahora no tomamos movimientos que no hayan salido de una factura. Modificar.
+            if not l['invoice_id']:
+                continue
+
+            invoice = invoice_obj.browse(self.cr, self.uid, l['invoice_id'])
 
             # Calculamos el signo
             sign = 1
-            if l.invoice.type in ('out_refund', 'in_refund'):
+            if invoice.type in ('out_refund', 'in_refund'):
                 sign = -1
 
-            if not l.move_id.id in lines:
-                line['date'] = l.date
-                line['partner'] = l.partner_id.name
-                line['partner_title'] = l.partner_id.title.name
-                line['vat'] = l.partner_id.vat
-                line['fiscal_position'] = l.partner_id.property_account_position.name
-                line['invoice_type'] = self.get_invoice_type(l.invoice)
+            if not l['move_id'] in lines:
+                line['date'] = l['date']
+                line['partner'] = move_line.partner_id.name
+                line['partner_title'] = move_line.partner_id.title.name
+                line['vat'] = move_line.partner_id.vat
+                line['fiscal_position'] = move_line.partner_id.property_account_position.name
+                line['invoice_type'] = self.get_invoice_type(invoice)
 #                if l.invoice.type in ('out_invoice', 'out_debit', 'out_refund'):
 #                    line['invoice_number'] = '%s-%08d' % (l.invoice.pos_ar_id.name, int(l.invoice.internal_number))
 #                else:
 #                    line['invoice_number'] = l.invoice.internal_number
-                line['invoice_number'] = l.invoice.internal_number
+                line['invoice_number'] = invoice.internal_number
                 line['taxes'] = []
                 line['taxes'] += ['']*len(tax_code_ids)
-                line['no_taxed'] = l.invoice.amount_no_taxed*sign
-                line['total'] = l.invoice.amount_total*sign
+                line['no_taxed'] = not l['tax_code_id'] and (l['debit'] - l['credit'])*sign or 0.0 #l.invoice.amount_no_taxed*sign
+                line['total'] = invoice.amount_total*sign
                 total_invoiced += line['total']
                 total_no_taxed += line['no_taxed']
-                lines[l.move_id.id] = line
+                lines[l['move_id']] = line
+            else:
+                lines[l['move_id']]['no_taxed'] += not l['tax_code_id'] and (l['debit'] - l['credit'])*sign or 0.0 #l.invoice.amount_no_taxed*sign
 
             for i, t_id in enumerate(tax_code_ids):
-                if l.tax_code_id.id == t_id:
-                    if lines[l.move_id.id]['taxes'][i] == '':
-                        lines[l.move_id.id]['taxes'][i] =l.tax_amount#*sign
+                if l['tax_code_id'] == t_id:
+                    if lines[l['move_id']]['taxes'][i] == '':
+                        lines[l['move_id']]['taxes'][i] =l['tax_amount']#*sign
                     else:
-                        lines[l.move_id.id]['taxes'][i] +=l.tax_amount#*sign
+                        lines[l['move_id']]['taxes'][i] +=l['tax_amount']#*sign
 
         res = [v for k,v in lines.iteritems()]
         res2 = sorted(res, key=lambda k: k['date'])
