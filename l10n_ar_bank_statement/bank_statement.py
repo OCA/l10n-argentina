@@ -231,7 +231,7 @@ class account_check_deposit(osv.osv_memory):
             elif check.payment_date:
                 aux_payment_date = check.payment_date
             else:
-                aux_payment_date = deposit_date
+                aux_payment_date = check.deposit_date
                 
             if check.clearing in '24':
                 aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
@@ -280,7 +280,7 @@ class account_check_reject(osv.osv_memory):
             elif check.payment_date:
                 aux_payment_date = check.payment_date
             else:
-                aux_payment_date = deposit_date
+                aux_payment_date = check.deposit_date
                 
             if check.clearing in '24':
                 aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
