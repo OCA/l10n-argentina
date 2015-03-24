@@ -311,6 +311,15 @@ class account_invoice(osv.osv):
 
         return next_number
 
+    # Heredado para no cancelar si es una factura electronica
+    def action_cancel(self, cr, uid, ids, context=None):
+
+        invoices = self.read(cr, uid, ids, ['aut_cae'])
+        for i in invoices:
+            if i['aut_cae']:
+                raise osv.except_osv(_("Electronic Invoice Error!"), _("You cannot cancel an Electronic Invoice because it has been informed to AFIP."))
+
+        return super(account_invoice, self).action_cancel(cr, uid, ids, context=context)
 
     def action_number(self, cr, uid, ids, context=None):
         wsfe_conf_obj = self.pool.get('wsfe.config')
