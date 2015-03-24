@@ -571,62 +571,47 @@ class wsfex_config(osv.osv):
 
         return invoices_approbed
 
-    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
+    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, detail, res, context=None):
 
-        return 0
+        wsfex_req_obj = self.pool.get('wsfex.request.detail')
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
+        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
+        #voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
 
-#        wsfe_req_obj = self.pool.get('wsfe.request')
-#        voucher_type_obj = self.pool.get('wsfe.voucher_type')
-#        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
-#        voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
-#        req_details = []
-#        for index, comp in enumerate(res['Comprobantes']):
-#            detail = details[index]
-#
-#            # Esto es para fixear un bug que al hacer un refund, si fallaba algo con la AFIP
-#            # se hace el rollback por lo tanto el refund que se estaba creando ya no existe en
-#            # base de datos y estariamos violando una foreign key contraint. Por eso,
-#            # chequeamos que existe info de la invoice_id, sino lo seteamos en False
-#            read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
-#
-#            if not read_inv:
-#                invoice_id = False
-#            else:
-#                invoice_id = detail['invoice_id']
-#
-#            det = {
-#                'name': invoice_id,
-#                'concept': str(detail['Concepto']),
-#                'doctype': detail['DocTipo'], # TODO: Poner aca el nombre del tipo de documento
-#                'docnum': str(detail['DocNro']),
-#                'voucher_number': comp['CbteHasta'],
-#                'voucher_date': comp['CbteFch'],
-#                'amount_total': detail['ImpTotal'],
-#                'cae': comp['CAE'],
-#                'cae_duedate': comp['CAEFchVto'],
-#                'result': comp['Resultado'],
-#                'observations': '\n'.join(comp['Observaciones']),
-#            }
-#
-#            req_details.append((0, 0, det))
-#
-#        # Chequeamos el reproceso
-#        reprocess = False
-#        if res['Reproceso'] == 'S':
-#            reprocess = True
-#
-#        vals = {
-#            'voucher_type': voucher_type_name,
-#            'nregs': len(details),
-#            'pos_ar': '%04d' % pos,
-#            'date_request': time.strftime('%Y-%m-%d %H:%M:%S'),
-#            'result': res['Resultado'],
-#            'reprocess': reprocess,
-#            'errors': '\n'.join(res['Errores']),
-#            'detail_ids': req_details,
-#            }
-#
-#        return wsfe_req_obj.create(cr, uid, vals)
+        error = 'error' in res
+
+        # Esto es para fixear un bug que al hacer un refund, si fallaba algo con la AFIP
+        # se hace el rollback por lo tanto el refund que se estaba creando ya no existe en
+        # base de datos y estariamos violando una foreign key contraint. Por eso,
+        # chequeamos que existe info de la invoice_id, sino lo seteamos en False
+        read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
+
+        if not read_inv:
+            invoice_id = False
+        else:
+            invoice_id = detail['invoice_id']
+
+        vals = {
+            'invoice_id': invoice_id,
+            'request_id': detail['Id'],
+            'voucher_number': '%04d-%08d' % (pos, detail['Cbte_nro']),
+            'voucher_type_id': voucher_type_ids[0],
+            'date': detail['Fecha_cbte'],
+            'detail': str(detail),
+            'error': 'error' in res and res['error'] or '',
+            'event': 'event' in res and res['event'] or '',
+        }
+
+        if not error:
+            comp = res['response']
+            vals['cae'] = comp['Cae']
+            vals['cae_duedate'] = comp['Fch_venc_Cae']
+            vals['result'] = comp['Resultado']
+            vals['reprocess'] = comp['Reproceso']
+        else:
+            vals['result'] = 'R'
+
+        return wsfex_req_obj.create(cr, uid, vals)
 
     def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
         ta_obj = self.pool.get('wsaa.ta')

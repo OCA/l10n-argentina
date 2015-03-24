@@ -44,6 +44,7 @@ class account_invoice(osv.osv):
         'dst_cuit_id': fields.many2one('wsfex.dst_cuit.codes', 'Country CUIT'),
         'shipping_perm_ids': fields.one2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions'),
         'incoterm_id': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
+        'wsfex_request_ids': fields.one2many('wsfex.request.detail', 'invoice_id'),
     }
 
     _defaults = {
