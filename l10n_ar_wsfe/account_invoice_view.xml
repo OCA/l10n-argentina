@@ -33,6 +33,23 @@
                             </field>
                         </group>
 
+                        <group string="Associated Invoices">
+                            <field name="associated_inv_ids" nolabel="1">
+                                <tree string="Associated Invoices">
+                                    <field name="partner_id" groups="base.group_user"/>
+                                    <field name="date_invoice"/>
+                                    <field name="denomination_id"/>
+                                    <field name="internal_number"/>
+                                    <field name="reference" invisible="1"/>
+                                    <field name="date_due"/>
+                                    <field name="origin"/>
+                                    <field name="residual" sum="Residual Amount"/>
+                                    <field name="amount_untaxed" sum="Untaxed Amount"/>
+                                    <field name="amount_total" sum="Total Amount"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </group>
                         <group string="History Requests">
                             <field name="wsfex_request_ids" nolabel="1">
                                 <tree string="Requests">

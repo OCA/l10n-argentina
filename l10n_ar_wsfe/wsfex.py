@@ -720,6 +720,7 @@ class wsfex_config(osv.osv):
     def prepare_details(self, cr, uid, conf, invoice_ids, context=None):
         company_id = self.pool.get('res.users')._get_company(cr, uid)
         #obj_precision = self.pool.get('decimal.precision')
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
         invoice_obj = self.pool.get('account.invoice')
         currency_code_obj = self.pool.get('wsfex.currency.codes')
         uom_code_obj = self.pool.get('wsfex.uom.codes')
@@ -783,6 +784,17 @@ class wsfex_config(osv.osv):
                 'Pro_bonificacion' : 0,
             })
 
+        Cmps_asoc = []
+        for associated_inv in inv.associated_inv_ids:
+            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, associated_inv, context=context)
+            pos, number = associated_inv.internal_number.split('-')
+            Cmp_asoc = {
+                'Cbte_tipo': tipo_cbte,
+                'Cbte_punto_vta': int(pos),
+                'Cbte_nro': int(number),
+            }
+
+            Cmps_asoc.append(Cmp_asoc)
 
         Cmp = {
             'invoice_id' : inv.id,
@@ -810,6 +822,8 @@ class wsfex_config(osv.osv):
             Cmp['Incoterms'] = inv.incoterm_id.code
             Cmp['Incoterms_Ds'] = inv.incoterm_id.name
 
+        if Cmps_asoc:
+            Cmp['Cmps_Asoc'] = Cmps_asoc
         return Cmp
 
 

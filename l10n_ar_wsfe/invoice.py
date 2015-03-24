@@ -36,7 +36,7 @@ class account_invoice(osv.osv):
         'aut_cae': fields.boolean('Autorizar', help='Pedido de autorizacion a la AFIP'),
         'cae': fields.char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)'),
         'cae_due_date': fields.date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE'),
-        #'associated_inv_ids': fields.many2many('account.invoice', )
+        'associated_inv_ids': fields.many2many('account.invoice', 'account_invoice_associated_rel', 'invoice_id', 'refund_debit_id'),
         # Campos para facturas de exportacion. Aca ninguno es requerido,
         # eso lo hacemos en la vista ya que depende de si es o no factura de exportacion
         'export_type_id': fields.many2one('wsfex.export_type.codes', 'Export Type'),
@@ -66,23 +66,29 @@ class account_invoice(osv.osv):
                     res['value'].update({'dst_country_id': dst_country[0]})
         return res
 
-
-
-
     # Esto lo hacemos porque al hacer una nota de credito, no le setea la fiscal_position
     # Ademas, seteamos el comprobante asociado
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
         new_ids = super(account_invoice, self).refund(cr, uid, ids, date, period_id, description, journal_id, context=context)
-        for id in new_ids:
-            inv = self.browse(cr, uid, id)
-            if not inv.fiscal_position:
-                fiscal_position = inv.partner_id.property_account_position
+
+        for refund_id in new_ids:
+            vals = {}
+            refund = self.browse(cr, uid, refund_id)
+            invoice = self.browse(cr, uid, ids[0])
+            if not refund.fiscal_position:
+                fiscal_position = refund.partner_id.property_account_position
                 vals = {'fiscal_position':fiscal_position.id}
 
-                # TODO: Agregamos el comprobante asociado. Falta terminar el codigo para hacer lo de comprobantes asociados
-                self.write(cr, uid, id, vals)
-        return new_ids
+            if not invoice.local:
+                vals['export_type_id'] = invoice.export_type_id.id
+                vals['dst_country_id'] = invoice.dst_country_id.id
+                vals['dst_cuit_id'] = invoice.dst_cuit_id.id
+                vals['associated_inv_ids'] = [(4, invoice.id)]
 
+            # Agregamos el comprobante asociado y otros campos necesarios
+            if vals:
+                self.write(cr, uid, refund_id, vals)
+        return new_ids
 
     # Heredamos esta funcion para quitarle el post de los asientos contables
     # asi luego los podemos cancelar en caso que sea necesario
