@@ -27,7 +27,7 @@ import time
 
 class wsfex_shipping_permission(osv.osv):
     _name = "wsfex.shipping.permission"
-    _description = "WSFEX Currency Codes"
+    _description = "WSFEX Shipping Permission"
 
     _columns = {
         'name' : fields.char('Code', required=True, size=16),
@@ -82,7 +82,7 @@ wsfex_lang_codes()
 class wsfex_dst_country_codes(osv.osv):
     _name = "wsfex.dst_country.codes"
     _description = "WSFEX Dest Country Codes"
-    _order = 'code'
+    _order = 'name'
 
     _columns = {
         'code' : fields.char('Code', size=3, required=True),
@@ -489,44 +489,92 @@ class wsfex_config(osv.osv):
 
         return True
 
-#    def check_errors(self, cr, uid, res, raise_exception=True, context=None):
-#        msg = ''
-#        if 'errors' in res:
-#            errors = [error.msg for error in res['errors']]
-#            err_codes = [str(error.code) for error in res['errors']]
-#            msg = ' '.join(errors)
-#            msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
-#
-#            if msg != '' and raise_exception:
-#                raise osv.except_osv(_('WSFE Error!'), msg)
-#
-#        return msg
-#
-#    def check_observations(self, cr, uid, res, context):
-#        msg = ''
-#        if 'observations' in res:
-#            observations = [obs.msg for obs in res['observations']]
-#            obs_codes = [str(obs.code) for obs in res['observations']]
-#            msg = ' '.join(observations)
-#            msg = msg + ' Codigo/s Observacion:' + ' '.join(obs_codes)
-#
-#            # Escribimos en el log del cliente web
-#            self.log(cr, uid, None, msg, context)
-#
-#        return msg
-#
-#    def get_invoice_CAE(self, cr, uid, ids, invoice_ids, pos, voucher_type, details, context={}):
-#        ta_obj = self.pool.get('wsaa.ta')
-#
-#        conf = self.browse(cr, uid, ids)[0]
-#        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
-#
-#        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
-#        res = _wsfe.fe_CAE_solicitar(pos, voucher_type, details)
-#
-#        return res
-#
-#    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
+    def check_error(self, cr, uid, res, raise_exception=True, context=None):
+        msg = ''
+        if 'error' in res:
+            error = res['error'].msg
+            err_code = str(res['error'].code)
+            msg = 'Codigo/s Error: %s[%s]' % (error, err_code)
+
+            if msg != '' and raise_exception:
+                raise osv.except_osv(_('WSFE Error!'), msg)
+
+        return msg
+
+    def check_event(self, cr, uid, res, context):
+        msg = ''
+        if 'event' in res:
+            event = res['event'].msg
+            eve_code = str(res['event'].code)
+            msg = 'Codigo/s Observacion: %s [%s]' % (event, eve_code)
+
+            # Escribimos en el log del cliente web
+            self.log(cr, uid, None, msg, context)
+
+        return msg
+
+    def get_invoice_CAE(self, cr, uid, ids, invoice_ids, pos, voucher_type, details, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfex = wsfex(conf.cuit, token, sign, conf.url)
+
+        # Agregamos la info que falta
+        details['Tipo_cbte'] = voucher_type
+        details['Punto_vta'] = pos
+        res = _wsfex.FEXAuthorize(details)
+
+        return res
+
+    def _parse_result(self, cr, uid, ids, invoice_ids, result, context=None):
+
+        invoice_obj = self.pool.get('account.invoice')
+
+        if not context:
+            context = {}
+
+        invoices_approbed = {}
+
+        # Verificamos el resultado de la Operacion
+        # Si no fue aprobado
+        if 'error' in result:
+
+            msg = result['error'].msg
+            if context.get('raise-exception', True):
+                raise osv.except_osv(_('AFIP Web Service Error'),
+                                     _('La factura no fue aprobada. \n%s') % msg)
+
+        # Igualmente, siempre va a ser una para FExp
+        for inv in invoice_obj.browse(cr, uid, invoice_ids):
+            invoice_vals = {}
+
+            comp = result['response']
+
+            # Chequeamos que se corresponda con la factura que enviamos a validar
+            doc_num = comp['Cuit'] == int(inv.partner_id.vat)
+            cbte = True
+            if inv.internal_number:
+                cbte = comp['Cbte_nro'] == int(inv.internal_number.split('-')[1])
+            else:
+                # TODO: El nro de factura deberia unificarse para que se setee en una funcion
+                # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
+                invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
+
+            if not all([doc_num, cbte]):
+                raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
+
+            invoice_vals['cae'] = comp['Cae']
+            invoice_vals['cae_due_date'] = comp['Fch_venc_Cae']
+            invoices_approbed[inv.id] = invoice_vals
+
+        return invoices_approbed
+
+    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
+
+        return 0
+
 #        wsfe_req_obj = self.pool.get('wsfe.request')
 #        voucher_type_obj = self.pool.get('wsfe.voucher_type')
 #        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
@@ -579,20 +627,20 @@ class wsfex_config(osv.osv):
 #            }
 #
 #        return wsfe_req_obj.create(cr, uid, vals)
-#
-#    def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
-#        ta_obj = self.pool.get('wsaa.ta')
-#
-#        conf = self.browse(cr, uid, ids)[0]
-#        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
-#
-#        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
-#        res = _wsfe.fe_comp_ultimo_autorizado(pos, voucher_type)
-#
-#        self.check_errors(cr, uid, res, context=context)
-#        self.check_observations(cr, uid, res, context=context)
-#        last = res['response'].CbteNro
-#        return last
+
+    def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfe = wsfex(conf.cuit, token, sign, conf.url)
+        res = _wsfe.FEXGetLast_CMP(pos, voucher_type)
+
+        self.check_error(cr, uid, res, context=context)
+        self.check_event(cr, uid, res, context=context)
+        last = res['response']
+        return last
 #
 #    def get_voucher_info(self, cr, uid, ids, pos, voucher_type, number, context={}):
 #        ta_obj = self.pool.get('wsaa.ta')
@@ -683,62 +731,101 @@ class wsfex_config(osv.osv):
 #
 #        return True
 #
+
+    def prepare_details(self, cr, uid, conf, invoice_ids, context=None):
+        company_id = self.pool.get('res.users')._get_company(cr, uid)
+        #obj_precision = self.pool.get('decimal.precision')
+        invoice_obj = self.pool.get('account.invoice')
+        currency_code_obj = self.pool.get('wsfex.currency.codes')
+        uom_code_obj = self.pool.get('wsfex.uom.codes')
+
+        if len(invoice_ids) > 1:
+            raise osv.except_osv(_("WSFEX Error!"), _("You cannot inform more than one invoice to AFIP WSFEX"))
+
+        first_num = context.get('first_num', False)
+        Id = int(datetime.strftime(datetime.now(), '%Y%m%d%H%M%S'))
+        cbte_nro = 0
+
+        inv = invoice_obj.browse(cr, uid, invoice_ids[0], context=context)
+
+        # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
+        # cuenta que inv.number == 000X-00000NN o algo similar.
+        if not inv.internal_number:
+            if not first_num:
+                raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
+            inv_number = first_num
+        else:
+            inv_number = inv.internal_number
+
+        if not cbte_nro:
+            cbte_nro = inv_number.split('-')[1]
+            cbte_nro = int(cbte_nro)
+        else:
+            cbte_nro = cbte_nro + 1
+
+        date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
+        formatted_date_invoice = date_invoice.strftime('%Y%m%d')
+        #date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
+
+        cuit_pais = inv.dst_cuit_id and inv.dst_cuit_id.code or 0
+        inv_currency_id = inv.currency_id.id
+        curr_code_ids = currency_code_obj.search(cr, uid, [('currency_id', '=', inv_currency_id)], context=context)
+
+        if curr_code_ids:
+            curr_code = currency_code_obj.read(cr, uid, curr_code_ids[0], {'code'}, context=context)['code']
+        else:
+            raise osv.except_osv(_("WSFEX Error!"), _("Currency %s has not code configured") % inv.currency_id.name)
+
+        # Items
+        items = []
+        for i, line in enumerate(inv.invoice_line):
+            product_id = line.product_id
+            product_code = product_id and product_id.default_code or i
+            uom_id = line.uos_id.id
+            uom_code_ids = uom_code_obj.search(cr, uid, [('uom_id','=',uom_id)], context=context)
+            if not uom_code_ids:
+                raise osv.except_osv(_("WSFEX Error!"), _("There is no UoM Code defined for %s in line %s") % (line.uos_id.name, line.name))
+
+            uom_code = uom_code_obj.read(cr, uid, uom_code_ids[0], {'code'}, context=context)['code']
+
+            items.append({
+                'Pro_codigo' : i,#product_code,
+                'Pro_ds' : line.name,
+                'Pro_qty' : line.quantity,
+                'Pro_umed' : uom_code,
+                'Pro_precio_uni' : line.price_unit,
+                'Pro_total_item' : line.price_subtotal,
+                'Pro_bonificacion' : 0,
+            })
+
+
+        Cmp = {
+            'invoice_id' : inv.id,
+            'Id' : Id,
+            #'Tipo_cbte' : cbte_tipo,
+            'Fecha_cbte' : formatted_date_invoice,
+            #'Punto_vta' : pto_venta,
+            'Cbte_nro' : cbte_nro,
+            'Tipo_expo' : inv.export_type_id.code, #Exportacion de bienes
+            'Permiso_existente' : '', # TODO: manejo de permisos de embarque
+            'Dst_cmp' : inv.dst_country_id.code,
+            'Cliente' : inv.partner_id.name,
+            'Domicilio_cliente' : inv.partner_id.contact_address,
+            'Cuit_pais_cliente' : cuit_pais,
+            'Id_impositivo' : inv.partner_id.vat,
+            'Moneda_Id' : curr_code,
+            'Moneda_ctz' : 1.000000, # TODO: Obtener cotizacion usando el metodo de AFIP
+            'Imp_total' : inv.amount_total,
+            'Idioma_cbte' : 1,
+            'Items' : items
+        }
+
+        # Datos No Obligatorios
+        if inv.incoterm_id:
+            Cmp['Incoterms'] = inv.incoterm_id.code
+            Cmp['Incoterms_Ds'] = inv.incoterm_id.name
+
+        return Cmp
+
+
 wsfex_config()
-#
-#class wsfe_voucher_type(osv.osv):
-#    _name = "wsfe.voucher_type"
-#    _description = "Voucher Type for Electronic Invoice"
-#
-#    _columns = {
-#        'name': fields.char('Name', size=64, required=True, readonly=False, help='Voucher Type, eg.: Factura A, Nota de Credito B, etc.'),
-#        'code': fields.char('Code', size=4, required=True, help='Internal Code assigned by AFIP for voucher type'),
-#
-#        'voucher_model': fields.selection([
-#            ('invoice','Factura/NC/ND'),
-#            ('voucher','Recibo'),],'Voucher Model', select=True, required=True),
-#
-#        'document_type' : fields.selection([
-#            ('out_invoice','Factura'),
-#            ('out_refund','Nota de Credito'),
-#            ('out_debit','Nota de Debito'),
-#            ],'Document Type', select=True, required=True, readonly=False),
-#
-#        'denomination_id': fields.many2one('invoice.denomination', 'Denomination', required=False),
-#    }
-#
-#    """Es un comprobante que una empresa envía a su cliente, en la que se le notifica haber cargado o debitado en su cuenta una determinada suma o valor, por el concepto que se indica en la misma nota. Este documento incrementa el valor de la deuda o saldo de la cuenta, ya sea por un error en la facturación, interés por mora en el pago, o cualquier otra circunstancia que signifique el incremento del saldo de una cuenta.
-#It is a proof that a company sends to your client, which is notified to be charged or debited the account a certain sum or value, the concept shown in the same note. This document increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account."""
-#
-#
-#    def get_voucher_type(self, cr, uid, voucher, context=None):
-#
-#        # Chequeamos el modelo
-#        voucher_model = None
-#        model = voucher._table_name
-#
-#        if model == 'account.invoice':
-#            voucher_model = 'invoice'
-#
-#            denomination_id = voucher.denomination_id.id
-#            type = voucher.type
-#            if type == 'out_invoice':
-#                # TODO: Activar esto para ND
-#                if voucher.is_debit_note:
-#                    type = 'out_debit'
-#
-#            res = self.search(cr, uid, [('voucher_model','=',voucher_model), ('document_type','=',type), ('denomination_id','=',denomination_id)], context=context)
-#
-#            if not len(res):
-#                raise osv.except_osv(_("Voucher type error!"), _("There is no voucher type that corresponds to this object"))
-#
-#            if len(res) > 1:
-#                raise osv.except_osv(_("Voucher type error!"), _("There is more than one voucher type that corresponds to this object"))
-#
-#            return self.read(cr, uid, res[0], ['code'], context=context)['code']
-#
-#        elif model == 'account.voucher':
-#            voucher_model = 'voucher'
-#
-#        return None
-#
-#wsfe_voucher_type()

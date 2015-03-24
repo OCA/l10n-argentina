@@ -288,7 +288,7 @@ class WSFEv1:
         if len(events):
             res['events'] = events
 
-        res['response'] = result
+        res['response'] = result.CbteNro
 
         return res
 

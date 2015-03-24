@@ -193,12 +193,15 @@ class WSFEX:
         if error:
             res['error'] = error
 
+
         event = self._get_events(result)
         if event:
             res['event'] = event
 
-        if 'FEXResultGet' in result:
-            res['response'] = result.FEXResultGet
+        if 'FEXResultAuth' in result:
+            res['response'] = result.FEXResultAuth
+
+        #res['Comprobantes']
 
         return res
 

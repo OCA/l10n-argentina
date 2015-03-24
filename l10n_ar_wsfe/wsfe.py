@@ -144,6 +144,58 @@ class wsfe_config(osv.osv):
 
         return res
 
+    def _parse_result(self, cr, uid, ids, invoice_ids, result, context=None):
+
+        invoice_obj = self.pool.get('account.invoice')
+
+        if not context:
+            context = {}
+
+        invoices_approbed = {}
+
+        # Verificamos el resultado de la Operacion
+        # Si no fue aprobado
+        if result['Resultado'] == 'R':
+            msg = ''
+            if result['Errores']:
+                msg = 'Errores: ' + '\n'.join(result['Errores']) + '\n'
+
+            if context.get('raise-exception', True):
+                raise osv.except_osv(_('AFIP Web Service Error'),
+                                     _('La factura no fue aprobada. \n%s') % msg)
+
+        elif result['Resultado'] == 'A' or result['Resultado'] == 'P':
+            index = 0
+            for inv in invoice_obj.browse(cr, uid, invoice_ids):
+                invoice_vals = {}
+                comp = result['Comprobantes'][index]
+                if comp['Observaciones']:
+                    msg = 'Observaciones: ' + '\n'.join(comp['Observaciones'])
+
+                # Chequeamos que se corresponda con la factura que enviamos a validar
+                doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
+                doc_tipo = comp['DocTipo'] == int(doc_type)
+                doc_num = comp['DocNro'] == int(inv.partner_id.vat)
+                cbte = True
+                if inv.internal_number:
+                    cbte = comp['CbteHasta'] == int(inv.internal_number.split('-')[1])
+                else:
+                    # TODO: El nro de factura deberia unificarse para que se setee en una funcion
+                    # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
+                    invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
+
+                if not all([doc_tipo, doc_num, cbte]):
+                    raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
+
+                if comp['Resultado'] == 'A':
+                    invoice_vals['cae'] = comp['CAE']
+                    invoice_vals['cae_due_date'] = comp['CAEFchVto']
+                    invoices_approbed[inv.id] = invoice_vals
+
+                index += 1
+
+        return invoices_approbed
+
     def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
         wsfe_req_obj = self.pool.get('wsfe.request')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
@@ -209,7 +261,7 @@ class wsfe_config(osv.osv):
 
         self.check_errors(cr, uid, res, context=context)
         self.check_observations(cr, uid, res, context=context)
-        last = res['response'].CbteNro
+        last = res['response']
         return last
 
     def get_voucher_info(self, cr, uid, ids, pos, voucher_type, number, context={}):
@@ -300,6 +352,148 @@ class wsfe_config(osv.osv):
                     'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True } )
 
         return True
+
+    def prepare_details(self, cr, uid, conf, invoice_ids, context=None):
+        obj_precision = self.pool.get('decimal.precision')
+        invoice_obj = self.pool.get('account.invoice')
+        company_id = self.pool.get('res.users')._get_company(cr, uid)
+
+        details = []
+
+        first_num = context.get('first_num', False)
+        cbte_nro = 0
+
+        for inv in invoice_obj.browse(cr, uid, invoice_ids):
+            detalle = {}
+
+            fiscal_position = inv.fiscal_position
+            doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
+            doc_num = inv.partner_id.vat or '0'
+
+            # Chequeamos si el concepto es producto, servicios o productos y servicios
+            product_service = [l.product_id and l.product_id.type or 'consu' for l in inv.invoice_line]
+
+            service = all([ps == 'service' for ps in product_service])
+            products = all([ps == 'consu' or ps == 'product' for ps in product_service])
+
+            # Calculamos el concepto de la factura, dependiendo de las
+            # lineas de productos que se estan vendiendo
+            concept = None
+            if products:
+                concept = 1 # Productos
+            elif service:
+                concept =  2 # Servicios
+            else:
+                concept = 3 # Productos y Servicios
+
+            if not fiscal_position:
+                raise osv.except_osv(_('Customer Configuration Error'),
+                                    _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
+
+            # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
+            # cuenta que inv.number == 000X-00000NN o algo similar.
+            if not inv.internal_number:
+                if not first_num:
+                    raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
+                inv_number = first_num
+            else:
+                inv_number = inv.internal_number
+
+            if not cbte_nro:
+                cbte_nro = inv_number.split('-')[1]
+                cbte_nro = int(cbte_nro)
+            else:
+                cbte_nro = cbte_nro + 1
+
+            date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
+            formatted_date_invoice = date_invoice.strftime('%Y%m%d')
+            date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
+
+            company_currency_id = self.pool.get('res.company').read(cr, uid, company_id, ['currency_id'], context=context)['currency_id'][0]
+            if inv.currency_id.id != company_currency_id:
+                raise osv.except_osv(_("WSFE Error!"), _("Currency cannot be different to company currency. Also check that company currency is ARS"))
+
+            detalle['invoice_id'] = inv.id
+
+            detalle['Concepto'] = concept
+            detalle['DocTipo'] = doc_type
+            detalle['DocNro'] = doc_num
+            detalle['CbteDesde'] = cbte_nro
+            detalle['CbteHasta'] = cbte_nro
+            detalle['CbteFch'] = date_invoice.strftime('%Y%m%d')
+            if concept in [2,3]:
+                detalle['FchServDesde'] = formatted_date_invoice
+                detalle['FchServHasta'] = formatted_date_invoice
+                detalle['FchVtoPago'] = date_due
+            # TODO: Cambiar luego por la currency de la factura
+            detalle['MonId'] = 'PES'
+            detalle['MonCotiz'] = 1
+
+            iva_array = []
+
+            importe_neto = 0.0
+            importe_operaciones_exentas = inv.amount_exempt
+            importe_iva = 0.0
+            importe_tributos = 0.0
+            importe_total = 0.0
+            importe_neto_no_gravado = inv.amount_no_taxed
+
+
+            # Procesamos las taxes
+            taxes = inv.tax_line
+            for tax in taxes:
+                found = False
+                for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
+                    if eitax.tax_code_id.id == tax.tax_code_id.id:
+                        found = True
+                        if eitax.exempt_operations:
+                            pass
+                            #importe_operaciones_exentas += tax.base
+                        else:
+                            importe_iva += tax.amount
+                            importe_neto += tax.base
+                            iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
+                            iva_array.append(iva2)
+                if not found:
+                    importe_tributos += tax.amount
+
+            importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva + importe_tributos
+#            print 'Importe total: ', importe_total
+#            print 'Importe neto gravado: ', importe_neto
+#            print 'Importe IVA: ', importe_iva
+#            print 'Importe Operaciones Exentas: ', importe_operaciones_exentas
+#            print 'Importe neto No gravado: ', importe_neto_no_gravado
+#            print 'Array de IVA: ', iva_array
+
+            # Chequeamos que el Total calculado por el Open, se corresponda
+            # con el total calculado por nosotros, tal vez puede haber un error
+            # de redondeo
+            prec = obj_precision.precision_get(cr, uid, 'Account')
+            if round(importe_total, prec) != round(inv.amount_total, prec):
+                raise osv.except_osv(_('Error in amount_total!'), _("The total amount of the invoice does not corresponds to the total calculated." \
+                    "Maybe there is an rounding error!. (Amount Calculated: %f)") % (importe_total))
+
+            # Detalle del array de IVA
+            detalle['Iva'] = iva_array
+
+            # Detalle de los importes
+            detalle['ImpOpEx'] = importe_operaciones_exentas
+            detalle['ImpNeto'] = importe_neto
+            detalle['ImpTotConc'] = importe_neto_no_gravado
+            detalle['ImpIVA'] = importe_iva
+            detalle['ImpTotal'] = inv.amount_total
+            detalle['ImpTrib'] = importe_tributos
+            detalle['Tributos'] = None
+            #print 'Detalle de facturacion: ', detalle
+
+            # Agregamos un hook para agregar tributos o IVA que pueda ser
+            # llamado de otros modulos. O mismo para modificar el detalle.
+            detalle = invoice_obj.hook_add_taxes(cr, uid, inv, detalle)
+
+            details.append(detalle)
+
+        #print 'Detalles: ', details
+        return details
 
 wsfe_config()
 wsfe_tax_codes()
