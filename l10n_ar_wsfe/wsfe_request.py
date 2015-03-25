@@ -65,3 +65,25 @@ class wsfe_request_detail(osv.osv):
     }
 
 wsfe_request_detail()
+
+class wsfex_request_detail(osv.osv):
+    _name = "wsfex.request.detail"
+    _description = "WSFEX Request Detail"
+
+    _columns = {
+        'name': fields.char('Additional Notes', size=128, readonly=True, help="If you want to write down some detail about this request"),
+        'invoice_id' : fields.many2one('account.invoice', 'Voucher', required=False, readonly=True),
+        'request_id' : fields.float('Request ID', readonly=True),
+        'voucher_number' : fields.char('Number', size=14, readonly=True),
+        'voucher_type_id' : fields.many2one('wsfe.voucher_type', string="OpenERP Voucher Type"),
+        'date' : fields.date('Request Date', readonly=True),
+        'cae' : fields.char('CAE', required=False, readonly=True, size=64),
+        'cae_duedate' : fields.date('CAE Due Date', required=False, readonly=True),
+        'result' : fields.selection([('A', 'Approved'),('R', 'Rejected')], 'Result', readonly=True),
+        'reprocess' : fields.selection([('S', 'Si'),('N', 'No')], 'Reprocess', readonly=True),
+        'event' : fields.char('Event', size=255, readonly=True),
+        'error' : fields.char('Error', size=255, readonly=True),
+        'detail' : fields.text('Detail', readonly=True),
+    }
+
+wsfex_request_detail()

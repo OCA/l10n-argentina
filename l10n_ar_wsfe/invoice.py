@@ -36,27 +36,59 @@ class account_invoice(osv.osv):
         'aut_cae': fields.boolean('Autorizar', help='Pedido de autorizacion a la AFIP'),
         'cae': fields.char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)'),
         'cae_due_date': fields.date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE'),
-        #'associated_inv_ids': fields.many2many('account.invoice', )
+        'associated_inv_ids': fields.many2many('account.invoice', 'account_invoice_associated_rel', 'invoice_id', 'refund_debit_id'),
+        # Campos para facturas de exportacion. Aca ninguno es requerido,
+        # eso lo hacemos en la vista ya que depende de si es o no factura de exportacion
+        'export_type_id': fields.many2one('wsfex.export_type.codes', 'Export Type'),
+        'dst_country_id': fields.many2one('wsfex.dst_country.codes', 'Dest Country'),
+        'dst_cuit_id': fields.many2one('wsfex.dst_cuit.codes', 'Country CUIT'),
+        'shipping_perm_ids': fields.one2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions'),
+        'incoterm_id': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
+        'wsfex_request_ids': fields.one2many('wsfex.request.detail', 'invoice_id'),
     }
 
     _defaults = {
         'aut_cae': lambda *a: False,
     }
 
+    def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
+            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
+        res =   super(account_invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
+                date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
+            country_id = partner.country_id.id or False
+            if country_id:
+                dst_country = self.pool.get('wsfex.dst_country.codes').search(cr, uid, [('country_id','=',country_id)])
+
+                if dst_country:
+                    res['value'].update({'dst_country_id': dst_country[0]})
+        return res
+
     # Esto lo hacemos porque al hacer una nota de credito, no le setea la fiscal_position
     # Ademas, seteamos el comprobante asociado
     def refund(self, cr, uid, ids, date=None, period_id=None, description=None, journal_id=None, context=None):
         new_ids = super(account_invoice, self).refund(cr, uid, ids, date, period_id, description, journal_id, context=context)
-        for id in new_ids:
-            inv = self.browse(cr, uid, id)
-            if not inv.fiscal_position:
-                fiscal_position = inv.partner_id.property_account_position
+
+        for refund_id in new_ids:
+            vals = {}
+            refund = self.browse(cr, uid, refund_id)
+            invoice = self.browse(cr, uid, ids[0])
+            if not refund.fiscal_position:
+                fiscal_position = refund.partner_id.property_account_position
                 vals = {'fiscal_position':fiscal_position.id}
 
-                # TODO: Agregamos el comprobante asociado. Falta terminar el codigo para hacer lo de comprobantes asociados
-                self.write(cr, uid, id, vals)
-        return new_ids
+            if not invoice.local:
+                vals['export_type_id'] = invoice.export_type_id.id
+                vals['dst_country_id'] = invoice.dst_country_id.id
+                vals['dst_cuit_id'] = invoice.dst_cuit_id.id
+                vals['associated_inv_ids'] = [(4, invoice.id)]
 
+            # Agregamos el comprobante asociado y otros campos necesarios
+            if vals:
+                self.write(cr, uid, refund_id, vals)
+        return new_ids
 
     # Heredamos esta funcion para quitarle el post de los asientos contables
     # asi luego los podemos cancelar en caso que sea necesario
@@ -256,11 +288,9 @@ class account_invoice(osv.osv):
 
         return True
 
-    def _get_next_wsfe_number(self, cr, uid, inv, context=None):
-        wsfe_conf_obj = self.pool.get('wsfe.config')
+    def _get_next_wsfe_number(self, cr, uid, conf, inv, context=None):
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
-
-        conf = wsfe_conf_obj.get_config(cr, uid)
+        conf_obj = conf._model
 
         # Obtenemos el tipo de comprobante
         tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, inv, context=context)
@@ -269,8 +299,7 @@ class account_invoice(osv.osv):
         except ValueError:
             raise osv.except_osv('Error', 'El nombre del punto de venta tiene que ser numerico')
 
-        res = wsfe_conf_obj.get_last_voucher(cr, uid, [conf.id], pto_vta, tipo_cbte, context=context)
-
+        res = conf_obj.get_last_voucher(cr, uid, [conf.id], pto_vta, tipo_cbte, context=context)
         return res+1
 
     def get_next_invoice_number(self, cr, uid, invoice, context=None):
@@ -288,10 +317,22 @@ class account_invoice(osv.osv):
 
         return next_number
 
+    # Heredado para no cancelar si es una factura electronica
+    def action_cancel(self, cr, uid, ids, context=None):
+
+        invoices = self.read(cr, uid, ids, ['aut_cae'])
+        for i in invoices:
+            if i['aut_cae']:
+                raise osv.except_osv(_("Electronic Invoice Error!"), _("You cannot cancel an Electronic Invoice because it has been informed to AFIP."))
+
+        return super(account_invoice, self).action_cancel(cr, uid, ids, context=context)
 
     def action_number(self, cr, uid, ids, context=None):
         wsfe_conf_obj = self.pool.get('wsfe.config')
-        conf = wsfe_conf_obj.get_config(cr, uid)
+        wsfe_conf = wsfe_conf_obj.get_config(cr, uid)
+
+        wsfex_conf_obj = self.pool.get('wsfex.config')
+        wsfex_conf = wsfex_conf_obj.get_config(cr, uid)
 
         if not context:
             context = {}
@@ -313,18 +354,18 @@ class account_invoice(osv.osv):
 
             # Chequeamos si es local por medio de la posicion fiscal
             local = True
-            if invtype in ('in_invoice', 'in_refund'):
-                local = obj_inv.fiscal_position.local
+            local = obj_inv.fiscal_position.local
 
             reference = obj_inv.reference or ''
 
-            if local:
+            # Si es local o de cliente
+            if local or invtype in ('out_invoice', 'out_refund'):
                 # Chequeamos los valores fiscales
                 self._check_fiscal_values(cr, uid, obj_inv)
 
             # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
             # si el usuario hizo un ingreso dejo ese numero
-            internal_number = False
+            internal_number = obj_inv.internal_number #False
             next_number = False
 
             # Si son de Cliente
@@ -335,9 +376,15 @@ class account_invoice(osv.osv):
 
                 # Chequeamos si corresponde Factura Electronica
                 # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
-                if obj_inv.pos_ar_id in conf.point_of_sale_ids:
+                confs = filter(lambda c: pos_ar in c.point_of_sale_ids, [wsfe_conf, wsfex_conf]) #_get_ws_conf(obj_inv.pos_ar_id)
+
+                if len(confs)>1:
+                    raise osv.except_osv(_("WSFE Error"), _("There is more than one configuration with this POS %s") % pos_ar.name)
+
+                if confs:
+                    conf = confs[0]
                     invoice_vals['aut_cae'] = True
-                    fe_next_number = self._get_next_wsfe_number(cr, uid, obj_inv, context=context)
+                    fe_next_number = self._get_next_wsfe_number(cr, uid, conf, obj_inv, context=context)
 
                     # Si es homologacion, no hacemos el chequeo del numero
                     if not conf.homologation:
@@ -351,6 +398,7 @@ class account_invoice(osv.osv):
                     # Nos fijamos si el usuario dejo en blanco el campo de numero de factura
                     if obj_inv.internal_number:
                         internal_number = obj_inv.internal_number
+
 
                 # Lo ponemos como en Proveedores, o sea, A0001-00000001
                 if not internal_number:
@@ -400,181 +448,63 @@ class account_invoice(osv.osv):
 
         return True
 
-    def wsfe_invoice_prepare_detail(self, cr, uid, ids, context=None):
-        wsfe_conf_obj = self.pool.get('wsfe.config')
-        conf = wsfe_conf_obj.get_config(cr, uid)
-        obj_precision = self.pool.get('decimal.precision')
-        company_id = self.pool.get('res.users')._get_company(cr, uid)
+#    def wsfe_invoice_prepare_detail(self, cr, uid, ids, conf, context=None):
+#        conf_obj = conf._model
+#
+#        details = conf_obj.prepare_details(cr, uid, conf, ids, context=context)
+#        return details
 
-        details = []
-
-        first_num = context.get('first_num', False)
-        cbte_nro = 0
-
-        for inv in self.browse(cr, uid, ids):
-            detalle = {}
-
-            fiscal_position = inv.fiscal_position
-            doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
-            doc_num = inv.partner_id.vat or '0'
-
-            # Chequeamos si el concepto es producto, servicios o productos y servicios
-            product_service = [l.product_id and l.product_id.type or 'consu' for l in inv.invoice_line]
-
-            service = all([ps == 'service' for ps in product_service])
-            products = all([ps == 'consu' or ps == 'product' for ps in product_service])
-
-            # Calculamos el concepto de la factura, dependiendo de las
-            # lineas de productos que se estan vendiendo
-            concept = None
-            if products:
-                concept = 1 # Productos
-            elif service:
-                concept =  2 # Servicios
-            else:
-                concept = 3 # Productos y Servicios
-
-            if not fiscal_position:
-                raise osv.except_osv(_('Customer Configuration Error'),
-                                    _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
-
-            # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
-            # cuenta que inv.number == 000X-00000NN o algo similar.
-            if not inv.internal_number:
-                if not first_num:
-                    raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
-                inv_number = first_num
-            else:
-                inv_number = inv.internal_number
-
-            if not cbte_nro:
-                cbte_nro = inv_number.split('-')[1]
-                cbte_nro = int(cbte_nro)
-            else:
-                cbte_nro = cbte_nro + 1
-
-            date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
-            formatted_date_invoice = date_invoice.strftime('%Y%m%d')
-            date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
-
-            company_currency_id = self.pool.get('res.company').read(cr, uid, company_id, ['currency_id'], context=context)['currency_id'][0]
-            if inv.currency_id.id != company_currency_id:
-                raise osv.except_osv(_("WSFE Error!"), _("Currency cannot be different to company currency. Also check that company currency is ARS"))
-
-            detalle['invoice_id'] = inv.id
-
-            detalle['Concepto'] = concept
-            detalle['DocTipo'] = doc_type
-            detalle['DocNro'] = doc_num
-            detalle['CbteDesde'] = cbte_nro
-            detalle['CbteHasta'] = cbte_nro
-            detalle['CbteFch'] = date_invoice.strftime('%Y%m%d')
-            if concept in [2,3]:
-                detalle['FchServDesde'] = formatted_date_invoice
-                detalle['FchServHasta'] = formatted_date_invoice
-                detalle['FchVtoPago'] = date_due
-            # TODO: Cambiar luego por la currency de la factura
-            detalle['MonId'] = 'PES'
-            detalle['MonCotiz'] = 1
-
-            iva_array = []
-
-            importe_neto = 0.0
-            importe_operaciones_exentas = inv.amount_exempt
-            importe_iva = 0.0
-            importe_tributos = 0.0
-            importe_total = 0.0
-            importe_neto_no_gravado = inv.amount_no_taxed
-
-
-            # Procesamos las taxes
-            taxes = inv.tax_line
-            for tax in taxes:
-                found = False
-                for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
-                    if eitax.tax_code_id.id == tax.tax_code_id.id:
-                        found = True
-                        if eitax.exempt_operations:
-                            pass
-                            #importe_operaciones_exentas += tax.base
-                        else:
-                            importe_iva += tax.amount
-                            importe_neto += tax.base
-                            iva2 = {'Id': int(eitax.code), 'BaseImp': tax.base, 'Importe': tax.amount}
-                            iva_array.append(iva2)
-                if not found:
-                    importe_tributos += tax.amount
-
-            importe_total = importe_neto + importe_neto_no_gravado + importe_operaciones_exentas + importe_iva + importe_tributos
-#            print 'Importe total: ', importe_total
-#            print 'Importe neto gravado: ', importe_neto
-#            print 'Importe IVA: ', importe_iva
-#            print 'Importe Operaciones Exentas: ', importe_operaciones_exentas
-#            print 'Importe neto No gravado: ', importe_neto_no_gravado
-#            print 'Array de IVA: ', iva_array
-
-            # Chequeamos que el Total calculado por el Open, se corresponda
-            # con el total calculado por nosotros, tal vez puede haber un error
-            # de redondeo
-            prec = obj_precision.precision_get(cr, uid, 'Account')
-            if round(importe_total, prec) != round(inv.amount_total, prec):
-                raise osv.except_osv(_('Error in amount_total!'), _("The total amount of the invoice does not corresponds to the total calculated." \
-                    "Maybe there is an rounding error!. (Amount Calculated: %f)") % (importe_total))
-
-            # Detalle del array de IVA
-            detalle['Iva'] = iva_array
-
-            # Detalle de los importes
-            detalle['ImpOpEx'] = importe_operaciones_exentas
-            detalle['ImpNeto'] = importe_neto
-            detalle['ImpTotConc'] = importe_neto_no_gravado
-            detalle['ImpIVA'] = importe_iva
-            detalle['ImpTotal'] = inv.amount_total
-            detalle['ImpTrib'] = importe_tributos
-            detalle['Tributos'] = None
-
-            #print 'Detalle de facturacion: ', detalle
-
-            # Agregamos un hook para agregar tributos o IVA que pueda ser
-            # llamado de otros modulos. O mismo para modificar el detalle.
-            detalle = self.hook_add_taxes(cr, uid, inv, detalle)
-
-            details.append(detalle)
-
-        #print 'Detalles: ', details
-        return details
 
     def hook_add_taxes(self, cr, uid, inv, detalle):
         return detalle
 
     def action_aut_cae(self, cr, uid, ids, context={}, *args):
-        wsfe_conf_obj = self.pool.get('wsfe.config')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
 
-        conf = wsfe_conf_obj.get_config(cr, uid)
+        wsfe_conf_obj = self.pool.get('wsfe.config')
+        wsfe_conf = wsfe_conf_obj.get_config(cr, uid)
+
+        wsfex_conf_obj = self.pool.get('wsfex.config')
+        wsfex_conf = wsfex_conf_obj.get_config(cr, uid)
 
         for inv in self.browse(cr, uid, ids):
             if not inv.aut_cae:
                 #self.write(cr, uid, ids, {'cae' : 'NA'})
                 return True
 
+            pos_ar = inv.pos_ar_id
+            # Chequeamos si corresponde Factura Electronica
+            # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
+            confs = filter(lambda c: pos_ar in c.point_of_sale_ids, [wsfe_conf, wsfex_conf]) #_get_ws_conf(obj_inv.pos_ar_id)
+
+            if len(confs)>1:
+                raise osv.except_osv(_("WSFE Error"), _("There is more than one configuration with this POS %s") % pos_ar.name)
+
+            if confs:
+                conf = confs[0]
+            else:
+                raise osv.except_osv(_("WSFE Error"), _("There is no configuration for this POS %s") % pos_ar.name)
+
+            conf_obj = conf._model
+
             # Obtenemos el tipo de comprobante
             tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, inv, context=context)
 
             # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
             # cuenta que inv.number == 000X-00000NN o algo similar.
+            # TODO: Esto esta duplicado en los metodos de wsfe y wsfex
             inv_number = inv.internal_number
             pos, cbte_nro = inv_number.split('-')
             pos = int(pos)
             cbte_nro = int(cbte_nro)
 
-            fe_det_req = self.wsfe_invoice_prepare_detail(cr, uid, ids, context=context)
-
-            result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], [inv.id], pos, tipo_cbte, fe_det_req, context=context)
+            # Derivamos a la configuracion correspondiente
+            fe_det_req = conf_obj.prepare_details(cr, uid, conf, ids, context=context)
+            result = conf_obj.get_invoice_CAE(cr, uid, [conf.id], [inv.id], pos, tipo_cbte, fe_det_req, context=context)
 
             new_cr = False
             try:
-                invoices_approbed = self._parse_result(cr, uid, ids, result, context=context)
+                invoices_approbed = conf_obj._parse_result(cr, uid, [conf.id], ids, result, context=context)
                 for invoice_id, invoice_vals in invoices_approbed.iteritems():
                     self.write(cr, uid, invoice_id, invoice_vals)
             except Exception, e:
@@ -590,7 +520,7 @@ class account_invoice(osv.osv):
                 else:
                     cr2 = cr
 
-                wsfe_conf_obj._log_wsfe_request(cr2, uid, ids, pos, tipo_cbte, fe_det_req, result)
+                conf_obj._log_wsfe_request(cr2, uid, ids, pos, tipo_cbte, fe_det_req, result)
                 if new_cr:
                     cr2.commit()
                     cr2.close()

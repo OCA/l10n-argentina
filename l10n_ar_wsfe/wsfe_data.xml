@@ -7,6 +7,11 @@
             <field name="code">Web Service de Factura Electrónica</field>
         </record>
 
+        <record id="afipws_service_wsfex" model="afipws.service">
+            <field name="name">wsfex</field>
+            <field name="code">Web Service de Factura Electrónica de Exportación</field>
+        </record>
+
         <record id="voucher_invoice_A" model="wsfe.voucher_type">
             <field name="name">Factura A</field>
             <field name="code">1</field>

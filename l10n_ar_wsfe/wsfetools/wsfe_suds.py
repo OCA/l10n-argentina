@@ -16,6 +16,8 @@ logging.getLogger('suds.transport').setLevel(logging.INFO)
 logging.getLogger('suds.xsd.schema').setLevel(logging.INFO)
 logging.getLogger('suds.wsdl').setLevel(logging.INFO)
 
+logger = logging.getLogger('suds.client')
+
 class Error:
     def __init__(self, code, msg):
         self.code = code
@@ -286,7 +288,7 @@ class WSFEv1:
         if len(events):
             res['events'] = events
 
-        res['response'] = result
+        res['response'] = result.CbteNro
 
         return res
 
