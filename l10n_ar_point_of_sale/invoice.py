@@ -156,6 +156,7 @@ class invoice(osv.osv):
         'is_debit_note': fields.boolean('Debit Note'),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True, states={'draft':[('readonly',False)]}),
         'internal_number': fields.char('Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created."),
+        'local': fields.related('fiscal_position', 'local', type="boolean", string="Local", store=True),
         'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
             store={
                 'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
@@ -202,7 +203,8 @@ class invoice(osv.osv):
 
     _defaults = {
             'is_debit_note': lambda *a: False,
-            }
+            'local': lambda *a: True,
+    }
             
     #Validacion para que el total de una invoice no pueda ser negativo.
     def _check_amount_total(self,cr,uid,ids,context=None):
@@ -463,8 +465,9 @@ class invoice(osv.osv):
                 else:
                     pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)], order='priority asc', limit=1 )
                     if len(pos):
-                        res['value'].update({'pos_ar_id': pos[0]})
-                        res['value'].update({'denomination_id': denomination_id})
+                        res['value'].update({'local': fiscal_position.local,
+                                             'denomination_id': denomination_id,
+                                             'pos_ar_id': pos[0]})
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
