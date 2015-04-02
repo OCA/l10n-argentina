@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    OpenERP, Open Source Management Solution
+#    Copyright (c) 2015 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2015 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -19,5 +21,4 @@
 #
 ##############################################################################
 
-import stock
-import wizard
+import cancel_picking_done

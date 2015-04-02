@@ -19,11 +19,15 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
+from openerp.osv import osv, fields
 
 class stock_picking(osv.osv):
     _name = "stock.picking"
     _inherit = "stock.picking"
+
+    _columns = {
+        'renum_pick_id' : fields.many2one('stock.picking.out', 'Renumerated', help="Reference to the new picking created for renumerate this one. You cannot delete pickings if it is done, so it is cancelled and a new one is created, corrected and renumerated"),
+    }
 
     def do_partial(self, cr, uid, ids, partial_datas, context=None):
         seq_obj = self.pool.get('ir.sequence')
@@ -39,3 +43,13 @@ class stock_picking(osv.osv):
         return res
  
 stock_picking()
+
+class stock_picking_out(osv.osv):
+    _name = "stock.picking.out"
+    _inherit = "stock.picking.out"
+
+    _columns = {
+        'renum_pick_id' : fields.many2one('stock.picking.out', 'Renumerated', help="Reference to the new picking created for renumerate this one. You cannot delete pickings if it is done, so it is cancelled and a new one is created, corrected and renumerated"),
+    }
+
+stock_picking_out()

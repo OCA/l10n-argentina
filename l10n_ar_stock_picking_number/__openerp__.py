@@ -30,6 +30,8 @@
     "description": """
     """,
     "data": [
+        'wizard/cancel_picking_done_view.xml',
+        'stock_view.xml',
         'stock_sequence.xml',
     ],
     'demo': [
