@@ -347,6 +347,7 @@ class invoice(osv.osv):
             id = obj_inv.id
             invtype = obj_inv.type
 
+            local = True
             if invtype in ('in_invoice', 'in_refund'):
                 local = obj_inv.fiscal_position.local
 
