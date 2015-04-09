@@ -50,7 +50,7 @@ class cancel_picking_done(osv.osv_memory):
             if wiz.next_action == 'renumerate':
                 new_pick = pick_obj.copy(cr, uid, pick.id, context=context) 
                 note = _('%s\nPick renumerated from %s. %s') % (pick.note or '', pick.name, wiz.reason or '')
-                pick_obj.write(cr, uid, new_pick, {'note': note}, context=context)
+                pick_obj.write(cr, uid, new_pick, {'note': note, 'origin': pick.origin}, context=context)
                 new_picks.append(new_pick)
                 pick_vals['renum_pick_id'] = new_pick
 
