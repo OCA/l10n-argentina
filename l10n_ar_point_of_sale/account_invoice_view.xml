@@ -10,6 +10,8 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="number" position="replace"/>
+                    <field name="internal_number" position="replace"/>
+                    
                     <field name="type" position="before">
                         <label for="internal_number" class="oe_edit_only" string="Invoice Number"/>
                         <h2>
@@ -74,6 +76,8 @@
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
                     <field name="number" position="replace"/>
+                    <field name="internal_number" position="replace"/>
+                    
                     <xpath expr="//form/sheet/div[@class='oe_title']" position="replace">
                         <h1>
                             <label string="Draft Invoice" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
