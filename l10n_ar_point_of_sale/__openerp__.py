@@ -32,7 +32,7 @@
     Modulo base para normativas de facturacion Argentina
     """,
     "data": [
-        #'partner_data.xml',
+        'partner_data.xml',
         'pos_ar_view.xml',
         #'sale_view.xml',
         'account_invoice_view.xml',
