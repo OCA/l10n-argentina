@@ -21,7 +21,7 @@
               </tree>
               <form string="Perception Lines" version="7.0">
                   <h1>
-                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'sale')]" on_change="onchange_perception(perception_id, context)"/>
+                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'sale')]" />
                   </h1>
                   <group>
                       <group string="Information" name="info">
@@ -64,7 +64,7 @@
               </tree>
               <form string="Perception Lines" version="7.0">
                   <h1>
-                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'purchase')]" on_change="onchange_perception(perception_id, context)"/>
+                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'purchase')]" />
                   </h1>
                   <group>
                       <group string="Information" name="info">

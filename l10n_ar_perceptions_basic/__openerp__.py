@@ -21,7 +21,7 @@
 {
     "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
     "version": "1.0",
-    "depends": ["base", "account" , "account_accountant", "sale" ,"purchase", "l10n_ar_point_of_sale"],
+    "depends": ["base", "account", "account_accountant", "sale", "purchase", "l10n_ar_point_of_sale"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -33,8 +33,8 @@
     """,
     "init_xml": [
         "perception_data.xml",
-        ],
-    'update_xml': [
+    ],
+    'data': [
         'security/ir.model.access.csv',
         'perception_view.xml',
         'account_invoice_view.xml',

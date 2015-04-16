@@ -18,78 +18,71 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
-from openerp.osv import osv, fields
+from openerp import models, fields, api
 from openerp.addons import decimal_precision as dp
 import time
 
 
-class perception_tax_line(osv.osv):
+class perception_tax_line(models.Model):
     _name = "perception.tax.line"
     _description = "Perception Tax Line"
 
     # TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
-    _columns = {
-        'name': fields.char('Perception', required=True, size=64),
-        'date': fields.date('Date', select=True),
-        'invoice_id': fields.many2one('account.invoice', 'Invoice', ondelete='cascade'),
-        'account_id': fields.many2one('account.account', 'Tax Account', required=True,
-                                      domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')]),
-        'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
-        'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
-        'perception_id': fields.many2one('perception.perception', 'Perception Configuration', required=True, help="Perception configuration used '\
-                                       'for this perception tax, where all the configuration resides. Accounts, Tax Codes, etc."),
-        'base_code_id': fields.many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration."),
-        'base_amount': fields.float('Base Code Amount', digits_compute=dp.get_precision('Account')),
-        'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
-        'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
-        'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        'partner_id': fields.related('invoice_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
-        'vat': fields.related('invoice_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
-        'state_id': fields.many2one('res.country.state', string="State/Province"),
-        'ait_id': fields.many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade'),
-    }
+    name = fields.Char('Perception', required=True, size=64)
+    date = fields.Date('Date', select=True)
+    invoice_id = fields.Many2one('account.invoice', 'Invoice', ondelete='cascade')
+    account_id = fields.Many2one('account.account', 'Tax Account', required=True, domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')])
+    base = fields.Float('Base', digits_compute=dp.get_precision('Account'))
+    amount = fields.Float('Amount', digits_compute=dp.get_precision('Account'))
+    perception_id = fields.Many2one('perception.perception', 'Perception Configuration', required=True, help="Perception configuration used for this perception tax, where all the configuration resides. Accounts, Tax Codes, etc.")
+    base_code_id = fields.Many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration.")
+    base_amount = fields.Float('Base Code Amount', digits_compute=dp.get_precision('Account'))
+    tax_code_id = fields.Many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration.")
+    tax_amount = fields.Float('Tax Code Amount', digits_compute=dp.get_precision('Account'))
+    company_id = fields.Many2one(related='account_id.company_id', string='Company', store=True, readonly=True)
+    partner_id = fields.Many2one(related='invoice_id.partner_id', string='Partner', readonly=True)
+    vat = fields.Char(related='invoice_id.partner_id.vat', string='CIF/NIF', readonly=True)
+    state_id = fields.Many2one('res.country.state', string="State/Province")
+    ait_id = fields.Many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade')
 
-    def onchange_perception(self, cr, uid, ids, perception_id, context):
-        if not perception_id:
+    @api.onchange('perception_id')
+    def onchange_perception(self):
+        if not self.perception_id:
             return {}
-        perception_obj = self.pool.get('perception.perception')
-        perception = perception_obj.browse(cr, uid, perception_id)
-        vals = {}
-        vals['name'] = perception.name
-        vals['account_id'] = perception.tax_id.account_collected_id.id
-        vals['base_code_id'] = perception.tax_id.base_code_id.id
-        vals['tax_code_id'] = perception.tax_id.tax_code_id.id
-        vals['state_id'] = perception.state_id.id
-        return {'value': vals}
+        self.name = self.perception_id.name
+        self.account_id = self.perception_id.tax_id.account_collected_id.id
+        self.base_code_id = self.perception_id.tax_id.base_code_id.id
+        self.tax_code_id = self.perception_id.tax_id.tax_code_id.id
+        self.state_id = self.perception_id.state_id.id
+        return None
 
-    def _compute(self, cr, uid, perception_id, invoice_id, base, amount, context={}):
-        # Buscamos la account_tax referida a esta perception_id
-        cur_obj = self.pool.get('res.currency')
-        inv_obj = self.pool.get('account.invoice')
-        perception_obj = self.pool.get('perception.perception')
+    @api.v8
+    def _compute(self, perception_id, invoice_id, base, amount):
+        cur_obj = self.env['res.currency']
+        inv_obj = self.env['account.invoice']
+        perception_obj = self.env['perception.perception']
 
-        perception = perception_obj.browse(cr, uid, perception_id, context)
+        perception = perception_obj.browse(perception_id)
         tax = perception.tax_id
 
         # Nos fijamos la currency de la invoice
-        inv = inv_obj.browse(cr, uid, invoice_id)
+        inv = inv_obj.browse(invoice_id)
         company_currency = inv.company_id.currency_id.id
 
-        base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+        cr = self.env.cr
+        uid = self.env.uid
+        base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)  # APIv7: base/res/res_currency.py#249
         tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
         return (tax_amount, base_amount)
 
 perception_tax_line()
 
 
-class account_invoice(osv.osv):
+class account_invoice(models.Model):
     _name = 'account.invoice'
     _inherit = 'account.invoice'
 
-    _columns = {
-        'perception_ids': fields.one2many('perception.tax.line', 'invoice_id', 'Perception', readonly=True, states={'draft': [('readonly', False)]}),
-    }
+    perception_ids = fields.One2many('perception.tax.line', 'invoice_id', string='Perception', readonly=True, states={'draft': [('readonly', False)]})
 
     def finalize_invoice_move_lines(self, cr, uid, invoice_browse, move_lines):
         """finalize_invoice_move_lines(cr, uid, invoice, move_lines) -> move_lines
@@ -99,6 +92,7 @@ class account_invoice(osv.osv):
         :param move_lines: list of dictionaries with the account.move.lines (as for create())
         :return: the (possibly updated) final move_lines to create for this invoice
         """
+        # TODO: Migrar a APIv8
         # Como nos faltan los account.move.line de las bases imponibles de las percepciones
         # utilizamos este hook para agregarlos
         plt_obj = self.pool.get('perception.tax.line')
@@ -138,34 +132,29 @@ class account_invoice(osv.osv):
 account_invoice()
 
 
-class account_invoice_tax(osv.osv):
+class account_invoice_tax(models.Model):
     _name = "account.invoice.tax"
     _inherit = "account.invoice.tax"
 
     # Aca le agregamos las account_invoice_taxes pertenecientes a las Percepciones
-    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
-
-        if not context:
-            context = {}
-
+    @api.v8
+    def hook_compute_invoice_taxes(self, invoice, tax_grouped):
         # Si se hacen calculo automatico de Percepciones,
         # esta funcion ya no tiene sentido
         # Esta key se setea en el modulo l10n_ar_perceptions
-        auto = context.get('auto', False)
+        auto = self.env.context.get('auto', False)
 
         if auto:
-            return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+            return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
-        percep_tax_line_obj = self.pool.get('perception.tax.line')
-        cur_obj = self.pool.get('res.currency')
-        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
-        cur = inv.currency_id
+        percep_tax_line_obj = self.env['perception.tax.line']
+        cur_obj = self.env['res.currency']
 
         # Recorremos las percepciones y las computamos como account.invoice.tax
-        for line in inv.perception_ids:
+        for line in invoice.perception_ids:
             val = {}
             tax = line.perception_id.tax_id
-            val['invoice_id'] = inv.id
+            val['invoice_id'] = invoice.id
             val['name'] = line.name
             val['amount'] = line.amount
             val['manual'] = False
@@ -175,10 +164,9 @@ class account_invoice_tax(osv.osv):
             val['tax_id'] = tax.id
 
             # Computamos tax_amount y base_amount
-            tax_amount, base_amount = percep_tax_line_obj._compute(cr, uid, line.perception_id.id, invoice_id,
-                                                                   val['base'], val['amount'], context)
+            tax_amount, base_amount = percep_tax_line_obj._compute(line.perception_id.id, invoice, val['base'], val['amount'])
 
-            if inv.type in ('out_invoice', 'in_invoice'):
+            if invoice.type in ('out_invoice', 'in_invoice'):
                 val['base_code_id'] = line.base_code_id.id
                 val['tax_code_id'] = line.tax_code_id.id
                 val['base_amount'] = base_amount
@@ -203,11 +191,11 @@ class account_invoice_tax(osv.osv):
                 tax_grouped[key]['tax_amount'] += val['tax_amount']
 
         for t in tax_grouped.values():
-            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
-            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
-            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
-            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+            t['base'] = cur_obj.round(t['base'])
+            t['amount'] = cur_obj.round(t['amount'])
+            t['base_amount'] = cur_obj.round(t['base_amount'])
+            t['tax_amount'] = cur_obj.round(t['tax_amount'])
 
-        return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+        return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
 account_invoice_tax()
