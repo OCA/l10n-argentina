@@ -40,7 +40,7 @@
                     <label for="payment_line_ids"/>
                     <field name="payment_line_ids" on_change="onchange_payment_line(amount, payment_line_ids, context)">
                         <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
-                            <field name="payment_mode_id" readonly="1" string="Mode"/>
+                            <field name="payment_mode_id" invisible="1" />
                             <field name="name"/>
                             <field name="currency" readonly="1"/>
                             <field name="date"/>
