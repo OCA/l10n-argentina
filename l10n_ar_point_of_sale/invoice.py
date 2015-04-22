@@ -422,6 +422,9 @@ class account_invoice_tax(models.Model):
 
         return {'value': val}
 
+    @api.v7
+    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
+        return tax_grouped
 
     @api.v8
     def hook_compute_invoice_taxes(self, invoice, tax_grouped):
