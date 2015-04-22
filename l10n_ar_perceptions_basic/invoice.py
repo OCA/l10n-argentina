@@ -198,4 +198,72 @@ class account_invoice_tax(models.Model):
 
         return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
+    @api.v7
+    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
+
+        if not context:
+            context = {}
+
+        # Si se hacen calculo automatico de Percepciones,
+        # esta funcion ya no tiene sentido
+        # Esta key se setea en el modulo l10n_ar_perceptions
+        auto = context.get('auto', False)
+
+        if auto:
+            return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+
+        percep_tax_line_obj = self.pool.get('perception.tax.line')
+        cur_obj = self.pool.get('res.currency')
+        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
+        cur = inv.currency_id
+
+        # Recorremos las percepciones y las computamos como account.invoice.tax
+        for line in inv.perception_ids:
+            val={}
+            tax = line.perception_id.tax_id
+            val['invoice_id'] = inv.id
+            val['name'] = line.name
+            val['amount'] = line.amount
+            val['manual'] = False
+            val['sequence'] = 10
+            val['is_exempt'] = False
+            val['base'] = line.base
+            val['tax_id'] = tax.id
+
+            # Computamos tax_amount y base_amount
+            tax_amount, base_amount = percep_tax_line_obj._compute(cr, uid, line.perception_id.id, invoice_id,
+                                                                   val['base'], val['amount'], context)
+
+            if inv.type in ('out_invoice','in_invoice'):
+                val['base_code_id'] = line.base_code_id.id
+                val['tax_code_id'] = line.tax_code_id.id
+                val['base_amount'] = base_amount
+                val['tax_amount'] = tax_amount
+                val['account_id'] = tax.account_collected_id.id
+                val['account_analytic_id'] = tax.account_analytic_collected_id.id
+            else:
+                val['base_code_id'] = tax.ref_base_code_id.id
+                val['tax_code_id'] = tax.ref_tax_code_id.id
+                val['base_amount'] = base_amount
+                val['tax_amount'] = tax_amount
+                val['account_id'] = tax.account_paid_id.id
+                val['account_analytic_id'] = tax.account_analytic_paid_id.id
+
+            key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
+            if not key in tax_grouped:
+                tax_grouped[key] = val
+            else:
+                tax_grouped[key]['amount'] += val['amount']
+                tax_grouped[key]['base'] += val['base']
+                tax_grouped[key]['base_amount'] += val['base_amount']
+                tax_grouped[key]['tax_amount'] += val['tax_amount']
+
+        for t in tax_grouped.values():
+            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
+            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
+            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
+            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+
+        return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+
 account_invoice_tax()
