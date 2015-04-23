@@ -122,9 +122,8 @@ class account_invoice(models.Model):
             }
 
             # Si no tenemos seteada la fecha, escribimos la misma que la de la factura
-            import ipdb; ipdb.set_trace()
             if not p.date:
-                plt_obj.write(cr, uid, p.id, {'date': move_line['date']})
+                p.write({'date': move_line['date']})
 
             move_lines.insert(len(move_lines) - 1, (0, 0, move_line))
         return move_lines
