@@ -127,12 +127,8 @@ class invoice(models.Model):
     pos_ar_id = fields.Many2one('pos.ar',string='Point of Sale', readonly=True, states={'draft':[('readonly',False)]})
     is_debit_note = fields.Boolean('Debit Note', default=False)
     denomination_id = fields.Many2one('invoice.denomination', readonly=True, states={'draft':[('readonly',False)]})
-    internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]},
-            help="Unique number of the invoice, computed automatically when the invoice is created.")
-
-    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'),
-    store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-
+    internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created.")
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount', track_visibility='always')
     amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
@@ -340,13 +336,12 @@ class invoice(models.Model):
 
         return inv_ids
 
-    def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
-            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
-        res =   super(invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
-                date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+    @api.multi
+    def onchange_partner_id(self, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+        res = super(invoice, self).onchange_partner_id(type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)
 
         if partner_id:
-
+            company_id = self.env['res.partner'].browse(partner_id).company_id.id
             fiscal_position_id = res['value']['fiscal_position']
 
             # HACK: Si no encontramos una fiscal position, buscamos una property que nos de el default
@@ -356,28 +351,25 @@ class invoice(models.Model):
             # que hacerle muchas modificaciones al sistema. Igualmente, al setear una property que sea Global
             # ya no hace falta buscarla por codigo porque se la asigna solito a todos los que no tenian.
             if not fiscal_position_id:
-                property_obj = self.pool.get('ir.property')
-                fpos_pro_id = property_obj.search(cr, uid, [('name','=','property_account_position'),('company_id','=',company_id)])
-                if not fpos_pro_id:
+                property_obj = self.env['ir.property']
+                fpos_pro = property_obj.search([('name', '=', 'property_account_position'), ('company_id', '=', company_id)], limit=1)
+                if not fpos_pro:
                     return res
-                fpos_line_data = property_obj.read(cr, uid, fpos_pro_id, ['name','value_reference','res_id'])
-
-                fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference',False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
-
-            fiscal_pool = self.pool.get('account.fiscal.position')
-            pos_pool = self.pool.get('pos.ar')
+                fpos_line_data = fpos_pro.read(['name', 'value_reference', 'res_id'])
+                fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference', False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
+            fiscal_pool = self.env['account.fiscal.position']
+            pos_pool = self.env['pos.ar']
             if fiscal_position_id:
-                fiscal_position = fiscal_pool.browse(cr, uid , fiscal_position_id)
+                fiscal_position = fiscal_pool.browse(fiscal_position_id)
+                res['value'].update({'fiscal_position': fiscal_position_id})
                 denomination_id = fiscal_position.denomination_id.id
                 res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
 
-                #para las invoices de suppliers
-                if type in ['in_invoice', 'in_refund', 'in_debit']:
-                    denom_sup_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denom_supplier_id.id
+                if type in ['in_invoice', 'in_refund', 'in_debit']:  # Supplier invoice
+                    denom_sup_id = fiscal_position.denom_supplier_id.id
                     res['value'].update({'denomination_id': denom_sup_id})
-                #para las customers invoices
-                else:
-                    pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)], order='priority asc', limit=1 )
+                else:  # Customer invoice
+                    pos = pos_pool.search([('denomination_id', '=', denomination_id)], order='priority asc', limit=1)
                     if len(pos):
                         res['value'].update({'pos_ar_id': pos[0]})
                         res['value'].update({'denomination_id': denomination_id})
