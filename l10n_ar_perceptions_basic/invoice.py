@@ -57,16 +57,13 @@ class perception_tax_line(models.Model):
         return None
 
     @api.v8
-    def _compute(self, perception_id, invoice_id, base, amount):
-        inv_obj = self.env['account.invoice']
-        perception_obj = self.env['perception.perception']
-
-        perception = perception_obj.browse(perception_id)
-        tax = perception.tax_id
-
+    def _compute(self, invoice, base, amount):
+        """
+        self: perception.tax.line
+        invoice: account.invoice
+        """
+        tax = self.perception_id.tax_id
         # Nos fijamos la currency de la invoice
-        invoice = inv_obj.browse(invoice_id)
-
         currency = invoice.currency_id.with_context(date=invoice.date_invoice or fields.Date.context_today(invoice))
         company_currency = invoice.company_id.currency_id
 
@@ -85,22 +82,21 @@ class account_invoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        """finalize_invoice_move_lines(cr, uid, invoice, move_lines) -> move_lines
+        """finalize_invoice_move_lines(invoice, move_lines) -> move_lines
         Hook method to be overridden in additional modules to verify and possibly alter the
         move lines to be created by an invoice, for special cases.
-        :param invoice_browse: browsable record of the invoice that is generating the move lines
+        :param self: browsable record of the invoice that is generating the move lines
         :param move_lines: list of dictionaries with the account.move.lines (as for create())
         :return: the (possibly updated) final move_lines to create for this invoice
         """
         # Como nos faltan los account.move.line de las bases imponibles de las percepciones
         # utilizamos este hook para agregarlos
-        plt_obj = self.env['perception.tax.line']
         company_currency = self.company_id.currency_id.id
         current_currency = self.currency_id.id
 
         for p in self.perception_ids:
             sign = p.perception_id.tax_id.base_sign
-            tax_amount, base_amount = plt_obj._compute(p.perception_id.id, self.id, p.base, p.amount)
+            tax_amount, base_amount = p._compute(self, p.base, p.amount)
 
             # ...y ahora creamos la linea contable perteneciente a la base imponible de la perception
             # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
@@ -146,7 +142,6 @@ class account_invoice_tax(models.Model):
         if auto:
             return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
-        percep_tax_line_obj = self.env['perception.tax.line']
         cur_obj = self.env['res.currency']
 
         # Recorremos las percepciones y las computamos como account.invoice.tax
@@ -163,7 +158,7 @@ class account_invoice_tax(models.Model):
             val['tax_id'] = tax.id
 
             # Computamos tax_amount y base_amount
-            tax_amount, base_amount = percep_tax_line_obj._compute(line.perception_id.id, invoice, val['base'], val['amount'])
+            tax_amount, base_amount = line._compute(invoice, val['base'], val['amount'])
 
             if invoice.type in ('out_invoice', 'in_invoice'):
                 val['base_code_id'] = line.base_code_id.id
@@ -196,73 +191,5 @@ class account_invoice_tax(models.Model):
             t['tax_amount'] = cur_obj.round(t['tax_amount'])
 
         return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
-
-    @api.v7
-    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
-
-        if not context:
-            context = {}
-
-        # Si se hacen calculo automatico de Percepciones,
-        # esta funcion ya no tiene sentido
-        # Esta key se setea en el modulo l10n_ar_perceptions
-        auto = context.get('auto', False)
-
-        if auto:
-            return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
-
-        percep_tax_line_obj = self.pool.get('perception.tax.line')
-        cur_obj = self.pool.get('res.currency')
-        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
-        cur = inv.currency_id
-
-        # Recorremos las percepciones y las computamos como account.invoice.tax
-        for line in inv.perception_ids:
-            val={}
-            tax = line.perception_id.tax_id
-            val['invoice_id'] = inv.id
-            val['name'] = line.name
-            val['amount'] = line.amount
-            val['manual'] = False
-            val['sequence'] = 10
-            val['is_exempt'] = False
-            val['base'] = line.base
-            val['tax_id'] = tax.id
-
-            # Computamos tax_amount y base_amount
-            tax_amount, base_amount = percep_tax_line_obj._compute(cr, uid, line.perception_id.id, invoice_id,
-                                                                   val['base'], val['amount'], context)
-
-            if inv.type in ('out_invoice','in_invoice'):
-                val['base_code_id'] = line.base_code_id.id
-                val['tax_code_id'] = line.tax_code_id.id
-                val['base_amount'] = base_amount
-                val['tax_amount'] = tax_amount
-                val['account_id'] = tax.account_collected_id.id
-                val['account_analytic_id'] = tax.account_analytic_collected_id.id
-            else:
-                val['base_code_id'] = tax.ref_base_code_id.id
-                val['tax_code_id'] = tax.ref_tax_code_id.id
-                val['base_amount'] = base_amount
-                val['tax_amount'] = tax_amount
-                val['account_id'] = tax.account_paid_id.id
-                val['account_analytic_id'] = tax.account_analytic_paid_id.id
-
-            key = (val['tax_code_id'], val['base_code_id'], val['account_id'])
-            if not key in tax_grouped:
-                tax_grouped[key] = val
-            else:
-                tax_grouped[key]['amount'] += val['amount']
-                tax_grouped[key]['base'] += val['base']
-                tax_grouped[key]['base_amount'] += val['base_amount']
-                tax_grouped[key]['tax_amount'] += val['tax_amount']
-
-        for t in tax_grouped.values():
-            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
-            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
-            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
-            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
-
-        return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
 
 account_invoice_tax()
