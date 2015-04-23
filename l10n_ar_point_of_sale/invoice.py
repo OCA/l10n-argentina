@@ -21,13 +21,11 @@
 #
 ##############################################################################
 
-#from osv import osv, fields
 from openerp import models, fields, api, _
-#from tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp.exceptions import ValidationError
-import time
 import re
+
 
 class invoice(models.Model):
     _name = "account.invoice"
@@ -38,13 +36,13 @@ class invoice(models.Model):
     def name_get(self):
 
         TYPES = {
-                'out_invoice': _('CI '),
-                'in_invoice': _('SI '),
-                'out_refund': _('CR '),
-                'in_refund': _('SR '),
-                'out_debit': _('CD '),
-                'in_debit': _('SD '),
-                }
+            'out_invoice': _('CI '),
+            'in_invoice': _('SI '),
+            'out_refund': _('CR '),
+            'in_refund': _('SR '),
+            'out_debit': _('CD '),
+            'in_debit': _('SD '),
+        }
         result = []
 
         if not self._context.get('use_internal_number', True):
@@ -403,23 +401,17 @@ class account_invoice_tax(models.Model):
     tax_id = fields.Many2one('account.tax', string='Account Tax', required=True)
     is_exempt = fields.Boolean(string='Is Exempt', readonly=True)
 
-    def tax_id_change(self, cr, uid, ids, tax_id, invoice_type):
-        tax_obj = self.pool.get('account.tax')
-
-        tax = tax_obj.browse(cr, uid, tax_id)
-
-        val = {}
-        val['name'] = tax.description
-        if invoice_type in ('out_invoice','in_invoice'):
-            val['base_code_id'] = tax.base_code_id.id
-            val['tax_code_id'] = tax.tax_code_id.id
-            val['account_id'] = tax.account_collected_id.id
+    @api.onchange('tax_id')
+    def tax_id_change(self):
+        self.name = self.tax_id.description
+        if self.invoice_id.type in ('out_invoice', 'in_invoice'):
+            self.base_code_id = self.tax_id.base_code_id.id
+            self.tax_code_id = self.tax_id.tax_code_id.id
+            self.account_id = self.tax_id.account_collected_id.id
         else:
-            val['base_code_id'] = tax.ref_base_code_id.id
-            val['tax_code_id'] = tax.ref_tax_code_id.id
-            val['account_id'] = tax.account_paid_id.id
-
-        return {'value': val}
+            self.base_code_id = self.tax_id.ref_base_code_id.id
+            self.tax_code_id = self.tax_id.ref_tax_code_id.id
+            self.account_id = self.tax_id.account_paid_id.id
 
     @api.v8
     def hook_compute_invoice_taxes(self, invoice, tax_grouped):
