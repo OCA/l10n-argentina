@@ -22,23 +22,24 @@
 ##############################################################################
 
 import time
-from openerp.osv import osv, fields
+from openerp.osv import osv
+from openerp import models, fields, api
 
 
-class payment_mode_receipt(osv.osv):
+class payment_mode_receipt(models.Model):
     _name = 'payment.mode.receipt'
     _description = 'Payment Mode for Payment/Receipt'
-    _columns = {
-        'name': fields.char('Name', size=64, required=True, help='Mode of Payment'),
-        'bank_id': fields.many2one('res.partner.bank', "Bank account", required=False, help='Bank Account for the Payment Mode'),
-        'account_id': fields.many2one('account.account', 'Account', required=True),
-        'company_id': fields.many2one('res.company', 'Company', required=True),
-        'currency': fields.many2one('res.currency', "Currency", required=True, help="The currency the field is expressed in."),
-        'type': fields.selection([('payment', 'Payment'), ('receipt', 'Receipt')], 'Type', required=True),
-    }
-    _defaults = {
-        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
-    }
+
+    name = fields.Char('Name', size=64, required=True, help='Mode of Payment')
+    bank_id = fields.Many2one('res.partner.bank', "Bank account", required=False, help='Bank Account for the Payment Mode')
+    account_id = fields.Many2one('account.account', 'Account', required=True)
+    company_id = fields.Many2one('res.company', 'Company', required=True)
+    currency = fields.Many2one('res.currency', "Currency", required=True, help="The currency the field is expressed in.")
+    type = fields.Selection([('payment', 'Payment'), ('receipt', 'Receipt')], 'Type', required=True)
+
+    # _defaults = {
+    #     'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
+    # }  TODO: VER COMO SE MIGRA ESTE CODIGO
 
 payment_mode_receipt()
 
@@ -69,25 +70,23 @@ class payment_mode_receipt_line(osv.osv):
                 date = order.date_scheduled
         return date
 
-    _columns = {
-        'name': fields.char('Mode', size=64, required=True, readonly=True, help='Payment reference'),
-        'payment_mode_id': fields.many2one('payment.mode.receipt', 'Payment Mode Receipt', required=False, select=True),
-        'amount': fields.float('Amount', digits=(16, 2), required=False, help='Payment amount in the company currency'),
-        'amount_currency': fields.float('Amount in Partner Currency', digits=(16, 2), required=False, help='Payment amount in the partner currency'),
-        'currency': fields.many2one('res.currency', 'Currency', required=False),
-        'company_currency': fields.many2one('res.currency', 'Company Currency', readonly=False),
-        'date': fields.date('Payment Date', help="If no payment date is specified, the bank will treat this payment line directly"),
-        'move_line_id': fields.many2one('account.move.line', 'Entry line', domain=[('reconcile_id', '=', False), ('account_id.type', '=', 'payable')], help='This Entry Line will be referred for the information of the ordering customer.'),
-        'voucher_id': fields.many2one('account.voucher', 'Voucher'),
-    }
+    name = fields.Char('Mode', size=64, required=True, readonly=True, help='Payment reference')
+    payment_mode_id = fields.Many2one('payment.mode.receipt', 'Payment Mode Receipt', required=False, select=True)
+    amount = fields.Float('Amount', digits=(16, 2), default=0.0, required=False, help='Payment amount in the company currency')
+    amount_currency = fields.Float('Amount in Partner Currency', digits=(16, 2), required=False, help='Payment amount in the partner currency')
+    currency = fields.Many2one('res.currency', 'Currency', required=False)
+    company_currency = fields.Many2one('res.currency', 'Company Currency', readonly=False, default=_get_company_currency)
+    date = fields.Date('Payment Date', default=_get_date, help="If no payment date is specified, the bank will treat this payment line directly")
+    move_line_id = fields.Many2one('account.move.line', 'Entry line', domain=[('reconcile_id', '=', False), ('account_id.type', '=', 'payable')], help='This Entry Line will be referred for the information of the ordering customer.')
+    voucher_id = fields.Many2one('account.voucher', 'Voucher')
 
     # TODO: Hacer la parte de multicurrency
 
-    _defaults = {
-        'amount': 0.0,
-        'company_currency': _get_company_currency,
-        'date': _get_date
-    }
+    # _defaults = {
+    #     'company_currency': _get_company_currency,
+    #     'date': _get_date
+    # }
+
 
 payment_mode_receipt_line()
 

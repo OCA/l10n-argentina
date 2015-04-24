@@ -21,19 +21,17 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
-from openerp.tools.translate import _
+from openerp import models, fields, api, _
+from openerp.osv import osv
 
 
-class account_voucher(osv.osv):
+class account_voucher(models.Model):
 
     _name = "account.voucher"
     _inherit = "account.voucher"
 
-    _columns = {
-        'payment_line_ids': fields.one2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines'),
-        'journal_sequence': fields.many2one('ir.sequence', 'Book', readonly=True, states={'draft': [('readonly', False)]}),
-    }
+    payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
+    journal_sequence = fields.Many2one('ir.sequence', 'Book', readonly=True, states={'draft': [('readonly', False)]})
 
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
@@ -352,13 +350,12 @@ class account_voucher(osv.osv):
 account_voucher()
 
 
-class account_voucher_line(osv.osv):
+class account_voucher_line(models.Model):
     _name = 'account.voucher.line'
     _inherit = 'account.voucher.line'
-    _columns = {
-        'invoice_id': fields.many2one('account.invoice', string='Invoice'),
-        'ref': fields.char('Reference', size=64),
-    }
+
+    invoice_id = fields.Many2one('account.invoice', string='Invoice')
+    ref = fields.Char('Reference', size=64)
 
     def onchange_amount(self, cr, uid, ids, amount, amount_unreconciled, context=None):
         vals = {}
