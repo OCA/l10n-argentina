@@ -48,24 +48,20 @@ class payment_mode_receipt_line(osv.osv):
     _name = 'payment.mode.receipt.line'
     _description = 'Payment mode receipt lines'
 
-    def _get_company_currency(self, cr, uid, context=None):
-        user_obj = self.pool.get('res.users')
-        currency_obj = self.pool.get('res.currency')
-        user = user_obj.browse(cr, uid, uid, context=context)
-
-        if user.company_id:
-            return user.company_id.currency_id.id
+    @api.model
+    def _get_company_currency(self):
+        currency_obj = self.env['res.currency']
+        if self.env.user.company_id:
+            return self.env.user.company_id.currency_id.id
         else:
-            return currency_obj.search(cr, uid, [('rate', '=', 1.0)])[0]
+            return currency_obj.search([('rate', '=', 1.0)], limit=1).id
 
-    def _get_date(self, cr, uid, context=None):
-        if context is None:
-            context = {}
-        payment_order_obj = self.pool.get('payment.order')
+    @api.model
+    def _get_date(self):
         date = time.strftime('%Y-%m-%d')
-
-        if context.get('order_id') and context['order_id']:
-            order = payment_order_obj.browse(cr, uid, context['order_id'], context=context)
+        if self._context.get('order_id') and self._context['order_id']:
+            payment_order_obj = self.env['payment.order']
+            order = payment_order_obj.browse(self._context['order_id'])
             if order.date_prefered == 'fixed':
                 date = order.date_scheduled
         return date
