@@ -40,25 +40,17 @@ class account_voucher(models.Model):
             context = {}
         return [(r['id'], (str("%s - %.2f" % (r['reference'], r['amount'])) or '')) for r in self.read(cr, uid, ids, ['reference', 'amount'], context, load='_classic_write')]
 
-    def _get_payment_lines_amount(self, cr, uid, payment_line_ids, context=None):
-        payment_line_obj = self.pool.get('payment.mode.receipt.line')
+    @api.multi
+    def _get_payment_lines_amount(self):
         amount = 0.0
-
-        for payment_line in payment_line_ids:
-            # Si tiene id, y no tiene amount, leemos el amount
-            if payment_line[1] and not payment_line[2]:
-                am = payment_line_obj.read(cr, uid, payment_line[1], ['amount'], context=context)['amount']
-                if am:
-                    amount += float(am)
-            elif payment_line[2]:
-                amount += payment_line[2]['amount']
-
+        for payment_line in self.payment_line_ids:
+            amount += float(payment_line.amount)
         return amount
 
-    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        return {'value': {'amount': amount}}
+    @api.onchange('payment_line_ids')
+    def onchange_payment_line(self):
+        amount = self._get_payment_lines_amount()
+        self.amount = amount
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, journal_id, amount, currency_id, ttype, date, context=None):
         res = super(account_voucher, self).onchange_partner_id(cr, uid, ids, partner_id, journal_id, amount, currency_id, ttype, date, context=context)
