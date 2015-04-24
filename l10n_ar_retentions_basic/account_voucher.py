@@ -19,40 +19,32 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp import models, fields, api
 from openerp.addons import decimal_precision as dp
 
 
-class retention_tax_line(osv.osv):
+class retention_tax_line(models.Model):
     _name = "retention.tax.line"
     _description = "Retention Tax Line"
 
     # TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
-    _columns = {
-        'name': fields.char('Retention', size=64),
-        'date': fields.date('Date', select=True),
-        'voucher_id': fields.many2one('account.voucher', 'Voucher', ondelete='cascade'),
-        'voucher_number': fields.char('Reference', size=64),
-        'account_id': fields.many2one('account.account', 'Tax Account', required=True,
-                                      domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')]),
-        'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
-        'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
-        'retention_id': fields.many2one('retention.retention', 'Retention Configuration', required=True, help="Retention configuration used '\
-                                       'for this retention tax, where all the configuration resides. Accounts, Tax Codes, etc."),
-        'base_code_id': fields.many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration."),
-        'base_amount': fields.float('Base Code Amount', digits_compute=dp.get_precision('Account')),
-        'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
-        'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
-        'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        'partner_id': fields.many2one('res.partner', 'Partner', required=False),
-        'vat': fields.related('partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
-        'certificate_no': fields.char('Certificate No.', required=False, size=32),
-        'state_id': fields.many2one('res.country.state', string="State/Province"),
-    }
-
-    _defaults = {
-        #'date': lambda *a: time.strftime('%Y-%m-%d'),
-    }
+    name = fields.Char('Retention', size=64)
+    date = fields.Date('Date', select=True)
+    voucher_id = fields.Many2one('account.voucher', 'Voucher', ondelete='cascade')
+    voucher_number = fields.Char('Reference', size=64)
+    account_id = fields.Many2one('account.account', 'Tax Account', required=True, domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')])
+    base = fields.Float('Base', digits=dp.get_precision('Account'))
+    amount = fields.Float('Amount', digits=dp.get_precision('Account'))
+    retention_id = fields.Many2one('retention.retention', 'Retention Configuration', required=True, help="Retention configuration used for this retention tax, where all the configuration resides. Accounts, Tax Codes, etc.")
+    base_code_id = fields.Many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration.")
+    base_amount = fields.Float('Base Code Amount', digits=dp.get_precision('Account'))
+    tax_code_id = fields.Many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration.")
+    tax_amount = fields.Float('Tax Code Amount', digits=dp.get_precision('Account'))
+    company_id = fields.Many2one(string='Company', related='account_id.company_id', store=True, readonly=True)
+    partner_id = fields.Many2one('res.partner', 'Partner', required=False)
+    vat = fields.Char(string='CIF/NIF', related='partner_id.vat', readonly=True)
+    certificate_no = fields.Char('Certificate No.', required=False, size=32)
+    state_id = fields.Many2one('res.country.state', string="State/Province")
 
     def onchange_retention(self, cr, uid, ids, retention_id, context):
         if not retention_id:
@@ -161,13 +153,11 @@ class retention_tax_line(osv.osv):
 retention_tax_line()
 
 
-class account_voucher(osv.osv):
+class account_voucher(models.Model):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
 
-    _columns = {
-        'retention_ids': fields.one2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft': [('readonly', False)]}),
-    }
+    retention_ids = fields.One2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft': [('readonly', False)]})
 
     def _get_retention_amount(self, cr, uid, retention_ids, context=None):
         retention_line_obj = self.pool.get('retention.tax.line')

@@ -19,11 +19,10 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp import models, fields, api
 
 
-class retention_retention(osv.osv):
-
+class retention_retention(models.Model):
     """Objeto que define las retenciones que pueden utilizarse
 
        Configura las retenciones posibles. Luego a partir de estos objetos
@@ -36,23 +35,18 @@ class retention_retention(osv.osv):
 
     # TODO: Tal vez haya lo mejor es hacer desaparecer este objeto y agregarle
     # el par de campos (jurisdiccion y state_id) a account.tax y listo
-    _columns = {
-        'name': fields.char('Retention', required=True, size=64),
-        'tax_id': fields.many2one('account.tax', 'Tax', required=True, help="Tax configuration for this retention"),
-        'type_tax_use': fields.related('tax_id', 'type_tax_use', type='char', string='Tax Application', readonly=True),
-        'state_id': fields.many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]"),
-        'type': fields.selection([('vat', 'VAT'),
-                                  ('gross_income', 'Gross Income'),
-                                  ('profit', 'Profit'),
-                                  ('other', 'Other')], 'Type', required=True),
+    name = fields.Char('Retention', required=True, size=64)
+    tax_id = fields.Many2one('account.tax', 'Tax', required=True, help="Tax configuration for this retention")
+    type_tax_use = fields.Selection(string='Tax Application', related='tax_id.type_tax_use', readonly=True)
+    state_id = fields.Many2one('res.country.state', 'State/Province', domain="[('country_id','=','Argentina')]")
+    type = fields.Selection([('vat', 'VAT'),
+                            ('gross_income', 'Gross Income'),
+                            ('profit', 'Profit'),
+                            ('other', 'Other')], 'Type', required=True)
 
-        'jurisdiccion': fields.selection([('nacional', 'Nacional'),
-                                          ('provincial', 'Provincial'),
-                                          ('municipal', 'Municipal')], 'Jurisdiccion'),
-    }
+    jurisdiccion = fields.Selection([('nacional', 'Nacional'),
+                                    ('provincial', 'Provincial'),
+                                    ('municipal', 'Municipal')], 'Jurisdiccion', default='nacional')
 
-    _defaults = {
-        'jurisdiccion': 'nacional',
-    }
 
 retention_retention()
