@@ -67,15 +67,15 @@ class account_voucher(models.Model):
 
         return res
 
-    def _get_payment_lines_default(self, cr, uid, ttype, currency_id, context=None):
-
-        pay_mod_pool = self.pool.get('payment.mode.receipt')
-        modes = pay_mod_pool.search(cr, uid, [('type', '=', ttype), ('currency', '=', currency_id)])
+    @api.model
+    def _get_payment_lines_default(self, ttype, currency_id):
+        pay_mod_pool = self.env['payment.mode.receipt']
+        modes = pay_mod_pool.search([('type', '=', ttype), ('currency', '=', currency_id)])
         if not modes:
             return {}
 
         lines = []
-        for mode in pay_mod_pool.browse(cr, uid, modes, context=context):
+        for mode in modes:
             lines.append({'name': mode.name, 'amount': 0.0, 'amount_currency': 0.0, 'payment_mode_id': mode.id, 'currency': mode.currency.id})
 
         return lines
