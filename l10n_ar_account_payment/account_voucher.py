@@ -80,16 +80,11 @@ class account_voucher(models.Model):
 
         return lines
 
-    def _clean_payment_lines(self, cr, uid, ids, context=None):
-
-        lines_to_unlink = []
-
-        for voucher in self.browse(cr, uid, ids, context=context):
-            for payment_line in voucher.payment_line_ids:
-                if payment_line.amount == 0:
-                    lines_to_unlink.append(payment_line.id)
-
-        self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
+    @api.one
+    def _clean_payment_lines(self):
+        for payment_line in self.payment_line_ids:
+            if payment_line.amount == 0:
+                payment_line.unlink()
         return True
 
 #    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
@@ -107,19 +102,14 @@ class account_voucher(models.Model):
 #            self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
 #        return amount
 
-    def proforma_voucher(self, cr, uid, ids, context=None):
-        if not context:
-            context = {}
-
+    @api.multi
+    def proforma_voucher(self):
         # Chequeamos si la writeoff_amount no es negativa
-        writeoff_amount = self.read(cr, uid, ids, ['writeoff_amount'], context=context)[0]['writeoff_amount']
-
-        if round(writeoff_amount, 2) < 0.0:
+        if round(self.writeoff_amount, 2) < 0.0:
             raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with negative amount. Please check that Writeoff Amount is not negative."))
 
-        self._clean_payment_lines(cr, uid, ids, context=context)
-
-        self.action_move_line_create(cr, uid, ids, context=context)
+        self._clean_payment_lines()
+        self.action_move_line_create()
 
         return True
 
@@ -240,89 +230,87 @@ class account_voucher(models.Model):
                     (ref, move_id))
         return True
 
-    def action_move_line_create(self, cr, uid, ids, context=None):
+    @api.multi
+    def action_move_line_create(self):
         '''
         Confirm the vouchers given in ids and create the journal entries for each of them
         '''
-        if context is None:
-            context = {}
-        move_pool = self.pool.get('account.move')
-        move_line_pool = self.pool.get('account.move.line')
-        for voucher in self.browse(cr, uid, ids, context=context):
+        import ipdb; ipdb.set_trace()
+        move_pool = self.env['account.move']
+        move_line_pool = self.env['account.move.line']
+        for voucher in self:
             if voucher.move_id:
                 continue
-            company_currency = self._get_company_currency(cr, uid, voucher.id, context)
-            current_currency = self._get_current_currency(cr, uid, voucher.id, context)
+            company_currency = self._get_company_currency(voucher.id)
+            current_currency = self._get_current_currency(voucher.id)
             # we select the context to use accordingly if it's a multicurrency case or not
-            context = self._sel_context(cr, uid, voucher.id, context)
+            context = self._sel_context(voucher.id)
             # But for the operations made by _convert_amount, we always need to give the date in the context
             ctx = context.copy()
             ctx.update({'date': voucher.date})
             # Create the account move record.
-            move_id = move_pool.create(cr, uid, self.account_move_get(cr, uid, voucher.id, context=context), context=context)
+            move_recordset = move_pool.with_context(ctx).create(self.account_move_get(voucher.id))
             # Get the name of the account_move just created
-            name = move_pool.browse(cr, uid, move_id, context=context).name
+            name = move_recordset.name
+            move_id = move_recordset.id
 
             # Escribimos el numero del voucher
             # Seteamos el numero de la OP
             voucher_vals = {'number': 'name'}
             if voucher.type in ('payment', 'receipt'):
                 if not voucher.reference:
-                    ref = self.pool.get('ir.sequence').next_by_id(cr, uid, voucher.journal_sequence.id, context=context)
+                    ref = self.env['ir.sequence'].next_by_id(voucher.journal_sequence.id)
                     voucher_vals['reference'] = ref
-                    self._update_move_reference(cr, uid, move_id, ref, context=context)
+                    self._update_move_reference(move_id, ref)
 
-            self.write(cr, uid, [voucher.id], voucher_vals, context=context)
+            voucher.write(voucher_vals)
 
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
-                move_line_vals = self.create_move_lines(cr,uid,voucher.id, move_id, company_currency, current_currency, context)
+                move_line_vals = self.create_move_lines(voucher.id, move_id, company_currency, current_currency)  # FIXME: Esta devolviendo account_id=False
                 line_total = 0.0
                 for vals in move_line_vals:
                     line_total += vals['debit'] - vals['credit']
-                    move_line_pool.create(cr, uid, vals, context)
-            else:  #('sale', 'purchase')
+                    move_line_pool.create(vals)
+            else:  # ('sale', 'purchase')
                 # Create the first line of the voucher
-                move_line_id = move_line_pool.create(cr, uid, self.first_move_line_get(cr,uid,voucher.id, move_id, company_currency, current_currency, context), context)
-                move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
+                move_line_brw = move_line_pool.with_context(ctx).create(self.first_move_line_get(voucher.id, move_id, company_currency, current_currency))
                 line_total = move_line_brw.debit - move_line_brw.credit
 
-            #move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
-            #line_total = move_line_brw.debit - move_line_brw.credit
+            # move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
+            # line_total = move_line_brw.debit - move_line_brw.credit
             rec_list_ids = []
             if voucher.type == 'sale':
-                line_total = line_total - self._convert_amount(cr, uid, voucher.tax_amount, voucher.id, context=ctx)
+                line_total = line_total - self._convert_amount(voucher.tax_amount, voucher.id)
             elif voucher.type == 'purchase':
-                line_total = line_total + self._convert_amount(cr, uid, voucher.tax_amount, voucher.id, context=ctx)
+                line_total = line_total + self._convert_amount(voucher.tax_amount, voucher.id)
             # Create one move line per voucher line where amount is not 0.0
-            line_total, rec_list_ids = self.voucher_move_line_create(cr, uid, voucher.id, line_total, move_id, company_currency, current_currency, context)
+            line_total, rec_list_ids = self.voucher_move_line_create(voucher.id, line_total, move_id, company_currency, current_currency)
 
             # Create the writeoff line if needed
-            ml_writeoff = self.writeoff_move_line_get(cr, uid, voucher.id, line_total, move_id, name, company_currency, current_currency, context)
+            ml_writeoff = self.writeoff_move_line_get(voucher.id, line_total, move_id, name, company_currency, current_currency)
             if ml_writeoff:
-                move_line_pool.create(cr, uid, ml_writeoff, context)
+                move_line_pool.create(ml_writeoff)
 
             # We post the voucher.
-            self.write(cr, uid, [voucher.id], {
+            self.write({
                 'move_id': move_id,
                 'state': 'posted',
                 'number': name,
             })
             if voucher.journal_id.entry_posted:
-                move_pool.post(cr, uid, [move_id], context={})
+                move_pool.post([move_id])
             # We automatically reconcile the account move lines.
             reconcile = False
             for rec_ids in rec_list_ids:
                 if len(rec_ids) >= 2:
-                    reconcile = move_line_pool.reconcile_partial(cr, uid, rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id, writeoff_period_id=voucher.period_id.id, writeoff_journal_id=voucher.journal_id.id)
+                    import ipdb; ipdb.set_trace()
+                    reconcile = move_line_pool.reconcile_partial(rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id, writeoff_period_id=voucher.period_id.id, writeoff_journal_id=voucher.journal_id.id)
 
             # Borramos las lineas que estan en 0
-            lines_to_unlink = []
             for line in voucher.line_ids:
                 if not line.amount:
-                    lines_to_unlink.append(line.id)
-
-            self.pool.get('account.voucher.line').unlink(cr, uid, lines_to_unlink, context=context)
+                    line.unlink()
 
         return True
 
