@@ -32,7 +32,7 @@
         Este módulo nos permite facturar de forma electrónica a través del Servicio Web
         que publica la AFIP.
     """,
-    'update_xml': [
+    'data': [
         'wsfe_data.xml',
         'wsfe_view.xml',
         'account_invoice_view.xml',
@@ -40,7 +40,7 @@
         'wizard/wsfe_sinchronize_voucher_view.xml',
         'security/ir.model.access.csv',
     ],
-    'init_xml': [
+    'demo': [
         'wsfe_demo.xml',
         ],
     'test': [
