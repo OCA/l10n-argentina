@@ -24,22 +24,19 @@
 
 import time
 from openerp.tools.translate import _
-from openerp.osv import fields, osv
+from openerp import models, fields, api
+from openerp.osv import osv
 
 
-class account_check_config(osv.osv):
-
+class account_check_config(models.Model):
     '''
     Account Check Config
     '''
     _name = 'account.check.config'
     _description = 'Check Account Configuration'
 
-    _columns = {
-        'account_id': fields.many2one('account.account', 'Main Check Account', required=True,
-                                      help="In Argentina, Valores a Depositar is used, for example"),
-        'company_id': fields.many2one('res.company', 'Company', required=True),
-    }
+    account_id = fields.Many2one('account.account', 'Main Check Account', required=True, help="In Argentina, Valores a Depositar is used, for example")
+    company_id = fields.Many2one('res.company', 'Company', required=True)
 
     _sql_constraints = [
         ('company_uniq', 'UNIQUE(company_id)', 'The configuration must be unique per company!'),
@@ -48,8 +45,7 @@ class account_check_config(osv.osv):
 account_check_config()
 
 
-class account_issued_check(osv.osv):
-
+class account_issued_check(models.Model):
     '''
     Account Issued Check
     '''
@@ -57,36 +53,21 @@ class account_issued_check(osv.osv):
     _description = 'Issued Checks'
     _rec_name = 'number'
 
-    _columns = {
-        'number': fields.char('Check Number', size=20, required=True),
-        'amount': fields.float('Amount Check', required=True),
-        'issue_date': fields.date('Issue Date'),
-        'payment_date': fields.date('Payment Date', help="Only if this check is post dated"),
-        'receiving_partner_id': fields.many2one('res.partner',
-                                                'Receiving Entity', required=False, readonly=True),
-        'bank_id': fields.many2one('res.bank', 'Bank', required=True),
-        #'on_order': fields.char('On Order', size=64),
-        'signatory': fields.char('Signatory', size=64),
-        'clearing': fields.selection((
-            ('24', '24 hs'),
-            ('48', '48 hs'),
-            ('72', '72 hs'),
-        ), 'Clearing'),
-        'account_bank_id': fields.many2one('res.partner.bank', 'Bank Account'),
-        'voucher_id': fields.many2one('account.voucher', 'Voucher'),
-        'origin': fields.char('Origin', size=64),
-        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type',
-                                 help="If common, checks only have issued_date. If post-dated they also have payment date"),
-        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True),
-        'state': fields.selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State')
-    }
+    number = fields.Char('Check Number', size=20, required=True)
+    amount = fields.Float('Amount Check', required=True)
+    issue_date = fields.Date('Issue Date')
+    payment_date = fields.Date('Payment Date', help="Only if this check is post dated")
+    receiving_partner_id = fields.Many2one('res.partner', 'Receiving Entity', required=False, readonly=True)
+    bank_id = fields.Many2one('res.bank', 'Bank', required=True)
+    signatory = fields.Char('Signatory', size=64)
+    clearing = fields.Selection([('24', '24 hs'), ('48', '48 hs'), ('72', '72 hs')], 'Clearing', default='24')
+    account_bank_id = fields.Many2one('res.partner.bank', 'Bank Account')
+    voucher_id = fields.Many2one('account.voucher', 'Voucher')
+    origin = fields.Char('Origin', size=64)
+    type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
+    company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, default=lambda self: self.env.user.company_id.id)
+    state = fields.Selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State', default='draft')
 
-    _defaults = {
-        'clearing': lambda *a: '24',
-        'type': 'common',
-        'state': 'draft',
-        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher', context=c),
-    }
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
         voucher_obj = self.pool.get('account.voucher')
@@ -149,8 +130,7 @@ class account_issued_check(osv.osv):
 account_issued_check()
 
 
-class account_third_check(osv.osv):
-
+class account_third_check(models.Model):
     '''
     Account Third Check
     '''
@@ -158,56 +138,32 @@ class account_third_check(osv.osv):
     _description = 'Third Checks'
     _rec_name = 'number'
 
-    _columns = {
-        'number': fields.char('Check Number', size=20, readonly=True, required=True, states={'draft': [('readonly', False)]}),
-        'amount': fields.float('Check Amount', readonly=True, required=True, states={'draft': [('readonly', False)]}),
-        'receipt_date': fields.date('Receipt Date', readonly=True, required=True, states={'draft': [('readonly', False)]}),  # Fecha de ingreso
-        'issue_date': fields.date('Issue Date', readonly=True, required=True, states={'draft': [('readonly', False)]}),  # Fecha de emision
-        'payment_date': fields.date('Payment Date', readonly=True, states={'draft': [('readonly', False)]}),  # Fecha de pago diferido
-        'endorsement_date': fields.date('Endorsement Date', readonly=True, states={'wallet': [('readonly', False)]}),  # Fecha de Endoso
-        'deposit_date': fields.date('Deposit Date', readonly=True, states={'wallet': [('readonly', False)]}),  # Fecha de Deposito
-        'source_partner_id': fields.many2one('res.partner', 'Source Partner', required=False, readonly=True, states={'draft': [('readonly', False)]}),
-        'destiny_partner_id': fields.many2one('res.partner', 'Destiny Partner', states={'delivered': [('required', True)]}),
-        'state': fields.selection((
-            ('draft', 'Draft'),
-            ('wallet', 'In Wallet'),
-            ('deposited', 'Deposited'),
-            ('delivered', 'Delivered'),
-            ('rejected', 'Rejected'),
-            ('cancel', 'Cancelled'),
-        ), 'State', readonly=True),
-        'bank_id': fields.many2one('res.bank', 'Bank', required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        #'vat': fields.char('Vat', size=15, required=True),
-        #'on_order': fields.char('On Order', size=64),
-        'signatory': fields.char('Signatory', size=64),
-        'clearing': fields.selection((
-            ('24', '24 hs'),
-            ('48', '48 hs'),
-            ('72', '72 hs'),
-        ), 'Clearing'),
-        'origin': fields.char('Origin', size=64),
-        'dest': fields.char('Destiny', size=64),
-        'deposit_bank_id': fields.many2one('res.partner.bank',
-                                           'Deposit Account'),
-        'source_voucher_id': fields.many2one('account.voucher', 'Source Voucher', readonly=True),
-        'debit_note_id': fields.many2one('account.invoice', 'Debit Note', readonly=True, help="In case of rejection of the third check"),
-        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type',
-                                 readonly=True, states={'draft': [('readonly', False)]},
-                                 help="If common, checks only have issued_date. If post-dated they also have payment date"),
-        'note': fields.text('Additional Information'),
-        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'signatory_vat': fields.char('Signatory VAT', size=64),
-        'signatory_account': fields.char('Signatory account', size=64),
-        'deposit_slip': fields.char('Deposit Slip', size=64),
-    }
-
-    _defaults = {
-        'receipt_date': lambda *a: time.strftime('%Y-%m-%d'),
-        'state': lambda *a: 'draft',
-        'type': lambda *a: 'common',
-        'clearing': lambda *a: '24',
-        'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher', context=c),
-    }
+    number = fields.Char('Check Number', size=20, readonly=True, required=True, states={'draft': [('readonly', False)]})
+    amount = fields.Float('Check Amount', readonly=True, required=True, states={'draft': [('readonly', False)]})
+    receipt_date = fields.Date('Receipt Date', readonly=True, required=True, states={'draft': [('readonly', False)]}, default=lambda *a: time.strftime('%Y-%m-%d'))  # Fecha de ingreso
+    issue_date = fields.Date('Issue Date', readonly=True, required=True, states={'draft': [('readonly', False)]})  # Fecha de emision
+    payment_date = fields.Date('Payment Date', readonly=True, states={'draft': [('readonly', False)]})  # Fecha de pago diferido
+    endorsement_date = fields.Date('Endorsement Date', readonly=True, states={'wallet': [('readonly', False)]})  # Fecha de Endoso
+    deposit_date = fields.Date('Deposit Date', readonly=True, states={'wallet': [('readonly', False)]})  # Fecha de Deposito
+    source_partner_id = fields.Many2one('res.partner', 'Source Partner', required=False, readonly=True, states={'draft': [('readonly', False)]})
+    destiny_partner_id = fields.Many2one('res.partner', 'Destiny Partner', states={'delivered': [('required', True)]})
+    state = fields.Selection([('draft', 'Draft'), ('wallet', 'In Wallet'), ('deposited', 'Deposited'), ('delivered', 'Delivered'), ('rejected', 'Rejected'), ('cancel', 'Cancelled')], 'State', readonly=True, default='draft')
+    bank_id = fields.Many2one('res.bank', 'Bank', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    #'vat': fields.Char('Vat', size=15, required=True),
+    #'on_order': fields.Char('On Order', size=64),
+    signatory = fields.Char('Signatory', size=64)
+    clearing = fields.Selection([('24', '24 hs'), ('48', '48 hs'), ('72', '72 hs')], 'Clearing', default='24')
+    origin = fields.Char('Origin', size=64)
+    dest = fields.Char('Destiny', size=64)
+    deposit_bank_id = fields.Many2one('res.partner.bank', 'Deposit Account')
+    source_voucher_id = fields.Many2one('account.voucher', 'Source Voucher', readonly=True)
+    debit_note_id = fields.Many2one('account.invoice', 'Debit Note', readonly=True, help="In case of rejection of the third check")
+    type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', readonly=True, states={'draft': [('readonly', False)]}, default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
+    note = fields.Text('Additional Information')
+    company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, states={'draft': [('readonly', False)]}, default=lambda self: self.env.user.company_id.id)
+    signatory_vat = fields.Char('Signatory VAT', size=64)
+    signatory_account = fields.Char('Signatory account', size=64)
+    deposit_slip = fields.Char('Deposit Slip', size=64)
 
     def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
         currency_obj = self.pool.get('res.currency')

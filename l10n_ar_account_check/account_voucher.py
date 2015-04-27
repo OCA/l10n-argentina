@@ -22,7 +22,8 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp.osv import osv
+from openerp import models, fields, api
 from openerp.tools.translate import _
 
 
@@ -30,15 +31,9 @@ class account_voucher(osv.osv):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
 
-    _columns = {
-        'issued_check_ids': fields.one2many('account.issued.check',
-                                            'voucher_id', 'Issued Checks', readonly=True, required=False, states={'draft': [('readonly', False)]}),
-        'third_check_receipt_ids': fields.one2many('account.third.check',
-                                                   'source_voucher_id', 'Third Checks', readonly=True, required=False, states={'draft': [('readonly', False)]}),
-        'third_check_ids': fields.many2many('account.third.check',
-                                            'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id',
-                                            'Third Checks', readonly=True, states={'draft': [('readonly', False)]}),
-    }
+    issued_check_ids = fields.One2many('account.issued.check', 'voucher_id', 'Issued Checks', readonly=True, required=False, states={'draft': [('readonly', False)]})
+    third_check_receipt_ids = fields.One2many('account.third.check', 'source_voucher_id', 'Third Checks', readonly=True, required=False, states={'draft': [('readonly', False)]})
+    third_check_ids = fields.Many2many('account.third.check', 'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id', 'Third Checks', readonly=True, states={'draft': [('readonly', False)]})
 
     def _amount_checks(self, cr, uid, voucher_id):
         res = {}
