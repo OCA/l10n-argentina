@@ -48,9 +48,9 @@
             </page>
           </page>
 
-          <field name="payment_line_ids" position= "attributes">
-            <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)</attribute>
-          </field>
+          <!-- <field name="payment_line_ids" position= "attributes"> -->
+          <!--   <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)</attribute> -->
+          <!-- </field> -->
 
           <field name="third_check_receipt_ids" position= "attributes">
             <attribute name="on_change">onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)</attribute>
@@ -105,9 +105,9 @@
               </field>
             </page>
           </page>
-          <field name="payment_line_ids" position= "attributes">
-            <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)</attribute>
-          </field>
+          <!-- <field name="payment_line_ids" position= "attributes"> -->
+          <!--   <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)</attribute> -->
+          <!-- </field> -->
 
           <field name="issued_check_ids" position= "attributes">
             <attribute name="on_change">onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)</attribute>

@@ -173,15 +173,21 @@ class account_voucher(models.Model):
 
         return amount
 
-    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], retention_ids=[], context=None):
+    # def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], retention_ids=[], context=None):
+    #     import ipdb; ipdb.set_trace()
+    #
+    #     amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
+    #     amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
+    #     amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
+    #     amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
+    #     amount += self._get_retention_amount(cr, uid, retention_ids, context)
+    #
+    #     return {'value': {'amount': amount}}
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
+    @api.onchange('payment_line_ids')
+    def onchange_payment_line(self):
+        import ipdb; ipdb.set_trace()
+        pass
 
     def onchange_third_receipt_checks(self, cr, uid, ids, amount, payment_line_ids, third_check_receipt_ids, retention_ids, context=None):
 
