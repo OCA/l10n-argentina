@@ -113,7 +113,8 @@ class account_voucher(models.Model):
 
         return True
 
-    def create_move_line_hook(self, cr, uid, move_id, move_lines, context={}):
+    @api.multi
+    def create_move_line_hook(self, move_id, move_lines):
         return move_lines
 
     @api.model
@@ -199,7 +200,7 @@ class account_voucher(models.Model):
             move_lines.append(move_line)
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
-        self.create_move_line_hook(self, move_id, move_lines, context=context)
+        self.create_move_line_hook(move_id, move_lines)
 
         # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
         amount_credit = 0.0
