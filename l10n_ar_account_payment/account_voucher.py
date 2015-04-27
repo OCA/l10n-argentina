@@ -113,26 +113,26 @@ class account_voucher(models.Model):
 
         return True
 
-    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
+    def create_move_line_hook(self, cr, uid, move_id, move_lines, context={}):
         return move_lines
 
-    def _convert_paid_amount_in_company_currency(self, cr, uid, voucher, amount, context=None):
-        if context is None:
-            context = {}
+    @api.model
+    def _convert_paid_amount_in_company_currency(self, amount):
         res = {}
-        ctx = context.copy()
-        ctx.update({'date': voucher.date})
-        #make a new call to browse in order to have the right date in the context, to get the right currency rate
-        voucher = self.browse(cr, uid, voucher.id, context=ctx)
+        ctx = self._context.copy()
+        ctx.update({'date': self.date})
         ctx.update({
-            'voucher_special_currency': voucher.payment_rate_currency_id and voucher.payment_rate_currency_id.id or False,
-            'voucher_special_currency_rate': voucher.currency_id.rate * voucher.payment_rate
+            'voucher_special_currency': self.payment_rate_currency_id and self.payment_rate_currency_id.id or False,
+            'voucher_special_currency_rate': self.currency_id.rate * self.payment_rate
         })
-        res = self.pool.get('res.currency').compute(cr, uid, voucher.currency_id.id, voucher.company_id.currency_id.id, amount, context=ctx)
+        currency = self.currency_id.with_context(ctx)
+        company_currency = self.company_id.currency_id
+        res = currency.compute(amount, company_currency)
         return res
 
     # Heredada para agregar un hook y los asientos para varias formas de pago
-    def create_move_lines(self, cr, uid, voucher_id, move_id, company_currency, current_currency, context=None):
+    @api.multi
+    def create_move_lines(self, move_id, company_currency, current_currency, context=None):
         '''
         Return a dict to be use to create account move lines of given voucher.
 
@@ -143,16 +143,15 @@ class account_voucher(models.Model):
         :return: mapping between fieldname and value of account move line to create
         :rtype: dict
         '''
-        voucher = self.pool.get('account.voucher').browse(cr,uid,voucher_id,context)
         total_debit = total_credit = 0.0
         # TODO: is there any other alternative then the voucher type ??
         # ANSWER: We can have payment and receipt "In Advance".
         # TODO: Make this logic available.
         # -for sale, purchase we have but for the payment and receipt we do not have as based on the bank/cash journal we can not know its payment or receipt
-        if voucher.type in ('purchase', 'payment'):
-            total_credit = voucher.paid_amount_in_company_currency
-        elif voucher.type in ('sale', 'receipt'):
-            total_debit = voucher.paid_amount_in_company_currency
+        if self.type in ('purchase', 'payment'):
+            total_credit = self.paid_amount_in_company_currency
+        elif self.type in ('sale', 'receipt'):
+            total_debit = self.paid_amount_in_company_currency
         if total_debit < 0:
             total_credit = - total_debit
             total_debit = 0.0
@@ -163,17 +162,16 @@ class account_voucher(models.Model):
 
         # Creamos una move_line por payment_line
         move_lines = []
-        for pl in voucher.payment_line_ids:
+        for pl in self.payment_line_ids:
             if pl.amount == 0.0:
                 continue
 
-            amount_in_company_currency = self._convert_paid_amount_in_company_currency(cr, uid, voucher, pl.amount, context=context)
-            #self.pool.get('res.currency').compute(cr, uid, pl.currency.id, voucher.company_id.currency_id.id, pl.amount, context=context)
+            amount_in_company_currency = self._convert_paid_amount_in_company_currency(pl.amount)
 
             debit = credit = 0.0
-            if voucher.type in ('purchase', 'payment'):
+            if self.type in ('purchase', 'payment'):
                 credit = amount_in_company_currency
-            elif voucher.type in ('sale', 'receipt'):
+            elif self.type in ('sale', 'receipt'):
                 debit = amount_in_company_currency
             if debit < 0:
                 credit = -debit
@@ -189,19 +187,19 @@ class account_voucher(models.Model):
                 'credit': credit,
                 'account_id': pl.payment_mode_id.account_id.id,
                 'move_id': move_id,
-                'journal_id': voucher.journal_id.id,
-                'period_id': voucher.period_id.id,
-                'partner_id': voucher.partner_id.id,
+                'journal_id': self.journal_id.id,
+                'period_id': self.period_id.id,
+                'partner_id': self.partner_id.id,
                 'currency_id': company_currency <> current_currency and current_currency or False,
                 'amount_currency': company_currency <> current_currency and sign * pl.amount or 0.0,
-                'date': voucher.date,
-                'date_maturity': voucher.date_due
+                'date': self.date,
+                'date_maturity': self.date_due
             }
 
             move_lines.append(move_line)
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
-        self.create_move_line_hook(cr, uid, voucher.id, move_id, move_lines, context=context)
+        self.create_move_line_hook(self, move_id, move_lines, context=context)
 
         # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
         amount_credit = 0.0
@@ -215,10 +213,11 @@ class account_voucher(models.Model):
 
         return move_lines
 
-    def _update_move_reference(self, cr, uid, move_id, ref, context=None):
-
+    @api.model
+    def _update_move_reference(self, move_id, ref):
+        cr = self.env.cr
         cr.execute('UPDATE account_move SET ref=%s ' \
-                'WHERE id=%s', (ref, move_id))
+                    'WHERE id=%s', (ref, move_id))
 
         cr.execute('UPDATE account_move_line SET ref=%s ' \
                 'WHERE move_id=%s', (ref, move_id))
@@ -266,7 +265,7 @@ class account_voucher(models.Model):
 
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
-                move_line_vals = self.create_move_lines(voucher.id, move_id, company_currency, current_currency)  # FIXME: Esta devolviendo account_id=False
+                move_line_vals = self.create_move_lines(move_id, company_currency, current_currency)
                 line_total = 0.0
                 for vals in move_line_vals:
                     line_total += vals['debit'] - vals['credit']
