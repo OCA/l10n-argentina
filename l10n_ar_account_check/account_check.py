@@ -68,14 +68,14 @@ class account_issued_check(models.Model):
     company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, default=lambda self: self.env.user.company_id.id)
     state = fields.Selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State', default='draft')
 
-
-    def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
-        voucher_obj = self.pool.get('account.voucher')
+    @api.model
+    def create_voucher_move_line(self):
+        voucher = self.voucher_id
 
         # Buscamos la cuenta contable para el asiento del cheque
         # Esta cuenta se corresponde con la cuenta de banco de donde
         # pertenece el cheque
-        account_id = check.account_bank_id.account_id.id
+        account_id = self.account_bank_id.account_id.id
         if not account_id:
             raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
 
@@ -83,8 +83,7 @@ class account_issued_check(models.Model):
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, check.amount, context=context)
-        #amount_in_company_currency = currency_obj.compute(cr, uid, current_currency, voucher.company_id.currency_id.id, check.amount, context=context)
+        amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(self.amount)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -101,7 +100,7 @@ class account_issued_check(models.Model):
 
         # Creamos la linea contable perteneciente al cheque
         move_line = {
-            'name': _('Issued Check %s') % check.number or '/',
+            'name': _('Issued Check %s') % self.number or '/',
             'debit': debit,
             'credit': credit,
             'account_id': account_id,
@@ -109,23 +108,23 @@ class account_issued_check(models.Model):
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
             'currency_id': company_currency != current_currency and current_currency or False,
-            'amount_currency': company_currency != current_currency and sign * check.amount or 0.0,
+            'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
 
         return move_line
 
-    def cancel_check(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
+    @api.multi
+    def cancel_check(self):
+        self.write({'state': 'cancel'})
 
-    def unlink(self, cr, uid, ids, context=None):
-
-        for check in self.read(cr, uid, ids, ['state', 'voucher_id'], context=context):
-            if check['state'] != 'draft':
-                raise osv.except_osv(_('Check Error'), _('You cannot delete an issued check that is not in Draft state [See %s].') % (check['voucher_id'][1]))
-
-        return super(account_issued_check, self).unlink(cr, uid, ids, context)
+    @api.multi
+    def unlink(self):
+        for check in self:
+            if check.state != 'draft':
+                raise osv.except_osv(_('Check Error'), _('You cannot delete an issued check that is not in Draft state [See %s].') % (check.voucher_id))
+        return super(account_issued_check, self).unlink()
 
 account_issued_check()
 
