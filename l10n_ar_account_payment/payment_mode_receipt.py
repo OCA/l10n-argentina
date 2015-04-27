@@ -33,13 +33,9 @@ class payment_mode_receipt(models.Model):
     name = fields.Char('Name', size=64, required=True, help='Mode of Payment')
     bank_id = fields.Many2one('res.partner.bank', "Bank account", required=False, help='Bank Account for the Payment Mode')
     account_id = fields.Many2one('account.account', 'Account', required=True)
-    company_id = fields.Many2one('res.company', 'Company', required=True)
+    company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.user.company_id.id)
     currency = fields.Many2one('res.currency', "Currency", required=True, help="The currency the field is expressed in.")
     type = fields.Selection([('payment', 'Payment'), ('receipt', 'Receipt')], 'Type', required=True)
-
-    # _defaults = {
-    #     'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
-    # }  TODO: VER COMO SE MIGRA ESTE CODIGO
 
 payment_mode_receipt()
 
