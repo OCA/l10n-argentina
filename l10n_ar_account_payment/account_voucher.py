@@ -235,7 +235,6 @@ class account_voucher(models.Model):
         '''
         Confirm the vouchers given in ids and create the journal entries for each of them
         '''
-        import ipdb; ipdb.set_trace()
         move_pool = self.env['account.move']
         move_line_pool = self.env['account.move.line']
         for voucher in self:
@@ -304,8 +303,8 @@ class account_voucher(models.Model):
             reconcile = False
             for rec_ids in rec_list_ids:
                 if len(rec_ids) >= 2:
-                    import ipdb; ipdb.set_trace()
-                    reconcile = move_line_pool.reconcile_partial(rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id, writeoff_period_id=voucher.period_id.id, writeoff_journal_id=voucher.journal_id.id)
+                    reconcile = self.pool.get('account.move.line').reconcile_partial(self.env.cr, self.env.user.id, rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id, writeoff_period_id=voucher.period_id.id, writeoff_journal_id=voucher.journal_id.id)
+
 
             # Borramos las lineas que estan en 0
             for line in voucher.line_ids:
