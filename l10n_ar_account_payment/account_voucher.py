@@ -313,17 +313,16 @@ class account_voucher(models.Model):
 
         return True
 
-    def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
+    @api.multi
+    def recompute_voucher_lines(self, partner_id, journal_id, price, currency_id, ttype, date):
+        default = super(account_voucher, self).recompute_voucher_lines(partner_id, journal_id, price, currency_id, ttype, date)
+        ml_obj = self.env['account.move.line']
 
-        default = super(account_voucher, self).recompute_voucher_lines(cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=context)
-
-        ml_obj = self.pool.get('account.move.line')
-
-        for vals in default['value']['line_dr_ids']+default['value']['line_cr_ids']:
-            if vals['move_line_id']:
-                reads = ml_obj.read(cr, uid, vals['move_line_id'], ['invoice', 'ref'], context=context)
-                vals['invoice_id'] = reads['invoice'] and reads['invoice'][0] or False
-                vals['ref'] = reads['ref']
+        for vals in default['value']['line_dr_ids'] + default['value']['line_cr_ids']:
+            if type(vals) == dict and vals['move_line_id']:
+                ml = ml_obj.browse(vals['move_line_id'])
+                vals['invoice_id'] = ml.invoice.id or False
+                vals['ref'] = ml.ref
         return default
 
 account_voucher()
