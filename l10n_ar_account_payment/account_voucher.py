@@ -52,17 +52,16 @@ class account_voucher(models.Model):
         amount = self._get_payment_lines_amount()
         self.amount = amount
 
-    def onchange_partner_id(self, cr, uid, ids, partner_id, journal_id, amount, currency_id, ttype, date, context=None):
-        res = super(account_voucher, self).onchange_partner_id(cr, uid, ids, partner_id, journal_id, amount, currency_id, ttype, date, context=context)
-
+    @api.multi
+    def onchange_partner_id(self, partner_id, journal_id, amount, currency_id, ttype, date):
+        res = super(account_voucher, self).onchange_partner_id(partner_id, journal_id, amount, currency_id, ttype, date)
         if not partner_id:
             res['value']['payment_line_ids'] = []
             return res
-
-        if not 'value' in res:
+        if 'value' not in res:
             return res
 
-        res2 = self._get_payment_lines_default(cr, uid, ttype, currency_id, context=context)
+        res2 = self._get_payment_lines_default(ttype, currency_id)
         res['value']['payment_line_ids'] = res2
 
         return res
