@@ -57,16 +57,19 @@ class account_voucher(models.Model):
         # TODO: testear que este metodo funcione
         # issued_check_obj = self.pool.get('account.issued.check')
         amount = 0.0
-
         for check in self.issued_check_ids:
-            if check[0] == 4 and check[1] and not check[2]:
-                # am = issued_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
-                am = check.amount
-                if am:
-                    amount += float(am)
-            if check[2]:
-                amount += check[2]['amount']
+            am = check.amount
+            if am:
+                amount += float(am)
 
+        # for check in self.issued_check_ids:
+        #     if check[0] == 4 and check[1] and not check[2]:
+        #         # am = issued_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
+        #         am = check.amount
+        #         if am:
+        #             amount += float(am)
+        #     if check[2]:
+        #         amount += check[2]['amount']
         return amount
 
     @api.multi
@@ -74,15 +77,17 @@ class account_voucher(models.Model):
         # TODO: testear que este metodo funcione
         # third_check_obj = self.pool.get('account.third.check')
         amount = 0.0
-
         for check in self.third_check_ids:
-            if check[0] == 6 and check[2]:
-                for c in check[2]:
-                    # am = third_check_obj.read(cr, uid, c, ['amount'], context=context)['amount']
-                    am = check.amount
-                    if am:
-                        amount += float(am)
-
+            am = check.amount
+            if am:
+                amount += am
+        # for check in self.third_check_ids:
+        #     if check[0] == 6 and check[2]:
+        #         for c in check[2]:
+        #             # am = third_check_obj.read(cr, uid, c, ['amount'], context=context)['amount']
+        #             am = check.amount
+        #             if am:
+        #                 amount += float(am)
         return amount
 
     @api.multi
@@ -92,13 +97,17 @@ class account_voucher(models.Model):
         amount = 0.0
 
         for check in self.third_check_ids:
-            if check[0] == 4 and check[1] and not check[2]:
-                # am = third_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
-                am = check.amount
-                if am:
-                    amount += float(am)
-            if check[2]:
-                amount += check[2]['amount']
+            am = check.amount
+            if am:
+                amount += am
+        # for check in self.third_check_ids:
+        #     if check[0] == 4 and check[1] and not check[2]:
+        #         # am = third_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
+        #         am = check.amount
+        #         if am:
+        #             amount += float(am)
+        #     if check[2]:
+        #         amount += check[2]['amount']
 
         return amount
 
@@ -107,7 +116,7 @@ class account_voucher(models.Model):
         amount = self._get_payment_lines_amount()
         amount += self._get_third_checks_receipt_amount()
 
-        return {'value': {'amount': amount}}
+        self.amount = amount
 
     @api.onchange('payment_line_ids')
     def onchange_payment_line(self):
@@ -116,7 +125,7 @@ class account_voucher(models.Model):
         amount += self._get_third_checks_amount()
         amount += self._get_third_checks_receipt_amount()
 
-        return {'value': {'amount': amount}}
+        self.amount = amount
 
     @api.onchange('issued_check_ids')
     def onchange_issued_checks(self):
@@ -124,7 +133,7 @@ class account_voucher(models.Model):
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
 
-        return {'value': {'amount': amount}}
+        self.amount = amount
 
     @api.onchange('third_check_ids')
     def onchange_third_checks(self):
@@ -132,7 +141,7 @@ class account_voucher(models.Model):
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
 
-        return {'value': {'amount': amount}}
+        self.amount = amount
 
     @api.multi
     def unlink(self):
