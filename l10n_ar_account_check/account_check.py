@@ -167,7 +167,7 @@ class account_third_check(models.Model):
     @api.model
     def create_voucher_move_line(self):
         voucher = self.source_voucher_id
-        check_config_obj = self.pool.get('account.check.config')
+        check_config_obj = self.env['account.check.config']
 
         # Buscamos la configuracion de cheques
         config = check_config_obj.search([('company_id', '=', voucher.company_id.id)])
