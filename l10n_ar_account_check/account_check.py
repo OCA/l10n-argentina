@@ -164,22 +164,21 @@ class account_third_check(models.Model):
     signatory_account = fields.Char('Signatory account', size=64)
     deposit_slip = fields.Char('Deposit Slip', size=64)
 
-    def create_voucher_move_line(self, cr, uid, check, voucher, context={}):
-        currency_obj = self.pool.get('res.currency')
+    @api.model
+    def create_voucher_move_line(self):
+        voucher = self.source_voucher_id
         check_config_obj = self.pool.get('account.check.config')
 
         # Buscamos la configuracion de cheques
-        res = check_config_obj.search(cr, uid, [('company_id', '=', voucher.company_id.id)])
-        if not len(res):
+        config = check_config_obj.search([('company_id', '=', voucher.company_id.id)])
+        if not len(config):
             raise osv.except_osv(_(' ERROR!'), _('There is no check configuration for this Company!'))
-
-        config = check_config_obj.browse(cr, uid, res[0])
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        amount_in_company_currency = currency_obj.compute(cr, uid, current_currency, voucher.company_id.currency_id.id, check.amount, context=context)
+        amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(self.amount)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -196,7 +195,7 @@ class account_third_check(models.Model):
 
         # Creamos la linea contable perteneciente al cheque
         move_line = {
-            'name': _('Third Check ') + check.number or '/',
+            'name': _('Third Check ') + self.number or '/',
             'debit': debit,
             'credit': credit,
             'account_id': config.account_id.id,
@@ -204,16 +203,17 @@ class account_third_check(models.Model):
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
             'currency_id': company_currency != current_currency and current_currency or False,
-            'amount_currency': company_currency != current_currency and sign * check.amount or 0.0,
+            'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
 
         return move_line
 
-    def to_wallet(self, cr, uid, ids, context=None):
+    @api.multi
+    def to_wallet(self):
         # Funcion llamada al validar un pago de cliente que contenga cheques
-        for check in self.browse(cr, uid, ids):
+        for check in self:
             voucher = check.source_voucher_id
             if not voucher:
                 raise osv.except_osv(_('Check Error!'), _('Check has to be associated with a voucher'))
@@ -235,44 +235,41 @@ class account_third_check(models.Model):
             check.write(vals)
         return True
 
-    def return_wallet(self, cr, uid, ids, context=None):
-
+    @api.multi
+    def return_wallet(self):
         # Todos los cheques tienen que estar en delivered
-        for check in self.read(cr, uid, ids, ['state'], context=context):
-            if check['state'] != 'delivered':
+        for check in self:
+            if check.state != 'delivered':
                 raise osv.except_osv(_("Third Check Error!"), _("You cannot return to wallet a check if it is not in Delivered state"))
-
         vals = {'state': 'wallet', 'endorsement_date': False, 'destiny_partner_id': False, 'dest': ''}
-
-        self.write(cr, uid, ids, vals, context=context)
+        self.write(vals)
         return True
 
-    def unlink(self, cr, uid, ids, context=None):
+    @api.multi
+    def unlink(self):
+        for check in self:
+            if check.state != 'draft':
+                raise osv.except_osv(_('Check Error'), _('You cannot delete a third check that is not in Draft state [See %s].') % (check.source_voucher_id))
+        return super(account_third_check, self).unlink()
 
-        for check in self.read(cr, uid, ids, ['state', 'source_voucher_id'], context=context):
-            if check['state'] != 'draft':
-                raise osv.except_osv(_('Check Error'), _('You cannot delete a third check that is not in Draft state [See %s].') % (check['source_voucher_id'][1]))
-
-        return super(account_third_check, self).unlink(cr, uid, ids, context)
-
-    def cancel_check(self, cr, uid, ids, context=None):
-
+    @api.multi
+    def cancel_check(self):
         # Todos los cheques tienen que estar en draft o wallet
-        for check in self.read(cr, uid, ids, ['state'], context=context):
-            if check['state'] not in ('draft', 'wallet'):
+        for check in self:
+            if check.state not in ('draft', 'wallet'):
                 raise osv.except_osv(_("Third Check Error!"), _("You cannot cancel check if it is not in Draft or in Wallet"))
-
-        self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
+        self.write({'state': 'cancel'})
         return True
 
-    def check_delivered(self, cr, uid, ids, context=None):
+    @api.multi
+    def check_delivered(self):
         # Transicion efectuada al validar un pago a proveedores que entregue
         # cheques de terceros
-        voucher_obj = self.pool.get('account.voucher')
+        voucher_obj = self.env['account.voucher']
         vals = {'state': 'delivered'}
-        for check in self.browse(cr, uid, ids):
-            voucher_ids = voucher_obj.search(cr, uid, [('third_check_ids', '=', check.id)], context=context)
-            voucher = voucher_obj.browse(cr, uid, voucher_ids[0], context=context)  # check.dest_voucher_id
+        for check in self:
+            voucher = voucher_obj.search([('third_check_ids', '=', check.id)])
+            # voucher = voucher_obj.browse(cr, uid, voucher_ids[0], context=context)  # check.dest_voucher_id
 
             if not check.endorsement_date:
                 vals['endorsement_date'] = voucher.date or time.strftime('%Y-%m-%d')
@@ -284,19 +281,19 @@ class account_third_check(models.Model):
             check.write(vals)
         return True
 
-    def deposit_check(self, cr, uid, ids, context=None):
+    @api.multi
+    def deposit_check(self):
         # Transicion efectuada via wizard
-        for check in self.browse(cr, uid, ids):
-            check.write({
-                'state': 'deposited',
-            })
+        self.write({
+            'state': 'deposited',
+        })
         return True
 
-    def reject_check(self, cr, uid, ids, context=None):
-        for check in self.browse(cr, uid, ids):
-            check.write({
-                'state': 'rejected',
-            })
+    @api.multi
+    def reject_check(self):
+        self.write({
+            'state': 'rejected',
+        })
         return True
 
 account_third_check()

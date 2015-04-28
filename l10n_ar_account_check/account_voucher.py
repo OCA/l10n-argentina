@@ -104,6 +104,7 @@ class account_voucher(models.Model):
 
     @api.onchange('third_check_receipt_ids')
     def onchange_third_receipt_checks(self):
+        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_third_checks_receipt_amount()
 
@@ -111,6 +112,7 @@ class account_voucher(models.Model):
 
     @api.onchange('payment_line_ids')
     def onchange_payment_line(self):
+        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
@@ -120,6 +122,7 @@ class account_voucher(models.Model):
 
     @api.onchange('issued_check_ids')
     def onchange_issued_checks(self):
+        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
@@ -128,6 +131,7 @@ class account_voucher(models.Model):
 
     @api.onchange('third_check_ids')
     def onchange_third_checks(self):
+        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
@@ -147,48 +151,44 @@ class account_voucher(models.Model):
 
     @api.multi
     def create_move_line_hook(self, move_id, move_lines):
-        # TODO: TERMINAR DE MIGRAR ESTE METODO
         move_lines = super(account_voucher, self).create_move_line_hook(move_id, move_lines)
-
-        issued_check_pool = self.pool.get('account.issued.check')
-        third_check_obj = self.pool.get('account.third.check')
 
         if self.type in ('sale', 'receipt'):
             for check in self.third_check_receipt_ids:
                 if check.amount == 0.0:
                     continue
 
-                res = third_check_obj.create_voucher_move_line(check, self)
+                res = check.create_voucher_move_line()
                 res['move_id'] = move_id
                 move_lines.append(res)
-                third_check_obj.to_wallet(cr, uid, [check.id], context=context)
+                check.to_wallet()
 
-        elif v.type in ('purchase', 'payment'):
+        elif self.type in ('purchase', 'payment'):
             # Cheques recibidos de terceros que los damos a un proveedor
-            for check in v.third_check_ids:
+            for check in self.third_check_ids:
                 if check.amount == 0.0:
                     continue
 
-                res = third_check_obj.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = check.create_voucher_move_line()
                 res['move_id'] = move_id
                 move_lines.append(res)
-                third_check_obj.check_delivered(cr, uid, [check.id], context=context)
+                check.check_delivered()
 
             # Cheques propios que los damos a un proveedor
-            for check in v.issued_check_ids:
+            for check in self.issued_check_ids:
                 if check.amount == 0.0:
                     continue
 
-                res = issued_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = check.create_voucher_move_line()
                 res['move_id'] = move_id
                 move_lines.append(res)
-                vals = {'state': 'issued', 'receiving_partner_id': v.partner_id.id}
+                vals = {'state': 'issued', 'receiving_partner_id': self.partner_id.id}
 
                 if not check.origin:
-                    vals['origin'] = v.reference
+                    vals['origin'] = self.reference
 
                 if not check.issue_date:
-                    vals['issue_date'] = v.date
+                    vals['issue_date'] = self.date
                 check.write(vals)
 
         return move_lines
@@ -206,40 +206,36 @@ class account_voucher(models.Model):
 #
 #        return True
 
-    def cancel_voucher(self, cr, uid, ids, context=None):
-        third_check_obj = self.pool.get('account.third.check')
-        issued_check_obj = self.pool.get('account.issued.check')
-        res = super(account_voucher, self).cancel_voucher(cr, uid, ids, context=context)
+    @api.multi
+    def cancel_voucher(self):
+        res = super(account_voucher, self).cancel_voucher()
 
-        for voucher in self.browse(cr, uid, ids, context=context):
-
+        for voucher in self:
             # Cancelamos los cheques de tercero en recibos
-            third_receipt_checks = [c.id for c in voucher.third_check_receipt_ids]
-            third_check_obj.cancel_check(cr, uid, third_receipt_checks, context=context)
+            third_receipt_checks = voucher.third_check_receipt_ids
+            third_receipt_checks.cancel_check()
 
             # Volvemos a cartera los cheques de tercero en pagos
-            third_checks = [c.id for c in voucher.third_check_ids]
-            third_check_obj.return_wallet(cr, uid, third_checks, context=context)
+            third_checks = voucher.third_check_ids
+            third_checks.return_wallet()
 
             # Cancelamos los cheques emitidos
-            issued_checks = [c.id for c in voucher.issued_check_ids]
-            issued_check_obj.cancel_check(cr, uid, issued_checks, context=context)
+            issued_checks = voucher.issued_check_ids
+            issued_checks.cancel_check()
 
         return res
 
-    def action_cancel_draft(self, cr, uid, ids, context=None):
-        issued_check_obj = self.pool.get('account.issued.check')
-        third_check_obj = self.pool.get('account.third.check')
-
-        res = super(account_voucher, self).action_cancel_draft(cr, uid, ids, context=context)
-        for voucher in self.browse(cr, uid, ids, context=context):
+    @api.multi
+    def action_cancel_draft(self):
+        res = super(account_voucher, self).action_cancel_draft()
+        for voucher in self:
             # A draft los cheques emitidos
-            issued_checks = [c.id for c in voucher.issued_check_ids]
-            issued_check_obj.write(cr, uid, issued_checks, {'state': 'draft'}, context=context)
+            issued_checks = voucher.issued_check_ids
+            issued_checks.write({'state': 'draft'})
 
             # A draft los cheques de tercero en cobros
-            third_checks = [c.id for c in voucher.third_check_receipt_ids]
-            third_check_obj.write(cr, uid, third_checks, {'state': 'draft'}, context=context)
+            third_checks = voucher.third_check_receipt_ids
+            third_checks.write({'state': 'draft'})
 
         return res
 
