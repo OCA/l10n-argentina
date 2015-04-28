@@ -227,6 +227,7 @@ class account_voucher(models.Model):
                 'WHERE account_move_line.move_id = %s ' \
                     'AND account_analytic_line.move_id = account_move_line.id',
                     (ref, move_id))
+        self.env.invalidate_all()  # Invalidamos la cache
         return True
 
     @api.multi
