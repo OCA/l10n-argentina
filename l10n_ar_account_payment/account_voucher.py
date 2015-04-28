@@ -133,7 +133,7 @@ class account_voucher(models.Model):
 
     # Heredada para agregar un hook y los asientos para varias formas de pago
     @api.multi
-    def create_move_lines(self, move_id, company_currency, current_currency, context=None):
+    def create_move_lines(self, move_id, company_currency, current_currency):
         '''
         Return a dict to be use to create account move lines of given voucher.
 
