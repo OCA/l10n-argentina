@@ -104,7 +104,6 @@ class account_voucher(models.Model):
 
     @api.onchange('third_check_receipt_ids')
     def onchange_third_receipt_checks(self):
-        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_third_checks_receipt_amount()
 
@@ -112,7 +111,6 @@ class account_voucher(models.Model):
 
     @api.onchange('payment_line_ids')
     def onchange_payment_line(self):
-        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
@@ -122,7 +120,6 @@ class account_voucher(models.Model):
 
     @api.onchange('issued_check_ids')
     def onchange_issued_checks(self):
-        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
@@ -131,7 +128,6 @@ class account_voucher(models.Model):
 
     @api.onchange('third_check_ids')
     def onchange_third_checks(self):
-        import ipdb; ipdb.set_trace()
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
