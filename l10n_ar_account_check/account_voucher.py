@@ -96,7 +96,7 @@ class account_voucher(models.Model):
         # third_check_obj = self.pool.get('account.third.check')
         amount = 0.0
 
-        for check in self.third_check_ids:
+        for check in self.third_check_receipt_ids:
             am = check.amount
             if am:
                 amount += am
