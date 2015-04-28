@@ -163,7 +163,7 @@ class account_voucher(models.Model):
                 if check.amount == 0.0:
                     continue
 
-                res = check.create_voucher_move_line()
+                res = check.create_voucher_move_line(self)
                 res['move_id'] = move_id
                 move_lines.append(res)
                 check.to_wallet()
@@ -174,7 +174,7 @@ class account_voucher(models.Model):
                 if check.amount == 0.0:
                     continue
 
-                res = check.create_voucher_move_line()
+                res = check.create_voucher_move_line(self)
                 res['move_id'] = move_id
                 move_lines.append(res)
                 check.check_delivered()

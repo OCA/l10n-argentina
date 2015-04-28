@@ -165,8 +165,7 @@ class account_third_check(models.Model):
     deposit_slip = fields.Char('Deposit Slip', size=64)
 
     @api.model
-    def create_voucher_move_line(self):
-        voucher = self.source_voucher_id
+    def create_voucher_move_line(self, voucher):
         check_config_obj = self.env['account.check.config']
 
         # Buscamos la configuracion de cheques
