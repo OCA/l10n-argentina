@@ -46,24 +46,19 @@ class retention_tax_line(models.Model):
     certificate_no = fields.Char('Certificate No.', required=False, size=32)
     state_id = fields.Many2one('res.country.state', string="State/Province")
 
-    def onchange_retention(self, cr, uid, ids, retention_id, context):
-        if not retention_id:
-            return {}
+    @api.onchange('retention_id')
+    def onchange_retention(self):
+        retention = self.retention_id
+        if retention.id:
+            self.name = retention.name
+            self.account_id = retention.tax_id.account_collected_id.id
+            self.base_code_id = retention.tax_id.base_code_id.id
+            self.tax_code_id = retention.tax_id.tax_code_id.id
 
-        retention_obj = self.pool.get('retention.retention')
-        retention = retention_obj.browse(cr, uid, retention_id)
-        vals = {}
-        vals['name'] = retention.name
-        vals['account_id'] = retention.tax_id.account_collected_id.id
-        vals['base_code_id'] = retention.tax_id.base_code_id.id
-        vals['tax_code_id'] = retention.tax_id.tax_code_id.id
-
-        if retention.state_id:
-            vals['state_id'] = retention.state_id.id
-        else:
-            vals['state_id'] = False
-
-        return {'value': vals}
+            if retention.state_id:
+                self.state_id = retention.state_id.id
+            else:
+                self.state_id = False
 
     def create_voucher_move_line(self, cr, uid, retention, voucher, context=None):
         voucher_obj = self.pool.get('account.voucher')
@@ -159,71 +154,56 @@ class account_voucher(models.Model):
 
     retention_ids = fields.One2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft': [('readonly', False)]})
 
-    def _get_retention_amount(self, cr, uid, retention_ids, context=None):
-        retention_line_obj = self.pool.get('retention.tax.line')
+    @api.multi
+    def _get_retention_amount(self):
         amount = 0.0
-
-        for retention_line in retention_ids:
-            if retention_line[0] == 4 and retention_line[1] and not retention_line[2]:
-                am = retention_line_obj.read(cr, uid, retention_line[1], ['amount'], context=context)['amount']
-                if am:
-                    amount += float(am)
-            if retention_line[2]:
-                amount += retention_line[2]['amount']
-
+        for retention_line in self.retention_ids:
+            am = retention_line.amount
+            if am:
+                amount += float(am)
         return amount
-
-    # def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], retention_ids=[], context=None):
-    #     import ipdb; ipdb.set_trace()
-    #
-    #     amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-    #     amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-    #     amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-    #     amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-    #     amount += self._get_retention_amount(cr, uid, retention_ids, context)
-    #
-    #     return {'value': {'amount': amount}}
 
     @api.onchange('payment_line_ids')
     def onchange_payment_line(self):
-        import ipdb; ipdb.set_trace()
-        pass
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_third_checks_receipt_amount()
+        amount += self._get_retention_amount()
 
-    def onchange_third_receipt_checks(self, cr, uid, ids, amount, payment_line_ids, third_check_receipt_ids, retention_ids, context=None):
+        self.amount = amount
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+    @api.onchange('third_check_receipt_ids')
+    def onchange_third_receipt_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_third_checks_receipt_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-        return {'value': {'amount': amount}}
+    @api.onchange('issued_check_ids')
+    def onchange_issued_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-    def onchange_issued_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context=None):
+    @api.onchange('third_check_ids')
+    def onchange_third_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def onchange_third_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def onchange_retentions(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
+    @api.onchange('retention_ids')
+    def onchange_retentions(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_third_checks_receipt_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
         retention_line_obj = self.pool.get("retention.tax.line")
