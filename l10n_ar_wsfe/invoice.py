@@ -647,23 +647,22 @@ class account_invoice_tax(models.Model):
     _name = "account.invoice.tax"
     _inherit = "account.invoice.tax"
 
-    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
-        tax_obj = self.pool.get('account.tax')
-        cur_obj = self.pool.get('res.currency')
-        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
-        cur = inv.currency_id
+    @api.multi
+    def hook_compute_invoice_taxes(self, invoice, tax_grouped):
+        tax_obj = self.env['account.tax']
+        currency = invoice.currency_id.with_context(date=invoice.date_invoice or fields.Date.context_today(invoice))
 
         for t in tax_grouped.values():
             # Para solucionar el problema del redondeo con AFIP
-            ta = tax_obj.browse(cr, uid, t['tax_id'], context=context)
+            ta = tax_obj.browse(t['tax_id'])
             t['amount'] = t['base'] * ta.amount
             t['tax_amount'] = t['base_amount'] * ta.amount
 
-            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
-            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
-            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
-            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
+            t['base'] = currency.round(t['base'])
+            t['amount'] = currency.round(t['amount'])
+            t['base_amount'] = currency.round(t['base_amount'])
+            t['tax_amount'] = currency.round(t['tax_amount'])
 
-        return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
+        return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
 account_invoice_tax()
