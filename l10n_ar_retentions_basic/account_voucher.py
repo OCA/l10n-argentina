@@ -60,10 +60,15 @@ class retention_tax_line(models.Model):
             else:
                 self.state_id = False
 
-    def create_voucher_move_line(self, cr, uid, retention, voucher, context=None):
-        voucher_obj = self.pool.get('account.voucher')
-        retention_obj = self.pool.get('retention.tax.line')
-
+    @api.model
+    def create_voucher_move_line(self):
+        """
+        Params
+        self = retention.tax.line
+        """
+        self.ensure_one()
+        voucher = self.voucher_id
+        retention = self
         move_lines = []
 
         if retention.amount == 0.0:
@@ -77,16 +82,16 @@ class retention_tax_line(models.Model):
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        tax_amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.amount, context=context)
-        base_amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.base, context=context)
+        tax_amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(retention.amount)
+        base_amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(retention.base)
 
         debit = credit = 0.0
 
         # Lo escribimos en el objeto retention_tax_line
-        #retention_vals['tax_amount'] = tax_amount_in_company_currency
-        #retention_vals['base_amount'] = base_amount_in_company_currency
+        # retention_vals['tax_amount'] = tax_amount_in_company_currency
+        # retention_vals['base_amount'] = base_amount_in_company_currency
 
-        retention_obj.write(cr, uid, retention.id, retention_vals)
+        retention.write(retention_vals)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -109,7 +114,7 @@ class retention_tax_line(models.Model):
             'account_id': retention.account_id.id,
             'tax_code_id': retention.tax_code_id.id,
             'tax_amount': tax_amount_in_company_currency,
-            #'move_id': move_id,
+            # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
@@ -125,13 +130,13 @@ class retention_tax_line(models.Model):
         # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
         move_line = {
             'name': retention.name + '(Base Imp)',
-            #'ref': voucher.name,
+            # 'ref': voucher.name,
             'debit': 0.0,
             'credit': 0.0,
             'account_id': retention.account_id.id,
             'tax_code_id': retention.base_code_id.id,
             'tax_amount': base_amount_in_company_currency,
-            #'move_id': move_id,
+            # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
@@ -205,14 +210,13 @@ class account_voucher(models.Model):
         amount += self._get_retention_amount()
         self.amount = amount
 
-    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
-        retention_line_obj = self.pool.get("retention.tax.line")
-        move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
-        voucher = self.pool.get('account.voucher').browse(cr, uid, voucher_id, context)
+    @api.multi
+    def create_move_line_hook(self, move_id, move_lines):
+        voucher = self
+        move_lines = super(account_voucher, self).create_move_line_hook(move_id, move_lines)
 
         for ret in voucher.retention_ids:
-
-            res = retention_line_obj.create_voucher_move_line(cr, uid, ret, voucher, context=context)
+            res = ret.create_voucher_move_line()
             if res:
                 res[0]['move_id'] = move_id
                 res[1]['move_id'] = move_id
@@ -224,8 +228,7 @@ class account_voucher(models.Model):
                 'voucher_number': voucher.reference,
                 'partner_id': voucher.partner_id.id,
             }
-
-            retention_line_obj.write(cr, uid, ret.id, ret_vals, context=context)
+            ret.write(ret_vals)
 
         return move_lines
 
