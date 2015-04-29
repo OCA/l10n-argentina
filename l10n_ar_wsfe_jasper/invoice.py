@@ -35,11 +35,16 @@ class account_invoice(osv.osv):
     def _compute_bar_code(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for inv in self.browse(cr, uid, ids, context=context):
+            if inv.type in ('in_invoice','in_refund'):
+                continue
             cuit = inv.company_id.partner_id.vat
             pos = '0002'
             
             eivoucher_obj = self.pool.get('wsfe.voucher_type')
             aux_res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
+            
+            if inv.pos_ar_id:
+				pos = inv.pos_ar_id.name
 
             ei_voucher_type = eivoucher_obj.browse(cr, uid, aux_res)
             inv_code = ei_voucher_type.code
