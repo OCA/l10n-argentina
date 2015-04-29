@@ -142,7 +142,7 @@ class account_invoice_tax(models.Model):
         if auto:
             return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
-        cur_obj = self.env['res.currency']
+        currency = invoice.currency_id.with_context(date=invoice.date_invoice or fields.Date.context_today(invoice))
 
         # Recorremos las percepciones y las computamos como account.invoice.tax
         for line in invoice.perception_ids:
@@ -185,10 +185,10 @@ class account_invoice_tax(models.Model):
                 tax_grouped[key]['tax_amount'] += val['tax_amount']
 
         for t in tax_grouped.values():
-            t['base'] = cur_obj.round(t['base'])
-            t['amount'] = cur_obj.round(t['amount'])
-            t['base_amount'] = cur_obj.round(t['base_amount'])
-            t['tax_amount'] = cur_obj.round(t['tax_amount'])
+            t['base'] = currency.round(t['base'])
+            t['amount'] = currency.round(t['amount'])
+            t['base_amount'] = currency.round(t['base_amount'])
+            t['tax_amount'] = currency.round(t['tax_amount'])
 
         return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
 
