@@ -19,7 +19,8 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp.osv import osv
+from openerp import models, fields, api
 from datetime import datetime
 from openerp.tools.translate import _
 from openerp import pooler
@@ -29,20 +30,14 @@ import re
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>"
 
 
-class account_invoice(osv.osv):
+class account_invoice(models.Model):
     _name = "account.invoice"
     _inherit = "account.invoice"
 
-    _columns = {
-        'aut_cae': fields.boolean('Autorizar', help='Pedido de autorizacion a la AFIP'),
-        'cae': fields.char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)'),
-        'cae_due_date': fields.date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE'),
-        #'associated_inv_ids': fields.many2many('account.invoice', )
-    }
-
-    _defaults = {
-        'aut_cae': lambda *a: False,
-    }
+    aut_cae = fields.Boolean('Autorizar', default=False, help='Pedido de autorizacion a la AFIP')
+    cae = fields.Char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)')
+    cae_due_date = fields.Date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE')
+    #'associated_inv_ids': fields.many2many('account.invoice', )
 
     # Esto lo hacemos porque al hacer una nota de credito, no le setea la fiscal_position
     # Ademas, seteamos el comprobante asociado
@@ -648,7 +643,7 @@ class account_invoice(osv.osv):
 account_invoice()
 
 
-class account_invoice_tax(osv.osv):
+class account_invoice_tax(models.Model):
     _name = "account.invoice.tax"
     _inherit = "account.invoice.tax"
 

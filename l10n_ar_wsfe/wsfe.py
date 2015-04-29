@@ -19,44 +19,43 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp.osv import osv
+from openerp import models, fields, api
 from openerp.tools.translate import _
 from wsfe_suds import WSFEv1 as wsfe
 from datetime import datetime
 import time
 
 
-class wsfe_tax_codes(osv.osv):
+class wsfe_tax_codes(models.Model):
     _name = "wsfe.tax.codes"
     _description = "Tax Codes"
-    _columns = {
-        'code': fields.char('Code', required=False, size=4),
-        'name': fields.char('Desc', required=True, size=64),
-        'to_date': fields.date('Effect Until'),
-        'from_date': fields.date('Effective From'),
-        'tax_id': fields.many2one('account.tax', 'Account Tax'),
-        'tax_code_id': fields.many2one('account.tax.code', 'Account Tax Code'),
-        'wsfe_config_id': fields.many2one('wsfe.config', 'WSFE Configuration'),
-        'from_afip': fields.boolean('From AFIP'),
-        'exempt_operations': fields.boolean('Exempt Operations', help='Check it if this VAT Tax corresponds to vat tax exempts operations, such as to sell books, milk, etc. The taxes with this checked, will be reported to AFIP as  exempt operations (base amount) without VAT applied on this'),
-    }
+
+    code = fields.Char('Code', required=False, size=4)
+    name = fields.Char('Desc', required=True, size=64)
+    to_date = fields.Date('Effect Until')
+    from_date = fields.Date('Effective From')
+    tax_id = fields.Many2one('account.tax', 'Account Tax')
+    tax_code_id = fields.Many2one('account.tax.code', 'Account Tax Code')
+    wsfe_config_id = fields.Many2one('wsfe.config', 'WSFE Configuration')
+    from_afip = fields.Boolean('From AFIP')
+    exempt_operations = fields.Boolean('Exempt Operations', help='Check it if this VAT Tax corresponds to vat tax exempts operations, such as to sell books, milk, etc. The taxes with this checked, will be reported to AFIP as  exempt operations (base amount) without VAT applied on this')
 
 
-class wsfe_config(osv.osv):
+class wsfe_config(models.Model):
     _name = "wsfe.config"
     _description = "Configuration for WSFE"
     _rec_name = 'cuit'
 
-    _columns = {
-        'cuit': fields.related('company_id', 'partner_id', 'vat', type='char', string='Cuit'),
-        'url': fields.char('URL for WSFE', size=60, required=True),
-        'homologation': fields.boolean('Homologation', help="If true, there will be some validations that are disabled, for example, invoice number correlativeness"),
-        'point_of_sale_ids': fields.many2many('pos.ar', 'pos_ar_wsfe_rel', 'wsfe_config_id', 'pos_ar_id', 'Points of Sale'),
-        'vat_tax_ids': fields.one2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', True)]),
-        'exempt_operations_tax_ids': fields.one2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', False), ('exempt_operations', '=', True)]),
-        'wsaa_ticket_id': fields.many2one('wsaa.ta', 'Ticket Access'),
-        'company_id': fields.many2one('res.company', 'Company Name', required=True),
-    }
+    # cuit = fields.Related('company_id', 'partner_id', 'vat', type='char', string='Cuit') --> LEGACY
+    cuit = fields.Char(related='company_id.partner_id.vat', string='Cuit')
+    url = fields.Char('URL for WSFE', size=60, required=True)
+    homologation = fields.Boolean('Homologation', help="If true, there will be some validations that are disabled, for example, invoice number correlativeness")
+    point_of_sale_ids = fields.Many2many('pos.ar', 'pos_ar_wsfe_rel', 'wsfe_config_id', 'pos_ar_id', 'Points of Sale')
+    vat_tax_ids = fields.One2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', True)])
+    exempt_operations_tax_ids = fields.One2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', False), ('exempt_operations', '=', True)])
+    wsaa_ticket_id = fields.Many2one('wsaa.ta', 'Ticket Access')
+    company_id = fields.Many2one('res.company', 'Company Name', required=True)
 
     _sql_constraints = [
         ('company_uniq', 'unique (company_id)', 'The configuration must be unique per company !')
@@ -300,29 +299,24 @@ wsfe_config()
 wsfe_tax_codes()
 
 
-class wsfe_voucher_type(osv.osv):
+class wsfe_voucher_type(models.Model):
+    """Es un comprobante que una empresa envía a su cliente, en la que se le notifica haber cargado o debitado en su cuenta una determinada suma o valor, por el concepto que se indica en la misma nota. Este documento incrementa el valor de la deuda o saldo de la cuenta, ya sea por un error en la facturación, interés por mora en el pago, o cualquier otra circunstancia que signifique el incremento del saldo de una cuenta.
+It is a proof that a company sends to your client, which is notified to be charged or debited the account a certain sum or value, the concept shown in the same note. This document increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account."""
     _name = "wsfe.voucher_type"
     _description = "Voucher Type for Electronic Invoice"
 
-    _columns = {
-        'name': fields.char('Name', size=64, required=True, readonly=False, help='Voucher Type, eg.: Factura A, Nota de Credito B, etc.'),
-        'code': fields.char('Code', size=4, required=True, help='Internal Code assigned by AFIP for voucher type'),
+    name = fields.Char('Name', size=64, required=True, readonly=False, help='Voucher Type, eg.: Factura A, Nota de Credito B, etc.')
+    code = fields.Char('Code', size=4, required=True, help='Internal Code assigned by AFIP for voucher type')
+    voucher_model = fields.Selection([
+        ('invoice', 'Factura/NC/ND'),
+        ('voucher', 'Recibo'), ], 'Voucher Model', select=True, required=True)
+    document_type = fields.Selection([
+        ('out_invoice', 'Factura'),
+        ('out_refund', 'Nota de Credito'),
+        ('out_debit', 'Nota de Debito'),
+    ], 'Document Type', select=True, required=True, readonly=False)
+    denomination_id = fields.Many2one('invoice.denomination', 'Denomination', required=False)
 
-        'voucher_model': fields.selection([
-            ('invoice', 'Factura/NC/ND'),
-            ('voucher', 'Recibo'), ], 'Voucher Model', select=True, required=True),
-
-        'document_type': fields.selection([
-            ('out_invoice', 'Factura'),
-            ('out_refund', 'Nota de Credito'),
-            ('out_debit', 'Nota de Debito'),
-        ], 'Document Type', select=True, required=True, readonly=False),
-
-        'denomination_id': fields.many2one('invoice.denomination', 'Denomination', required=False),
-    }
-
-    """Es un comprobante que una empresa envía a su cliente, en la que se le notifica haber cargado o debitado en su cuenta una determinada suma o valor, por el concepto que se indica en la misma nota. Este documento incrementa el valor de la deuda o saldo de la cuenta, ya sea por un error en la facturación, interés por mora en el pago, o cualquier otra circunstancia que signifique el incremento del saldo de una cuenta.
-It is a proof that a company sends to your client, which is notified to be charged or debited the account a certain sum or value, the concept shown in the same note. This document increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account."""
 
     def get_voucher_type(self, cr, uid, voucher, context=None):
 
