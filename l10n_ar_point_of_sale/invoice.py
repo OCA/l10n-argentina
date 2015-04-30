@@ -218,9 +218,9 @@ class invoice(models.Model):
             raise ValidationError(_('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
 
-    @api.one
+    @api.model
     def _update_reference(self, ref):
-
+        self.ensure_one()
         move_id = self.move_id and self.move_id.id or False
         self.env.cr.execute('UPDATE account_move SET ref=%s ' \
                 'WHERE id=%s', # AND (ref is null OR ref = \'\')',
