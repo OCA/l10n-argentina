@@ -322,9 +322,9 @@ It is a proof that a company sends to your client, which is notified to be charg
 
         # Chequeamos el modelo
         voucher_model = None
-        model = voucher._table_name
+        model = voucher._table
 
-        if model == 'account.invoice':
+        if model == 'account_invoice':
             voucher_model = 'invoice'
 
             denomination_id = voucher.denomination_id.id
@@ -344,7 +344,7 @@ It is a proof that a company sends to your client, which is notified to be charg
 
             return self.read(cr, uid, res[0], ['code'], context=context)['code']
 
-        elif model == 'account.voucher':
+        elif model == 'account_voucher':
             voucher_model = 'voucher'
 
         return None
