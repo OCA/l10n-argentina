@@ -80,7 +80,6 @@ class wsaa_ta(models.Model):
 
         user = self.env['res.users'].browse(SUPERUSER_ID)
         # user = user_obj.browse(cr, SUPERUSER_ID, uid)
-        import ipdb; ipdb.set_trace()
         tz = pytz.timezone(user.partner_id.tz) or pytz.utc
         try:
             _wsaa = wsaa(wsaa_config.certificate, wsaa_config.key, wsaa_config.url, service, tz)
