@@ -89,19 +89,21 @@ class wsfe_config(models.Model):
 
         return super(wsfe_config, self).create(cr, uid, vals, context)
 
-    def get_config(self, cr, uid):
+    @api.model
+    def get_config(self):
         # Obtenemos la compania que esta utilizando en este momento este usuario
-        company_id = self.pool.get('res.users')._get_company(cr, uid)
+        company_id = self.env.user.company_id.id
         if not company_id:
             raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
 
-        ids = self.search(cr, uid, [('company_id', '=', company_id)])
+        ids = self.search([('company_id', '=', company_id)])
         if not ids:
             raise osv.except_osv(_('WSFE Config Error!'), _('There is no WSFE configuration set to this company'))
 
-        return self.browse(cr, uid, ids[0])
+        return ids
 
-    def check_errors(self, cr, uid, res, raise_exception=True, context=None):
+    @api.model
+    def check_errors(self, res, raise_exception=True):
         msg = ''
         if 'errors' in res:
             errors = [error.msg for error in res['errors']]
@@ -114,7 +116,8 @@ class wsfe_config(models.Model):
 
         return msg
 
-    def check_observations(self, cr, uid, res, context):
+    @api.model
+    def check_observations(self, res):
         msg = ''
         if 'observations' in res:
             observations = [obs.msg for obs in res['observations']]
@@ -123,26 +126,29 @@ class wsfe_config(models.Model):
             msg = msg + ' Codigo/s Observacion:' + ' '.join(obs_codes)
 
             # Escribimos en el log del cliente web
-            self.log(cr, uid, None, msg, context)
+            self.log(None, msg)
 
         return msg
 
-    def get_invoice_CAE(self, cr, uid, ids, invoice_ids, pos, voucher_type, details, context={}):
-        ta_obj = self.pool.get('wsaa.ta')
+    @api.model
+    def get_invoice_CAE(self, pos, voucher_type, details):
+        self.ensure_one()
 
-        conf = self.browse(cr, uid, ids)[0]
-        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_CAE_solicitar(pos, voucher_type, details)
 
         return res
 
-    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
-        wsfe_req_obj = self.pool.get('wsfe.request')
-        voucher_type_obj = self.pool.get('wsfe.voucher_type')
-        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code', '=', voucher_type_code)])
-        voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
+    @api.model
+    def _log_wsfe_request(self, pos, voucher_type_code, details, res):
+        wsfe_req_obj = self.env['wsfe.request']
+        voucher_type_obj = self.env['wsfe.voucher_type']
+        voucher_type = voucher_type_obj.search([('code', '=', voucher_type_code)])
+        # voucher_type_name = voucher_type_obj.read(, voucher_type_ids, ['name'])[0]['name']
+        voucher_type_name = voucher_type.name
         req_details = []
         for index, comp in enumerate(res['Comprobantes']):
             detail = details[index]
@@ -151,7 +157,7 @@ class wsfe_config(models.Model):
             # se hace el rollback por lo tanto el refund que se estaba creando ya no existe en
             # base de datos y estariamos violando una foreign key contraint. Por eso,
             # chequeamos que existe info de la invoice_id, sino lo seteamos en False
-            read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
+            read_inv = self.env['account.invoice'].browse(detail['invoice_id'])
 
             if not read_inv:
                 invoice_id = False
@@ -190,33 +196,35 @@ class wsfe_config(models.Model):
             'detail_ids': req_details,
         }
 
-        return wsfe_req_obj.create(cr, uid, vals)
+        return wsfe_req_obj.create(vals)
 
-    def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
-        ta_obj = self.pool.get('wsaa.ta')
+    @api.model
+    def get_last_voucher(self, pos, voucher_type):
+        self.ensure_one()
 
-        conf = self.browse(cr, uid, ids)[0]
-        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_comp_ultimo_autorizado(pos, voucher_type)
 
-        self.check_errors(cr, uid, res, context=context)
-        self.check_observations(cr, uid, res, context=context)
+        self.check_errors(res)
+        self.check_observations(res)
         last = res['response'].CbteNro
         return last
 
+    @api.model
     def get_voucher_info(self, cr, uid, ids, pos, voucher_type, number, context={}):
-        ta_obj = self.pool.get('wsaa.ta')
+        self.ensure_one()
 
-        conf = self.browse(cr, uid, ids)[0]
-        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_comp_consultar(pos, voucher_type, number)
 
-        self.check_errors(cr, uid, res, context=context)
-        self.check_observations(cr, uid, res, context=context)
+        self.check_errors(res)
+        self.check_observations(res)
         #last = res['response'].CbteNro
 
         res = res['response']
@@ -249,19 +257,20 @@ class wsfe_config(models.Model):
 
         return result
 
-    def read_tax(self, cr, uid, ids, context={}):
-        ta_obj = self.pool.get('wsaa.ta')
+    @api.model
+    def read_tax(self):
+        self.ensure_one()
 
-        conf = self.browse(cr, uid, ids)[0]
-        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_param_get_tipos_iva()
 
-        wsfe_tax_obj = self.pool.get('wsfe.tax.codes')
+        wsfe_tax_obj = self.env['wsfe.tax.codes']
 
         # Chequeamos los errores
-        msg = self.check_errors(cr, uid, res, raise_exception=False, context=context)
+        msg = self.check_errors(res, raise_exception=False)
         if msg:
             # TODO: Hacer un wrapping de los errores, porque algunos son
             # largos y se imprimen muy mal en pantalla
@@ -269,7 +278,7 @@ class wsfe_config(models.Model):
 
         #~ Armo un lista con los codigos de los Impuestos
         for r in res['response']:
-            res_c = wsfe_tax_obj.search(cr, uid, [('code', '=', r.Id)])
+            res_c = wsfe_tax_obj.search([('code', '=', r.Id)])
 
             #~ Si tengo no los codigos de esos Impuestos en la db, los creo
             if not len(res_c):
@@ -279,8 +288,8 @@ class wsfe_config(models.Model):
                 except ValueError:
                     td = False
 
-                wsfe_tax_obj.create(cr, uid, {'code': r.Id, 'name': r.Desc, 'to_date': td,
-                                              'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True}, context={})
+                wsfe_tax_obj.create({'code': r.Id, 'name': r.Desc, 'to_date': td,
+                                              'from_date': fd, 'wsfe_config_id': self.id, 'from_afip': True})
             #~ Si los codigos estan en la db los modifico
             else:
                 fd = datetime.strptime(r.FchDesde, '%Y%m%d')
@@ -290,8 +299,8 @@ class wsfe_config(models.Model):
                 except ValueError:
                     td = False
 
-                wsfe_tax_obj.write(cr, uid, res_c[0], {'code': r.Id, 'name': r.Desc, 'to_date': td,
-                                                       'from_date': fd, 'wsfe_config_id': ids[0], 'from_afip': True})
+                res_c.write({'code': r.Id, 'name': r.Desc, 'to_date': td,
+                                                       'from_date': fd, 'wsfe_config_id': self.id, 'from_afip': True})
 
         return True
 
@@ -317,9 +326,8 @@ It is a proof that a company sends to your client, which is notified to be charg
     ], 'Document Type', select=True, required=True, readonly=False)
     denomination_id = fields.Many2one('invoice.denomination', 'Denomination', required=False)
 
-
-    def get_voucher_type(self, cr, uid, voucher, context=None):
-
+    @api.model
+    def get_voucher_type(self, voucher):
         # Chequeamos el modelo
         voucher_model = None
         model = voucher._table
@@ -334,7 +342,7 @@ It is a proof that a company sends to your client, which is notified to be charg
                 if voucher.is_debit_note:
                     type = 'out_debit'
 
-            res = self.search(cr, uid, [('voucher_model', '=', voucher_model), ('document_type', '=', type), ('denomination_id', '=', denomination_id)], context=context)
+            res = self.search([('voucher_model', '=', voucher_model), ('document_type', '=', type), ('denomination_id', '=', denomination_id)])
 
             if not len(res):
                 raise osv.except_osv(_("Voucher type error!"), _("There is no voucher type that corresponds to this object"))
@@ -342,7 +350,7 @@ It is a proof that a company sends to your client, which is notified to be charg
             if len(res) > 1:
                 raise osv.except_osv(_("Voucher type error!"), _("There is more than one voucher type that corresponds to this object"))
 
-            return self.read(cr, uid, res[0], ['code'], context=context)['code']
+            return res.code
 
         elif model == 'account_voucher':
             voucher_model = 'voucher'
