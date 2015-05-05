@@ -19,19 +19,20 @@
 #
 ##############################################################################
 
-from osv import osv
+from openerp import models, fields, api, _
 
 # TODO: Hardcodeamos el codigo porque es por a nivel Jurisdiccional
 # Despues podemos pensar algo mejor
 codes = {'nacional': '1', 'provincial': '2', 'municipal': '3'}
 
 
-class account_invoice(osv.osv):
+class account_invoice(models.Model):
     _name = "account.invoice"
     _inherit = "account.invoice"
 
-    def hook_add_taxes(self, cr, uid, inv, detalle):
-        detalle = super(account_invoice, self).hook_add_taxes(cr, uid, inv, detalle)
+    @api.model
+    def hook_add_taxes(self, inv, detalle):
+        detalle = super(account_invoice, self).hook_add_taxes(inv, detalle)
         perc_array = []
 
         for perception in inv.perception_ids:
