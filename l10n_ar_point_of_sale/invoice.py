@@ -214,20 +214,18 @@ class invoice(osv.osv):
         return True
 
     def _check_duplicate(self, cr, uid, ids, context=None):
-        partner_obj = self.pool.get('res.partner')
-        company_obj = self.pool.get('res.company')
-        for invoice in self.read(cr, uid, ids, ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'partner_id', 'state', 'company_id'], context=context):
+        fiscal_pos_obj = self.pool.get('account.fiscal.position')
+
+        for invoice in self.read(cr, uid, ids, ['denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number', 'partner_id', 'state', 'fiscal_position', 'company_id'], context=context):
 
             denomination_id = invoice['denomination_id'] and invoice['denomination_id'][0] or False
             pos_ar_id = invoice['pos_ar_id'] and invoice['pos_ar_id'][0] or False
             partner_id = invoice['partner_id'] and invoice['partner_id'][0] or False
-            company_id = invoice['company_id'] and invoice['company_id'][0] or False
-
-            partner_country = partner_obj.read(cr, uid, partner_id, ['country_id'], context=context)['country_id']
-            company_country = company_obj.read(cr, uid, company_id, ['country_id'], context=context)['country_id']
 
             if invoice['type'] in ('in_invoice', 'in_refund'):
-                local = ((partner_country and partner_country[0]) == (company_country and company_country[0])) or partner_country == False
+                local = False
+                if invoice['fiscal_position']:
+                    local = fiscal_pos_obj.read(cr, uid, invoice['fiscal_position'][0], ['local'], context=context)['local']
 
                 # Si no es local, no hacemos chequeos
                 if not local:
