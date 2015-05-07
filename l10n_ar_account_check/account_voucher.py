@@ -145,14 +145,10 @@ class account_voucher(models.Model):
 
     @api.multi
     def unlink(self):
-        self.ensure_one()
-        # Borramos los issued check asociados al voucher
-        self.third_check_ids.unlink()
-        self.issued_check_ids.unlink()
-        # for v in self.read(cr, uid, ids, ['issued_check_ids', 'third_check_receipt_ids'], context=context):
-        #     self.pool.get('account.issued.check').unlink(cr, uid, v['issued_check_ids'], context=context)
-        #     self.pool.get('account.third.check').unlink(cr, uid, v['third_check_receipt_ids'], context=context)
-        return super(account_voucher, self).unlink()
+        for voucher in self:
+            voucher.third_check_ids.unlink()
+            voucher.issued_check_ids.unlink()
+            super(account_voucher, voucher).unlink()
 
     @api.multi
     def create_move_line_hook(self, move_id, move_lines):
