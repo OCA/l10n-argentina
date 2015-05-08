@@ -232,7 +232,7 @@ class account_invoice(models.Model):
 
         return True
 
-    @api.model
+    @api.multi
     def _get_next_wsfe_number(self):
         self.ensure_one()
         inv = self
@@ -252,7 +252,7 @@ class account_invoice(models.Model):
 
         return res + 1
 
-    @api.model
+    @api.multi
     def get_next_invoice_number(self):
         """Funcion para obtener el siguiente numero de comprobante correspondiente en el sistema"""
         self.ensure_one()
@@ -429,6 +429,7 @@ class account_invoice(models.Model):
             else:
                 cbte_nro = cbte_nro + 1
 
+            # FIXME: Esto explota cuando la factura a validar no tiene fecha
             date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
             formatted_date_invoice = date_invoice.strftime('%Y%m%d')
             date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
