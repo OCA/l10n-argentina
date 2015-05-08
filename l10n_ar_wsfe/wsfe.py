@@ -257,7 +257,7 @@ class wsfe_config(models.Model):
 
         return result
 
-    @api.model
+    @api.multi
     def read_tax(self):
         self.ensure_one()
 
