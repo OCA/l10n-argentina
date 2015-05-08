@@ -130,7 +130,7 @@ class wsfe_config(models.Model):
 
         return msg
 
-    @api.model
+    @api.multi
     def get_invoice_CAE(self, pos, voucher_type, details):
         self.ensure_one()
 
@@ -142,8 +142,9 @@ class wsfe_config(models.Model):
 
         return res
 
-    @api.model
+    @api.multi
     def _log_wsfe_request(self, pos, voucher_type_code, details, res):
+        self.ensure_one()
         wsfe_req_obj = self.env['wsfe.request']
         voucher_type_obj = self.env['wsfe.voucher_type']
         voucher_type = voucher_type_obj.search([('code', '=', voucher_type_code)])
