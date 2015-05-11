@@ -91,8 +91,9 @@ class account_invoice_confirm(osv.osv_memory):
         next_wsfe_number = inv_obj._get_next_wsfe_number(cr, uid, data_inv[0].id, context=context)
         next_system_number = inv_obj.get_next_invoice_number(cr, uid, data_inv[0].id, context=context)
 
-        if next_wsfe_number != next_system_number:
-            raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_system_number), int(next_wsfe_number)))
+        if not conf.homologation:
+            if next_wsfe_number != next_system_number:
+                raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_system_number), int(next_wsfe_number)))
 
         num = "%s-%08d" % (invoice.pos_ar_id.name, next_wsfe_number)
         context['first_num'] = num
