@@ -42,7 +42,6 @@ class account_invoice_confirm(osv.osv_memory):
 
         if context is None:
             context = {}
-        #data_inv = inv_obj.read(cr, uid, context['active_ids'], ['state', 'pos_ar_id', 'type'], context=context)
         data_inv = inv_obj.browse(cr, uid, context['active_ids'], context=context)
 
         # Primero tenemos que chequear si al menos alguna de las facturas se debe hacer por factura electronica
@@ -84,9 +83,6 @@ class account_invoice_confirm(osv.osv_memory):
         if not same_type:
             raise osv.except_osv(_('WSFE Error!'), _("You are trying to validate several invoices but not all of them are the same type. For example, all Customer Invoices or all Customer Refund"))
 
-        # Tomamos las facturas y mandamos a realizar los asientos contables primero.
-        # inv_obj.action_move_create(cr, uid, context['active_ids'], context)
-
         # Preparamos el lote de facturas para la AFIP
         next_wsfe_number = inv_obj._get_next_wsfe_number(cr, uid, data_inv[0].id, context=context)
         next_system_number = inv_obj.get_next_invoice_number(cr, uid, data_inv[0].id, context=context)
@@ -110,13 +106,9 @@ class account_invoice_confirm(osv.osv_memory):
 
         invoices_not_approbed = [j for j in context['active_ids'] if j not in invoices_approbed.keys()]
 
-        # Seguimos adelante con el workflow para todas las que fueron aprobadas
-        # for invoice in inv_obj.browse(cr, uid, invoices_approbed):
+        # Para las facturas aprobadas creo los asientos, y seguimos adelante con el workflow
         for invoice_id, invoice_vals in invoices_approbed.iteritems():
             invoice = inv_obj.browse(cr, uid, invoice_id)
-
-            # Como sacamos el post de action_move_create, lo tenemos que poner aqui
-            # Lo sacamos para permitir la validacion por lote. Ver wizard account.invoice.confirm
             invoice.action_move_create()
             move_id = invoice.move_id and invoice.move_id.id or False
             self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice': invoice})
@@ -134,17 +126,6 @@ class account_invoice_confirm(osv.osv_memory):
 
             # Llamamos al workflow para que siga su curso
             wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_massive_open', cr)
-
-        # Borramos los asientos contables de las facturas no aprobadas
-        # move_ids = []
-        # for invoice in inv_obj.browse(cr, uid, invoices_not_approbed):
-        #     move_id = invoice.move_id.id
-        #     move_ids.append(move_id)
-        #     # Y borramos otros campos que ya no deben estar seteados
-        #     vals = {'move_id': False, 'date_invoice': False}
-        #     inv_obj.write(cr, uid, invoice.id, vals)
-        #
-        # move_obj.unlink(cr, uid, move_ids)
 
         # TODO: Ver que pasa con las account_analytic_lines
         return {
