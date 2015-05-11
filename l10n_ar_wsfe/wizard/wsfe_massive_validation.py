@@ -147,15 +147,14 @@ class account_invoice_confirm(osv.osv_memory):
         # move_obj.unlink(cr, uid, move_ids)
 
         # TODO: Ver que pasa con las account_analytic_lines
-        # return {
-        #     'name': _('WSFE Request'),
-        #     'domain': "[('id','=',%s)]" % (req_id),
-        #     'view_type': 'form',
-        #     'view_mode': 'tree,form',
-        #     'res_model': 'wsfe.request',
-        #     'view_id': False,
-        #     'type': 'ir.actions.act_window',
-        # }  #  FIXME: Uncaught Error: ) undefined as prefix
-        return
+        return {
+            'name': _('WSFE Request'),
+            'domain': "[('id','=',%s)]" % (req_id.id),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'wsfe.request',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+        }
 
 account_invoice_confirm()
