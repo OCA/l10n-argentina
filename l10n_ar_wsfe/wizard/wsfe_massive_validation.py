@@ -110,8 +110,6 @@ class account_invoice_confirm(osv.osv_memory):
         for invoice_id, invoice_vals in invoices_approbed.iteritems():
             invoice = inv_obj.browse(cr, uid, invoice_id)
             invoice.action_move_create()
-            move_id = invoice.move_id and invoice.move_id.id or False
-            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice': invoice})
 
             inv_obj.write(cr, uid, invoice_id, invoice_vals)
 
