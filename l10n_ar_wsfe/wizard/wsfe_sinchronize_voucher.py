@@ -137,9 +137,6 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         # Reload info...
         inv = inv_obj.browse(cr, uid, inv.id, context)
 
-        move_id = inv.move_id and inv.move_id.id or False
-        self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':inv})
-
         # TODO: Agregar el date_invoice para que sea el de la AFIP
         invoice_vals = {
             'internal_number': '%04d-%08d' % (int(data.pos_id.name), data.voucher_number),
