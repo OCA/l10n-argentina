@@ -278,8 +278,11 @@ class account_invoice(models.Model):
             else:
                 cbte_nro = cbte_nro + 1
 
-            # FIXME: Esto explota cuando la factura a validar no tiene fecha
-            date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
+            if not inv.date_invoice:
+                date_inv = datetime.strftime(datetime.now(), '%Y-%m-%d')
+            else:
+                date_inv = inv.date_invoice
+            date_invoice = datetime.strptime(date_inv, '%Y-%m-%d')
             formatted_date_invoice = date_invoice.strftime('%Y%m%d')
             date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
 
