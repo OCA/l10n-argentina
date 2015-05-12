@@ -41,19 +41,9 @@ class account_checkbook(models.Model):
     company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.user.company_id.id)
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date", default='common')
 
-    def onchange_bank_account(self, cr, uid, ids, bank_account_id, context=None):
-        vals = {}
-        if context is None:
-            context = {}
-
-        if not bank_account_id:
-            return {'value': vals}
-
-        bank_id = self.pool.get('res.partner.bank').read(cr, uid, bank_account_id, ['bank'], context)['bank']
-        if bank_id:
-            vals['bank_id'] = bank_id[0]
-
-        return {'value': vals}
+    @api.onchange('bank_account_id')
+    def onchange_bank_account(self):
+        self.bank_id = self.bank_account_id.bank.id
 
     def unlink(self, cr, uid, ids, context=None):
         if context is None:
