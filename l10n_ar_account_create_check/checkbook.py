@@ -53,11 +53,10 @@ class account_checkbook(models.Model):
             super(account_checkbook, checkbook).unlink()
         return True
 
-    def _get_next_available_check(self, cr, uid, checkbook_id, context=None):
-        check_obj = self.pool.get("account.checkbook.check")
-
-        check_ids = check_obj.search(cr, uid, [('state', '=', 'draft'), ('checkbook_id', '=', checkbook_id)], order="id asc", context=context)
-
+    @api.model
+    def _get_next_available_check(self, checkbook_id):
+        check_obj = self.env["account.checkbook.check"]
+        check_ids = check_obj.search([('state', '=', 'draft'), ('checkbook_id', '=', checkbook_id)], order="id asc")
         if check_ids:
             return check_ids[0]
         return False
