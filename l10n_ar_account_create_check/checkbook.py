@@ -87,17 +87,14 @@ class account_issued_check(models.Model):
     checkbook_id = fields.Many2one('account.checkbook', 'Checkbook')
     number = fields.Char('Check Number', size=20)
 
-    def on_change_check_id(self, cr, uid, ids, check_id, context=None):
-        if context is None:
-            context = {}
-        if not check_id:
-            return {'value': {}}
-
-        check = self.pool.get('account.checkbook.check').browse(cr, uid, check_id, context=context)
-        checkbook = check.checkbook_id
-
-        return {'value': {'account_bank_id': checkbook.bank_account_id.id, 'checkbook_id': checkbook.id,
-                          'bank_id': checkbook.bank_id.id, 'number': check.name, 'type': checkbook.type}}
+    @api.onchange('check_id')
+    def onchange_check_id(self):
+        checkbook = self.check_id.checkbook_id
+        self.account_bank_id = checkbook.bank_account_id.id
+        self.checkbook_id = checkbook.id
+        self.bank_id = checkbook.bank_id.id
+        self.number = self.check_id.name
+        self.type = checkbook.type
 
     def write(self, cr, uid, ids, vals, context=None):
         a = vals.get('check_id', False)
