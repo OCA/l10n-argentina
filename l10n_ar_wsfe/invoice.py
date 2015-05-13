@@ -44,6 +44,7 @@ class account_invoice(osv.osv):
         'dst_cuit_id': fields.many2one('wsfex.dst_cuit.codes', 'Country CUIT'),
         'shipping_perm_ids': fields.one2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions'),
         'incoterm_id': fields.many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions."),
+        'wsfe_request_ids': fields.one2many('wsfe.request.detail', 'name'),
         'wsfex_request_ids': fields.one2many('wsfex.request.detail', 'invoice_id'),
     }
 
@@ -361,61 +362,6 @@ class account_invoice(osv.osv):
                     cr2.close()
 
         return True
-
-    def _parse_result(self, cr, uid, ids, result, context=None):
-
-        if not context:
-            context = {}
-
-        invoices_approbed = {}
-
-        # Verificamos el resultado de la Operacion
-        # Si no fue aprobado
-        if result['Resultado'] == 'R':
-            msg = ''
-            if result['Errores']:
-                msg = 'Errores: ' + '\n'.join(result['Errores']) + '\n'
-
-            if context.get('raise-exception', True):
-                raise osv.except_osv(_('AFIP Web Service Error'),
-                                     _('La factura no fue aprobada. \n%s') % msg)
-
-        elif result['Resultado'] == 'A' or result['Resultado'] == 'P':
-            index = 0
-            for inv in self.browse(cr, uid, ids):
-                invoice_vals = {}
-                comp = result['Comprobantes'][index]
-                if comp['Observaciones']:
-                    msg = 'Observaciones: ' + '\n'.join(comp['Observaciones'])
-
-                    ## Escribimos en el log del cliente web
-                    #self.log(cr, uid, inv.id, msg, context)
-
-                # Chequeamos que se corresponda con la factura que enviamos a validar
-                doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
-                doc_tipo = comp['DocTipo'] == int(doc_type)
-                doc_num = comp['DocNro'] == int(inv.partner_id.vat)
-                cbte = True
-                if inv.internal_number:
-                    cbte = comp['CbteHasta'] == int(inv.internal_number.split('-')[1])
-                else:
-                    # TODO: El nro de factura deberia unificarse para que se setee en una funcion
-                    # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
-                    invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
-
-                if not all([doc_tipo, doc_num, cbte]):
-                    raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
-
-                if comp['Resultado'] == 'A':
-                    invoice_vals['cae'] = comp['CAE']
-                    invoice_vals['cae_due_date'] = comp['CAEFchVto']
-                    invoices_approbed[inv.id] = invoice_vals
-                    #self.write(cr, uid, inv.id, invoice_vals)
-                    #invoices_approbed.append(inv.id)
-
-                index += 1
-
-        return invoices_approbed
 
 account_invoice()
 
