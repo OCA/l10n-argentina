@@ -173,10 +173,9 @@ class wsfe_config(osv.osv):
                     msg = 'Observaciones: ' + '\n'.join(comp['Observaciones'])
 
                 # Chequeamos que se corresponda con la factura que enviamos a validar
-                partner = inv.partner_id.parent_id or inv.partner_id
-                partner_doc_type = partner.document_type_id and partner.document_type_id.afip_code or '99'
-                doc_tipo = comp['DocTipo'] == int(partner_doc_type)
-                doc_num = comp['DocNro'] == int(partner.vat)
+                doc_type, doc_num = self._get_doctype_and_num(inv)
+                doc_tipo = comp['DocTipo'] == int(doc_type)
+                doc_num = comp['DocNro'] == int(doc_num)
                 cbte = True
                 if inv.internal_number:
                     cbte = comp['CbteHasta'] == int(inv.internal_number.split('-')[1])
@@ -354,6 +353,19 @@ class wsfe_config(osv.osv):
 
         return True
 
+    def _get_doctype_and_num(self, inv):
+
+        partner = inv.partner_id.parent_id or inv.partner_id
+        doc_type = partner.document_type_id and partner.document_type_id.afip_code or '99'
+        doc_num = partner.vat or '0'
+
+        # Si no tiene vat o no tiene tipo doc, quedan doc_num=0 y doc_type=99
+        if doc_num == '0' or doc_type == '99':
+            doc_num = '0'
+            doc_type = '99'
+
+        return doc_type, doc_num
+
     def prepare_details(self, cr, uid, conf, invoice_ids, context=None):
         obj_precision = self.pool.get('decimal.precision')
         invoice_obj = self.pool.get('account.invoice')
@@ -367,14 +379,9 @@ class wsfe_config(osv.osv):
         for inv in invoice_obj.browse(cr, uid, invoice_ids):
             detalle = {}
 
-            fiscal_position = inv.fiscal_position
-            if inv.partner_id.parent_id:
-                doc_type = inv.partner_id.parent_id.document_type_id and inv.partner_id.parent_id.document_type_id.afip_code or '99'
-                doc_num = inv.partner_id.parent_id.vat or '0'
-            else:
-                doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
-                doc_num = inv.partner_id.vat or '0'
+            doc_type, doc_num = self._get_doctype_and_num(inv)
 
+            fiscal_position = inv.fiscal_position
             # Chequeamos si el concepto es producto, servicios o productos y servicios
             product_service = [l.product_id and l.product_id.type or 'consu' for l in inv.invoice_line]
 

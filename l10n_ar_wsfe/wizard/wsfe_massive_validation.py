@@ -100,7 +100,7 @@ class account_invoice_confirm(osv.osv_memory):
 
         result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], context['active_ids'], pos, tipo_cbte, fe_det_req, context=context)
         context['raise-exception'] = False
-        invoices_approbed = inv_obj._parse_result(cr, uid, context['active_ids'], result, context=context)
+        invoices_approbed = wsfe_conf_obj._parse_result(cr, uid, [conf.id], context['active_ids'], result, context=context)
 
         req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
