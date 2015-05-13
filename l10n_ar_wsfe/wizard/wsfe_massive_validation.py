@@ -37,6 +37,7 @@ class account_invoice_confirm(osv.osv_memory):
         wf_service = netsvc.LocalService('workflow')
 
         conf = wsfe_conf_obj.get_config(cr, uid)
+        conf_obj = conf._model
 
         if context is None:
             context = {}
@@ -82,26 +83,24 @@ class account_invoice_confirm(osv.osv_memory):
         if not same_type:
             raise osv.except_osv(_('WSFE Error!'), _("You are trying to validate several invoices but not all of them are the same type. For example, all Customer Invoices or all Customer Refund"))
 
-        # Tomamos las facturas y mandamos a realizar los asientos contables primero.
-        inv_obj.action_move_create(cr, uid, context['active_ids'], context)
-
         # Preparamos el lote de facturas para la AFIP
-        next_wsfe_number = inv_obj._get_next_wsfe_number(cr, uid, data_inv[0], context=context)
+        next_wsfe_number = inv_obj._get_next_wsfe_number(cr, uid, conf, data_inv[0], context=context)
         next_system_number = inv_obj.get_next_invoice_number(cr, uid, data_inv[0], context=context)
 
-        if next_wsfe_number != next_system_number:
-            raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_system_number), int(next_wsfe_number)))
+        if not conf.homologation:
+            if next_wsfe_number != next_system_number:
+                raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_system_number), int(next_wsfe_number)))
 
         num = "%s-%08d" % (invoice.pos_ar_id.name, next_wsfe_number)
         context['first_num'] = num
-        fe_det_req = inv_obj.wsfe_invoice_prepare_detail(cr, uid, context['active_ids'], context)
+        fe_det_req = conf_obj.prepare_details(cr, uid, conf, context['active_ids'], context)
 
         # Llamamos a la funcion para validar contra la AFIP
         pos = int(invoice.pos_ar_id.name)
 
         result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], context['active_ids'], pos, tipo_cbte, fe_det_req, context=context)
         context['raise-exception'] = False
-        invoices_approbed = inv_obj._parse_result(cr, uid, context['active_ids'], result, context=context)
+        invoices_approbed = wsfe_conf_obj._parse_result(cr, uid, [conf.id], context['active_ids'], result, context=context)
 
         req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
@@ -111,12 +110,7 @@ class account_invoice_confirm(osv.osv_memory):
         #for invoice in inv_obj.browse(cr, uid, invoices_approbed):
         for invoice_id, invoice_vals in invoices_approbed.iteritems():
             invoice = inv_obj.browse(cr, uid, invoice_id)
-
-            # Como sacamos el post de action_move_create, lo tenemos que poner aqui
-            # Lo sacamos para permitir la validacion por lote. Ver wizard account.invoice.confirm
-            move_id = invoice.move_id and invoice.move_id.id or False
-            self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':invoice})
-
+            inv_obj.action_move_create(cr, uid, [invoice_id], context)
             inv_obj.write(cr, uid, invoice_id, invoice_vals)
 
             reference = invoice.reference or ''
@@ -131,21 +125,10 @@ class account_invoice_confirm(osv.osv_memory):
             # Llamamos al workflow para que siga su curso
             wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_massive_open', cr)
 
-        # Borramos los asientos contables de las facturas no aprobadas
-        move_ids = []
-        for invoice in inv_obj.browse(cr, uid, invoices_not_approbed):
-            move_id = invoice.move_id.id
-            move_ids.append(move_id)
-            # Y borramos otros campos que ya no deben estar seteados
-            vals = {'move_id': False, 'date_invoice': False}
-            inv_obj.write(cr, uid, invoice.id, vals)
-
-        move_obj.unlink(cr, uid, move_ids)
-
         # TODO: Ver que pasa con las account_analytic_lines
         return {
             'name': _('WSFE Request'),
-            'domain' : "[('id','=',%s)]"%(req_id),
+            'domain': "[('id','=',%s)]" % (req_id),
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'wsfe.request',

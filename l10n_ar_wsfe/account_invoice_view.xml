@@ -13,6 +13,7 @@
             <field name="arch" type="xml">
                 <field name="fiscal_position" position="after">
 					<field name="local" invisible="1"/>
+					<field name="aut_cae" invisible="1"/>
 					<field name="export_type_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
 					<field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
 					<field name="dst_cuit_id" widget="selection" attrs="{'invisible': [('local','=', True)]}"/>
@@ -88,6 +89,19 @@
                             </field>
                         </group>
 
+                    </page>
+                </page>
+
+                <page string="Payments" position="after">
+                    <page string="WSFE Requests" attrs="{'invisible': [('aut_cae','!=', False)]}">
+                        <field name="wsfe_request_ids" readonly="1">
+                            <tree string="WSFE Request Details">
+                                <field name="voucher_date"/>
+                                <field name="voucher_number"/>
+                                <field name="result"/>
+                                <field name="observations"/>
+                            </tree>
+                        </field>
                     </page>
                 </page>
             </field>
