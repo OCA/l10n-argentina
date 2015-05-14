@@ -22,15 +22,13 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
+from openerp import models, fields, api
 
 
-class res_partner_bank(osv.osv):
+class res_partner_bank(models.Model):
     _name = 'res.partner.bank'
     _inherit = 'res.partner.bank'
 
-    _columns = {
-        'account_id': fields.many2one('account.account', 'Account')
-    }
+    account_id = fields.Many2one('account.account', 'Account')
 
 res_partner_bank()

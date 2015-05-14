@@ -22,170 +22,174 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp import models, fields, api
 from openerp.tools.translate import _
 
 
-class account_voucher(osv.osv):
+class account_voucher(models.Model):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
 
-    _columns = {
-        'issued_check_ids': fields.one2many('account.issued.check',
-                                            'voucher_id', 'Issued Checks', readonly=True, required=False, states={'draft': [('readonly', False)]}),
-        'third_check_receipt_ids': fields.one2many('account.third.check',
-                                                   'source_voucher_id', 'Third Checks', readonly=True, required=False, states={'draft': [('readonly', False)]}),
-        'third_check_ids': fields.many2many('account.third.check',
-                                            'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id',
-                                            'Third Checks', readonly=True, states={'draft': [('readonly', False)]}),
-    }
+    issued_check_ids = fields.One2many('account.issued.check', 'voucher_id', 'Issued Checks', readonly=True, required=False, states={'draft': [('readonly', False)]})
+    third_check_receipt_ids = fields.One2many('account.third.check', 'source_voucher_id', 'Third Checks', readonly=True, required=False, states={'draft': [('readonly', False)]})
+    third_check_ids = fields.Many2many('account.third.check', 'third_check_voucher_rel', 'dest_voucher_id', 'third_check_id', 'Third Checks', readonly=True, states={'draft': [('readonly', False)]})
 
-    def _amount_checks(self, cr, uid, voucher_id):
+    @api.multi
+    def _amount_checks(self):
+        self.ensure_one()
         res = {}
         res['issued_check_amount'] = 0.00
         res['third_check_amount'] = 0.00
         res['third_check_receipt_amount'] = 0.00
-        if voucher_id:
-            voucher_obj = self.pool.get('account.voucher').browse(cr, uid, voucher_id)
-            if voucher_obj.issued_check_ids:
-                for issued_check in voucher_obj.issued_check_ids:
-                    res['issued_check_amount'] += issued_check.amount
-            if voucher_obj.third_check_ids:
-                for third_check in voucher_obj.third_check_ids:
-                    res['third_check_amount'] += third_check.amount
-            if voucher_obj.third_check_receipt_ids:
-                for third_rec_check in voucher_obj.third_check_receipt_ids:
-                    res['third_check_receipt_amount'] += third_rec_check.amount
+        if self.issued_check_ids:
+            for issued_check in self.issued_check_ids:
+                res['issued_check_amount'] += issued_check.amount
+        if self.third_check_ids:
+            for third_check in self.third_check_ids:
+                res['third_check_amount'] += third_check.amount
+        if self.third_check_receipt_ids:
+            for third_rec_check in self.third_check_receipt_ids:
+                res['third_check_receipt_amount'] += third_rec_check.amount
         return res
 
-    def _get_issued_checks_amount(self, cr, uid, issued_check_ids, context=None):
-        issued_check_obj = self.pool.get('account.issued.check')
+    @api.multi
+    def _get_issued_checks_amount(self):
+        # TODO: testear que este metodo funcione
+        # issued_check_obj = self.pool.get('account.issued.check')
+        amount = 0.0
+        for check in self.issued_check_ids:
+            am = check.amount
+            if am:
+                amount += float(am)
+
+        # for check in self.issued_check_ids:
+        #     if check[0] == 4 and check[1] and not check[2]:
+        #         # am = issued_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
+        #         am = check.amount
+        #         if am:
+        #             amount += float(am)
+        #     if check[2]:
+        #         amount += check[2]['amount']
+        return amount
+
+    @api.multi
+    def _get_third_checks_amount(self):
+        # TODO: testear que este metodo funcione
+        # third_check_obj = self.pool.get('account.third.check')
+        amount = 0.0
+        for check in self.third_check_ids:
+            am = check.amount
+            if am:
+                amount += am
+        # for check in self.third_check_ids:
+        #     if check[0] == 6 and check[2]:
+        #         for c in check[2]:
+        #             # am = third_check_obj.read(cr, uid, c, ['amount'], context=context)['amount']
+        #             am = check.amount
+        #             if am:
+        #                 amount += float(am)
+        return amount
+
+    @api.multi
+    def _get_third_checks_receipt_amount(self):
+        # TODO: testear que este metodo funcione
+        # third_check_obj = self.pool.get('account.third.check')
         amount = 0.0
 
-        for check in issued_check_ids:
-            if check[0] == 4 and check[1] and not check[2]:
-                am = issued_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
-                if am:
-                    amount += float(am)
-            if check[2]:
-                amount += check[2]['amount']
+        for check in self.third_check_receipt_ids:
+            am = check.amount
+            if am:
+                amount += am
+        # for check in self.third_check_ids:
+        #     if check[0] == 4 and check[1] and not check[2]:
+        #         # am = third_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
+        #         am = check.amount
+        #         if am:
+        #             amount += float(am)
+        #     if check[2]:
+        #         amount += check[2]['amount']
 
         return amount
 
-    def _get_third_checks_amount(self, cr, uid, third_check_ids, context=None):
-        third_check_obj = self.pool.get('account.third.check')
-        amount = 0.0
+    @api.onchange('third_check_receipt_ids')
+    def onchange_third_receipt_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_third_checks_receipt_amount()
 
-        for check in third_check_ids:
-            if check[0] == 6 and check[2]:
-                for c in check[2]:
-                    am = third_check_obj.read(cr, uid, c, ['amount'], context=context)['amount']
-                    if am:
-                        amount += float(am)
+        self.amount = amount
 
-        return amount
+    @api.onchange('payment_line_ids')
+    def onchange_payment_line(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_third_checks_receipt_amount()
 
-    def _get_third_checks_receipt_amount(self, cr, uid, third_check_ids, context=None):
-        third_check_obj = self.pool.get('account.third.check')
-        amount = 0.0
+        self.amount = amount
 
-        for check in third_check_ids:
-            if check[0] == 4 and check[1] and not check[2]:
-                am = third_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
-                if am:
-                    amount += float(am)
-            if check[2]:
-                amount += check[2]['amount']
+    @api.onchange('issued_check_ids')
+    def onchange_issued_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
 
-        return amount
+        self.amount = amount
 
-    def onchange_third_receipt_checks(self, cr, uid, ids, amount, payment_line_ids, third_check_receipt_ids, context=None):
+    @api.onchange('third_check_ids')
+    def onchange_third_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
+        self.amount = amount
 
-        return {'value': {'amount': amount}}
+    @api.multi
+    def unlink(self):
+        for voucher in self:
+            voucher.third_check_ids.unlink()
+            voucher.issued_check_ids.unlink()
+            super(account_voucher, voucher).unlink()
 
-    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], context=None):
+    @api.multi
+    def create_move_line_hook(self, move_id, move_lines):
+        move_lines = super(account_voucher, self).create_move_line_hook(move_id, move_lines)
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def onchange_issued_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def onchange_third_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def unlink(self, cr, uid, ids, context=None):
-
-        # Borramos los issued check asociados al voucher
-        for v in self.read(cr, uid, ids, ['issued_check_ids', 'third_check_receipt_ids'], context=context):
-
-            self.pool.get('account.issued.check').unlink(cr, uid, v['issued_check_ids'], context=context)
-            self.pool.get('account.third.check').unlink(cr, uid, v['third_check_receipt_ids'], context=context)
-
-        return super(account_voucher, self).unlink(cr, uid, ids, context=context)
-
-    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
-        move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
-
-        issued_check_pool = self.pool.get('account.issued.check')
-        third_check_obj = self.pool.get('account.third.check')
-
-        # Voucher en cuestion que puede ser un Recibo u Orden de Pago
-        v = self.browse(cr, uid, voucher_id)
-
-        if v.type in ('sale', 'receipt'):
-            for check in v.third_check_receipt_ids:
+        if self.type in ('sale', 'receipt'):
+            for check in self.third_check_receipt_ids:
                 if check.amount == 0.0:
                     continue
 
-                res = third_check_obj.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = check.create_voucher_move_line(self)
                 res['move_id'] = move_id
                 move_lines.append(res)
-                third_check_obj.to_wallet(cr, uid, [check.id], context=context)
+                check.to_wallet()
 
-        elif v.type in ('purchase', 'payment'):
+        elif self.type in ('purchase', 'payment'):
             # Cheques recibidos de terceros que los damos a un proveedor
-            for check in v.third_check_ids:
+            for check in self.third_check_ids:
                 if check.amount == 0.0:
                     continue
 
-                res = third_check_obj.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = check.create_voucher_move_line(self)
                 res['move_id'] = move_id
                 move_lines.append(res)
-                third_check_obj.check_delivered(cr, uid, [check.id], context=context)
+                check.check_delivered()
 
             # Cheques propios que los damos a un proveedor
-            for check in v.issued_check_ids:
+            for check in self.issued_check_ids:
                 if check.amount == 0.0:
                     continue
 
-                res = issued_check_pool.create_voucher_move_line(cr, uid, check, v, context=context)
+                res = check.create_voucher_move_line()
                 res['move_id'] = move_id
                 move_lines.append(res)
-                vals = {'state': 'issued', 'receiving_partner_id': v.partner_id.id}
+                vals = {'state': 'issued', 'receiving_partner_id': self.partner_id.id}
 
                 if not check.origin:
-                    vals['origin'] = v.reference
+                    vals['origin'] = self.reference
 
                 if not check.issue_date:
-                    vals['issue_date'] = v.date
+                    vals['issue_date'] = self.date
                 check.write(vals)
 
         return move_lines
@@ -203,40 +207,36 @@ class account_voucher(osv.osv):
 #
 #        return True
 
-    def cancel_voucher(self, cr, uid, ids, context=None):
-        third_check_obj = self.pool.get('account.third.check')
-        issued_check_obj = self.pool.get('account.issued.check')
-        res = super(account_voucher, self).cancel_voucher(cr, uid, ids, context=context)
+    @api.multi
+    def cancel_voucher(self):
+        res = super(account_voucher, self).cancel_voucher()
 
-        for voucher in self.browse(cr, uid, ids, context=context):
-
+        for voucher in self:
             # Cancelamos los cheques de tercero en recibos
-            third_receipt_checks = [c.id for c in voucher.third_check_receipt_ids]
-            third_check_obj.cancel_check(cr, uid, third_receipt_checks, context=context)
+            third_receipt_checks = voucher.third_check_receipt_ids
+            third_receipt_checks.cancel_check()
 
             # Volvemos a cartera los cheques de tercero en pagos
-            third_checks = [c.id for c in voucher.third_check_ids]
-            third_check_obj.return_wallet(cr, uid, third_checks, context=context)
+            third_checks = voucher.third_check_ids
+            third_checks.return_wallet()
 
             # Cancelamos los cheques emitidos
-            issued_checks = [c.id for c in voucher.issued_check_ids]
-            issued_check_obj.cancel_check(cr, uid, issued_checks, context=context)
+            issued_checks = voucher.issued_check_ids
+            issued_checks.cancel_check()
 
         return res
 
-    def action_cancel_draft(self, cr, uid, ids, context=None):
-        issued_check_obj = self.pool.get('account.issued.check')
-        third_check_obj = self.pool.get('account.third.check')
-
-        res = super(account_voucher, self).action_cancel_draft(cr, uid, ids, context=context)
-        for voucher in self.browse(cr, uid, ids, context=context):
+    @api.multi
+    def action_cancel_draft(self):
+        res = super(account_voucher, self).action_cancel_draft()
+        for voucher in self:
             # A draft los cheques emitidos
-            issued_checks = [c.id for c in voucher.issued_check_ids]
-            issued_check_obj.write(cr, uid, issued_checks, {'state': 'draft'}, context=context)
+            issued_checks = voucher.issued_check_ids
+            issued_checks.write({'state': 'draft'})
 
             # A draft los cheques de tercero en cobros
-            third_checks = [c.id for c in voucher.third_check_receipt_ids]
-            third_check_obj.write(cr, uid, third_checks, {'state': 'draft'}, context=context)
+            third_checks = voucher.third_check_receipt_ids
+            third_checks.write({'state': 'draft'})
 
         return res
 

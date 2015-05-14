@@ -10,13 +10,10 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_payment_form"/>
             <field name="arch" type="xml">
-                <field name="payment_line_ids" position= "attributes">
-                    <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, context)</attribute>
-                </field>
                 <page string="Payment Information" position="after">
                     <page string="Checks">
                         <field name="third_check_receipt_ids" invisible="1"/>
-                        <field name="issued_check_ids" string="Issued Checks" nolabel="1" colspan="4" on_change="onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, context)">
+                        <field name="issued_check_ids" string="Issued Checks" nolabel="1" colspan="4" >
                             <tree string="Issued Checks">
                                 <field name="number"/>
                                 <field name="type"/>
@@ -48,7 +45,7 @@
                             </form>
                         </field>
                         <label for="third_check_ids"/>
-                        <field name="third_check_ids" string="Third Checks" nolabel="1" colspan="4" on_change="onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, context)" domain="[('state', '=', 'wallet')]">
+                        <field name="third_check_ids" string="Third Checks" nolabel="1" colspan="4" domain="[('state', '=', 'wallet')]">
                            <tree string="Third Checks">
                                 <field name="number"/>
                                 <field name="source_partner_id"/>
@@ -72,15 +69,12 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="l10n_ar_account_payment.view_vendor_l10n_ar_receipt_form"/>
             <field name="arch" type="xml">
-                <field name="payment_line_ids" position= "attributes">
-                    <attribute name="on_change">onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, context)</attribute>
-                </field>
                 <page string="Payment Information" position="after">
                     <page string="Checks">
                         <!-- Se pone para poder seguir usando el mismo onchange_payment_line, no afecta al funcionamiento -->
                         <field name="issued_check_ids" invisible="1"/>
                         <field name="third_check_ids" invisible="1"/>
-                        <field name="third_check_receipt_ids" string="Third Checks" nolabel="1" on_change="onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, context)" colspan="4">
+                        <field name="third_check_receipt_ids" string="Third Checks" nolabel="1" colspan="4">
                             <tree string="Third Checks">
                                 <field name="number"/>
                                 <field name="receipt_date"/>
