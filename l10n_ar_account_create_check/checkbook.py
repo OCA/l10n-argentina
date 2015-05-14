@@ -21,63 +21,42 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp import models, fields, api
+from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 
 
-class account_checkbook(osv.osv):
+class account_checkbook(models.Model):
     _name = "account.checkbook"
     _description = "Checkbook"
 
-    _columns = {
-        'name': fields.char('Checkbook Number', size=32, required=True),
-        'bank_id': fields.many2one('res.bank', 'Bank', required=True),
-        'bank_account_id': fields.many2one('res.partner.bank', 'Bank Account', required=True),
-        'account_check_id': fields.many2one('account.account', 'Check Account', help="Account used for account moves with checks. If not set, account in treasury configuration is used."),
-        'check_ids': fields.one2many('account.checkbook.check', 'checkbook_id', 'Available Checks', domain=[('state', '=', 'draft')], readonly=True),
-        'issued_check_ids': fields.one2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True),
-        'partner_id': fields.related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True),
-        'company_id': fields.many2one('res.company', 'Company', required=True),
-        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date"),
-    }
+    name = fields.Char('Checkbook Number', size=32, required=True)
+    bank_id = fields.Many2one('res.bank', 'Bank', required=True)
+    bank_account_id = fields.Many2one('res.partner.bank', 'Bank Account', required=True)
+    account_check_id = fields.Many2one('account.account', 'Check Account', help="Account used for account moves with checks. If not set, account in treasury configuration is used.")
+    check_ids = fields.One2many('account.checkbook.check', 'checkbook_id', 'Available Checks', domain=[('state', '=', 'draft')], readonly=True)
+    issued_check_ids = fields.One2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True)
+    # partner_id = fields.Related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True)
+    partner_id = fields.Many2one(related='company_id.partner_id', string="Partner", store=True, default=lambda self: self.env.user.company_id.partner_id.id)
+    company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.user.company_id.id)
+    type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date", default='common')
 
-    _defaults = {
-        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
-        'partner_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.partner_id.id,
-        'type': 'common',
-    }
+    @api.onchange('bank_account_id')
+    def onchange_bank_account(self):
+        self.bank_id = self.bank_account_id.bank.id
 
-    def onchange_bank_account(self, cr, uid, ids, bank_account_id, context=None):
-        vals = {}
-        if context is None:
-            context = {}
-
-        if not bank_account_id:
-            return {'value': vals}
-
-        bank_id = self.pool.get('res.partner.bank').read(cr, uid, bank_account_id, ['bank'], context)['bank']
-        if bank_id:
-            vals['bank_id'] = bank_id[0]
-
-        return {'value': vals}
-
-    def unlink(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-
-        for checkbook in self.browse(cr, uid, ids, context):
+    @api.multi
+    def unlink(self):
+        for checkbook in self:
             if len(checkbook.issued_check_ids):
-                raise osv.except_osv(_('Error'), _('You cannot delete this checkbook because it has Issued Checks'))
-
-            super(account_checkbook, self).unlink(cr, uid, checkbook.id, context=context)
-
+                raise except_orm(_('Error'), _('You cannot delete this checkbook because it has Issued Checks'))
+            super(account_checkbook, checkbook).unlink()
         return True
 
-    def _get_next_available_check(self, cr, uid, checkbook_id, context=None):
-        check_obj = self.pool.get("account.checkbook.check")
-
-        check_ids = check_obj.search(cr, uid, [('state', '=', 'draft'), ('checkbook_id', '=', checkbook_id)], order="id asc", context=context)
-
+    @api.model
+    def _get_next_available_check(self, checkbook_id):
+        check_obj = self.env["account.checkbook.check"]
+        check_ids = check_obj.search([('state', '=', 'draft'), ('checkbook_id', '=', checkbook_id)], order="id asc")
         if check_ids:
             return check_ids[0]
         return False
@@ -86,49 +65,36 @@ class account_checkbook(osv.osv):
 account_checkbook()
 
 
-class checkbook_check(osv.osv):
+class checkbook_check(models.Model):
 
     """Relacion entre Chequera y cheques por nro de cheque"""
     _name = "account.checkbook.check"
     _description = "Checkbook Check"
 
-    _columns = {
-        'name': fields.char('Check Number', size=20, required=True),
-        'checkbook_id': fields.many2one('account.checkbook', 'Checkbook number', ondelete='cascade', required=True),
-        # Para tener una referencia a que cheque se convirtio
-        #'issued_check_id': fields.many2one('account.issued.check', 'Issued Check', readonly=True),
-        'state': fields.selection([
-            ('draft', 'Draft'),
-            ('done', 'Used')
-        ], 'State', readonly=True),
-    }
+    name = fields.Char('Check Number', size=20, required=True)
+    checkbook_id = fields.Many2one('account.checkbook', 'Checkbook number', ondelete='cascade', required=True)
+    # Para tener una referencia a que cheque se convirtio
+    # 'issued_check_id': fields.many2one('account.issued.check', 'Issued Check', readonly=True),
+    state = fields.Selection([('draft', 'Draft'), ('done', 'Used')], 'State', readonly=True, default='draft')
 
-    _defaults = {
-        'state': 'draft'
-    }
 checkbook_check()
 
 
-class account_issued_check(osv.osv):
+class account_issued_check(models.Model):
     _inherit = 'account.issued.check'
 
-    _columns = {
-        'check_id': fields.many2one('account.checkbook.check', 'Check'),
-        'checkbook_id': fields.many2one('account.checkbook', 'Checkbook'),
-        'number': fields.char('Check Number', size=20),
-    }
+    check_id = fields.Many2one('account.checkbook.check', 'Check')
+    checkbook_id = fields.Many2one('account.checkbook', 'Checkbook')
+    number = fields.Char('Check Number', size=20)
 
-    def on_change_check_id(self, cr, uid, ids, check_id, context=None):
-        if context is None:
-            context = {}
-        if not check_id:
-            return {'value': {}}
-
-        check = self.pool.get('account.checkbook.check').browse(cr, uid, check_id, context=context)
-        checkbook = check.checkbook_id
-
-        return {'value': {'account_bank_id': checkbook.bank_account_id.id, 'checkbook_id': checkbook.id,
-                          'bank_id': checkbook.bank_id.id, 'number': check.name, 'type': checkbook.type}}
+    @api.onchange('check_id')
+    def onchange_check_id(self):
+        checkbook = self.check_id.checkbook_id
+        self.account_bank_id = checkbook.bank_account_id.id
+        self.checkbook_id = checkbook.id
+        self.bank_id = checkbook.bank_id.id
+        self.number = self.check_id.name
+        self.type = checkbook.type
 
     def write(self, cr, uid, ids, vals, context=None):
         a = vals.get('check_id', False)

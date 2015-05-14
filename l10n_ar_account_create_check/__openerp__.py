@@ -31,7 +31,7 @@
     "license": "AGPL-3",
     "depends": ["base", "l10n_ar_account_check"],
     "init_xml": [],
-    "update_xml": [
+    "data": [
         "security/ir.model.access.csv",
         "checkbook_view.xml",
         "account_voucher_view.xml",
