@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/OCA/l10n-argentina.svg?branch=7.0)](https://travis-ci.org/OCA/l10n-argentina)
-[![Coverage Status](https://coveralls.io/repos/OCA/l10n-argentina/badge.png?branch=7.0)](https://coveralls.io/r/OCA/l10n-argentina?branch=7.0)
+[![Build Status](https://travis-ci.org/OCA/l10n-argentina.svg?branch=8.0)](https://travis-ci.org/OCA/l10n-argentina)
+[![Coverage Status](https://coveralls.io/repos/OCA/l10n-argentina/badge.png?branch=8.0)](https://coveralls.io/r/OCA/l10n-argentina?branch=8.0)
 
 Argentina localization for Odoo
 
