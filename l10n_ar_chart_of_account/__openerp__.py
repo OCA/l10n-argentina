@@ -22,7 +22,7 @@
 {
     "name" : "Argentina - Chart of Account",
     "version" : "1.0",
-    "author" : "E-MIPS / Eynes",
+    "author" : "E-MIPS / Eynesn,Odoo Community Association (OCA)",
     "category" : "Localization/Account Charts",
     "description": 
 '''

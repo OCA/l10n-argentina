@@ -24,7 +24,7 @@
 {
     "name" : "Checkbook Management",
     "version" : "0.1",
-    "author" : "eynes.com.ar",
+    "author" : "eynes.com.ar,Odoo Community Association (OCA)",
     "website" : "www.eynes.com.ar",
     "category" : "Localisation/Argentine",
     "description": """Checkbook management for Own Checks""",

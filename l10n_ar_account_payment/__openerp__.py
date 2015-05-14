@@ -25,7 +25,7 @@
     "name": "Payments for ARGENTINA",
     "version": "1.0",
     "depends": ["base", "account_voucher", "account_accountant"],
-    "author": "E-MIPS",
+    "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
     "category": "Own Modules",

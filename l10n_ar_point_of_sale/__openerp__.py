@@ -24,7 +24,7 @@
     "name": "Point of Sale ARGENTINA",
     "version": "1.0",
     "depends": ["base", "sale" ,"purchase", "account" , "account_accountant", "base_vat_ar" ],
-    "author": "E-MIPS",
+    "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
     "category": "Own Modules",
