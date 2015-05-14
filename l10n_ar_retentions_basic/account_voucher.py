@@ -19,64 +19,56 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp import models, fields, api
 from openerp.addons import decimal_precision as dp
 
 
-class retention_tax_line(osv.osv):
+class retention_tax_line(models.Model):
     _name = "retention.tax.line"
     _description = "Retention Tax Line"
 
     # TODO: Tal vaz haya que ponerle estados a este objeto para manejar tambien propiedades segun estados
-    _columns = {
-        'name': fields.char('Retention', size=64),
-        'date': fields.date('Date', select=True),
-        'voucher_id': fields.many2one('account.voucher', 'Voucher', ondelete='cascade'),
-        'voucher_number': fields.char('Reference', size=64),
-        'account_id': fields.many2one('account.account', 'Tax Account', required=True,
-                                      domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')]),
-        'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
-        'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
-        'retention_id': fields.many2one('retention.retention', 'Retention Configuration', required=True, help="Retention configuration used '\
-                                       'for this retention tax, where all the configuration resides. Accounts, Tax Codes, etc."),
-        'base_code_id': fields.many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration."),
-        'base_amount': fields.float('Base Code Amount', digits_compute=dp.get_precision('Account')),
-        'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
-        'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
-        'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
-        'partner_id': fields.many2one('res.partner', 'Partner', required=False),
-        'vat': fields.related('partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
-        'certificate_no': fields.char('Certificate No.', required=False, size=32),
-        'state_id': fields.many2one('res.country.state', string="State/Province"),
-    }
+    name = fields.Char('Retention', size=64)
+    date = fields.Date('Date', select=True)
+    voucher_id = fields.Many2one('account.voucher', 'Voucher', ondelete='cascade')
+    voucher_number = fields.Char('Reference', size=64)
+    account_id = fields.Many2one('account.account', 'Tax Account', required=True, domain=[('type', '<>', 'view'), ('type', '<>', 'income'), ('type', '<>', 'closed')])
+    base = fields.Float('Base', digits=dp.get_precision('Account'))
+    amount = fields.Float('Amount', digits=dp.get_precision('Account'))
+    retention_id = fields.Many2one('retention.retention', 'Retention Configuration', required=True, help="Retention configuration used for this retention tax, where all the configuration resides. Accounts, Tax Codes, etc.")
+    base_code_id = fields.Many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration.")
+    base_amount = fields.Float('Base Code Amount', digits=dp.get_precision('Account'))
+    tax_code_id = fields.Many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration.")
+    tax_amount = fields.Float('Tax Code Amount', digits=dp.get_precision('Account'))
+    company_id = fields.Many2one(string='Company', related='account_id.company_id', store=True, readonly=True)
+    partner_id = fields.Many2one('res.partner', 'Partner', required=False)
+    vat = fields.Char(string='CIF/NIF', related='partner_id.vat', readonly=True)
+    certificate_no = fields.Char('Certificate No.', required=False, size=32)
+    state_id = fields.Many2one('res.country.state', string="State/Province")
 
-    _defaults = {
-        #'date': lambda *a: time.strftime('%Y-%m-%d'),
-    }
+    @api.onchange('retention_id')
+    def onchange_retention(self):
+        retention = self.retention_id
+        if retention.id:
+            self.name = retention.name
+            self.account_id = retention.tax_id.account_collected_id.id
+            self.base_code_id = retention.tax_id.base_code_id.id
+            self.tax_code_id = retention.tax_id.tax_code_id.id
 
-    def onchange_retention(self, cr, uid, ids, retention_id, context):
-        if not retention_id:
-            return {}
+            if retention.state_id:
+                self.state_id = retention.state_id.id
+            else:
+                self.state_id = False
 
-        retention_obj = self.pool.get('retention.retention')
-        retention = retention_obj.browse(cr, uid, retention_id)
-        vals = {}
-        vals['name'] = retention.name
-        vals['account_id'] = retention.tax_id.account_collected_id.id
-        vals['base_code_id'] = retention.tax_id.base_code_id.id
-        vals['tax_code_id'] = retention.tax_id.tax_code_id.id
-
-        if retention.state_id:
-            vals['state_id'] = retention.state_id.id
-        else:
-            vals['state_id'] = False
-
-        return {'value': vals}
-
-    def create_voucher_move_line(self, cr, uid, retention, voucher, context=None):
-        voucher_obj = self.pool.get('account.voucher')
-        retention_obj = self.pool.get('retention.tax.line')
-
+    @api.model
+    def create_voucher_move_line(self):
+        """
+        Params
+        self = retention.tax.line
+        """
+        self.ensure_one()
+        voucher = self.voucher_id
+        retention = self
         move_lines = []
 
         if retention.amount == 0.0:
@@ -90,16 +82,16 @@ class retention_tax_line(osv.osv):
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        tax_amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.amount, context=context)
-        base_amount_in_company_currency = voucher_obj._convert_paid_amount_in_company_currency(cr, uid, voucher, retention.base, context=context)
+        tax_amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(retention.amount)
+        base_amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(retention.base)
 
         debit = credit = 0.0
 
         # Lo escribimos en el objeto retention_tax_line
-        #retention_vals['tax_amount'] = tax_amount_in_company_currency
-        #retention_vals['base_amount'] = base_amount_in_company_currency
+        # retention_vals['tax_amount'] = tax_amount_in_company_currency
+        # retention_vals['base_amount'] = base_amount_in_company_currency
 
-        retention_obj.write(cr, uid, retention.id, retention_vals)
+        retention.write(retention_vals)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -122,7 +114,7 @@ class retention_tax_line(osv.osv):
             'account_id': retention.account_id.id,
             'tax_code_id': retention.tax_code_id.id,
             'tax_amount': tax_amount_in_company_currency,
-            #'move_id': move_id,
+            # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
@@ -138,13 +130,13 @@ class retention_tax_line(osv.osv):
         # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
         move_line = {
             'name': retention.name + '(Base Imp)',
-            #'ref': voucher.name,
+            # 'ref': voucher.name,
             'debit': 0.0,
             'credit': 0.0,
             'account_id': retention.account_id.id,
             'tax_code_id': retention.base_code_id.id,
             'tax_amount': base_amount_in_company_currency,
-            #'move_id': move_id,
+            # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
@@ -161,82 +153,70 @@ class retention_tax_line(osv.osv):
 retention_tax_line()
 
 
-class account_voucher(osv.osv):
+class account_voucher(models.Model):
     _name = 'account.voucher'
     _inherit = 'account.voucher'
 
-    _columns = {
-        'retention_ids': fields.one2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft': [('readonly', False)]}),
-    }
+    retention_ids = fields.One2many('retention.tax.line', 'voucher_id', 'Retentions', readonly=True, states={'draft': [('readonly', False)]})
 
-    def _get_retention_amount(self, cr, uid, retention_ids, context=None):
-        retention_line_obj = self.pool.get('retention.tax.line')
+    @api.multi
+    def _get_retention_amount(self):
         amount = 0.0
-
-        for retention_line in retention_ids:
-            if retention_line[0] == 4 and retention_line[1] and not retention_line[2]:
-                am = retention_line_obj.read(cr, uid, retention_line[1], ['amount'], context=context)['amount']
-                if am:
-                    amount += float(am)
-            if retention_line[2]:
-                amount += retention_line[2]['amount']
-
+        for retention_line in self.retention_ids:
+            am = retention_line.amount
+            if am:
+                amount += float(am)
         return amount
 
-    def onchange_payment_line(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids=[], third_check_ids=[], third_check_receipt_ids=[], retention_ids=[], context=None):
+    @api.onchange('payment_line_ids')
+    def onchange_payment_line(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_third_checks_receipt_amount()
+        amount += self._get_retention_amount()
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+        self.amount = amount
 
-        return {'value': {'amount': amount}}
+    @api.onchange('third_check_receipt_ids')
+    def onchange_third_receipt_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_third_checks_receipt_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-    def onchange_third_receipt_checks(self, cr, uid, ids, amount, payment_line_ids, third_check_receipt_ids, retention_ids, context=None):
+    @api.onchange('issued_check_ids')
+    def onchange_issued_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
+    @api.onchange('third_check_ids')
+    def onchange_third_checks(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-        return {'value': {'amount': amount}}
+    @api.onchange('retention_ids')
+    def onchange_retentions(self):
+        amount = self._get_payment_lines_amount()
+        amount += self._get_issued_checks_amount()
+        amount += self._get_third_checks_amount()
+        amount += self._get_third_checks_receipt_amount()
+        amount += self._get_retention_amount()
+        self.amount = amount
 
-    def onchange_issued_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def onchange_third_checks(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def onchange_retentions(self, cr, uid, ids, amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context=None):
-
-        amount = self._get_payment_lines_amount(cr, uid, payment_line_ids, context)
-        amount += self._get_issued_checks_amount(cr, uid, issued_check_ids, context)
-        amount += self._get_third_checks_amount(cr, uid, third_check_ids, context)
-        amount += self._get_third_checks_receipt_amount(cr, uid, third_check_receipt_ids, context)
-        amount += self._get_retention_amount(cr, uid, retention_ids, context)
-
-        return {'value': {'amount': amount}}
-
-    def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
-        retention_line_obj = self.pool.get("retention.tax.line")
-        move_lines = super(account_voucher, self).create_move_line_hook(cr, uid, voucher_id, move_id, move_lines, context=context)
-        voucher = self.pool.get('account.voucher').browse(cr, uid, voucher_id, context)
+    @api.multi
+    def create_move_line_hook(self, move_id, move_lines):
+        voucher = self
+        move_lines = super(account_voucher, self).create_move_line_hook(move_id, move_lines)
 
         for ret in voucher.retention_ids:
-
-            res = retention_line_obj.create_voucher_move_line(cr, uid, ret, voucher, context=context)
+            res = ret.create_voucher_move_line()
             if res:
                 res[0]['move_id'] = move_id
                 res[1]['move_id'] = move_id
@@ -248,8 +228,7 @@ class account_voucher(osv.osv):
                 'voucher_number': voucher.reference,
                 'partner_id': voucher.partner_id.id,
             }
-
-            retention_line_obj.write(cr, uid, ret.id, ret_vals, context=context)
+            ret.write(ret_vals)
 
         return move_lines
 
