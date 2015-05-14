@@ -25,7 +25,7 @@
 {
     'name': 'Account Checks',
     'version': '1.0',
-    'author': 'Thymbra/E-MIPS/Eynes',
+    'author': 'Thymbra/E-MIPS/Eynes,Odoo Community Association (OCA)',
     'description': """
     Allows to manage checks
     """,

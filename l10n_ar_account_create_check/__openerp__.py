@@ -22,11 +22,11 @@
 ##############################################################################
 
 {
-    "name": "Checkbook Management",
-    "version": "0.1",
-    "author": "eynes.com.ar",
-    "website": "www.eynes.com.ar",
-    "category": "Localisation/Argentine",
+    "name" : "Checkbook Management",
+    "version" : "0.1",
+    "author" : "eynes.com.ar,Odoo Community Association (OCA)",
+    "website" : "www.eynes.com.ar",
+    "category" : "Localisation/Argentine",
     "description": """Checkbook management for Own Checks""",
     "license": "AGPL-3",
     "depends": ["base", "l10n_ar_account_check"],

@@ -23,8 +23,8 @@
 {
     "name": "Point of Sale ARGENTINA",
     "version": "1.1",
-    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant" ],
-    "author": "Proyecto Aconcagua",
+    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant", "base_vat_ar" ],
+    "author": "E-MIPS/Proyecto Aconcagua,Odoo Community Association (OCA)",
     "website": "http://proyectoaconcagua.com.ar",
     "license": "GPL-3",
     "category": "Aconcagua",

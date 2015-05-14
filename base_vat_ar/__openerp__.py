@@ -25,7 +25,7 @@
     "name": "base_vat_ar",
     "version": "1.0",
     "depends": ["base", "base_vat"],
-    "author": "E-MIPS",
+    "author": "E-MIPS,Odoo Community Association (OCA)",
     "category": "VAT Modules",
     "description": """
     This module provide :
