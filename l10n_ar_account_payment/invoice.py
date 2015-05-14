@@ -21,11 +21,10 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
-from openerp.tools.translate import _
+from openerp import models, fields, api, _
 
 
-class invoice(osv.osv):
+class invoice(models.Model):
     _inherit = 'account.invoice'
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
