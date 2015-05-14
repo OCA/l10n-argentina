@@ -19,44 +19,39 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
+from openerp import api, fields, models
+from openerp.osv import osv
 from openerp.tools.translate import _
 from datetime import datetime, timedelta
 from wsaa_suds import WSAA as wsaa
 from openerp import SUPERUSER_ID
 import pytz
 
-class wsaa_config(osv.osv):
+
+class wsaa_config(models.Model):
     _name = "wsaa.config"
     _description = "Configuration for WSAA"
 
-    _columns = {
-        'name': fields.char('Description', size=255),
-        'certificate': fields.text ('Certificate', readonly=True),
-        'key': fields.text ('Private Key' , readonly=True),
-        'url' : fields.char('URL for WSAA', size=60, required=True),
-        'company_id' : fields.many2one('res.company', 'Company Name' , required=True),
-        'service_ids' : fields.one2many('wsaa.ta', 'config_id', string="Authorized Services"),
-    }
+    name = fields.Char('Description', size=255)
+    certificate = fields.Text('Certificate', readonly=True)
+    key = fields.Text('Private Key', readonly=True)
+    url = fields.Char('URL for WSAA', size=60, required=True)
+    company_id = fields.Many2one('res.company', 'Company Name', required=True, default=lambda self: self.env.user.company_id.id)
+    service_ids = fields.One2many('wsaa.ta', 'config_id', string="Authorized Services")
 
     _sql_constraints = [
         ('company_uniq', 'unique (company_id)', 'The configuration must be unique per company !')
     ]
 
-    _defaults = {
-        'company_id' : lambda self, cr, uid, context=None: self.pool.get('res.users')._get_company(cr, uid, context=context),
-        }
-
 wsaa_config()
 
-class afipws_service(osv.osv):
+
+class afipws_service(models.Model):
     _name = "afipws.service"
     _description = "WS Services"
 
-    _columns = {
-        'name': fields.char('Service Name', size=16, required=True),
-        'description': fields.text('Description'),
-        }
+    name = fields.Char('Service Name', size=16, required=True)
+    description = fields.Text('Description')
 
     _sql_constraints = [
         ('name_uniq', 'unique (name)', 'The name of the service must be unique!')
@@ -64,27 +59,27 @@ class afipws_service(osv.osv):
 
 afipws_service()
 
-class wsaa_ta(osv.osv):
+
+class wsaa_ta(models.Model):
     _name = "wsaa.ta"
     _description = "Ticket Access for WSAA"
 
-    _columns = {
-        'name': fields.many2one('afipws.service', 'Service'),
-        'token': fields.text('Token', readonly=True),
-        'sign': fields.text('Sign', readonly=True),
-        'expiration_time': fields.char('Expiration Time', size=256),
-        'config_id' : fields.many2one('wsaa.config'),
-        'company_id' : fields.many2one('res.company', 'Company Name'),
-    }
+    name = fields.Many2one('afipws.service', 'Service')
+    token = fields.Text('Token', readonly=True)
+    sign = fields.Text('Sign', readonly=True)
+    expiration_time = fields.Char('Expiration Time', size=256)
+    config_id = fields.Many2one('wsaa.config')
+    company_id = fields.Many2one('res.company', 'Company Name')
 
     _sql_constraints = [
         ('company_name_uniq', 'unique (name, company_id)', 'The service must be unique per company!')
     ]
 
-    def _renew_ticket(self, cr, uid, wsaa_config, service, context=None):
+    @api.model
+    def _renew_ticket(self, wsaa_config, service):
 
-        user_obj = self.pool.get('res.users')
-        user = user_obj.browse(cr, SUPERUSER_ID, uid)
+        user = self.env['res.users'].browse(SUPERUSER_ID)
+        # user = user_obj.browse(cr, SUPERUSER_ID, uid)
         tz = pytz.timezone(user.partner_id.tz) or pytz.utc
         try:
             _wsaa = wsaa(wsaa_config.certificate, wsaa_config.key, wsaa_config.url, service, tz)
@@ -95,15 +90,14 @@ class wsaa_ta(osv.osv):
         vals = {
             'token': _wsaa.token,
             'sign': _wsaa.sign,
-            'expiration_time' : _wsaa.expiration_time.strftime('%Y-%m-%d %H:%M:%S'),
-            }
-
+            'expiration_time': _wsaa.expiration_time.strftime('%Y-%m-%d %H:%M:%S'),
+        }
         return vals
 
-    def get_token_sign(self, cr, uid, ids, context=None):
-
-        ticket = self.browse(cr, uid, ids, context=context)[0]
-        force = context.get('force_renew', False)
+    @api.multi
+    def get_token_sign(self):
+        ticket = self
+        force = self._context.get('force_renew', False)
 
         if not force:
             if ticket.expiration_time:
@@ -111,22 +105,17 @@ class wsaa_ta(osv.osv):
                 # Primero chequemos si tenemos ya un ticket expirado
                 # Si ahora+10 minutos es mayor al momento de expiracion
                 # debemos renovar el ticket.
-                if datetime.now()+timedelta(minutes=10) < expiration_time:
+                if datetime.now() + timedelta(minutes=10) < expiration_time:
                     return ticket.token, ticket.sign
 
         service = ticket.name.name
-        vals = self._renew_ticket(cr, uid, ticket.config_id, service, context=context)
-        self.write(cr, uid, ticket.id, vals, context=context)
+        vals = self._renew_ticket(ticket.config_id, service)
+        self.write(vals)
         return vals['token'], vals['sign']
 
-    def action_renew(self, cr, uid, ids, context=None):
-        if not context:
-            context = {}
-
-        context['force_renew'] = True
-        self.get_token_sign(cr, uid, ids, context=context)
+    @api.multi
+    def action_renew(self):
+        self.with_context(force_renew=True).get_token_sign()
         return True
-
-
 
 wsaa_ta()
