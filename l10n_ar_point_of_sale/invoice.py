@@ -21,13 +21,11 @@
 #
 ##############################################################################
 
-#from osv import osv, fields
 from openerp import models, fields, api, _
-#from tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp.exceptions import ValidationError
-import time
 import re
+
 
 class invoice(models.Model):
     _name = "account.invoice"
@@ -38,13 +36,13 @@ class invoice(models.Model):
     def name_get(self):
 
         TYPES = {
-                'out_invoice': _('CI '),
-                'in_invoice': _('SI '),
-                'out_refund': _('CR '),
-                'in_refund': _('SR '),
-                'out_debit': _('CD '),
-                'in_debit': _('SD '),
-                }
+            'out_invoice': _('CI '),
+            'in_invoice': _('SI '),
+            'out_refund': _('CR '),
+            'in_refund': _('SR '),
+            'out_debit': _('CD '),
+            'in_debit': _('SD '),
+        }
         result = []
 
         if not self._context.get('use_internal_number', True):
@@ -129,18 +127,15 @@ class invoice(models.Model):
     pos_ar_id = fields.Many2one('pos.ar',string='Point of Sale', readonly=True, states={'draft':[('readonly',False)]})
     is_debit_note = fields.Boolean('Debit Note', default=False)
     denomination_id = fields.Many2one('invoice.denomination', readonly=True, states={'draft':[('readonly',False)]})
-    internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]},
-            help="Unique number of the invoice, computed automatically when the invoice is created.")
-
-    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'),
-    store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-
+    internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created.")
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount', track_visibility='always')
     amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
     amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    local = fields.Boolean(string='Local', related='fiscal_position.local', store=True, default=True)
 
     #Validacion para que el total de una invoice no pueda ser negativo.
     @api.one
@@ -224,9 +219,9 @@ class invoice(models.Model):
             raise ValidationError(_('The invoice fiscal position is not the same as the partner\'s fiscal position.'))
 
 
-    @api.one
+    @api.model
     def _update_reference(self, ref):
-
+        self.ensure_one()
         move_id = self.move_id and self.move_id.id or False
         self.env.cr.execute('UPDATE account_move SET ref=%s ' \
                 'WHERE id=%s', # AND (ref is null OR ref = \'\')',
@@ -259,7 +254,6 @@ class invoice(models.Model):
 
     @api.multi
     def action_number(self):
-
         next_number = None
         invoice_vals = {}
 
@@ -343,13 +337,12 @@ class invoice(models.Model):
 
         return inv_ids
 
-    def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
-            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False , context=None):
-        res =   super(invoice, self).onchange_partner_id(cr, uid, ids, type, partner_id,\
-                date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+    @api.multi
+    def onchange_partner_id(self, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+        res = super(invoice, self).onchange_partner_id(type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)
 
         if partner_id:
-
+            company_id = self.env['res.partner'].browse(partner_id).company_id.id
             fiscal_position_id = res['value']['fiscal_position']
 
             # HACK: Si no encontramos una fiscal position, buscamos una property que nos de el default
@@ -359,31 +352,29 @@ class invoice(models.Model):
             # que hacerle muchas modificaciones al sistema. Igualmente, al setear una property que sea Global
             # ya no hace falta buscarla por codigo porque se la asigna solito a todos los que no tenian.
             if not fiscal_position_id:
-                property_obj = self.pool.get('ir.property')
-                fpos_pro_id = property_obj.search(cr, uid, [('name','=','property_account_position'),('company_id','=',company_id)])
-                if not fpos_pro_id:
+                property_obj = self.env['ir.property']
+                fpos_pro = property_obj.search([('name', '=', 'property_account_position'), ('company_id', '=', company_id)], limit=1)
+                if not fpos_pro:
                     return res
-                fpos_line_data = property_obj.read(cr, uid, fpos_pro_id, ['name','value_reference','res_id'])
-
-                fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference',False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
-
-            fiscal_pool = self.pool.get('account.fiscal.position')
-            pos_pool = self.pool.get('pos.ar')
+                fpos_line_data = fpos_pro.read(['name', 'value_reference', 'res_id'])
+                fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference', False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
+            fiscal_pool = self.env['account.fiscal.position']
+            pos_pool = self.env['pos.ar']
             if fiscal_position_id:
-                fiscal_position = fiscal_pool.browse(cr, uid , fiscal_position_id)
+                fiscal_position = fiscal_pool.browse(fiscal_position_id)
+                res['value'].update({'fiscal_position': fiscal_position_id})
                 denomination_id = fiscal_position.denomination_id.id
                 res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
 
-                #para las invoices de suppliers
-                if type in ['in_invoice', 'in_refund', 'in_debit']:
-                    denom_sup_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denom_supplier_id.id
+                if type in ['in_invoice', 'in_refund', 'in_debit']:  # Supplier invoice
+                    denom_sup_id = fiscal_position.denom_supplier_id.id
                     res['value'].update({'denomination_id': denom_sup_id})
-                #para las customers invoices
-                else:
-                    pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)], order='priority asc', limit=1 )
+                else:  # Customer invoice
+                    pos = pos_pool.search([('denomination_id', '=', denomination_id)], order='priority asc', limit=1)
                     if len(pos):
-                        res['value'].update({'pos_ar_id': pos[0]})
-                        res['value'].update({'denomination_id': denomination_id})
+                        res['value'].update({'local': fiscal_position.local,
+                                             'denomination_id': denomination_id,
+                                             'pos_ar_id': pos[0]})
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
@@ -404,24 +395,17 @@ class account_invoice_tax(models.Model):
     tax_id = fields.Many2one('account.tax', string='Account Tax', required=True)
     is_exempt = fields.Boolean(string='Is Exempt', readonly=True)
 
-    def tax_id_change(self, cr, uid, ids, tax_id, invoice_type):
-        tax_obj = self.pool.get('account.tax')
-
-        tax = tax_obj.browse(cr, uid, tax_id)
-
-        val = {}
-        val['name'] = tax.description
-        if invoice_type in ('out_invoice','in_invoice'):
-            val['base_code_id'] = tax.base_code_id.id
-            val['tax_code_id'] = tax.tax_code_id.id
-            val['account_id'] = tax.account_collected_id.id
+    @api.onchange('tax_id')
+    def tax_id_change(self):
+        self.name = self.tax_id.description
+        if self.invoice_id.type in ('out_invoice', 'in_invoice'):
+            self.base_code_id = self.tax_id.base_code_id.id
+            self.tax_code_id = self.tax_id.tax_code_id.id
+            self.account_id = self.tax_id.account_collected_id.id
         else:
-            val['base_code_id'] = tax.ref_base_code_id.id
-            val['tax_code_id'] = tax.ref_tax_code_id.id
-            val['account_id'] = tax.account_paid_id.id
-
-        return {'value': val}
-
+            self.base_code_id = self.tax_id.ref_base_code_id.id
+            self.tax_code_id = self.tax_id.ref_tax_code_id.id
+            self.account_id = self.tax_id.account_paid_id.id
 
     @api.v8
     def hook_compute_invoice_taxes(self, invoice, tax_grouped):
@@ -431,10 +415,6 @@ class account_invoice_tax(models.Model):
     def compute(self, invoice):
         tax_grouped = {}
 
-        #tax_obj = self.pool.get('account.tax')
-        #cur_obj = self.pool.get('res.currency')
-
-        #inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
         currency = invoice.currency_id.with_context(date=invoice.date_invoice or fields.Date.context_today(invoice))
         company_currency = invoice.company_id.currency_id
 

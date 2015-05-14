@@ -30,3 +30,4 @@ class account_fiscal_position (models.Model):
 
     denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
     denom_supplier_id = fields.Many2one('invoice.denomination', string='Supplier Denomination', required=True)
+    local = fields.Boolean(string='Local Fiscal Rules', default=True, help='Check this if it corresponds to apply local fiscal rules, like invoice number validation, etc')
