@@ -22,6 +22,8 @@
                     <xpath expr="//sheet/div[@class='oe_button_box']" position="replace"/>
                     <field name="mode" position="replace">
                         <field name="journal_id"/>
+                        <field name="currency_id"/>
+                        <field name="company_id"/>
                     </field>
                     <xpath expr="//field[@name='line_ids']/form/notebook/page[@string='Payment']/group/field[@name='move_line_id']" position="after">
                         <field name="mode"/>
@@ -34,7 +36,7 @@
                     </xpath>
                      <xpath expr="//field[@name='line_ids']/tree/field[@name='amount_currency']" position="after">
                         <field name="amount_retained"/>
-                        <field name="mode" domain="[('type','=','payment')]"/>
+                        <field name="mode" domain="[('type','=','payment'), ('currency', '=', parent.currency_id)]"/>
                         <field name="amount_to_pay"/>
                     </xpath>
                     <xpath expr="//field[@name='line_ids']/tree" position="attributes">

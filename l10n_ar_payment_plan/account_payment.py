@@ -40,10 +40,16 @@ class payment_order(osv.osv):
                 res[order.id] = 0.0
         return res
 
+    def _get_journal_currency(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for order in self.browse(cr, uid, ids, context=context):
+            res[order.id] = order.journal_id.currency and order.journal_id.currency.id or order.company_id.currency_id.id
+        return res
 
     _columns = {
         'mode': fields.many2one('payment.mode', 'Payment Mode', select=False, required=0, states={'done': [('readonly', True)]}, help='Select the Payment Mode to be applied.'),
-        'journal_id':fields.many2one('account.journal', 'Journal', domain=[('type','in',('bank','cash'))], required=True, readonly=True, states={'draft':[('readonly',False)]}),
+        'journal_id': fields.many2one('account.journal', 'Journal', domain=[('type','in',('bank','cash'))], required=True, readonly=True, states={'draft':[('readonly',False)]}),
+        'currency_id': fields.function(_get_journal_currency, type='many2one', relation='res.currency', string='Currency', readonly=True),
         'date_prefered': fields.selection([
             ('now', 'Directly'),
             ('due', 'Due date'),
@@ -51,8 +57,13 @@ class payment_order(osv.osv):
             ], "Preferred Date", change_default=True, required=True, states={'done': [('readonly', True)], 'open': [('readonly', True)]}, help="Choose an option for the Payment Order:'Fixed' stands for a date specified by you.'Directly' stands for the direct execution.'Due date' stands for the scheduled date of execution."),
         'line_ids': fields.one2many('payment.line', 'order_id', 'Payment lines', states={'done': [('readonly', True)], 'open': [('readonly', True)]}),
         'total_pay': fields.function(_total_pay, string="Total Pay", type='float'),
+        'company_id': fields.many2one('res.company', 'Company',required=True),
     }
- 
+
+    _defaults = {
+        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id
+    }
+
 
     def unlink(self, cr, uid, ids, context=None):
         for order in self.browse(cr, uid, ids, context=context):
@@ -155,10 +166,31 @@ class payment_line(osv.osv):
 
         return res
 
+    def _amount(self, cursor, user, ids, name, args, context=None):
+        if not ids:
+            return {}
+        #currency_obj = self.pool.get('res.currency')
+        if context is None:
+            context = {}
+        res = {}
+
+        for line in self.browse(cursor, user, ids, context=context):
+            res[line.id] = line.amount_currency
+
+            #ctx = context.copy()
+            #ctx['date'] = line.order_id.date_done or time.strftime('%Y-%m-%d')
+            #res[line.id] = currency_obj.compute(cursor, user, line.currency.id,
+                    #line.order_id.currency_id.id,
+                    #line.amount_currency, context=ctx)
+        return res
+
     _columns = {
         'mode': fields.many2one('payment.mode.receipt', 'Payment Mode', select=True, help='Select the Payment Mode to be applied.'),
         'amount_retained': fields.float('Amount Retained', digits_compute=dp.get_precision('Account')),
         'voucher_id': fields.many2one('account.voucher', 'Voucher'),
+        'amount': fields.function(_amount, string='Amount',
+            type='float',
+            help='Payment amount'),
         'amount_to_pay': fields.function(_amount_to_pay, digits_compute=dp.get_precision('Account'), string='Amount To Pay',
             store={
                 'payment.line': (lambda self, cr, uid, ids, c={}: ids, ['amount_retained', 'amount_currency'], 20),

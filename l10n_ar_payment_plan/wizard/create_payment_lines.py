@@ -30,6 +30,7 @@ class create_move_lines(osv.osv_memory):
     _description = 'Create Payment Lines Wizard'
     _columns = {
         'duedate': fields.date('Due Date', required=True),
+        'partner_id': fields.many2one('res.partner', 'Partner', domain=[('supplier', '=', True)]),
         'entries': fields.many2many('account.move.line', 'line_payment_order_rel', 'pay_id', 'line_id', 'Entries')
     }
     _defaults = {
@@ -73,7 +74,7 @@ class create_move_lines(osv.osv_memory):
                 date_to_pay = payment.date_scheduled
             payment_obj.create(cr, uid,{
                     'move_line_id': line.id,
-                    'amount_currency': line.amount_residual,
+                    'amount_currency': line.amount_residual_currency or line.amount_residual,
                     'bank_id': line2bank.get(line.id),
                     'order_id': payment.id,
                     'partner_id': line.partner_id and line.partner_id.id or False,
@@ -84,7 +85,8 @@ class create_move_lines(osv.osv_memory):
                 }, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
-    def onchange_duedate(self, cr, uid, ids, duedate, context=None):
+    def onchange_duedate(self, cr, uid, ids, duedate, partner_id, context=None):
+        order_obj = self.pool.get('payment.order')
         line_obj = self.pool.get('account.move.line')
 
         if not context:
@@ -94,9 +96,14 @@ class create_move_lines(osv.osv_memory):
         if not duedate:
             return res
 
+        payment = order_obj.browse(cr, uid, context['active_id'], context=context)
+        curr = payment.journal_id.currency and payment.journal_id.currency.id or False
+
         # Search for move line to pay:
-        domain = [('reconcile_id', '=', False), ('account_id.type', '=', 'payable'), ('amount_to_pay', '>', 0)]
+        domain = [('reconcile_id', '=', False), ('account_id.type', '=', 'payable'), ('amount_to_pay', '>', 0), ('currency_id','=', curr)]
         domain = domain + ['|', ('date_maturity', '<=', duedate), ('date_maturity', '=', False)]
+        if partner_id:
+            domain = domain + [('partner_id', '=', partner_id)]
         line_ids = line_obj.search(cr, uid, domain, context=context)
         return {'value': {'entries': line_ids} }
  

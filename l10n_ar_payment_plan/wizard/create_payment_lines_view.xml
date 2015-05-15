@@ -8,10 +8,27 @@
             <field name="arch" type="xml">
             <form string="Search invoices and debts" version="7.0">
                 <group>
-                    <field name="duedate" on_change="onchange_duedate(duedate, context)"/>
+                    <group>
+                        <field name="duedate" on_change="onchange_duedate(duedate, partner_id, context)"/>
+                    </group>
+                    <group>
+                        <field name="partner_id" on_change="onchange_duedate(duedate, partner_id, context)"/>
+                    </group>
                 </group>
                 <group string="Entries">
-                    <field name="entries"/>
+                    <field name="entries" nolabel="1" widget="one2many_list">
+                        <tree>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="ref"/>
+                            <field name="partner_id"/>
+                            <field name="date_maturity"/>
+                            <field name="debit"/>
+                            <field name="credit"/>
+                            <field name="currency_id"/>
+                            <field name="amount_currency"/>
+                        </tree>
+                    </field>
                 </group>
                 <footer>
                     <button name="create_lines" string="Add to Order" type="object" class="oe_highlight"/>
