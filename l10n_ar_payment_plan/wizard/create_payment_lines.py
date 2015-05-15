@@ -104,7 +104,7 @@ class create_move_lines(osv.osv_memory):
         domain = domain + ['|', ('date_maturity', '<=', duedate), ('date_maturity', '=', False)]
         if partner_id:
             domain = domain + [('partner_id', '=', partner_id)]
-        line_ids = line_obj.search(cr, uid, domain, context=context)
+        line_ids = line_obj.search(cr, uid, domain, order='date_maturity asc', context=context)
         return {'value': {'entries': line_ids} }
  
 create_move_lines()
