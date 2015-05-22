@@ -19,53 +19,42 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp import models, fields, api
 from datetime import datetime
-from tools.translate import _
-import pooler
-import time
-import re
 
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>"
 
-class account_invoice(osv.osv):
+class account_invoice(models.Model):
     _name = "account.invoice"
     _inherit = "account.invoice"
     
-    def _compute_bar_code(self, cr, uid, ids, name, arg, context=None):
-        res = {}
-        for inv in self.browse(cr, uid, ids, context=context):
-            if inv.type in ('in_invoice','in_refund'):
-                continue
-            cuit = inv.company_id.partner_id.vat
-            pos = '0002'
-            
-            eivoucher_obj = self.pool.get('wsfe.voucher_type')
-            aux_res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
-            
-            if inv.pos_ar_id:
-				pos = inv.pos_ar_id.name
+    @api.one
+    def _compute_bar_code(self):
 
-            ei_voucher_type = eivoucher_obj.browse(cr, uid, aux_res)
-            inv_code = ei_voucher_type.code
+        if self.type in ('in_invoice','in_refund'):
+            return
 
-            if inv.state == 'open' and inv.cae != 'NA' and inv.cae_due_date:
-                cae = inv.cae
-                cae_due_date = datetime.strptime(inv.cae_due_date, '%Y-%m-%d')
-            else:
-                cae_due_date = datetime.now()
-                cae = '0'*14
+        cuit = self.company_id.partner_id.vat
+        pos = '0002'
 
-            code = cuit+'%02d'%int(inv_code)+pos+cae+cae_due_date.strftime('%Y%m%d')+'4'
-            
-            res[inv.id] = code
-        return res
+        eivoucher_obj = self.env['wsfe.voucher_type']
+        ei_voucher_type = eivoucher_obj.search([('document_type', '=', self.type), ('denomination_id', '=', self.denomination_id.id)])#[0]
 
-    _columns = {
-        'bar_code': fields.function(_compute_bar_code, string='Bar code', type='char'),
-    }
+        if self.pos_ar_id:
+            pos = self.pos_ar_id.name
 
+        #ei_voucher_type = eivoucher_obj.browse(cr, uid, aux_res)
+        inv_code = ei_voucher_type.code
 
-   
+        if self.state == 'open' and self.cae != 'NA' and self.cae_due_date:
+            cae = self.cae
+            cae_due_date = datetime.strptime(self.cae_due_date, '%Y-%m-%d')
+        else:
+            cae_due_date = datetime.now()
+            cae = '0'*14
+
+        self.bar_code = cuit+'%02d'%int(inv_code)+pos+cae+cae_due_date.strftime('%Y%m%d')+'4'
+
+    bar_code = fields.Char(string='Bar code', readonly=True, compute=_compute_bar_code)
 
 account_invoice()
