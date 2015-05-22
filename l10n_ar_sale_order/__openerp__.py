@@ -28,8 +28,9 @@
     "license": "GPL-3",
     "category": "Argentina Localization",
     "description": """
-        Este módulo agrega la funcionalidad del calculo de importes a medida que se
-        llena una sale order
+        Este módulo agrega la funcionalidad del calculo interactivo de importes a medida que se
+        va completando una sale order.
+        Requiere Odoo 8.0
     """,
     'data': [
         'sale_view.xml',

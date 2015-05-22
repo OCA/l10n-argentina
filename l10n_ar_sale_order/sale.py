@@ -29,12 +29,12 @@ class sale_order(models.Model):
     _inherit = "sale.order"
     _order = "date_order desc, name desc"
 
-    amount_untaxed = fields.Float(compute='_computar_importes')
-    amount_tax = fields.Float(compute='_computar_importes')
-    amount_total = fields.Float(compute='_computar_importes')
+    amount_untaxed = fields.Float(compute='_compute_amount_all')
+    amount_tax = fields.Float(compute='_compute_amount_all')
+    amount_total = fields.Float(compute='_compute_amount_all')
 
     @api.depends('order_line.price_subtotal')
-    def _computar_importes(self):
+    def _compute_amount_all(self):
         for order in self:
             amount_tax = amount_untaxed = 0.0
             currency = order.pricelist_id.currency_id.with_context(date=order.date_order or fields.Date.context_today(order))
@@ -53,12 +53,15 @@ class sale_order_line(models.Model):
     _inherit = 'sale.order.line'
     _description = 'Order Line'
 
-    @api.onchange('price_unit', 'product_uom_qty', 'product_uos_qty', 'discount')
-    def onchange_price_unit(self):
-        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
-        taxes = self.tax_id.compute_all(price, self.product_uom_qty, self.product_id, self.order_id.partner_id)
-        currency = self.order_id.pricelist_id.currency_id.with_context(date=self.order_id.date_order or fields.Date.context_today(self.order_id))
-        self.price_subtotal = currency.round(taxes['total'])
+    price_subtotal = fields.Float(compute='_compute_price_subtotal')
+
+    @api.depends('price_unit', 'product_uom_qty', 'product_uos_qty', 'discount')
+    def _compute_price_subtotal(self):
+        for line in self:
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            taxes = line.tax_id.compute_all(price, line.product_uom_qty, line.product_id, line.order_id.partner_id)
+            currency = line.order_id.pricelist_id.currency_id.with_context(date=line.order_id.date_order or fields.Date.context_today(line.order_id))
+            line.price_subtotal = currency.round(taxes['total'])
 
 sale_order_line()
 
