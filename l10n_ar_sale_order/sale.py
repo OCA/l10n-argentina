@@ -29,6 +29,22 @@ class sale_order(models.Model):
     _inherit = "sale.order"
     _order = "date_order desc, name desc"
 
+    amount_untaxed = fields.Float(compute='_computar_importes')
+    amount_tax = fields.Float(compute='_computar_importes')
+    amount_total = fields.Float(compute='_computar_importes')
+
+    @api.depends('order_line.price_subtotal')
+    def _computar_importes(self):
+        for order in self:
+            amount_tax = amount_untaxed = 0.0
+            currency = order.pricelist_id.currency_id.with_context(date=order.date_order or fields.Date.context_today(order))
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += self._amount_line_tax(line)
+            order.amount_tax = currency.round(amount_tax)
+            order.amount_untaxed = currency.round(amount_untaxed)
+            order.amount_total = currency.round(amount_tax + amount_untaxed)
+
 sale_order()
 
 
