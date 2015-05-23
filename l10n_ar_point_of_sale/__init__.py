@@ -21,7 +21,7 @@
 ##############################################################################
 
 import pos_ar
-#import sale
+import sale
 #import purchase
 import invoice
 import partner
