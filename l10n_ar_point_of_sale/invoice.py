@@ -98,15 +98,23 @@ class invoice(models.Model):
     @api.one
     @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
     def _amount_all_ar(self):
-        self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line)
-        self.amount_tax = sum(line.amount for line in self.tax_line)
-        self.amount_total = self.amount_untaxed + self.amount_tax
-
+        account_invoice_tax = self.env['account.invoice.tax']
+        account_tax = self.env['account.tax']
+        ctx = dict(self._context)
+        amount_tax = 0.0
         amount_base = 0.0
         amount_exempt = 0.0
+        for taxe in account_invoice_tax.compute(self.with_context(ctx)).values():
+            amount_tax = taxe['amount']
+            tax = account_tax.browse(taxe['tax_id'])
+            tax_group = tax.tax_group
+            amount_exempt += tax_group == 'vat' and taxe['is_exempt'] and taxe['base'] or 0.0
+            amount_base +=  tax_group == 'vat' and not taxe['is_exempt'] and taxe['base'] or 0.0
 
-        amount_exempt = sum(line.base for line in self.tax_line if line.tax_id.tax_group == 'vat' and line.is_exempt)
-        amount_base = sum(line.base for line in self.tax_line if line.tax_id.tax_group == 'vat' and not line.is_exempt)
+        self.amount_tax = amount_tax
+        self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line)
+        self.amount_total = self.amount_untaxed + self.amount_tax
+
 
         self.amount_no_taxed = self.amount_untaxed - amount_base - amount_exempt
         self.amount_taxed = amount_base
@@ -129,12 +137,12 @@ class invoice(models.Model):
     denomination_id = fields.Many2one('invoice.denomination', readonly=True, states={'draft':[('readonly',False)]})
     internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created.")
     amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
-    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
-    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
-    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
-    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
-    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute=_amount_all_ar)
+    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
     local = fields.Boolean(string='Local', related='fiscal_position.local', store=True, default=True)
 
     #Validacion para que el total de una invoice no pueda ser negativo.
