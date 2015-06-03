@@ -10,10 +10,17 @@
             <field name="inherit_id" ref="account_payment.view_payment_order_form"/>
             <field name="arch" type="xml">
                 <data>
+                    <button name="open" position="attributes">
+                        <attribute name="groups">account.group_account_manager</attribute>
+                        <attribute name="string">Authorize</attribute>
+                    </button>
                     <button name="open" position="before">
                         <button name="%(action_create_payment_lines)d" string="Select Invoices" states="draft" type="action"/>
                     </button>
-                    <button name="cancel" position="after">
+                    <button name="cancel" position="attributes">
+                        <attribute name="groups">account.group_account_manager</attribute>
+                    </button>
+                     <button name="cancel" position="after">
                         <button name="action_view_vouchers" string="Show Vouchers" states="done" type="object" groups="account.group_account_invoice,account.group_account_manager"/>
                     </button>
                     <field name="date_scheduled" position="attributes">
