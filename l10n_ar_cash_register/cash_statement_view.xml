@@ -52,24 +52,34 @@
             parent="account.menu_configuration_misc"
             sequence="460"/>
         
+<!--
 		<record id="view_bank_statement_form_ar" model="ir.ui.view">
 			<field name="name">account.bank.statement.form.ar</field>
 			<field name="model">account.bank.statement</field>
 			<field name="inherit_id" ref="account.view_bank_statement_form2"/>
 			<field name="arch" type="xml">
 				<xpath expr="/form/sheet/group/group/field[@name='balance_end']" position="after">
-					<field name="balance_end_real" widget="monetary" invisible="1"/>
+					<field name="balance_end_real" widget="monetary"/>
 				</xpath>
                 <xpath expr="//form/sheet/group/group/field[@name='total_entry_encoding']" position="replace"/>
 			</field>
 		</record>
+-->
 		
         <record id="view_cash_statement_ar_tree_voucher" model="ir.ui.view">
             <field name="name">account.cash.statement.ar.voucher.tree.inherit</field>
             <field name="model">account.bank.statement</field>
-            <field name="inherit_id" ref="account_voucher.view_cash_statement_tree_voucher"/>
+            <field name="inherit_id" ref="account.view_bank_statement_form2"/>
             <field name="arch" type="xml">
-                <xpath expr="//page/field[@name='line_ids']/tree/field[@name='voucher_id']" position="replace"/>
+                <xpath expr="//page/field[@name='line_ids']/tree/field[@name='ref']" position="after">
+					<field name="state" invisible="1"/>
+					<field name="type"/>
+					<field name="account_id"/>
+                </xpath>
+                
+                <xpath expr="//page/field[@name='line_ids']/tree/field[@name='amount']" position="attributes">
+					<attribute name="on_change">bank_line_on_change_amount(type,amount)</attribute>
+				</xpath>
             </field>
         </record>
         

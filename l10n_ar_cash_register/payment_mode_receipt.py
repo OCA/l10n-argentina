@@ -21,7 +21,7 @@
 #
 ##############################################################################
 import time
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 
 class payment_mode_receipt(osv.osv):
