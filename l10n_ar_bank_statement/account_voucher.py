@@ -20,8 +20,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 from datetime import datetime, date, time, timedelta
 
 class account_voucher(osv.osv):
@@ -33,43 +33,33 @@ class account_voucher(osv.osv):
         stl = []
         
         for vou in self.browse(cr, uid, ids, context=context):
+            print 'bank'
             if vou.type in 'receipt':
                 sign = 1
                 aux_account = vou.partner_id.property_account_receivable.id
             if vou.type in 'payment':
                 sign = -1
                 
-                aux_account = vou.partner_id.property_account_payable.id
-            
             for line in vou.payment_line_ids:
                 if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'bank':
-                    aux_name = line.voucher_id.number
                     
-                    if sign:
-                        amount = line.amount * sign
-                    else:
-                        amount = line.amount * sign
-                    
-                    if line.date:
-                        aux_date = line.date
-                    else:
-                        aux_date = vou.date
+                    amount = line.amount * sign
                         
                     st_line = {
                         'name': line.payment_mode_id.name,
-                        'date': vou.date,
-                        'payment_date': aux_date,
+                        'date': line.date or vou.date,
+                        'payment_date': line.date or vou.date,
                         'amount': amount,
-                        'account_id': aux_account,
+                        'account_id': vou.partner_id.property_account_payable.id,
                         'state': 'draft',
                         'type': vou.type,
                         'bank_statement': True,
                         'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
                         'ref_voucher_id': vou.id,
                         'creation_type': 'system',
-                        #~ 'ref': vou.reference,
-                        'ref': vou.number,
-                        'journal_id': line.payment_mode_id.journal_id.id,
+                        'ref': vou.reference,
+                        #~ 'ref': vou.number,
+                        'aux_journal_id': line.payment_mode_id.journal_id.id,
                     }
 
                     st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -85,7 +75,7 @@ class account_voucher(osv.osv):
                     'issue_date': issued_check.issue_date,
                     'payment_date': aux_payment_date,
                     'amount': issued_check.amount*-1,
-                    'account_id': aux_account,
+                    'account_id': vou.partner_id.property_account_payable.id,
                     'ref': vou.number,
                     'state': 'draft',
                     'type': 'payment',
@@ -93,7 +83,8 @@ class account_voucher(osv.osv):
                     'partner_id': vou.partner_id and vou.partner_id.id,
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
-                    'journal_id': issued_check.account_bank_id.journal_id.id,
+                    'ref': vou.reference,
+                    'aux_journal_id': issued_check.account_bank_id.journal_id.id,
                 }
 
                 st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -106,8 +97,11 @@ class account_voucher(osv.osv):
         
         for voucher in self.browse(cr, uid, ids, context=None):
             for statement_line in voucher.statement_bank_line_ids:
-                sql = 'delete from account_bank_statement_line where id = ' + str(statement_line.id)
-                cr.execute(sql)
+                #~ sql = 'delete from account_bank_statement_line where id = ' + str(statement_line.id)
+                #~ cr.execute(sql)
+                if statement_line.state in 'open':
+                    continue
+                statement_line_obj.unlink(cr, uid, statement_line.id, context=None)
         return super(account_voucher, self).cancel_voucher(cr, uid, ids, vals, context=None)
 
 account_voucher()

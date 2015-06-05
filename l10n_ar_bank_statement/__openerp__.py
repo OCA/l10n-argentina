@@ -25,8 +25,6 @@
         "category" : "account",
         "description": """""",
         "depends" : [
-                'base',
-                'l10n_ar_account_payment',
                 'l10n_ar_cash_register',
             ],
         "init_xml" : [],
@@ -35,11 +33,9 @@
                 'wizard/account_import_bank_statement_view.xml',
                 'bank_import_statement_lines_view.xml',
                 'account_voucher_view.xml',
-                #~ 'payment_mode_receipt_view.xml',
-                'wizard/project_import_wizard_view.xml',
+                #~ 'wizard/project_import_wizard_view.xml',
             ],
         "installable": True,
         'active': False
 
 }
- 

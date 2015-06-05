@@ -19,10 +19,10 @@
 #
 ##############################################################################
 
-import time
-from lxml import etree
+#~ import time
+#~ from lxml import etree
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 class account_import_statement_lines(osv.osv_memory):
     _name = "account.import.statement.lines"
@@ -49,10 +49,6 @@ class account_import_statement_lines(osv.osv_memory):
 
         lines_to_statement = [(4, lid) for lid in line_ids]
 
-#        for line in self.browse(cr, uid, line_ids, context=context):
-#            statement_line_obj.write(cr, uid, [line.id], {'statement_id': statement.id, 'state': 'open'})
-            
-        #statement_line_obj.write(cr, uid, [line.id], {})
         statement_obj.write(cr, uid, [statement.id], {'line_ids': lines_to_statement})
         return {'type': 'ir.actions.act_window_close'}
 

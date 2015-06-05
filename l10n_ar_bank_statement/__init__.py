@@ -21,5 +21,3 @@
 import bank_statement
 import wizard
 import account_voucher
-#~ import payment_mode_receipt
-#~ import account
