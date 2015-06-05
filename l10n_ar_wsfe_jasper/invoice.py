@@ -41,10 +41,15 @@ class account_invoice(osv.osv):
             pos = '0002'
             
             eivoucher_obj = self.pool.get('wsfe.voucher_type')
-            aux_res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])[0]
+            aux_res = eivoucher_obj.search(cr, uid, [('document_type', '=', inv.type), ('denomination_id', '=', inv.denomination_id.id)])
             
+            if aux_res:
+                aux_res = aux_res[0]
+            else:
+                return res
+                
             if inv.pos_ar_id:
-				pos = inv.pos_ar_id.name
+                pos = inv.pos_ar_id.name
 
             ei_voucher_type = eivoucher_obj.browse(cr, uid, aux_res)
             inv_code = ei_voucher_type.code
