@@ -38,14 +38,8 @@ class sale_order(osv.osv):
     _name = "sale.order"
     _inherit = "sale.order"
 
-    #overwrite    
-    def _make_invoice(self, cr, uid, order, lines, context=None):
-        
-        invoice_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
-    
-        # Para la denomination, se deberia? preguntar si esta seteada la fiscal position y sino lazar una exept??                         
-        denom_id = order.fiscal_position.denomination_id
-               
+    def _get_pos_ar(self, cr, uid, order, denom_id, context=None):
+
         pos_ar_obj = self.pool.get('pos.ar')
         
         if not order.fiscal_position :
@@ -53,13 +47,24 @@ class sale_order(osv.osv):
                                   _('Check the Fiscal Position Configuration')) 
         
         possible_pos = [pos.id for pos in order.shop_id.pos_ar_ids]
-        res_pos = pos_ar_obj.search(cr, uid,[('id', 'in', possible_pos), ('denomination_id', '=', denom_id.id)], order="priority asc")
+        res_pos = pos_ar_obj.search(cr, uid,[('id', 'in', possible_pos), ('denomination_id', '=', denom_id)], order="priority asc")
         if not len(res_pos):
             raise osv.except_osv( _('Error'),
                                   _('You need to set up a Shop and/or a Fiscal Position')) 
-                                  
+ 
+        return res_pos[0]
+
+    #overwrite    
+    def _make_invoice(self, cr, uid, order, lines, context=None):
+        
+        invoice_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+    
+        # Para la denomination, se deberia? preguntar si esta seteada la fiscal position y sino lazar una exept??                         
+        denom_id = order.fiscal_position.denomination_id
+        pos_ar_id = self._get_pos_ar(cr, uid, order, denom_id.id, context=context)
+                                 
         inv_obj = self.pool.get('account.invoice')
-        vals = {'denomination_id' : denom_id.id , 'pos_ar_id': res_pos[0] }
+        vals = {'denomination_id' : denom_id.id , 'pos_ar_id': pos_ar_id }
         #escribo en esa invoice y retorno su id como debe ser
         inv_obj.write(cr, uid, invoice_id, vals)
                 

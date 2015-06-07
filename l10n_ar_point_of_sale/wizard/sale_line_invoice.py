@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (c) 2012-2014 E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    OpenERP, Open Source Management Solution
+#    Copyright (c) 2015 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2015 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -19,12 +20,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp.osv import osv
 
-import pos_ar
-import sale
-import purchase
-import invoice
-import partner
-import stock
-import account
-import wizard
+class sale_order_line_make_invoice(osv.osv_memory):
+    _name = "sale.order.line.make.invoice"
+    _inherit = "sale.order.line.make.invoice"
+
+    def _prepare_invoice(self, cr, uid, order, lines, context=None):
+        order_obj = self.pool.get('sale.order')
+        res = super(sale_order_line_make_invoice, self)._prepare_invoice(cr, uid, order, lines, context=context)
+
+        # Denominacion
+        denom_id = order.fiscal_position.denomination_id
+
+        pos_ar_id = order_obj._get_pos_ar(cr, uid, order, denom_id.id, context=context)
+        res['denomination_id'] = denom_id.id
+        res['pos_ar_id'] = pos_ar_id
+
+        return res
