@@ -34,7 +34,7 @@ class account_bank_statement(osv.osv):
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        print 'button_confirm_bank'
+        print 'button_confirm_bank CASH'
 
         for st in self.browse(cr, uid, ids, context=context):
             j_type = st.journal_id.type
@@ -146,7 +146,7 @@ class account_bank_statement_line(osv.osv):
     
     _defaults = {
         'state': 'draft',
-        'creation_type': 'system',
+        'creation_type': 'manual',
         'bank_statement': False
     }
 
