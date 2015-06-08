@@ -167,7 +167,7 @@
             <field name="view_mode">tree,form,graph</field>
             <field name="search_view_id" ref="view_ar_statement_lines_search"/>
             <field name="view_id" ref="view_ar_statement_lines_tree"/>
-            <field name="context">{'st_lines': 'delete'}</field>
+            <field name="context">{'st_lines': 'remove'}</field>
         </record>
 
         <record model="ir.actions.act_window.view" id="action_ar_statement_lines_tree_bank">

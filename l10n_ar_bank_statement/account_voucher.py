@@ -41,28 +41,29 @@ class account_voucher(osv.osv):
                 sign = -1
                 
             for line in vou.payment_line_ids:
-                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'bank':
+                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type not in 'bank':
+                    continue
+                print 'bank'    
+                print line    
+                amount = line.amount * sign
                     
-                    amount = line.amount * sign
-                        
-                    st_line = {
-                        'name': line.payment_mode_id.name,
-                        'date': line.date or vou.date,
-                        'payment_date': line.date or vou.date,
-                        'amount': amount,
-                        'account_id': vou.partner_id.property_account_payable.id,
-                        'state': 'draft',
-                        'type': vou.type,
-                        'bank_statement': True,
-                        'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
-                        'ref_voucher_id': vou.id,
-                        'creation_type': 'system',
-                        'ref': vou.reference,
-                        #~ 'ref': vou.number,
-                        'aux_journal_id': line.payment_mode_id.journal_id.id,
-                    }
+                st_line = {
+                    'name': vou.reference,
+                    'date': line.date or vou.date,
+                    'payment_date': line.date or vou.date,
+                    'amount': amount,
+                    'account_id': vou.partner_id.property_account_payable.id,
+                    'state': 'draft',
+                    'type': vou.type,
+                    'bank_statement': True,
+                    'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
+                    'ref_voucher_id': vou.id,
+                    'creation_type': 'system',
+                    #~ 'ref': line.payment_mode_id.name,
+                    'aux_journal_id': line.payment_mode_id.journal_id.id,
+                }
 
-                    st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
+                st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
                 
             for issued_check in vou.issued_check_ids:
                 if issued_check.type in 'common':
