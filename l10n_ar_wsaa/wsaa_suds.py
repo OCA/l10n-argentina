@@ -8,7 +8,6 @@ from M2Crypto import BIO, SMIME
 from suds.client import Client
 from xml.sax import SAXParseException
 import logging
-from tools.misc import ustr
 import pytz
 
 ## Configuracion del logger
@@ -26,6 +25,9 @@ class WSAA:
         self.token = None
         self.sign = None
         self.wsaaurl = wsaaurl
+        self.service = service
+        self.certificate = cert
+        self.private_key = private_key
         self.service = service
         self.expiration_time = None
         self.ta = None
@@ -133,7 +135,7 @@ class WSAA:
             result = self.client.service.loginCms(cms)
         except Exception, e:
             logger.exception("Excepcion al llamar a loginCms")
-            raise Exception, 'Exception al autenticar: %s' % ustr(e)
+            raise Exception, 'Exception al autenticar'
 
         self.ta = result
         return result
@@ -167,7 +169,7 @@ class WSAA:
 
     # TODO: Agregar una flag de force para tomarlo igual
     # TODO: Hacer chequeo de errores
-    def get_token_and_sign(self, cert, key, force=True):
+    def get_token_and_sign(self, force=True):
         # Primero chequeamos si ya tenemos un token
         if not force:
             if self.ta and self.expiration_time and self.token and self.sign:
@@ -176,7 +178,7 @@ class WSAA:
                     return self.token, self.sign
 
         tra = self._create_tra()
-        cms = self._sign_tra(tra, cert, key)
+        cms = self._sign_tra(tra, self.certificate, self.private_key)
         try:
             self._call_wsaa(cms)
         except Exception, e:

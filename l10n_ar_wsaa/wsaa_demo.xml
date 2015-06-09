@@ -2,7 +2,7 @@
 <openerp>
     <data noupdate="1">
 
-        <record id="wsaa_config_demo" model="wsaa.config">
+        <record forcecreate="0" id="wsaa_config_demo" model="wsaa.config">
             <field name="name">WSAA Config Demo</field>
             <field name="certificate">-----BEGIN CERTIFICATE-----
 MIIDrjCCApagAwIBAgIIAe8ODyFVFpQwDQYJKoZIhvcNAQEFBQAwQzElMCMGA1UE

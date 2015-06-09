@@ -36,7 +36,7 @@ servicios disponibles por la AFIP. Este módulo es dependencia de los
 demás módulos de Servicios Web de AFIP.
 
 Dependencias Python:
-*******************
+===================
 python-m2crypto
     """,
     'data': [
