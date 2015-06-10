@@ -105,7 +105,7 @@ class invoice(models.Model):
         amount_base = 0.0
         amount_exempt = 0.0
         for taxe in account_invoice_tax.compute(self.with_context(ctx)).values():
-            amount_tax = taxe['amount']
+            amount_tax += taxe['amount']
             tax = account_tax.browse(taxe['tax_id'])
             tax_group = tax.tax_group
             amount_exempt += tax_group == 'vat' and taxe['is_exempt'] and taxe['base'] or 0.0
