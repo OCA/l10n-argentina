@@ -21,51 +21,41 @@
 #
 ##############################################################################
 
-from osv import osv
-from tools.translate import _
+from openerp import models, api, _
+from openerp.osv import osv
 
-class stock_picking(osv.osv):
+class stock_picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
 
-    #overwrite    
-    def _invoice_hook(self, cr, uid, picking, invoice_id):
+    def _get_invoice_vals(self, cr, uid, key, inv_type, journal_id, move, context=None):
+        fiscal_pos_obj = self.pool.get('account.fiscal.position')
+        pos_ar_obj = self.pool.get('pos.ar')
 
-        inv_obj = self.pool.get('account.invoice')
+        res = super(stock_picking, self)._get_invoice_vals(cr, uid, key,
+                        inv_type, journal_id, move, context)
 
-        # Si es un picking por una venta, tambien podemos preguntar por picking.type
-        if picking.sale_id:
-            order_to_pick = picking.sale_id
-        
-            if not order_to_pick.fiscal_position :
+        fiscal_position_id = res['fiscal_position']
+        if not fiscal_position_id:
+            raise osv.except_osv(_('Error'),
+                                 _('The order hasn\'t got Fiscal Position configured.')) 
+        reads = fiscal_pos_obj.read(cr, uid, fiscal_position_id, ['denomination_id', 'denom_supplier_id'], context=context)
+
+        # Es de cliente
+        denomination_id = None
+        pos_ar_id = None
+        if inv_type in ('out_invoice', 'out_refund'):
+            denomination_id = reads['denomination_id'][0]
+            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', move.warehouse_id.id), ('denomination_id', '=', denomination_id)])
+            if not res_pos:
                 raise osv.except_osv( _('Error'),
-                                      _('Check the Fiscal Position Configuration'))         
-            
-            # Obtengo el browse del objeto de denominacion
-            denom_id = order_to_pick.fiscal_position.denomination_id
+                                   _('You need to set up a Point of Sale in your Warehouse')) 
+            pos_ar_id = res_pos[0]
+        else:
+            denomination_id = reads['denom_supplier_id'][0]
 
-            pos_ar_obj = self.pool.get('pos.ar')
-            
-            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order_to_pick.shop_id.id), ('denomination_id', '=', denom_id.id)])
-            
-            if not len(res_pos):
-                raise osv.except_osv( _('Error'),
-                                      _('You need to set up a Shop and/or a Fiscal Position')) 
-            
-            vals = {'denomination_id' : denom_id.id , 'pos_ar_id': res_pos[0] }
-            inv_obj.write(cr, uid, invoice_id, vals)
-        elif picking.purchase_id:
-            order_to_pick = picking.purchase_id
-        
-            if not order_to_pick.fiscal_position :
-                raise osv.except_osv( _('Error'),
-                                      _('Check the Fiscal Position Configuration'))         
-            
-            # Obtengo el browse del objeto de denominacion
-            denom_id = order_to_pick.fiscal_position.denom_supplier_id and order_to_pick.fiscal_position.denom_supplier_id.id
-            if denom_id:
-                inv_obj.write(cr, uid, invoice_id, {'denomination_id':denom_id})
 
-        return super(stock_picking, self)._invoice_hook(cr, uid, picking, invoice_id)
-    
+        res.update({'denomination_id' : denomination_id , 'pos_ar_id': pos_ar_id})
+        return res
+
 stock_picking()

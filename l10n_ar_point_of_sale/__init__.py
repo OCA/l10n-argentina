@@ -26,5 +26,5 @@ import wizard
 #import purchase
 import invoice
 import partner
-#import stock
+import stock
 import account
