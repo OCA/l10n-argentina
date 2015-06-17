@@ -23,7 +23,7 @@
 import pos_ar
 import sale
 import wizard
-#import purchase
+import purchase
 import invoice
 import partner
 import stock

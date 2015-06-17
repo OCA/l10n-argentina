@@ -21,51 +21,40 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
-#TODO: Sobrecargar el wizard de creacion de facturas por lineas (purchase_line_invoice.py) para terminar de corregir la escritura de la denomination_id en todas las maneras de crear una invoice.
 class purchase_order(osv.osv):
     _name = "purchase.order"
     _inherit = "purchase.order"
 
-    def _invoiced_rate2(self, cursor, user, ids, name, arg, context=None):
-        res = {}
-        for purchase in self.browse(cursor, user, ids, context=context):
-            tot = 0.0
-            for invoice in purchase.invoice_ids:
-                if invoice.state not in ('draft','cancel'):
-                    tot += invoice.amount_total - invoice.residual
-            if purchase.amount_total:
-                res[purchase.id] = tot * 100.0 / purchase.amount_total
-            else:
-                res[purchase.id] = 0.0
+    def _prepare_invoice(self, cr, uid, order, line_ids, context=None):
+        fiscal_pos_obj = self.pool.get('account.fiscal.position')
+        pos_ar_obj = self.pool.get('pos.ar')
+
+        res = super(purchase_order, self)._prepare_invoice(cr, uid, order, line_ids, context)
+        inv_type = res['type']
+
+        fiscal_position_id = res['fiscal_position']
+        if not fiscal_position_id:
+            raise osv.except_osv(_('Error'),
+                                 _('The order hasn\'t got Fiscal Position configured.')) 
+        reads = fiscal_pos_obj.read(cr, uid, fiscal_position_id, ['denomination_id', 'denom_supplier_id'], context=context)
+
+        # Es de cliente
+        denomination_id = None
+        pos_ar_id = None
+        if inv_type in ('out_invoice', 'out_refund'):
+            denomination_id = reads['denomination_id'][0]
+            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', move.warehouse_id.id), ('denomination_id', '=', denomination_id)])
+            if not res_pos:
+                raise osv.except_osv( _('Error'),
+                                   _('You need to set up a Point of Sale in your Warehouse')) 
+            pos_ar_id = res_pos[0]
+        else:
+            denomination_id = reads['denom_supplier_id'][0]
+
+        res.update({'denomination_id' : denomination_id , 'pos_ar_id': pos_ar_id})
         return res
-
-    _columns = {
-        'invoiced_rate': fields.function(_invoiced_rate2, method=True, string='Invoiced', type='float'),
-    }
-
-    def action_invoice_create(self, cr, uid, ids, context=None):
-        invoice_obj = self.pool.get('account.invoice')
-
-        # Llamamos a la funcion original y obtenemos el id de la invoice creada
-        inv_id = super(purchase_order, self).action_invoice_create(cr, uid, ids, context=context)
-
-        # Browseamos la orden de compra
-        order = self.browse(cr, uid, ids[0])
-
-        # Si la orden no tiene un posicion fiscal, lanzamos exception
-        if not order.fiscal_position :
-            raise osv.except_osv( _('Error'),
-                                  _('Check the Fiscal Position Configuration')) 
- 
-        denomination_id = order.fiscal_position.denom_supplier_id and order.fiscal_position.denom_supplier_id.id
-
-        # Hacemos el seteo de la denomination_id
-        if denomination_id:
-            invoice_obj.write(cr, uid, inv_id, {'denomination_id': denomination_id})
-
-        return inv_id
 
 purchase_order()
