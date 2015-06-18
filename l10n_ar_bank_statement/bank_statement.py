@@ -63,39 +63,41 @@ class account_bank_statement_line(osv.osv):
             for id in ids:
                 sql = 'delete from account_bank_statement_line where id = ' + str(id)
                 cr.execute(sql)
-            return {}
+            return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
         elif st_lines and st_lines in 'delete':
             for t in self.browse(cr, uid, ids, context=context):
                 if t.state not in 'draft' or t.creation_type in 'system':
                     raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Bank Statement Line(s) which are not draft state o creation type is system !'))
                 sql = 'delete from account_bank_statement_line where id = ' + str(t['id'])
                 cr.execute(sql)
-            return {}
+            return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
         else:
             if journal_type:
                 if 'bank' in journal_type:
                     for t in self.browse(cr, uid, ids, context=context):
                         if t.state not in ('draft'):
-                            raise osv.except_osv(_('Invalid action !'), _('Cannot remove Account Bank Statement Line(s) which are already confirm !'))
+                            raise osv.except_osv(_('Invalid action !'), _('Cannot remove Account Bank Statement Line(s) which are already confirm or conciliated!'))
                         else:
                              self.write(cr, uid, ids, {'statement_id': '', 'state': 'draft'})
                     return {}
                 else:
                     t = self.browse(cr, uid, ids, context=context)
-
-                    if t.state not in ('draft') or t.creation_type in 'manual':
-                        raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Bank Statement Line(s) which are not draft state or creation type manual!'))
-                    sql = 'delete from account_bank_statement_line where id = ' + str(t['id'])
-                    cr.execute(sql)
-                    return {}
+                    
+                    if t:
+                        if t.creation_type not in 'manual':
+                            raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Bank Statement Line(s) which are not manual type!'))
+                        sql = 'delete from account_bank_statement_line where id = ' + str(t['id'])
+                        cr.execute(sql)
+                    return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
             else:
                 #~ t = self.browse(cr, uid, ids, context=context)
 #~ 
                 #~ if t.state not in ('draft') or t.creation_type in 'manual':
                     #~ raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Bank/Cash Statement Line(s) which are not draft state or creation type manual!'))
-                sql = 'delete from account_bank_statement_line where id = ' + str(ids)
-                cr.execute(sql)
-                return {}
+                #~ sql = 'delete from account_bank_statement_line where id = ' + str(ids)
+                #~ cr.execute(sql)
+                #~ self.unlink(cr, uid, ids, context=None)
+                return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
 
 
 class account_bank_statement(osv.osv):

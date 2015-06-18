@@ -26,6 +26,7 @@
         "description": """""",
         "depends" : [
                 'l10n_ar_cash_register',
+                'account_cancel',
             ],
         "init_xml" : [],
         "demo_xml" : [],
