@@ -69,6 +69,7 @@ class CashBoxIn(CashBox):
             'type': 'income',
             'state': 'conciliated',
             'ref': box.voucher,
+            'creation_type': 'manual',
         }
 
 CashBoxIn()
@@ -103,6 +104,7 @@ class CashBoxOut(CashBox):
             'type': 'expenses',
             'state': 'conciliated',
             'ref': box.voucher,
+            'creation_type': 'manual',
         }
 
 CashBoxOut()

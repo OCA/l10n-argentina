@@ -167,12 +167,12 @@ class account_bank_statement_line(osv.osv):
         return { 'value': { 'amount': amount } }
     
         
-    def unlink(self, cr, uid, ids, context=None):
-        for t in self.browse(cr, uid, ids, context=context):
-            if t.state in 'conciliated':
-                raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Cash Statement Line(s) which are conciliated state !'))
-                
-        return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
+    #~ def unlink(self, cr, uid, ids, context=None):
+        #~ for t in self.browse(cr, uid, ids, context=context):
+            #~ if t.state in 'conciliated':
+                #~ raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Cash Statement Line(s) which are conciliated state !'))
+                #~ 
+        #~ return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
 
 account_bank_statement_line()
     

@@ -69,7 +69,7 @@ class account_voucher(osv.osv):
                             'creation_type': 'system',
                             'statement_id': statement[0],
                             'bank_statement': False,
-							#~ 'ref': vou.reference,
+                            #~ 'ref': vou.reference,
                         }
 
                         st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -84,8 +84,9 @@ class account_voucher(osv.osv):
         
         for voucher in self.browse(cr, uid, ids, context=None):
             for statement_line in voucher.statement_bank_line_ids:
-                sql = 'delete from account_bank_statement_line where id = ' + str(statement_line.id)
-                cr.execute(sql)
+                #~ sql = 'delete from account_bank_statement_line where id = ' + str(statement_line.id)
+                #~ cr.execute(sql)
+                statement_line_obj.unlink(cr, uid, statement_line.id, context=None)
         return super(account_voucher, self).cancel_voucher(cr, uid, ids, context=None)
 
 account_voucher()
