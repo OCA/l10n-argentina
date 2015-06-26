@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+	<!-- Configuracion Impositiva: Tax Template -->
+    <!-- Impuesto a las ventas -->
+    <record id="vat_21_ventas" model="account.tax.template">
+            <field name="chart_template_id" ref="chart_ar_template"/>
+            <field name="name">IVA Ventas 21%</field>
+            <field name="description">IVA Ventas 21%</field>
+            <field eval="0.21" name="amount"/>
+            <field name="type">percent</field>
+            <field name="account_collected_id" ref="iva_debito_fiscal_21"/>
+            <field name="account_paid_id" ref="iva_debito_fiscal_21"/>
+            <field name="base_code_id" ref="vat_code_oper_venta_21"/>
+            <field name="tax_code_id" ref="vat_code_iva_venta21"/>
+            <field name="ref_base_code_id" ref="vat_code_oper_venta_21"/>
+            <field eval="-1" name="ref_base_sign"/>
+            <field name="ref_tax_code_id" ref="vat_code_iva_venta21"/>
+            <field eval="-1" name="ref_tax_sign"/>
+            <field name="type_tax_use">sale</field>
+        </record>
+
+        <record id="vat_21_nd_ventas" model="account.tax.template">
+            <field name="chart_template_id" ref="chart_ar_template"/>
+            <field name="name">IVA Ventas 21% No Discriminado</field>
+            <field name="description">IVA Ventas 21% (ND)</field>
+            <field eval="0.21" name="amount"/>
+            <field name="type">percent</field>
+            <field name="account_collected_id" ref="iva_debito_fiscal_21"/>
+            <field name="account_paid_id" ref="iva_debito_fiscal_21"/>
+            <field name="base_code_id" ref="vat_code_oper_venta_21"/>
+            <field name="tax_code_id" ref="vat_code_iva_venta21"/>
+            <field name="ref_base_code_id" ref="vat_code_oper_venta_21"/>
+            <field eval="-1" name="ref_base_sign"/>
+            <field name="ref_tax_code_id" ref="vat_code_iva_venta21"/>
+            <field eval="-1" name="ref_tax_sign"/>
+            <field eval="True" name="price_include"/>
+            <field name="type_tax_use">sale</field>
+        </record>
+
+        <record id="vat_exento_ventas" model="account.tax.template">
+            <field name="chart_template_id" ref="chart_ar_template"/>
+            <field name="name">IVA Ventas Exento</field>
+            <field name="description">IVA Ventas Exento</field>
+            <field eval="0.0" name="amount"/>
+            <field name="type">percent</field>
+            <field name="account_collected_id" ref="iva_debito_fiscal_21"/>
+            <field name="account_paid_id" ref="iva_debito_fiscal_21"/>
+            <field name="base_code_id" ref="vat_code_oper_venta_exento"/>
+            <field name="tax_code_id" ref="vat_code_iva_venta_exento"/>
+            <field name="ref_base_code_id" ref="vat_code_oper_venta_exento"/>
+            <field eval="-1" name="ref_base_sign"/>
+            <field name="ref_tax_code_id" ref="vat_code_iva_venta_exento"/>
+            <field eval="-1" name="ref_tax_sign"/>
+            <field name="type_tax_use">sale</field>
+        </record>
+
+        <record id="vat_105_ventas" model="account.tax.template">
+            <field name="chart_template_id" ref="chart_ar_template"/>
+            <field name="name">IVA Ventas 10.5%</field>
+            <field name="description">IVA Ventas 10.5%</field>
+            <field eval="0.1050" name="amount"/>
+            <field name="type">percent</field>
+            <field name="account_collected_id" ref="iva_debito_fiscal_105"/>
+            <field name="account_paid_id" ref="iva_debito_fiscal_105"/>
+            <field name="base_code_id" ref="vat_code_oper_venta_105"/>
+            <field name="tax_code_id" ref="vat_code_iva_venta105"/>
+            <field name="ref_base_code_id" ref="vat_code_oper_venta_105"/>
+            <field eval="-1" name="ref_base_sign"/>
+            <field name="ref_tax_code_id" ref="vat_code_iva_venta105"/>
+            <field eval="-1" name="ref_tax_sign"/>
+            <field name="type_tax_use">sale</field>
+        </record>
+
+    <!-- Impuesto a las compras -->
+        <record id="vat_21_compras" model="account.tax.template">
+            <field name="chart_template_id" ref="chart_ar_template"/>
+            <field name="name">IVA Compras 21%</field>
+            <field name="description">IVA Compras 21%</field>
+            <field eval="0.21" name="amount"/>
+            <field name="type">percent</field>
+            <field name="account_collected_id" ref="iva_credito_fiscal_21"/>
+            <field name="account_paid_id" ref="iva_credito_fiscal_21"/>
+            <field name="base_code_id" ref="vat_code_oper_compra_21"/>
+            <field name="tax_code_id" ref="vat_code_iva_compra_21"/>
+            <field name="ref_base_code_id" ref="vat_code_oper_compra_21"/>
+            <field eval="-1" name="ref_base_sign"/>
+            <field name="ref_tax_code_id" ref="vat_code_iva_compra_21"/>
+            <field eval="-1" name="ref_tax_sign"/>
+            <field name="type_tax_use">purchase</field>
+        </record>
+
+        <record id="vat_105_compras" model="account.tax.template">
+            <field name="chart_template_id" ref="chart_ar_template"/>
+            <field name="name">IVA Compras 10.5%</field>
+            <field name="description">IVA Compras 10.5%</field>
+            <field eval="0.1050" name="amount"/>
+            <field name="type">percent</field>
+            <field name="account_collected_id" ref="iva_credito_fiscal_105"/>
+            <field name="account_paid_id" ref="iva_credito_fiscal_105"/>
+            <field name="base_code_id" ref="vat_code_oper_compra_105"/>
+            <field name="tax_code_id" ref="vat_code_iva_compra_105"/>
+            <field name="ref_base_code_id" ref="vat_code_oper_compra_105"/>
+            <field eval="-1" name="ref_base_sign"/>
+            <field name="ref_tax_code_id" ref="vat_code_iva_compra_105"/>
+            <field eval="-1" name="ref_tax_sign"/>
+            <field name="type_tax_use">purchase</field>
+        </record>
+
+    </data>
+</openerp>
