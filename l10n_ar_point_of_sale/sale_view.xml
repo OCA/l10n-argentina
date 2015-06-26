@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--vista Heredada de Sale_Shop-->
+        <!--para agregar los shops_ids que contiene esa sucursal-->
+        <record id="view_shop_form1" model="ir.ui.view">
+            <field name="name">sale.view.shop.form.inherit1</field>
+            <field name="model">sale.shop</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_shop_form"/>
+            <field name="arch" type="xml">
+                <group name="shop" position="after">
+                    <group name="pos_ar">
+                        <field name="pos_ar_ids" nolabel="1">
+                            <tree string="Points of Sales">
+                                <field name="name" />
+                                <field name="desc" />
+                                <field name="denomination_id" />
+                                <field name="priority" />
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>

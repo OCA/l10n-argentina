@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="denomination_A" model="invoice.denomination" forcecreate="0">
+            <field name="name">A</field>
+            <field name="desc">Denominacion A</field>
+            <field name="vat_discriminated">1</field>
+        </record>
+
+        <record id="denomination_B" model="invoice.denomination" forcecreate="0">
+            <field name="name">B</field>
+            <field name="desc">Denominacion B</field>
+        </record>
+
+        <record id="denomination_C" model="invoice.denomination" forcecreate="0">
+            <field name="name">C</field>
+            <field name="desc">Denominacion C</field>
+        </record>
+
+        <record id="fiscal_position_ri" model="account.fiscal.position" forcecreate="0">
+            <field name="name">RI</field>
+            <field name="denomination_id" ref="denomination_A"/>
+            <field name="denom_supplier_id" ref="denomination_A"/>
+        </record>
+
+        <record id="fiscal_position_mono" model="account.fiscal.position" forcecreate="0">
+            <field name="name">Monotributo</field>
+            <field name="denomination_id" ref="denomination_B"/>
+            <field name="denom_supplier_id" ref="denomination_C"/>
+        </record>
+
+        <record id="fiscal_position_exempt" model="account.fiscal.position" forcecreate="0">
+            <field name="name">Exento</field>
+            <field name="denomination_id" ref="denomination_B"/>
+            <field name="denom_supplier_id" ref="denomination_C"/>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <!--Menu Principal-->  
+        <menuitem id="base_invoices" name="Invoices" parent="account.menu_finance_configuration"/>    
+
+        <record id="pos_ar_view_form" model="ir.ui.view">
+            <field name="name">pos.ar.view.form</field>
+            <field name="model">pos.ar</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Point of Sale AR">
+                    <sheet>
+                        <h1>
+                            <label string="Point of Sale AR"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="denomination_id" select="1"/>
+                            </group>
+                            <group>
+                                <field name="priority"/>
+                                <field name="shop_id"/>
+                            </group>
+                        </group>
+                        <group string="Description">
+                            <field name="desc" select="1" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="pos_ar_view_tree" model="ir.ui.view">
+            <field name="name">pos.ar.view.tree</field>
+            <field name="model">pos.ar</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="POS AR">
+                    <field name="name"/>
+                    <field name="denomination_id"/>
+                    <field name="priority"/>
+                    <field name="shop_id"/>
+                </tree>
+            </field>
+        </record>
+    
+        <record id="action_pos_ar_view_tree" model="ir.actions.act_window">
+            <field name="name">Point of Sale</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pos.ar</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="action_pos_ar_view_form" model="ir.actions.act_window">
+            <field name="name">Point of Sale</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pos.ar</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form, tree</field>
+        </record>
+        
+        <!--Menu-->  
+        <menuitem name="Point of Sale AR" id="menu_pos_ar_root" parent="base_invoices" 
+            action="action_pos_ar_view_tree" 
+            sequence="10"
+            icon="terp-partner"
+            web_icon="images/pos.png"
+            web_icon_hover="images/pos-hover.png"/>
+    
+        
+    <!--Views of Invoice Denomination-->
+              
+        <record id="inv_den_view_form" model="ir.ui.view">
+            <field name="name">inv.den.view.form</field>
+            <field name="model">invoice.denomination</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Invoice denomination" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="Invoice denomination"/>
+                        </h1>
+                        <group>
+                            <field name="name" select="1"/>
+                            <field name="desc" select="1"/>
+                            <field name="vat_discriminated" select="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="inv_den_view_tree" model="ir.ui.view">
+            <field name="name">inv.den.view.tree</field>
+            <field name="model">invoice.denomination</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Invoice denominations">
+                    <field name="name" />
+                    <field name="desc" />
+                    <field name="vat_discriminated" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_pos_ar_denomination_view_tree" model="ir.actions.act_window">
+            <field name="name">Invoice Denomination</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.denomination</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <!--Menu-->  
+        <menuitem id="menu_invoice_denomination" action="action_pos_ar_denomination_view_tree" 
+            name="Denominations" parent="base_invoices" sequence="20"/>    
+        
+    </data>
+</openerp>

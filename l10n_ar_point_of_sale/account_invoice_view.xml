@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--vista Heredada de account_invoice-->
+        <record id="view_pos_invoice_form" model="ir.ui.view">
+            <field name="name">account.invoice.form.inherit2</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="number" position="replace"/>
+                    <field name="internal_number" position="replace"/>
+                    
+                    <field name="type" position="before">
+                        <label for="internal_number" class="oe_edit_only" string="Invoice Number"/>
+                        <h2>
+                            <field name="denomination_id" class="oe_inline" required="1" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                        </h2>
+                    </field>
+                   <field name="account_id" position="after">
+                       <field name="pos_ar_id"/>
+                       <field name="is_debit_note" invisible="1"/>
+                   </field>
+                   <field name="amount_untaxed" position="replace">
+                       <field name="amount_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_no_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                   </field>
+                   <xpath expr="//field[@name='tax_line']/tree/field[@name='name']" position="after">
+                        <field name="tax_id" domain="[('tax_group','=','other'), ('type_tax_use','in',['sale','all'])]" />
+                        <field name="base_code_id" invisible="1"/>
+                        <field name="tax_code_id" invisible="1"/>
+                   </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!--vista Heredada de Search de account_invoice-->
+        <record id="view_pos_invoice_filter" model="ir.ui.view">
+            <field name="name">account.invoice.pos.filter</field>
+            <field name="model">account.invoice</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="number" position="replace">
+                        <field name="internal_number" filter_domain="['|','|','|', ('internal_number','ilike',self), ('origin','ilike',self), ('supplier_invoice_number', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                        <field name="denomination_id" string="Denomination"/>
+                        <field name="pos_ar_id" string="POS"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+        <!--vista Heredada de account_invoice-->
+        <record id="view_pos_invoice_tree" model="ir.ui.view">
+            <field name="name">account.invoice.tree.inherit2</field>
+            <field name="model">account.invoice</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="number" position="replace">
+                    <field name="denomination_id" string="Den"/>
+                    <field name="internal_number" width="100"/>
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_pos_invoice_supplier_form" model="ir.ui.view">
+            <field name="name">account.invoice.form.inherit3</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                    <field name="number" position="replace"/>
+                    <field name="internal_number" position="replace"/>
+                    
+                    <xpath expr="//form/sheet/div[@class='oe_title']" position="replace">
+                        <h1>
+                            <label string="Draft Invoice" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
+                            <label string="Draft Refund" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_refund')]}"/>
+                            <label string="Invoice" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_invoice')]}"/>
+                            <label string="Refund" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_refund')]}"/>
+                        </h1>
+                        <h2>
+                            <field name="denomination_id" class="oe_inline" required="1" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                            <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                        </h2>
+                    </xpath>
+
+                   <field name="account_id" position="after">
+                       <field name="is_debit_note" invisible="1"/>
+                   </field>
+
+                    <xpath expr="//button[@string='Ask Refund']" position="replace" >
+                      <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
+                        states='open,paid' attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True)]}"/>
+                    </xpath>
+                    <field name="fiscal_position" position="attributes">
+                        <attribute name="required">1</attribute>
+                    </field>
+                   <field name="amount_untaxed" position="replace">
+                       <field name="amount_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_no_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                   </field>
+                   <xpath expr="//field[@name='tax_line']/tree/field[@name='name']" position="after">
+                        <field name="tax_id" domain="[('tax_group','=','other'), ('type_tax_use','in',['purchase','all'])]" />
+                        <field name="base_code_id" invisible="1"/>
+                        <field name="tax_code_id" invisible="1"/>
+                   </xpath>
+
+            </field>
+        </record>
+
+
+       <record id="account.action_invoice_tree1" model="ir.actions.act_window">
+            <field name="domain">[('type','=','out_invoice'), ('is_debit_note', '=', False)]</field>
+       </record>
+
+       <record id="action_customer_debit_note_tree" model="ir.actions.act_window">
+            <field name="name">Customer Debit Notes</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_invoice'), ('is_debit_note','=', True)]</field>
+            <field name="context">{'default_type':'out_invoice', 'journal_type': 'sale', 'default_is_debit_note': True}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help">With Customer Debit Notes you can manage the debit notes for your customers. A debit note is a document that increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account.</field>
+        </record>
+
+        <record id="action_customer_debit_note_form_view" model="ir.actions.act_window.view">
+            <field eval="5" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="act_window_id" ref="action_customer_debit_note_tree"/>
+            <field name="view_id" ref="view_pos_invoice_form"/>
+        </record>
+
+        <record id="action_customer_debit_note_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_customer_debit_note_tree"/>
+        </record>
+
+       <record id="account.action_invoice_tree2" model="ir.actions.act_window">
+            <field name="domain">[('type','=','in_invoice'), ('is_debit_note', '=', False)]</field>
+       </record>
+
+         <record id="action_supplier_debit_note_tree" model="ir.actions.act_window">
+            <field name="name">Supplier Debit Notes</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','in_invoice'), ('is_debit_note','=', True)]</field>
+            <field name="context">{'default_type':'in_invoice', 'journal_type': 'purchase', 'default_is_debit_note': True}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help">With Supplier Debit Notes you can manage the debit notes for your suppliers. A debit note is a document that increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account.</field>
+        </record>
+
+        <record id="action_supplier_debit_note_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_supplier_debit_note_tree"/>
+        </record>
+
+        <record id="action_supplier_debit_note_form_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="act_window_id" ref="action_supplier_debit_note_tree"/>
+            <field name="view_id" ref="view_pos_invoice_supplier_form"/>
+        </record>
+
+        <!-- Reordenamiento de Menues Account/Customer -->
+        <menuitem action="account.action_invoice_tree1" id="account.menu_action_invoice_tree1" sequence="5" parent="account.menu_finance_receivables"/>
+        <menuitem action="account.action_invoice_tree3" id="account.menu_action_invoice_tree3" sequence="6" parent="account.menu_finance_receivables"/>
+        <menuitem action="action_customer_debit_note_tree" sequence="7" id="menu_customer_debit_note" parent="account.menu_finance_receivables"/>
+
+        <!-- Reordenamiento de Menues Account/Supplier -->
+        <menuitem action="account.action_invoice_tree2" id="account.menu_action_invoice_tree2" sequence="5" parent="account.menu_finance_payables"/>
+        <menuitem action="account.action_invoice_tree4" id="account.menu_action_invoice_tree4" sequence="6" parent="account.menu_finance_payables"/>
+        <menuitem action="action_supplier_debit_note_tree" sequence="7" id="menu_supplier_debit_note" parent="account.menu_finance_payables"/>
+    
+    </data>
+</openerp>
