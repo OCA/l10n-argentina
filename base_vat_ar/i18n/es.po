@@ -1,0 +1,81 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* base_vat_ar_v6
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-03-05 22:20+0000\n"
+"PO-Revision-Date: 2013-03-05 22:20+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_vat_ar_v6
+#: field:res.document.type,verification_required:0
+msgid "Verification required"
+msgstr "Requiere verificación"
+
+#. module: base_vat_ar_v6
+#: code:addons/base_vat_ar_v6/partner.py:66
+#: constraint:res.partner:0
+#, python-format
+msgid "The Vat does not seems to be correct."
+msgstr "El documento no parece ser correcto."
+
+#. module: base_vat_ar_v6
+#: model:ir.module.module,shortdesc:base_vat_ar_v6.module_meta_information
+msgid "base_vat_ar"
+msgstr "base_vat_ar"
+
+#. module: base_vat_ar_v6
+#: field:res.document.type,afip_code:0
+msgid "Afip code"
+msgstr "Código AFIP"
+
+#. module: base_vat_ar_v6
+#: model:ir.model,name:base_vat_ar_v6.model_res_document_type
+msgid "res.document.type"
+msgstr "Tipo de documento"
+
+#. module: base_vat_ar_v6
+#: model:ir.model,name:base_vat_ar_v6.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: base_vat_ar_v6
+#: model:ir.module.module,description:base_vat_ar_v6.module_meta_information
+msgid "\n"
+"    This module provide :\n"
+"    * VAT Check for Argentina.\n"
+"    * Modification of check_vat_routine:\n"
+"        The original routine, got the VAT Number an extract the first two letters\n"
+"        and used them to as Country ISO Code to know the country of the partner and to call\n"
+"        the routine related to this country.\n"
+"        This module modify this, getting the country from the partner itself (the ISO Code has\n"
+"        to be well defined) and if this is not defined, the original routine is executed.\n"
+"    "
+msgstr "\n"
+"    This module provide :\n"
+"    * VAT Check for Argentina.\n"
+"    * Modification of check_vat_routine:\n"
+"        The original routine, got the VAT Number an extract the first two letters\n"
+"        and used them to as Country ISO Code to know the country of the partner and to call\n"
+"        the routine related to this country.\n"
+"        This module modify this, getting the country from the partner itself (the ISO Code has\n"
+"        to be well defined) and if this is not defined, the original routine is executed.\n"
+"    "
+
+#. module: base_vat_ar_v6
+#: model:ir.actions.act_window,name:base_vat_ar_v6.action_res_document_type
+#: model:ir.ui.menu,name:base_vat_ar_v6.menu_document_type
+#: view:res.document.type:0
+#: field:res.document.type,name:0
+#: field:res.partner,document_type_id:0
+msgid "Document type"
+msgstr "Tipo de documento"
+

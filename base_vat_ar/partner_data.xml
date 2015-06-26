@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="document_cuit" model="res.document.type">
+            <field name="name">CUIT</field>
+            <field name="afip_code">80</field>
+            <field name="verification_required" eval="True"/>
+        </record>
+
+
+        <record id="document_cuil" model="res.document.type">
+            <field name="name">CUIL</field>
+            <field name="afip_code">86</field>
+            <field name="verification_required" eval="True"/>
+        </record>
+
+        <record id="document_cdi" model="res.document.type">
+            <field name="name">CDI</field>
+            <field name="afip_code">87</field>
+        </record>
+
+        <record id="document_le" model="res.document.type">
+            <field name="name">LE</field>
+            <field name="afip_code">89</field>
+        </record>
+
+        <record id="document_lc" model="res.document.type">
+            <field name="name">LC</field>
+            <field name="afip_code">90</field>
+        </record>
+
+        <record id="document_ci_extranjera" model="res.document.type">
+            <field name="name">CI Extranjera</field>
+            <field name="afip_code">91</field>
+        </record>
+
+        <record id="document_en_tramite" model="res.document.type">
+            <field name="name">En Tramite</field>
+            <field name="afip_code">92</field>
+        </record>
+
+        <record id="document_acta_nacimiento" model="res.document.type">
+            <field name="name">Acta Nacimiento</field>
+            <field name="afip_code">93</field>
+        </record>
+
+        <record id="document_ci_bs_as_rnp" model="res.document.type">
+            <field name="name">CI Bs. As. RNP</field>
+            <field name="afip_code">95</field>
+        </record>
+
+        <record id="document_dni" model="res.document.type">
+            <field name="name">DNI</field>
+            <field name="afip_code">96</field>
+        </record>
+
+        <record id="document_pasaporte" model="res.document.type">
+            <field name="name">Pasaporte</field>
+            <field name="afip_code">94</field>
+        </record>
+
+        <record id="document_ci_policia" model="res.document.type">
+            <field name="name">CI Policia Federal</field>
+            <field name="afip_code">0</field>
+        </record>
+
+        <record id="document_ci_bs_as" model="res.document.type">
+            <field name="name">CI Buenos Aires</field>
+            <field name="afip_code">1</field>
+        </record>
+
+        <record id="document_ci_catamarca" model="res.document.type">
+            <field name="name">CI Catamarca</field>
+            <field name="afip_code">2</field>
+        </record>
+
+        <record id="document_ci_cordoba" model="res.document.type">
+            <field name="name">CI Cordoba</field>
+            <field name="afip_code">3</field>
+        </record>
+
+        <record id="document_ci_corrientes" model="res.document.type">
+            <field name="name">CI Corrientes</field>
+            <field name="afip_code">4</field>
+        </record>
+
+        <record id="document_ci_entre_rios" model="res.document.type">
+            <field name="name">CI Entre Rios</field>
+            <field name="afip_code">5</field>
+        </record>
+
+        <record id="document_ci_jujuy" model="res.document.type">
+            <field name="name">CI Jujuy</field>
+            <field name="afip_code">6</field>
+        </record>
+
+        <record id="document_ci_mendoza" model="res.document.type">
+            <field name="name">CI Mendoza</field>
+            <field name="afip_code">7</field>
+        </record>
+
+        <record id="document_ci_la_rioja" model="res.document.type">
+            <field name="name">CI La Rioja</field>
+            <field name="afip_code">8</field>
+        </record>
+
+        <record id="document_ci_salta" model="res.document.type">
+            <field name="name">CI Salta</field>
+            <field name="afip_code">9</field>
+        </record>
+
+        <record id="document_ci_san_juan" model="res.document.type">
+            <field name="name">CI San Juan</field>
+            <field name="afip_code">10</field>
+        </record>
+
+        <record id="document_ci_san_luis" model="res.document.type">
+            <field name="name">CI San Luis</field>
+            <field name="afip_code">11</field>
+        </record>
+
+        <record id="document_ci_santa_fe" model="res.document.type">
+            <field name="name">CI Santa Fe</field>
+            <field name="afip_code">12</field>
+        </record>
+
+        <record id="document_ci_santiago_estero" model="res.document.type">
+            <field name="name">CI Santiago del Estero</field>
+            <field name="afip_code">13</field>
+        </record>
+
+        <record id="document_ci_tucuman" model="res.document.type">
+            <field name="name">CI Tucuman</field>
+            <field name="afip_code">14</field>
+        </record>
+
+        <record id="document_ci_chaco" model="res.document.type">
+            <field name="name">CI Chaco</field>
+            <field name="afip_code">16</field>
+        </record>
+
+        <record id="document_ci_chubut" model="res.document.type">
+            <field name="name">CI Chubut</field>
+            <field name="afip_code">17</field>
+        </record>
+
+        <record id="document_ci_formosa" model="res.document.type">
+            <field name="name">CI Formosa</field>
+            <field name="afip_code">18</field>
+        </record>
+
+        <record id="document_ci_misiones" model="res.document.type">
+            <field name="name">CI Misiones</field>
+            <field name="afip_code">19</field>
+        </record>
+
+        <record id="document_ci_neuquen" model="res.document.type">
+            <field name="name">CI Neuquen</field>
+            <field name="afip_code">20</field>
+        </record>
+
+        <record id="document_ci_la_pampa" model="res.document.type">
+            <field name="name">CI La Pampa</field>
+            <field name="afip_code">21</field>
+        </record>
+
+        <record id="document_ci_rio_negro" model="res.document.type">
+            <field name="name">CI Rio Negro</field>
+            <field name="afip_code">22</field>
+        </record>
+
+        <record id="document_ci_santa_cruz" model="res.document.type">
+            <field name="name">CI Santa Cruz</field>
+            <field name="afip_code">23</field>
+        </record>
+
+        <record id="document_ci_tierra_fuego" model="res.document.type">
+            <field name="name">CI Tierra del Fuego</field>
+            <field name="afip_code">24</field>
+        </record>
+
+        <record id="document_doc_otro" model="res.document.type">
+            <field name="name">Doc. (Otro)</field>
+            <field name="afip_code">99</field>
+        </record>
+
+    </data>
+</openerp>
