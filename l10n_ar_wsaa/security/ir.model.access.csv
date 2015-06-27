@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wsaa_config_manager,wsaa.config manager,model_wsaa_config,account.group_account_manager,1,1,1,1
+access_wsaa_config_user,wsaa.config user,model_wsaa_config,account.group_account_user,1,0,0,0
+access_wsaa_config_payment,wsaa.config payment,model_wsaa_config,account.group_account_invoice,1,0,0,0
+access_afipws_service_manager,afipws.service manager,model_afipws_service,account.group_account_manager,1,1,1,1
+access_afipws_service_user,afipws.service user,model_afipws_service,account.group_account_user,1,0,0,0
+access_afipws_service_payment,afipws.service payment,model_afipws_service,account.group_account_invoice,1,0,0,0
+access_wsaa_ta_manager,wsaa.ta manager,model_wsaa_ta,account.group_account_manager,1,1,1,1
+access_wsaa_ta_user,wsaa.ta user,model_wsaa_ta,account.group_account_user,1,1,0,0
+access_wsaa_ta_payment,wsaa.ta payment,model_wsaa_ta,account.group_account_invoice,1,0,0,0
