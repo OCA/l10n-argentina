@@ -1,0 +1,185 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_payment_plan
+# Sebastian Kennedy <skennedy@e-mips.com.ar>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-03 15:32+0000\n"
+"PO-Revision-Date: 2015-06-03 12:35-0300\n"
+"Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
+"Language-Team: Spanish; Castilian <>\n"
+"Language: es_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
+
+#. module: l10n_ar_payment_plan
+#: model:ir.model,name:l10n_ar_payment_plan.model_payment_order
+msgid "Payment Order"
+msgstr "Orden de pago"
+
+#. module: l10n_ar_payment_plan
+#: help:payment.line,mode:0
+msgid "Select the Payment Mode to be applied."
+msgstr "Seleccione el método de pago a aplicar."
+
+#. module: l10n_ar_payment_plan
+#: view:account.bank.statement:0
+msgid "Import Payment Lines"
+msgstr "Importar líneas de pago"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.line,mode:0
+msgid "Payment Mode"
+msgstr "Modo de Pago"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.line,amount_to_pay:0
+msgid "Amount To Pay"
+msgstr "Monto a Pagar"
+
+#. module: l10n_ar_payment_plan
+#: view:create.payment.lines:0
+msgid "Add to Order"
+msgstr "Agregar a Orden"
+
+#. module: l10n_ar_payment_plan
+#: code:addons/l10n_ar_payment_plan/account_payment.py:72
+#, python-format
+msgid "You cannot delete Payment Orders that has confirmed payments!"
+msgstr "No puede borrar Ordenes de Pago que tienen pagos confirmados!"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "Show Vouchers"
+msgstr "Mostrar Comprobantes"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "bottom"
+msgstr "bottom"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.order,journal_id:0
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ar_payment_plan
+#: model:ir.actions.act_window,name:l10n_ar_payment_plan.action_create_payment_lines
+msgid "Populate Payment Order"
+msgstr "Populate Payment Order"
+
+#. module: l10n_ar_payment_plan
+#: model:ir.model,name:l10n_ar_payment_plan.model_create_payment_lines
+msgid "Create Payment Lines Wizard"
+msgstr "Creación de Líneas de Pagos"
+
+#. module: l10n_ar_payment_plan
+#: view:create.payment.lines:0 field:create.payment.lines,entries:0
+msgid "Entries"
+msgstr "Entradas"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid ""
+"{'readonly':['|', ('date_prefered','!=','fixed'), ('state','in',('open', "
+"'done'))]}"
+msgstr ""
+"{'readonly':['|', ('date_prefered','!=','fixed'), ('state','in',('open', "
+"'done'))]}"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "account.group_account_manager"
+msgstr "account.group_account_manager"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.order,total_pay:0
+msgid "Total Pay"
+msgstr "Total Pagado"
+
+#. module: l10n_ar_payment_plan
+#: field:create.payment.lines,duedate:0
+msgid "Due Date"
+msgstr "Fecha Vencimiento"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "Select Invoices"
+msgstr "Seleccionar Facturas"
+
+#. module: l10n_ar_payment_plan
+#: view:create.payment.lines:0
+msgid "Search invoices and debts"
+msgstr "Buscar facturas y deudas"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "Total to pay"
+msgstr "Total a pagar"
+
+#. module: l10n_ar_payment_plan
+#: model:ir.model,name:l10n_ar_payment_plan.model_payment_order_create
+msgid "payment.order.create"
+msgstr "pago.orden.crear"
+
+#. module: l10n_ar_payment_plan
+#: field:create.payment.lines,partner_id:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.line,amount_retained:0
+msgid "Amount Retained"
+msgstr "Cantidad Retenida"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "Authorize"
+msgstr "Autorizar"
+
+#. module: l10n_ar_payment_plan
+#: code:addons/l10n_ar_payment_plan/account_payment.py:72
+#, python-format
+msgid "Invalid Action!"
+msgstr "Acción Inválida!"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "Amount Residual"
+msgstr "Saldo"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.order,currency_id:0
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: l10n_ar_payment_plan
+#: field:payment.line,voucher_id:0
+msgid "Voucher"
+msgstr "Comprobante"
+
+#. module: l10n_ar_payment_plan
+#: view:create.payment.lines:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_payment_plan
+#: model:ir.model,name:l10n_ar_payment_plan.model_payment_line
+msgid "Payment Line"
+msgstr "Línea de pago"
+
+#. module: l10n_ar_payment_plan
+#: view:payment.order:0
+msgid "Total"
+msgstr "Total"
+
+#. module: l10n_ar_payment_plan
+#: view:create.payment.lines:0
+msgid "or"
+msgstr "or"

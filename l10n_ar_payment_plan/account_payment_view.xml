@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Vista Heredada de Payment Order -->
+        <record id="view_payment_order_line_mode" model="ir.ui.view">
+            <field name="name">payment.order.line.mode.form</field>
+            <field name="model">payment.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account_payment.view_payment_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <button name="open" position="attributes">
+                        <attribute name="groups">account.group_account_manager</attribute>
+                        <attribute name="string">Authorize</attribute>
+                    </button>
+                    <button name="open" position="before">
+                        <button name="%(action_create_payment_lines)d" string="Select Invoices" states="draft" type="action"/>
+                    </button>
+                    <button name="cancel" position="attributes">
+                        <attribute name="groups">account.group_account_manager</attribute>
+                    </button>
+                     <button name="cancel" position="after">
+                        <button name="action_view_vouchers" string="Show Vouchers" states="done" type="object" groups="account.group_account_invoice,account.group_account_manager"/>
+                    </button>
+                    <field name="date_scheduled" position="attributes">
+                        <attribute name="attrs">{'readonly':['|', ('date_prefered','!=','fixed'), ('state','in',('open', 'done'))]}</attribute>
+                    </field>
+                    <xpath expr="//sheet/div[@class='oe_button_box']" position="replace"/>
+                    <field name="mode" position="replace">
+                        <field name="journal_id"/>
+                        <field name="currency_id"/>
+                        <field name="company_id"/>
+                    </field>
+                    <xpath expr="//field[@name='line_ids']/form/notebook/page[@string='Payment']/group/field[@name='move_line_id']" position="after">
+                        <field name="mode"/>
+                    </xpath>
+                    <xpath expr="//field[@name='line_ids']/tree/field[@name='name']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='line_ids']/tree/field[@name='amount_currency']" position="attributes">
+                        <attribute name="string">Amount Residual</attribute>
+                    </xpath>
+                     <xpath expr="//field[@name='line_ids']/tree/field[@name='amount_currency']" position="after">
+                        <field name="amount_retained"/>
+                        <field name="mode" domain="[('type','=','payment'), ('currency', '=', parent.currency_id)]"/>
+                        <field name="amount_to_pay"/>
+                    </xpath>
+                    <xpath expr="//field[@name='line_ids']/tree" position="attributes">
+                        <attribute name="editable">bottom</attribute>
+                    </xpath>
+                 </data>
+            </field>
+        </record>
+
+        <record id="view_payment_order_plan_tree" model="ir.ui.view">
+            <field name="name">payment.order.plan.tree</field>
+            <field name="model">payment.order</field>
+            <field name="inherit_id" ref="account_payment.view_payment_order_tree"/>
+            <field eval="4" name="priority"/>
+            <field name="arch" type="xml">
+                <field name="total" position="replace">
+                    <field name="total" sum="Total"/>
+                </field>
+                <field name="total" position="after">
+                    <field name="total_pay" sum="Total to pay"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="view_bank_statement_plan_form" model="ir.ui.view">
+            <field name="name">account.bank.statement.plan.form</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account_payment.view_bank_statement_form"/>
+            <field name="arch" type="xml">
+                <button string="Import Payment Lines" position="replace"/>
+            </field>
+        </record>
+
+    </data>
+</openerp>
