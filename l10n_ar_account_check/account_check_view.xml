@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_treasury_root" name="Treasury" sequence="60"/>
+        <menuitem id="menu_treasury_issued_check_menu" name="Issued Checks" parent="menu_treasury_root" sequence="10"/>
+        <menuitem id="menu_treasury_configuration" name="Configuration" parent="menu_treasury_root" sequence="30"/>
+
+        <!-- Cheques Configuracion -->
+
+        <record model="ir.ui.view" id="view_account_check_config_tree">
+            <field name="name">account.check.config.tree</field>
+            <field name="model">account.check.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Checks Config">
+                    <field name="account_id"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_account_check_config_form">
+            <field name="name">account.check.config.form</field>
+            <field name="model">account.check.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Check Config" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="Account Check Configuration"/>
+                        </h1>
+                        <group>
+                            <field name="account_id"/>
+                            <field name="company_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_check_config">
+            <field name="name">Check Config</field>
+            <field name="res_model">account.check.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            action="action_check_config"
+            id="menu_treasury_check_config"
+            name="Check Config"
+            parent="menu_treasury_configuration"
+        />
+
+        <!-- Cheques Emitidos -->
+
+        <record model="ir.ui.view" id="view_account_issued_check_tree">
+            <field name="name">account.issued.check.tree</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Issued Checks">
+                    <field name="number"/>
+                    <field name="receiving_partner_id"/>
+                    <field name="issue_date"/>
+                    <field name="payment_date"/>
+                    <field name="account_bank_id" />
+                    <field name="bank_id"/>
+                    <field name="amount" sum="Total Amount" />
+                    <field name="type" invisible="1"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_account_issued_check_form">
+            <field name="name">account.issued.check.form</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Issued Checks" version="7.0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,issued" statusbar_colors='{"cancel":"red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Issued Check"/>
+                                <field name="number" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="type"/>
+                                <field name="amount"/>
+                                <field name="receiving_partner_id"/>
+                                <field name="bank_id"/>
+                            </group>
+                            <group>
+                                <field name="issue_date"/>
+                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
+                                <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
+                            </group>
+                        </group>
+                        <group string="Additional Information">
+                            <group>
+                                <field name="clearing"/>
+                                <field name="signatory"/>
+                            </group>
+                            <group>
+                                <field name="origin"/>
+                            </group>
+                         </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_account_issued_check_filter" model="ir.ui.view">
+            <field name="name">account.issued.check.select</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Issued Checks">
+				   <filter icon="terp-check" string="Common" name="common"
+					   domain="[('type','=', 'common')]"/>
+				   <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+					   domain="[('type','=', 'postdated')]"/>
+				   <separator orientation="vertical"/>
+				   <field name="number"/>
+				   <field name="issue_date"/>
+				   <field name="receiving_partner_id"/>
+				   <group expand="0" string="Extended Filters" colspan="10" col="6">
+					   <field name="payment_date"/>
+					   <field name="bank_id"/>
+					   <field name="amount"/>
+					</group>
+                    <group expand="0" string="Group By..." colspan="10" col="8" groups="base.group_extended">
+                        <filter string="Bank Account" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'account_bank_id'}"/>
+                        <filter string="Payment Date" icon="terp-go-month" domain="[]" context="{'group_by':'payment_date'}" help="Payment Date"/>
+                        <filter string="Receiving Partner" icon="terp-personal" domain="[]" context="{'group_by':'receiving_partner_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="view_account_issued_check_issued_calendar" model="ir.ui.view">
+            <field name="name">account.issued.check.issued.calendar</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">calendar</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="issue_date" string="Issued Checks by Issue Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_account_issued_check_payment_calendar" model="ir.ui.view">
+            <field name="name">account.issued.check.payment.calendar</field>
+            <field name="model">account.issued.check</field>
+            <field name="type">calendar</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="payment_date" string="Issued Checks by Payment Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+    <!-- Tesoreria/Cheques/Cheques Emitidos -->
+
+        <record model="ir.actions.act_window" id="action_issued_check">
+            <field name="name">Issued Checks</field>
+            <field name="res_model">account.issued.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="view_account_issued_check_filter"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_issued_check_calendar_payment_date">
+            <field name="name">Issued Checks by Payment Date</field>
+            <field name="res_model">account.issued.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_issued_check_payment_calendar"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_issued_check_calendar_issued_date">
+            <field name="name">Issued Checks by Issue Date</field>
+            <field name="res_model">account.issued.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_issued_check_issued_calendar"/>
+        </record>
+
+        <menuitem
+            action="action_issued_check"
+            id="menu_treasury_issued_check"
+            name="Issued Checks"
+            parent="menu_treasury_issued_check_menu"
+        />
+
+        <menuitem
+            action="action_issued_check_calendar_payment_date"
+            id="menu_treasury_issued_check_calendar_payment"
+            name="Calendar By Payment Date"
+            parent="menu_treasury_issued_check_menu"
+        />
+
+        <menuitem
+            action="action_issued_check_calendar_issued_date"
+            id="menu_treasury_issued_check_calendar_issued"
+            name="Calendar By Issue Date"
+            parent="menu_treasury_issued_check_menu"
+        />
+
+    <!-- Third Checks -->
+
+        <record model="ir.ui.view" id="view_account_third_check_tree">
+            <field name="name">account.third.check.tree</field>
+            <field name="model">account.third.check</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Third Checks">
+                    <field name="number"/>
+                    <field name="source_partner_id"/>
+                    <field name="issue_date"/>
+                    <field name="receipt_date"/>
+                    <field name="payment_date"/>
+                    <field name="destiny_partner_id"/>
+                    <field name="endorsement_date"/>
+                    <field name="bank_id"/>
+                    <field name="amount"/>
+                    <field name="deposit_bank_id"/>
+                    <field name="deposit_slip"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_account_third_check_form">
+            <field name="name">account.third.check.form</field>
+            <field name="model">account.third.check</field>
+            <field name="type">form</field>
+            <field name="priority">10</field>
+            <field name="arch" type="xml">
+               <form string="Third Checks" version="7.0">
+                    <header>
+                        <button name="%(action_check_deposit)d" type='action' string='Deposit Check' states='wallet' class="oe_highlight" groups="account.group_account_invoice,account.group_account_manager"/>
+                        <field name="state" widget="statusbar" statusbar_visible="wallet,deposited,delivered" statusbar_colors='{"wallet":"blue","rejected":"red","cancel":"red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Third Check"/>
+                                <field name="number" class="oe_inline" attrs="{'invisible': [('state','=','draft')]}"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="type"/>
+                                <field name="amount"/>
+                                <field name="source_partner_id"/>
+                                <field name="destiny_partner_id" attrs="{'invisible': [('state', 'not in', ('delivered', 'rejected'))]}"/>
+                            </group>
+                            <group>
+                                <field name="receipt_date"/>
+                                <field name="issue_date"/>
+                                <field name="endorsement_date" attrs="{'invisible': [('state', 'not in', ('wallet', 'delivered', 'rejected'))]}"/>
+                                <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
+                                <field name="deposit_date" attrs="{'invisible': [('state','!=','deposited')]}"/>
+                                <field name="deposit_slip"/>
+                            </group>
+                        </group>
+                        <group string="Other Information">
+                            <group>
+                                <field name="bank_id"/>
+                                <field name="origin"/>
+                                <field name="dest" attrs="{'invisible': [('state','!=','delivered')]}"/>
+                            </group>
+                             <group>
+                                <field name="clearing"/>
+                                <field name="signatory"/>
+                                <field name="signatory_vat"/>
+                                <field name="signatory_account"/>
+                                <field name="deposit_bank_id" attrs="{'invisible': [('state', 'not in', ('deposited', 'rejected'))]}" />
+                            </group>
+                       </group>
+                       <group string="Additional Information">
+                       <div class="oe_clear"/>
+                       <field name="note" colspan="4" nolabel="1" placeholder="Additional Information..."/>
+                       </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+       <record id="view_third_checks_search" model="ir.ui.view">
+            <field name="name">third.check.search</field>
+            <field name="model">account.third.check</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Third Checks...">
+                    <group>
+                        <filter icon="terp-folder-green" name="cartera"
+                            string="In Wallet" domain="[('state','=','wallet')]"/>
+                        <filter icon="gtk-go-forward" name="delivered"
+                            string="Delivered" domain="[('state','=','delivered')]"/>
+                        <filter icon="gtk-jump-to" name="deposit"
+                            string="Deposited" domain="[('state','=','deposit')]"/>
+                        <filter icon="gtk-cancel" name="rejected"
+                            string="Rejected" domain="[('state','=','rejected')]"/>
+                        <filter icon="gtk-cancel" name="cancel"
+                            string="Cancelled" domain="[('state','=','cancel')]"/>
+                       <separator orientation="vertical"/>
+                       <filter icon="terp-check" string="Common" name="common"
+                           domain="[('type','=', 'common')]"/>
+                       <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+                           domain="[('type','=', 'postdated')]"/>
+                    <field name="number" select="1" string="Check Number"/>
+                    <field name="issue_date"/>
+                    <field name="origin"/>
+                    <field name="source_partner_id"/>
+                        <field name="payment_date"/>
+                        <field name="receipt_date"/>
+                    </group>
+                    <group expand="0" string="Extended Filters">
+                        <field name="endorsement_date"/>
+                        <field name="destiny_partner_id"/>
+                        <field name="bank_id"/>
+                        <field name="amount"/>
+                    </group>
+                    <group expand="0" string="Group By..." colspan="4">
+                        <filter string="Source Partner" icon="terp-partner"
+                            domain="[]" context="{'group_by':'source_partner_id'}"/>
+                        <filter string="Destiny Partner" icon="terp-partner"
+                            domain="[('state','not in', ('draft', 'wallet', 'deposited')), ('endorsement_date','!=',False)]"
+                            context="{'group_by':'destiny_partner_id'}"/>
+                        <filter string="Payment Date" icon="terp-go-month" domain="[]"
+                            context="{'group_by':'payment_date'}" help="Payment Date"/>
+                        <filter string="Endorsement Date" icon="terp-go-month" domain="[('endorsement_date','!=',False)]"
+                            context="{'group_by':'endorsement_date'}" help="Endorsement Date"/>
+                       <separator orientation="vertical"/>
+                        <filter string="Bank" icon="terp-accessories-archiver" domain="[('state','!=','draft')]"
+                            context="{'group_by':'bank_id'}"/>
+                        <filter string="Deposit Slip" icon="terp-stock_effects-object-colorize" domain="[]"
+                            context="{'group_by':'deposit_slip'}"/>
+                        <filter string="State" icon="terp-stock_effects-object-colorize" domain="[]"
+                            context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_account_third_check_issued_calendar" model="ir.ui.view">
+            <field name="name">account.third.check.issued.calendar</field>
+            <field name="model">account.third.check</field>
+            <field name="type">calendar</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="issue_date" string="Third Checks by Issue Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_account_third_check_payment_calendar" model="ir.ui.view">
+            <field name="name">account.third.check.payment.calendar</field>
+            <field name="model">account.third.check</field>
+            <field name="type">calendar</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="payment_date" string="Third Checks by Payment Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_account_third_check_endorsement_calendar" model="ir.ui.view">
+            <field name="name">account.third.check.endorsement.calendar</field>
+            <field name="model">account.third.check</field>
+            <field name="type">calendar</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar color="bank_id" date_start="endorsement_date" string="Third Checks by Endorsement Date">
+                    <field name="number"/>
+                    <field name="amount"/>
+                </calendar>
+            </field>
+        </record>
+
+
+
+    <!-- Tesoreria/Cheques/Cheques Emitidos -->
+
+        <record model="ir.actions.act_window" id="action_third_check">
+            <field name="name">Third Checks</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="view_account_third_check_tree"/>
+            <field name="search_view_id" ref="view_third_checks_search"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_third_check_calendar_payment_date">
+            <field name="name">Third Checks by Payment Date</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_third_check_payment_calendar"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_third_check_calendar_issued_date">
+            <field name="name">Third Checks by Issue Date</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_third_check_issued_calendar"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_third_check_calendar_endorsement_date">
+            <field name="name">Third Checks by Endorsement Date</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_mode">calendar,form</field>
+            <field name="view_id" ref="view_account_third_check_endorsement_calendar"/>
+            <field name="domain">[('endorsement_date','!=',False)]</field>
+        </record>
+
+
+
+        <menuitem id="menu_treasury_third_check_menu" name="Third Checks" parent="menu_treasury_root" sequence="20"/>
+
+        <menuitem action="action_third_check" id="menu_treasury_third_check" name="Third Checks" sequence="5" parent="menu_treasury_third_check_menu" />
+
+
+        <menuitem action="action_third_check_calendar_payment_date"
+            id="menu_treasury_third_check_calendar_payment"
+            name="Calendar By Payment Date"
+            parent="menu_treasury_third_check_menu"
+        />
+
+        <menuitem
+            action="action_third_check_calendar_issued_date"
+            id="menu_treasury_third_check_calendar_issued"
+            name="Calendar By Issue Date"
+            parent="menu_treasury_third_check_menu"
+        />
+
+        <menuitem
+            action="action_third_check_calendar_endorsement_date"
+            id="menu_treasury_third_check_calendar_endorsement"
+            name="Calendar By Endorsement Date"
+            parent="menu_treasury_third_check_menu"
+        />
+
+    </data>
+</openerp>

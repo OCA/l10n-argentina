@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_partner_bank_check_form" model="ir.ui.view">
+            <field name="name">res.partner.bank.form.check.inherit</field>
+            <field name="model">res.partner.bank</field>
+            <field name="inherit_id" ref="base.view_partner_bank_form"/>
+            <field name="type">form</field>
+            <field name="priority">10</field>
+            <field name="arch" type="xml">
+                <field name="acc_number" position="after">
+                    <field name="account_id"/>
+                </field>
+             </field>
+        </record>
+
+        <record id="view_partner_check_form" model="ir.ui.view">
+            <field name="name">res.partner.form.check.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="acc_number" position="after">
+                    <field name="account_id"/>
+                </field>
+            </field>
+        </record>
+
+        <!--
+        <record id="view_partner_bank_check_tree" model="ir.ui.view">
+            <field name="name">res.partner.bank.tree.check.inherit</field>
+            <field name="model">res.partner.bank</field>
+            <field name="inherit_id" ref="base.view_partner_bank_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="acc_number" position="after">
+                    <field name="bank"/>
+                </field>
+            </field>
+        </record>
+        -->
+
+    </data>
+</openerp>

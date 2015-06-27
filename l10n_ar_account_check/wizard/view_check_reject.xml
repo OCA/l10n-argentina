@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="account.check_reject_form_view">
+            <field name="name">account.check.reject.wizard.form</field>
+            <field name="model">account.check.reject</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Check Reject" version="7.0">
+                    <group>
+                        <group>
+                            <field name="reject_date"/>
+                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                        </group>
+                        <group>
+                            <field name="journal_id" domain="[('type', '=', 'sale'),('company_id','=',company_id)]"/>
+                        </group>
+                    </group>
+                        <field name="expense_line_ids">
+                            <tree string="Expenses" editable="bottom">
+                                <field name="product_id"/>
+                                <field name="price"/>
+                            </tree>
+                        </field>
+                    <footer>
+                        <button type="special" special="cancel"
+                            string="Cancel" icon="gtk-cancel"/>
+                        <button type="object" name="action_reject"
+                            string="Reject" icon="gtk-ok"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window
+            name="Check Reject"
+            res_model="account.check.reject"
+            src_model="account.third.check"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_check_reject"/>
+
+    </data>
+</openerp>
