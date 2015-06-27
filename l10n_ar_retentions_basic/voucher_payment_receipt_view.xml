@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <!-- Customer Payment -->
+    <record id="view_vendor_receipt_retention_form" model="ir.ui.view">
+      <field name="name">account.voucher.receipt.retention.form.inherit</field>
+      <field name="model">account.voucher</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="l10n_ar_account_check.view_vendor_receipt_check_form"/>
+      <field name="arch" type="xml">
+          <page string="Journal Items" position="before">
+            <page string="Retentions">
+              <separator string="Supported Retentions"/>
+              <field name="retention_ids" nolabel="1" colspan="4">
+                <tree string="Retention Lines">
+                  <field name="date" />
+                  <field name="retention_id" string="Retention Type" />
+                  <field name="partner_id" invisible="1"/>
+                  <field name="certificate_no" />
+                  <field name="base" />
+                  <field name="amount" />
+                </tree>
+
+                <form string="Retention Lines" version="7.0">
+                    <h1>
+                        <field name="name" class="oe_inline"/>
+                    </h1>
+                  <group>
+                      <group string="Information" name="info">
+
+                          <field name="retention_id" domain="[('type_tax_use', '=', 'sale')]" />
+                          <field name="certificate_no"/>
+                          <field name="state_id" />
+                          <field name="date" />
+                          <label string="Keep it empty if the date is the same as the voucher." class="oe_grey"/>
+                      </group>
+                      <group string="Amounts" name="amount">
+                          <field name="base"/>
+                          <field name="amount"/>
+                          <field name="account_id" invisible="1" />
+                          <field name="base_code_id" invisible="1" />
+                          <field name="tax_code_id" invisible="1" />
+                      </group>
+                  </group>
+                </form>
+              </field>
+            </page>
+          </page>
+      </field>
+    </record>
+
+    <!-- Supplier Payment -->
+    <record id="view_vendor_payment_retention_form" model="ir.ui.view">
+      <field name="name">account.voucher.payment.retention.form.inherit</field>
+      <field name="model">account.voucher</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="l10n_ar_account_check.view_voucher_check_form"/>
+      <field name="arch" type="xml">
+        <data>
+
+          <page string="Journal Items" position="before">
+            <page string="Retentions">
+              <separator string="Applied Retentions"/>
+              <field name="retention_ids" nolabel="1" colspan="4">
+                <tree string="Retention Lines">
+                  <field name="date" />
+                  <field name="retention_id" string="Retention Type" />
+                  <field name="partner_id" invisible="1"/>
+                  <field name="certificate_no" />
+                  <field name="base" sum="Base"/>
+                  <field name="amount" sum="Total"/>
+                  <field name="state_id" />
+                </tree>
+                <form string="Retention Lines" version="7.0">
+                    <h1>
+                        <field name="name" class="oe_inline" />
+                    </h1>
+                  <group>
+                      <group string="Information" name="info">
+
+                          <field name="retention_id" domain="[('type_tax_use', '=', 'purchase')]" />
+                          <field name="certificate_no"/>
+                          <field name="state_id" />
+                          <field name="date" />
+                          <label string="Keep it empty if the date is the same as the voucher." class="oe_grey"/>
+                      </group>
+                      <group string="Amounts" name="amount">
+                          <field name="base"/>
+                          <field name="amount"/>
+                          <field name="account_id" invisible="1" />
+                          <field name="base_code_id" invisible="1" />
+                          <field name="tax_code_id" invisible="1" />
+                      </group>
+                  </group>
+                </form>
+              </field>
+            </page>
+          </page>
+        </data>
+      </field>
+    </record>
+
+  </data>
+</openerp>

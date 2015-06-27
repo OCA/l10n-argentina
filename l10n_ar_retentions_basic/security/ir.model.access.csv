@@ -1,0 +1,7 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_retention_retention_payment","retention.retention payment","model_retention_retention","account.group_account_invoice",1,1,1,1
+"access_retention_retention_manager","retention.retention manager","model_retention_retention","account.group_account_manager",1,1,1,1
+"access_retention_retention_user","retention.retention user","model_retention_retention","account.group_account_user",1,0,0,0
+"access_retention_tax_payment","retention.tax.line payment","model_retention_tax_line","account.group_account_invoice",1,1,1,1
+"access_retention_tax_manager","retention.tax.line manager","model_retention_tax_line","account.group_account_manager",1,1,1,1
+"access_retention_tax_user","retention.tax.line user","model_retention_tax_line","account.group_account_user",1,1,1,1
