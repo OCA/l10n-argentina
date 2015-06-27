@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<!-- **********************-->
+		<!-- * WSFE Configuration *-->
+		<!-- **********************-->
+		<!-- Form View for wsfe.config -->
+		<record id="view_wsfe_config_form" model="ir.ui.view">
+			<field name="name">wsfe.config.form</field>
+			<field name="model">wsfe.config</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Config Electronic Invoice" version="7.0">
+					<sheet>
+						<h1>
+							<label string="Configuration"/>
+						</h1>
+						<group>
+							<field name="company_id" select="1"/>
+							<field name="cuit" select="1"/>
+							<field name="url" select="1"/>
+							<field name="homologation"/>
+						</group>
+						<notebook colspan="4">
+							<page string="Points Of Sale">
+							  <field name="point_of_sale_ids" nolabel="1"/>
+							</page>
+							<page string="VAT Taxes">
+								<field name="vat_tax_ids" nolabel="1">
+									<tree string="Vat Taxes Mapping" editable="bottom">
+									  <field name="code"/>
+									  <field name="name"/>
+									  <field name="to_date"/>
+									  <field name="from_date"/>
+									  <field name="tax_id"/>
+									  <field name="tax_code_id"/>
+									  <field name="from_afip" readonly="True"/>
+									</tree>
+									<form string="Vat Taxes Mapping">
+									  <field name="code"/>
+									  <field name="name"/>
+									  <field name="to_date"/>
+									  <field name="from_date"/>
+									  <field name="tax_id"/>
+									  <field name="tax_code_id"/>
+									  <field name="from_afip" readonly="True"/>
+									  <field name="exempt_operations" attrs="{'readonly': [('from_afip', '=', True)]}"/>
+									</form>
+								</field>
+								<field name="exempt_operations_tax_ids"  context="{'default_exempt_operations': True}" nolabel="1">
+									<tree string="Exempt Operations Taxes Mapping" editable="bottom">
+										<field name="name"/>
+										<field name="tax_id"/>
+										<field name="tax_code_id"/>
+										<field name="exempt_operations" invisible="1"/>
+									</tree>
+									<form string="Exempt Operations Taxes Mapping">
+										<field name="name"/>
+										<field name="tax_id"/>
+										<field name="tax_code_id"/>
+										<field name="exempt_operations" attrs="{'readonly': [('from_afip', '=', True)]}"/>
+									</form>
+								</field>
+								<group colspan="4" col="4">
+									<separator string="" colspan="3"/>
+									<button name="read_tax" string="Update VAT Taxes" type="object" icon="gtk-ok"/>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- Tree View for electronic_invoice_config -->
+		<record id="view_wsfe_config_tree" model="ir.ui.view">
+			<field name="name">wsfe.config.tree</field>
+			<field name="model">wsfe.config</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Config Electronic Invoice">
+					<field name="company_id" select="1"/>
+					<field name="cuit" select="1" />
+					<field name="url" select="1" />
+                    <field name="homologation"/>
+				</tree>
+			</field>
+		</record>
+
+		<!--Window Action para wsfe_config-->
+		<record model="ir.actions.act_window" id="action_wsfe_config">
+				<field name="name">WSFE Config</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="res_model">wsfe.config</field>
+				<field name="view_type">form</field>
+				<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<!-- ***************** -->
+		<!-- * Voucher Types * -->
+		<!-- ***************** -->
+		<!-- Form View for wsfe_voucher_type -->
+		<record id="view_wsfe_voucher_type_form" model="ir.ui.view">
+			<field name="name">wsfe.voucher_type.form</field>
+			<field name="model">wsfe.voucher_type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Voucher Types" version="7.0">
+					<sheet>
+						<h1>
+							<label string="Configuration Voucher Types"/>
+						</h1>
+						<group>
+							<field name="name" select="1"/>
+							<field name="code" select="1"/>
+							<field name="voucher_model" select="1"/>
+							<separator colspan="4"/>
+							<group colspan="4" name="voucher_invoice" attrs="{'invisible': [('voucher_model','!=','invoice')]}">
+								<field name="document_type"  />
+							</group>
+							<field name="denomination_id" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- Tree View for voucher type -->
+		<record id="view_wsfe_voucher_type_tree" model="ir.ui.view">
+			<field name="name">wsfe.voucher_type.tree</field>
+			<field name="model">wsfe.voucher_type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Voucher Types">
+					<field name="name" />
+					<field name="code" />
+					<field name="voucher_model" />
+					<field name="document_type" />
+					<field name="denomination_id"/>
+				</tree>
+			</field>
+		</record>
+
+		<!--Window Action para Voucher Types-->
+		<record model="ir.actions.act_window" id="action_wsfe_voucher_type_tree">
+			<field name="name">Voucher Types</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">wsfe.voucher_type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!-- ***************** -->
+		<!-- * Voucher Types * -->
+		<!-- ***************** -->
+		<!-- Form View for WSFE Request -->
+		<record id="view_wsfe_request_form" model="ir.ui.view">
+			<field name="name">wsfe.request.form</field>
+			<field name="model">wsfe.request</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="WSFE Request" version="7.0">
+					<sheet>
+						<h1>
+							<label string="WSFE Request"/>
+						</h1>
+						<group col="4" colspan="6">
+							<separator colspan="6" string="Header"/>
+							<field name="date_request"/>
+							<field name="pos_ar"/>
+							<field name="voucher_type"/>
+							<field name="nregs"/>
+							<field name="result"/>
+							<field name="reprocess"/>
+							<field name="name" colspan="4"/>
+						</group>
+						<notebook colspan="4">
+							<page string="Request Details">
+								<separator string="Details" colspan="4" />
+								<field name="detail_ids" colspan="4" nolabel="1">
+									<tree>
+									  <field name="name"/>
+									  <field name="doctype"/>
+									  <field name="docnum"/>
+									  <field name="voucher_date"/>
+									  <field name="voucher_number"/>
+									  <field name="amount_total"/>
+									  <field name="cae"/>
+									  <field name="result"/>
+									</tree>
+									<form>
+									  <group colspan="4" col="6">
+										  <group colspan="4" col="4">
+											  <separator string="Main Information" colspan="4"/>
+											  <field name="voucher_date"/>
+											  <field name="voucher_number"/>
+											  <field name="name"/>
+											  <field name="concept"/>
+											  <field name="amount_total"/>
+											  <field name="result"/>
+										  </group>
+										  <group colspan="2">
+											  <field name="doctype"/>
+											  <field name="docnum"/>
+											  <field name="cae"/>
+											  <field name="cae_duedate"/>
+										  </group>
+									  </group>
+									  <separator string="Observations" colspan="4"/>
+										  <field name="observations" nolabel="1" colspan="4"/>
+									 </form>
+								</field>
+							</page>
+							<page string="Other Information">
+								<separator string="Errors" colspan="4" />
+								<field name="errors" colspan="4" nolabel="1" />
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- Tree View for WSFE Request -->
+		<record id="view_wsfe_request_tree" model="ir.ui.view">
+			<field name="name">wsfe.request.tree</field>
+			<field name="model">wsfe.request</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="WSFE Request">
+					<field name="date_request" />
+					<field name="pos_ar" />
+					<field name="voucher_type" />
+					<field name="nregs"/>
+					<field name="result" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_wsfe_request_tree">
+			<field name="name">WSFE Request</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">wsfe.request</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="voucher_type_menu" name="Voucher Types" parent="l10n_ar_wsaa.base_afipws" sequence="30" action="action_wsfe_voucher_type_tree"/>
+
+		<menuitem id="wsfe_request_menu" name="WSFE Request" parent="l10n_ar_wsaa.base_afipws" sequence="20" action="action_wsfe_request_tree"/>
+
+		<menuitem id="wsfe_config_menu" name="WSFE Configuration" parent="l10n_ar_wsaa.base_afipws" sequence="10" action="action_wsfe_config"/>
+
+	</data>
+</openerp>

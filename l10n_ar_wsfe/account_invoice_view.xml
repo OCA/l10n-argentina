@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- ***************************** -->
+        <!-- * Inherit View Invoice Form * -->
+        <!-- ***************************** -->
+        <!-- Add CAE to Customer Invoices -->
+        <record id="wsfe_account_invoice_form" model="ir.ui.view">
+            <field name="name">wsfe.account.invoice.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="fiscal_position" position="after">
+					<field name="cae" string="CAE" readonly="1"/>
+					<field name="cae_due_date" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Add CAI to Supplier Invoices -->
+        <record id="cai_account_supplier_invoice_form" model="ir.ui.view">
+            <field name="name">cai.account.supplier.invoice.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <field name="date_due" position="after">
+                    <field name="cae" string="CAI"/>
+                    <field name="cae_due_date"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,98 @@
+-
+  Para testear la validacion de comprobantes de proveedor por medio del boton Validate, creamos una factura y una nota de credito
+-
+  !record {model: account.invoice, id: wsfe_invoice_supplier0}:
+    account_id: account.a_pay
+    address_contact_id: base.res_partner_address_8
+    address_invoice_id: base.res_partner_address_8
+    check_total: 3000.0
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_expense
+        name: '[PC1] Basic PC'
+        price_unit: 300.0
+        quantity: 10.0
+        product_id: product.product_product_pc1
+        uos_id: product.product_uom_unit
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_agrolait
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    internal_number: 0001-00223344
+    type: in_invoice
+-
+  Creamos la NC de Proveedor para las pruebas
+-
+  !record {model: account.invoice, id: wsfe_nc_supplier0}:
+    account_id: account.a_pay
+    address_contact_id: base.res_partner_address_8
+    address_invoice_id: base.res_partner_address_8
+    check_total: 300.0
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_expense
+        name: '[PC1] Basic PC'
+        price_unit: 300.0
+        quantity: 1.0
+        product_id: product.product_product_pc1
+        uos_id: product.product_uom_unit
+    journal_id: account.expenses_journal
+    partner_id: base.res_partner_agrolait
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    internal_number: 0001-00001144
+    type: in_refund
+-
+  Chequeamos que inicialmente la factura esta en estado "Draft"
+-
+  !assert {model: account.invoice, id: wsfe_invoice_supplier0}:
+    - state == 'draft'
+-
+  Pasamos la factura a estado "Open"
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: wsfe_invoice_supplier0}
+-
+  Chequeamos que ahora la factura esta en estado "Open"
+-
+  !assert {model: account.invoice, id: wsfe_invoice_supplier0}:
+    - state == 'open'
+    - cae == "NA", "La factura de proveedor no debe tener CAE"
+    - cae_due_date == False, "La factura de proveedor no debe tener fecha vencimiento de CAE"
+-
+  Imprimimos algunos campos para control
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("wsfe_invoice_supplier0"))
+    print acc_id.internal_number
+    print 'CAE: ', acc_id.cae
+-
+  Chequeamos que inicialmente la NC esta en estado "Draft"
+-
+  !assert {model: account.invoice, id: wsfe_nc_supplier0}:
+    - state == 'draft'
+-
+  Pasamos la NC a estado "Open"
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: wsfe_nc_supplier0}
+-
+  Chequeamos que ahora la NC esta en estado "Open"
+-
+  !assert {model: account.invoice, id: wsfe_nc_supplier0}:
+    - state == 'open'
+    - cae == "NA", "La factura de proveedor no debe tener CAE"
+    - cae_due_date == False, "La factura de proveedor no debe tener fecha vencimiento de CAE"
+-
+  Imprimimos algunos campos para control
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("wsfe_nc_supplier0"))
+    print acc_id.internal_number
+    print 'CAE: ', acc_id.cae

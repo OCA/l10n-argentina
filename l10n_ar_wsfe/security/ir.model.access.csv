@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wsfe_tax_codes_payment,wsfe.tax.codes payment,model_wsfe_tax_codes,account.group_account_invoice,1,1,0,0
+access_wsfe_tax_codes_user,wsfe.tax.codes user,model_wsfe_tax_codes,account.group_account_user,1,1,0,0
+access_wsfe_tax_codes_manager,wsfe.tax.codes manager,model_wsfe_tax_codes,account.group_account_manager,1,1,1,1
+access_wsfe_config_payment,wsfe.config payment,model_wsfe_config,account.group_account_invoice,1,0,0,0
+access_wsfe_config_user,wsfe.config user,model_wsfe_config,account.group_account_user,1,0,0,0
+access_wsfe_config_manager,wsfe.config manager,model_wsfe_config,account.group_account_manager,1,1,1,1
+access_wsfe_voucher_type_payment,wsfe.voucher_type payment,model_wsfe_voucher_type,account.group_account_invoice,1,0,0,0
+access_wsfe_voucher_type_user,wsfe.voucher_type user,model_wsfe_voucher_type,account.group_account_user,1,1,0,0
+access_wsfe_voucher_type_manager,wsfe.voucher_type manager,model_wsfe_voucher_type,account.group_account_manager,1,1,1,1
+access_wsfe_request_payment,wsfe.request payment,model_wsfe_request,account.group_account_invoice,1,1,1,0
+access_wsfe_request_user,wsfe.request user,model_wsfe_request,account.group_account_user,1,1,1,0
+access_wsfe_request_manager,wsfe.request manager,model_wsfe_request,account.group_account_manager,1,1,1,0
+access_wsfe_request_detail_payment,wsfe.request.detail payment,model_wsfe_request_detail,account.group_account_invoice,1,1,1,0
+access_wsfe_request_detail_user,wsfe.request.detail user,model_wsfe_request_detail,account.group_account_user,1,1,1,0
+access_wsfe_request_detail_manager,wsfe.request.detail manager,model_wsfe_request_detail,account.group_account_manager,1,1,1,0

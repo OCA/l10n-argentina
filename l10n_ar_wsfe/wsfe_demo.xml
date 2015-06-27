@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="base.main_partner" model="res.partner">
+            <field name="vat">20251313424</field>
+        </record>
+
+        <record id="wsfe_pos_A0001_demo" model="pos.ar">
+            <field name="name">0001</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="sale.sale_shop_1"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record id="wsfe_pos_B0001_demo" model="pos.ar">
+            <field name="name">0001</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="sale.sale_shop_1"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
+        </record>
+
+        <record id="wsfe_pos_A0002_not_electronic_demo" model="pos.ar">
+            <field name="name">0002</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="sale.sale_shop_1"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record id="wsfe_config_demo" model="wsfe.config">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="url">https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl</field>
+            <field name="point_of_sale_ids" eval="[(6,0,[ref('wsfe_pos_A0001_demo'),ref('wsfe_pos_B0001_demo')])]"/>
+        </record>
+
+    </data>
+</openerp>

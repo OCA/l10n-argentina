@@ -1,0 +1,45 @@
+-
+  Para testear la validacion de nota de credito de cliente por medio del boton Validate, creamos una
+-
+  !record {model: account.invoice, id: wsfe_nc_customer0}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 1.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_refund
+-
+  Chequeamos que inicialmente la factura esta en estado "Draft"
+-
+  !assert {model: account.invoice, id: wsfe_nc_customer0}:
+    - state == 'draft'
+-
+  Pasamos la factura a estado "Open"
+-
+  !workflow {model: account.invoice, action: invoice_open, ref: wsfe_nc_customer0}
+-
+  Chequeamos que ahora la factura esta en estado "Open"
+-
+  !assert {model: account.invoice, id: wsfe_nc_customer0}:
+    - state == 'open'
+    - cae != False
+    - cae_due_date != False
+    - internal_number != False
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("wsfe_nc_customer0"))
+    print acc_id.internal_number

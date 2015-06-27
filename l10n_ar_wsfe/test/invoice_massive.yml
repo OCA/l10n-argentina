@@ -1,0 +1,328 @@
+-
+  Para testear la validacion de factura de cliente en forma masiva (por lotes), creamos varias facturas de cliente con un punto de venta NO ELECTRONICO
+-
+  !record {model: account.invoice, id: no_wsfe_invoice_customer1}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 10.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_not_electronic_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Creamos una segunda factura de cliente
+-
+  !record {model: account.invoice, id: no_wsfe_invoice_customer2}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC1] Basic PC'
+        price_unit: 900.0
+        quantity: 5.0
+        product_id: product.product_product_pc1
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_not_electronic_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Creamos una tercera factura de cliente
+-
+  !record {model: account.invoice, id: no_wsfe_invoice_customer3}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 7.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_not_electronic_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Pasamos la factura a estado "Open" por medio del wizard de validacion masiva
+-
+  !record {model: account.invoice.confirm, id: account_invoice_confirm_0}:
+    {}
+-
+  Clickeamos el boton Confirmar Facturas
+-
+  !python {model: account.invoice.confirm}: |
+    self.invoice_confirm(cr, uid, [ref("account_invoice_confirm_0")], {"lang": 'en_US',
+      "tz": False, "active_model": "account.invoice", "active_ids": [ref("no_wsfe_invoice_customer1"),ref("no_wsfe_invoice_customer2"),ref("no_wsfe_invoice_customer3")],
+      "active_id": ref("no_wsfe_invoice_customer1"), })
+-
+  Chequeamos que las facturas que se validaron tienen el movimiento contable asociado y esta en estado 'posted'
+-
+  !python {model: account.invoice}: |
+    acc_id=self.browse(cr, uid, ref("no_wsfe_invoice_customer1"))
+    assert acc_id.state == 'open', "La factura no fue validada"
+    assert acc_id.move_id, "No se creo el movimiento contable para la factura validada"
+    assert acc_id.move_id.state == 'posted', "El movimiento contable de la factura no esta en estado 'posted'"
+-
+  Para testear la validacion de factura de cliente en forma masiva (por lotes), creamos un par de facturas de cliente para Punto de Venta ELECTRONICO y otra para Punto de Venta NO ELECTRONICO
+-
+  !record {model: account.invoice, id: wsfe_invoice_customer1}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 10.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Creamos una segunda factura de cliente, no electronica
+-
+  !record {model: account.invoice, id: no_wsfe_invoice_customer4}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC1] Basic PC'
+        price_unit: 900.0
+        quantity: 5.0
+        product_id: product.product_product_pc1
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_not_electronic_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Creamos una tercera factura de cliente
+-
+  !record {model: account.invoice, id: wsfe_invoice_customer2}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_11
+    address_invoice_id: base.res_partner_address_11
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 7.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_sednacom
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Pasamos la factura a estado "Open" por medio del wizard de validacion masiva
+-
+  !record {model: account.invoice.confirm, id: account_invoice_confirm_1}:
+    {}
+-
+  Clickeamos el boton Confirmar Facturas
+-
+  !python {model: account.invoice.confirm}: |
+    excepted = False
+    try:
+        self.invoice_confirm(cr, uid, [ref("account_invoice_confirm_1")], {"lang": 'en_US',
+      "tz": False, "active_model": "account.invoice", "active_ids": [ref("wsfe_invoice_customer1"),ref("no_wsfe_invoice_customer4"),ref("wsfe_invoice_customer2")],
+      "active_id": ref("wsfe_invoice_customer1"), })
+    except:
+        excepted = True
+
+    assert(excepted), "Se deberia haber llegado a una excepcion ya que no todas las facturas pertenecen a un punto de venta electronico"
+-
+  Para probar que se validen por lote si todas las condiciones se dan, creamos una factura mas para testear con tres facturas de clientes
+-
+  !record {model: account.invoice, id: wsfe_invoice_customer3}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 7.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Pasamos la factura a estado "Open" por medio del wizard de validacion masiva
+-
+  !record {model: account.invoice.confirm, id: account_invoice_confirm_massive0}:
+    {}
+-
+  Clickeamos el boton Confirmar Facturas
+-
+  !python {model: account.invoice.confirm}: |
+    excepted = False
+    self.invoice_confirm(cr, uid, [ref("account_invoice_confirm_massive0")], {"lang": 'en_US',
+      "tz": False, "active_model": "account.invoice", "active_ids": [ref("wsfe_invoice_customer1"),ref("wsfe_invoice_customer2"),ref("wsfe_invoice_customer3")],
+      "active_id": ref("wsfe_invoice_customer1"), })
+-
+  Chequeamos que las facturas que se validaron en el reciente lote tienen el movimiento contable asociado y esta en estado 'posted'
+-
+  !python {model: account.invoice}: |
+    for acc_id in self.browse(cr, uid, [ref("wsfe_invoice_customer1"),ref("wsfe_invoice_customer2"),ref("wsfe_invoice_customer3")]):
+        assert acc_id.state == 'open', "La factura no fue validada"
+        assert acc_id.move_id, "No se creo el movimiento contable para la factura validada"
+        assert acc_id.move_id.state == 'posted', "El movimiento contable de la factura no esta en estado 'posted'"
+-
+  Para probar una validacion por lote pero que contenga errores, creamos tres facturas.
+  Una primer factura que valide
+-
+  !record {model: account.invoice, id: wsfe_invoice_customer4}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_tang
+    address_invoice_id: base.res_partner_address_tang
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC1] Basic PC'
+        price_unit: 500.0
+        quantity: 5.0
+        product_id: product.product_product_pc1
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_asus
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Una segunda factura que valide
+-
+  !record {model: account.invoice, id: wsfe_invoice_customer5}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_11
+    address_invoice_id: base.res_partner_address_11
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 900.0
+        quantity: 7.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_sednacom
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Una tercera factura que NO valide
+-
+  !record {model: account.invoice, id: wsfe_invoice_customer6}:
+    account_id: account.a_recv
+    address_contact_id: base.res_partner_address_7
+    address_invoice_id: base.res_partner_address_7
+    company_id: base.main_company
+    currency_id: base.EUR
+    date_invoice: !eval time.strftime('%Y-%m-%d')
+    invoice_line:
+      - account_id: account.a_sale
+        name: '[PC3] Medium PC'
+        price_unit: 700.0
+        quantity: 2.0
+        product_id: product.product_product_pc3
+        uos_id: product.product_uom_unit
+    journal_id: account.sales_journal
+    partner_id: base.res_partner_4
+    pos_ar_id: wsfe_pos_A0001_demo
+    denomination_id: l10n_ar_point_of_sale.denomination_A
+    fiscal_position: l10n_ar_point_of_sale.fiscal_position_ri
+    reference_type: none
+    type: out_invoice
+-
+  Pasamos las factura a estado "Open" por medio del wizard de validacion masiva
+-
+  !record {model: account.invoice.confirm, id: account_invoice_confirm_massive1}:
+    {}
+-
+  Clickeamos el boton Confirmar Facturas
+-
+  !python {model: account.invoice.confirm}: |
+    excepted = False
+    self.invoice_confirm(cr, uid, [ref("account_invoice_confirm_massive1")], {"lang": 'en_US',
+      "tz": False, "active_model": "account.invoice", "active_ids": [ref("wsfe_invoice_customer4"),ref("wsfe_invoice_customer5"),ref("wsfe_invoice_customer6")],
+      "active_id": ref("wsfe_invoice_customer1"), })
+-
+  Chequeamos que las facturas que se validaron en el reciente lote tienen el movimiento contable asociado y esta en estado 'posted'
+-
+  !python {model: account.invoice}: |
+    for acc_id in self.browse(cr, uid, [ref("wsfe_invoice_customer4"),ref("wsfe_invoice_customer5")]):
+        assert acc_id.state == 'open', "La factura no fue validada"
+        assert acc_id.move_id, "No se creo el movimiento contable para la factura validada"
+        assert acc_id.move_id.state == 'posted', "El movimiento contable de la factura no esta en estado 'posted'"
+-
+  Chequeamos que la factura que no valido en el reciente lote no tiene el movimiento contable asociado y haya quedado en estado 'draft'
+-
+  !python {model: account.invoice}: |
+    acc_id = self.browse(cr, uid, ref("wsfe_invoice_customer6"))
+    assert acc_id.state == 'draft', "La factura no quedo en estado 'draft'"
+    assert acc_id.move_id.id==False, "No se borro el movimiento contable para la factura que no valido"
