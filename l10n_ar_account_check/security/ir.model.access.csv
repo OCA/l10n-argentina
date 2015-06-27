@@ -1,0 +1,7 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_account_check_config_manager","account.check.config manager","model_account_check_config","account.group_account_manager",1,1,1,1
+"access_account_check_config_user","account.check.config user","model_account_check_config","account.group_account_user",1,0,0,0
+"access_account_issued_check_manager","account.issued.check manager","model_account_issued_check","account.group_account_manager",1,1,1,1
+"access_account_issued_check_user","account.issued.check user","model_account_issued_check","account.group_account_user",1,0,0,0
+"access_account_third_check_manager","account.third.check manager","model_account_third_check","account.group_account_manager",1,1,1,1
+"access_account_third_check_user","account.third.check user","model_account_third_check","account.group_account_user",1,0,0,0
