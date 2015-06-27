@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_payment_mode_receipt_tree" model="ir.ui.view">
+            <field name="name">payment.mode.receipt.tree</field>
+            <field name="model">payment.mode.receipt</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Payment Mode Receipt">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="account_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="currency"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_payment_mode_receipt_form" model="ir.ui.view">
+            <field name="name">payment.mode.receipt.form</field>
+            <field name="model">payment.mode.receipt</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Payment Mode Receipt">
+                    <group>
+                        <group>
+                            <field name="name" select="1"/>
+                            <field name="account_id" select="1"/>
+                            <field name="currency"/>
+                        </group>
+                        <group>
+                            <field name="type" select="1"/>
+                            <field name="bank_id" domain="[('company_id','=',company_id)]"/>
+                            <field name="company_id" select="1" widget="selection" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_payment_mode_receipt_search" model="ir.ui.view">
+            <field name="name">payment.mode.receipt.search</field>
+            <field name="model">payment.mode.receipt</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Payment Mode Receipt">
+                    <field name="name"/>
+                    <field name="account_id"/>
+                    <field name="bank_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <group expand="0" string="Group By...">
+                      <filter string="Account" context="{'group_by':'account_id'}"/>
+                      <filter string="type" context="{'group_by':'type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_payment_mode_receipt_form" model="ir.actions.act_window">
+            <field name="name">Payment Mode Receipt</field>
+            <field name="res_model">payment.mode.receipt</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_payment_mode_receipt_search"/>
+        </record>
+
+        <menuitem action="action_payment_mode_receipt_form" id="menu_action_payment_mode_receipt_form" parent="account.menu_configuration_misc"/>
+        
+    </data>
+</openerp>
+
+
+

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_vendor_l10n_ar_receipt_form">
+            <field name="name">account.voucher.l10n_ar.receipt.form</field>
+            <field name="model">account.voucher</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_receipt_form"/>
+            <field name="arch" type="xml">
+                <!--
+                <field name="amount" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                -->
+                <field name="amount" position="replace"/>
+                <field name="journal_id" position="after">
+                    <field name="journal_sequence" required="1" domain="[('code','=','voucher.receipt')]"/>
+                    <field name="amount" class="oe_inline"
+                           string="Paid Amount"
+                           widget="monetary" options="{'currency_field': 'currency_id'}"
+                           on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
+                </field>
+                <field name="journal_id" position="attributes">
+                    <attribute name="string">Journal</attribute>
+                </field>
+                <field name="reference" position="replace">
+                    <field name="number"/>
+                </field>
+                <xpath expr="//h1" position="replace">
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                            <b><label string="Receipt Number"/></b>
+                        </div>
+                        <h1>
+                            <field name="reference"/>
+                        </h1>
+                    </div>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="before">
+                    <label for="payment_line_ids"/>
+                    <field name="payment_line_ids" >
+                        <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
+                            <field name="payment_mode_id" invisible="1" />
+                            <field name="name"/>
+                            <field name="currency" readonly="1"/>
+                            <field name="date"/>
+                            <field name="voucher_id" invisible="1"/>
+                            <field name="amount" sum="Total"/>
+                        </tree>
+                    </field>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
+            </field>
+        </record>
+ 
+
+
+        <record model="ir.ui.view" id="view_vendor_l10n_ar_payment_form">
+            <field name="name">account.voucher.l10n_ar.payment.form</field>
+            <field name="model">account.voucher</field>
+            <field name="inherit_id" ref="account_voucher.view_vendor_payment_form"/>
+            <field name="arch" type="xml">
+                <!--
+                <field name="amount" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                -->
+                <field name="amount" position="replace"/>
+                <field name="reference" position="replace"/>
+
+                <field name="account_id" position="before">
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                            <b><label string="Payment Number"/></b>
+                        </div>
+                        <h1>
+                            <field name="reference"/>
+                        </h1>
+                    </div>
+                </field>
+
+                <field name="journal_id" position="after">
+                    <field name="journal_sequence" required="1" domain="[('code','=','voucher.payment')]"/>
+                    <field name="amount" class="oe_inline"
+                           string="Paid Amount"
+                           widget="monetary" options="{'currency_field': 'currency_id'}"
+                           on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
+                </field>
+                <field name="journal_id" position="attributes">
+                    <attribute name="string">Journal</attribute>
+                </field>
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="before">
+                    <label for="payment_line_ids"/>
+                    <field name="payment_line_ids">
+                        <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
+                            <field name="payment_mode_id" invisible="1" />
+                            <field name="name"/>
+                            <field name="currency" readonly="1"/>
+                            <field name="date"/>
+                            <field name="voucher_id" invisible="1"/>
+                            <field name="amount" sum="Total"/>
+                        </tree>
+                    </field>
+                </xpath>
+
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
+                    <field name="invoice_id"/>
+                    <field name="ref"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_voucher_tree_reference">
+            <field name="name">account.voucher.l10n_ar.tree</field>
+            <field name="model">account.voucher</field>
+            <field name="inherit_id" ref="account_voucher.view_voucher_tree"/>
+            <field name="arch" type="xml">
+                <field name="number" position="replace"/>
+                <field name="journal_id" position="after">
+                    <field name="number"/>
+                </field>
+            </field>
+        </record>
+ 
+    </data>
+</openerp>
