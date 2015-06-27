@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_wsfe_sinchronize_voucher" model="ir.ui.view">
+            <field name="name">WSFE Sinchronize Voucher</field>
+            <field name="model">wsfe.sinchronize.voucher</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="WSFE Sinchronize Voucher" version="7.0">
+                    <sheet>
+<!--
+                        <h1>
+                            <label string="WSFE Sinchronize Voucher"/>
+                        </h1>
+-->
+                        <group colspan="4" col="4">
+							<separator colspan="4" string="Query Information" />
+							<field name="voucher_type" widget="selection"/>
+							<field name="pos_id" widget="selection"/>
+							<field name="voucher_number" on_change="onchange_voucher(voucher_type, pos_id, voucher_number, context)"/>
+						</group>
+						<separator string="Voucher Information" colspan="4"/>
+						<group colspan="4" col="6">
+							<group colspan="4">
+								<field name="document_type"/>
+								<field name="document_number"/>
+								<field name="date_process"/>
+								<field name="date_invoice"/>
+								<field name="cae"/>
+								<field name="cae_due_date"/>
+							</group>
+							<group colspan="2" col="2">
+								<field name="amount_no_taxed"/>
+								<field name="amount_exempt"/>
+								<field name="amount_taxed"/>
+								<field name="amount_tax"/>
+								<field name="amount_total"/>
+								<!--<field name="amount_untaxed"/>-->
+								<!--<field name="currency"/>-->
+							</group>
+						</group>
+						<field name="infook" invisible="1"/>
+						<group name="invoice" string="Invoice Relationship" attrs="{'invisible': [('infook','=',False)]}">
+							<field name="invoice_id" domain="[('amount_total','=',amount_total),('partner_id.vat','=',document_number),('amount_exempt','=',amount_exempt),('amount_taxed','=',amount_taxed),('amount_no_taxed','=',amount_no_taxed),('state','in',('draft','proforma2','proforma'))]"/>
+						</group>
+						<footer>
+							<button name="relate_invoice" string="Relate" type="object" class="oe_highlight"/>
+                            or
+							<button class="oe_link" special="cancel" string="Cancel" />
+						</footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    <act_window name="WSFE Sinchronize Voucher"
+      res_model="wsfe.sinchronize.voucher"
+      src_model="account.invoice"
+      view_mode="form"
+      target="new"
+      key2="client_action_multi"
+      id="action_wsfe_sinchronize_voucher"/>
+
+    </data>
+</openerp>
