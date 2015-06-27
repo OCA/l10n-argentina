@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <record model="ir.ui.view" id="view_vendor_payment_checkbook_form">
+        <field name="name">account.voucher.checkbook.form</field>
+        <field name="model">account.voucher</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="l10n_ar_account_check.view_voucher_check_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='issued_check_ids']/form/group/group/field[@name='number']" position="before">
+                    <field name="check_id" attrs="{'readonly': [('state','in',['issued','cancel'])]}" domain="[('state','=','draft')]"/>
+                    <field name="checkbook_id" invisible="1"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+</data>
+</openerp>
