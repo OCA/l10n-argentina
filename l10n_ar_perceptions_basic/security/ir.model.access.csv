@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_perception_perception_manager,perception.perception manager,model_perception_perception,account.group_account_manager,1,1,1,1
+access_perception_perception_user,perception.perception user,model_perception_perception,account.group_account_user,1,1,0,0
+access_perception_perception_invoicing,perception.perception invoicing,model_perception_perception,account.group_account_invoice,1,1,0,0
+access_perception_tax_line_manager,perception.tax.line manager,model_perception_tax_line,account.group_account_manager,1,1,1,1
+access_perception_tax_line_user,perception.tax.line user,model_perception_tax_line,account.group_account_user,1,1,1,1
+access_perception_tax_line_invoicing,perception.tax.line invoicing,model_perception_tax_line,account.group_account_invoice,1,1,1,1

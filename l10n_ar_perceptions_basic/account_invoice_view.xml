@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="view_invoice_perception_form" model="ir.ui.view">
+      <field name="name">account.invoice.perception.form.inherit</field>
+      <field name="model">account.invoice</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="account.invoice_form"/>
+      <field name="arch" type="xml">
+        <page string="Invoice Lines" position="after">
+          <page string="Perceptions">
+            <separator string="Applied Perceptions"/>
+            <field name="perception_ids" nolabel="1" colspan="4">
+              <tree string="Perception Lines">
+                <field name="date" />
+                <field name="perception_id" string="Perception Type"/>
+                <field name="base" />
+                <field name="amount" />
+                <field name="state_id" />
+              </tree>
+              <form string="Perception Lines" version="7.0">
+                  <h1>
+                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'sale')]" />
+                  </h1>
+                  <group>
+                      <group string="Information" name="info">
+                          <field name="name"/>
+                          <field name="state_id" />
+                          <field name="date" />
+                          <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
+                      </group>
+                      <group string="Amounts" name="amount">
+                          <field name="base" />
+                          <field name="amount" />
+                          <field name="account_id" invisible="1" />
+                          <field name="base_code_id" invisible="1" />
+                          <field name="tax_code_id" invisible="1" />
+                      </group>
+                  </group>
+              </form>
+            </field>
+          </page>
+        </page>
+      </field>
+    </record>
+
+    <record id="view_invoice_supplier_perception_form" model="ir.ui.view">
+      <field name="name">account.invoice.perception.form.inherit</field>
+      <field name="model">account.invoice</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="account.invoice_supplier_form"/>
+      <field name="arch" type="xml">
+        <page string="Invoice" position="after">
+          <page string="Perceptions">
+            <separator string="Supported Perceptions"/>
+            <field name="perception_ids" nolabel="1" colspan="4">
+              <tree string="Perception Lines">
+                <field name="date" />
+                <field name="perception_id" string="Perception Type"/>
+                <field name="base" />
+                <field name="amount" />
+                <field name="state_id" />
+              </tree>
+              <form string="Perception Lines" version="7.0">
+                  <h1>
+                      <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'purchase')]" />
+                  </h1>
+                  <group>
+                      <group string="Information" name="info">
+                          <field name="name"/>
+                          <field name="state_id" />
+                          <field name="date" />
+                          <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
+                      </group>
+                      <group string="Amounts" name="amount">
+                          <field name="base" />
+                          <field name="amount" />
+                          <field name="account_id" invisible="1" />
+                          <field name="base_code_id" invisible="1" />
+                          <field name="tax_code_id" invisible="1" />
+                      </group>
+                  </group>
+              </form>
+            </field>
+          </page>
+        </page>
+      </field>
+    </record>
+  </data>
+</openerp>
