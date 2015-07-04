@@ -1,0 +1,330 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_bank_statement
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20120606-233343\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-12 21:02+0000\n"
+"PO-Revision-Date: 2013-11-13 08:27-0300\n"
+"Last-Translator: kloss <kloss>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:0
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement,balance_unconciliated_end:0
+msgid "Unconciliated Balance"
+msgstr "Mov. no conciliados"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_bank_statement_lines_tree
+#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_bank_statement_lines_tree
+msgid "Bank Statements Lines"
+msgstr "Líneas del extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.lines:0
+msgid "Statement Lines"
+msgstr "Líneas del extracto"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account.py:70
+#, python-format
+msgid "Couldn't create move with currency different from the secondary currency of the account \"%s - %s\". Clear the secondary currency field of the account definition if you want to accept all currencies."
+msgstr "No es posible crear movimientos con la segunda moneda diferente  \"%s - %s\". Dejar en blanco el campo de la segunda moneda en la definición de la cuenta para aceptar cualquier moneda."
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.lines:0
+msgid "Group By..."
+msgstr "Agrupar por"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:218
+#, python-format
+msgid "Please verify that an account is defined in the journal."
+msgstr "Verifique que una cuenta fue definida en el diario"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:217
+#, python-format
+msgid "Configuration Error !"
+msgstr "Error de configuración !"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,payment_date:0
+msgid "Payment date"
+msgstr "Fecha de pago"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:242
+#, python-format
+msgid "You have to assign an analytic journal on the '%s' journal!"
+msgstr "Asigne una cuenta analítica al diario '%s' !"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.lines:0
+msgid "Not conciliated"
+msgstr "No conciliado"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.lines:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ar_bank_statement
+#: constraint:account.bank.statement.line:0
+msgid "The amount of the voucher must be the same amount as the one on the statement line"
+msgstr "El importe del recibo debe ser el mismo importe que el de la línea del extracto"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_analytic_line
+msgid "Analytic Line"
+msgstr "Línea analítica"
+
+#. module: l10n_ar_bank_statement
+#: help:account.bank.statement.line,state:0
+msgid ""
+"When new statement is created the state will be 'Draft'.\n"
+"And after getting confirmation from the bank it will be in 'Confirmed' state."
+msgstr ""
+"Cuando un nuevo extracto se crea el estado tiene el valor  'Borrador'.\n"
+"Después de ser confirmado pasa a estado 'Confirmado'."
+
+#. module: l10n_ar_bank_statement
+#: selection:account.bank.statement.line,state:0
+#: view:account.bank.statement.lines:0
+msgid "Conciliated"
+msgstr "Conciliado"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:232
+#, python-format
+msgid "The account entries lines are not in valid state."
+msgstr "Los apuntes contables no fueron validados"
+
+#. module: l10n_ar_bank_statement
+#: field:payment.mode.receipt,journal_id:0
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ar_bank_statement
+#: help:account.bank.statement.line,creation_type:0
+msgid "System: created by OpenERP, Manual: created by the user"
+msgstr "System: creado por OpenERP, Manual: creado por el usuario"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:242
+#, python-format
+msgid "No Analytic Journal !"
+msgstr "No existe un diario analítico !"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,issue_date:0
+msgid "Issue date"
+msgstr "Fecha de emisión"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_ar_statement_lines_tree
+#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_ar_statement_lines_tree
+msgid "Statements Lines"
+msgstr "Líneas del extracto"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:82
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:90
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:98
+#, python-format
+msgid "Invalid action !"
+msgstr "Acción invalida !"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account.py:66
+#, python-format
+msgid "Couldn't create move between different companies"
+msgstr "No es posible crear movimientos entre diferentes compañías"
+
+#. module: l10n_ar_bank_statement
+#: constraint:account.analytic.line:0
+msgid "You can not create analytic line on view account."
+msgstr "No puede crear una linea analítica en una cuenta de tipo vista."
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,ima_type:0
+msgid "IMA"
+msgstr "IMA"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:0
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_account_import_statement_lines
+msgid "Import statement lines"
+msgstr "Importar los movimientos bancarios"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_payment_mode_receipt
+msgid "Payment Mode for Receipt"
+msgstr "Modo de pago para recibos"
+
+#. module: l10n_ar_bank_statement
+#: help:payment.mode.receipt,journal_id:0
+msgid "The payment mode journal is need for bank statement line"
+msgstr "El diario en el modo de pago es necesario para los extractos bancarios"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:252
+#, python-format
+msgid "Statement %s is confirmed, journal items are created."
+msgstr "El extracto %s fue confirmado, los asientos fueron creados."
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,bank_statement:0
+msgid "Bank statement"
+msgstr "Extracto bancarios"
+
+#. module: l10n_ar_bank_statement
+#: view:account.import.statement.lines:0
+msgid "ADD"
+msgstr "Añadir"
+
+#. module: l10n_ar_bank_statement
+#: view:account.import.statement.lines:0
+msgid "Import Statement lines"
+msgstr "Importar líneas al extracto"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:0
+msgid "Import payment lines"
+msgstr "Importar líneas de pago"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account.py:66
+#: code:addons/l10n_ar_bank_statement/account.py:70
+#, python-format
+msgid "Error"
+msgstr "Error !"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_import_statement_lines
+msgid "Account Import Statement Lines"
+msgstr "Importar asientos al extracto"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement,balance_conciliated_end:0
+msgid "Conciliated Balance"
+msgstr "Conciliado"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Línea de extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:231
+#, python-format
+msgid "Error !"
+msgstr "Error !"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:82
+#, python-format
+msgid "Cannot delete Account Bank Statement Line(s) which are not draft state o creation type is system !"
+msgstr "No puede borrar las líneas del extracto bancario que tienen estado borrador o fueron creadas por el sistema !"
+
+#. module: l10n_ar_bank_statement
+#: view:account.voucher:0
+#: field:account.voucher,analytic_line_ids:0
+msgid "Analytic lines"
+msgstr "Líneas analíticas"
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,lines:0
+msgid "Account Bank Statement Lines"
+msgstr "Cuenta de las líneas del extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.lines:0
+msgid "Search Bank Statements Lines"
+msgstr "Buscar líneas de extractos bancarios"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Comprobantes contables"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,creation_type:0
+msgid "Creation type"
+msgstr "Tipo de creación"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,state:0
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ar_bank_statement
+#: constraint:account.bank.statement:0
+msgid "The journal and period chosen have to belong to the same company."
+msgstr "El diario y periodo seleccionados tienen que pertenecer a la misma compañía"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:98
+#, python-format
+msgid "Cannot delete Account Bank Statement Line(s) which are not draft state !"
+msgstr "No puede borrar una línea de extracto bancario que no tenga estado borrador !"
+
+#. module: l10n_ar_bank_statement
+#: view:account.voucher:0
+#: field:account.voucher,statement_bank_line_ids:0
+msgid "Bank statement lines"
+msgstr "Líneas de extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: field:account.analytic.line,voucher_id:0
+msgid "Voucher"
+msgstr "Voucher"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.lines:0
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: l10n_ar_bank_statement
+#: view:account.import.statement.lines:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:0
+#: selection:account.bank.statement.line,state:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:0
+msgid "Import Invoices"
+msgstr "Importar facturas"
+
+#. module: l10n_ar_bank_statement
+#: selection:account.bank.statement.line,state:0
+msgid "Open"
+msgstr "Abierto"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:90
+#, python-format
+msgid "Cannot remove Account Bank Statement Line(s) which are already confirm !"
+msgstr "No puede borrar las líneas de extracto bancario que tienen estado confirmado !"
+

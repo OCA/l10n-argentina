@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+		
+		<record id="cash_box_in_form_cash_register" model="ir.ui.view">
+			<field name="name">cash_box_in_cash_register</field>
+			<field name="model">cash.box.in</field>
+			<field name="inherit_id" ref="account.cash_box_in_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="/form/group/field[@name='name']" position="after">
+					<field name="statement_line_type_id" on_change="onchange_statement_type(statement_line_type_id)"/>
+<!--
+					<field name="employee_id"/>
+-->
+					<field name="voucher"/>
+				</xpath>
+				<xpath expr="/form/group/field[@name='name']" position="attributes">
+					<attribute name="invisible">True</attribute>
+				</xpath>
+			</field>
+		</record>
+		
+		<record id="cash_box_out_form_cash_register" model="ir.ui.view">
+			<field name="name">cash_box_out_cash_register</field>
+			<field name="model">cash.box.out</field>
+			<field name="inherit_id" ref="account.cash_box_out_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="/form/group/field[@name='name']" position="after">
+					<field name="statement_line_type_id" on_change="onchange_statement_type(statement_line_type_id)"/>
+<!--
+					<field name="employee_id"/>
+-->
+					<field name="voucher"/>
+				</xpath>
+				<xpath expr="/form/group/field[@name='name']" position="attributes">
+					<attribute name="invisible">True</attribute>
+				</xpath>
+			</field>
+		</record>
+		
+<!--
+        <record model="ir.ui.view" id="cash_box_in_form">
+            <field name="name">cash_box_in</field>
+            <field name="model">cash.box.in</field>
+            <field name="arch" type="xml">
+                <form string="Put Money In" version="7.0">
+                    <separator string="Fill in this form if you put money in the cash register:" colspan="4" />
+                    <group>
+                        <field name="name" class="oe_inline"/>
+                        <field name="amount"  class="oe_inline"/>
+                    </group>
+                    <footer>
+                        <button name="run" string="Put Money In" type="object" class="oe_highlight"/>
+                         or 
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window 
+            name="Put Money In"
+            res_model="cash.box.in"
+            src_model="account.bank.statement"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_cash_box_in" />
+-->
+
+<!--
+        <record model="ir.ui.view" id="cash_box_out_form">
+            <field name="name">cash_box_out</field>
+            <field name="model">cash.box.out</field>
+            <field name="arch" type="xml">
+                <form string="Take Money Out" version="7.0">
+                    <separator string="Describe why you take money from the cash register:"/>
+                    <group>
+                        <field name="name" class="oe_inline"/>
+                        <field name="amount" class="oe_inline"/>
+                    </group>
+
+                    <footer>
+                        <button name="run" string="Take Money Out" type="object" class="oe_highlight"/>
+                        or 
+                        <button class="oe_link" special="cancel" string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window 
+            name="Take Money Out"
+            res_model="cash.box.out"
+            src_model="account.bank.statement"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_cash_box_out" />
+-->
+    </data>
+</openerp>
