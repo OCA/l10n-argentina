@@ -1,0 +1,101 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_stock_picking_number
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140804-231303\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-09 14:51+0000\n"
+"PO-Revision-Date: 2015-04-09 11:56-0300\n"
+"Last-Translator: kloss <kloss>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_stock_picking_number
+#: field:cancel.picking.done,next_action:0
+msgid "Next Action"
+msgstr "Próxima acción"
+
+#. module: l10n_ar_stock_picking_number
+#: view:cancel.picking.done:0
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: l10n_ar_stock_picking_number
+#: selection:cancel.picking.done,next_action:0
+msgid "Cancel & Create draft"
+msgstr "Cancelar & Crear remito en estado borrador"
+
+#. module: l10n_ar_stock_picking_number
+#: view:cancel.picking.done:0
+#: model:ir.actions.act_window,name:l10n_ar_stock_picking_number.act_stock_cancel_done_picking
+msgid "Cancel & Renumerate"
+msgstr "Cancelar & Renumerar"
+
+#. module: l10n_ar_stock_picking_number
+#: view:cancel.picking.done:0
+msgid "You can cancel actual delivery and create a new one with same data to deliver correct products. New one will be renumerated."
+msgstr "Cancela el remito actual y crea una copia del mismo con la posibilidad de renumerarlo."
+
+#. module: l10n_ar_stock_picking_number
+#: code:addons/l10n_ar_stock_picking_number/wizard/cancel_picking_done.py:52
+#, python-format
+msgid ""
+"%s\n"
+"Pick renumerated from %s. %s"
+msgstr ""
+"%s\n"
+"Remito renumerado %s. %s"
+
+#. module: l10n_ar_stock_picking_number
+#: help:stock.picking,renum_pick_id:0
+#: help:stock.picking.out,renum_pick_id:0
+msgid "Reference to the new picking created for renumerate this one. You cannot delete pickings if it is done, so it is cancelled and a new one is created, corrected and renumerated"
+msgstr "Referencia al nuevo remito. No será necesario eliminar el remito actual, el procedimiento realiza la cancelación del mismo."
+
+#. module: l10n_ar_stock_picking_number
+#: selection:cancel.picking.done,next_action:0
+msgid "Cancel only"
+msgstr "Cancelar"
+
+#. module: l10n_ar_stock_picking_number
+#: model:ir.model,name:l10n_ar_stock_picking_number.model_stock_picking
+msgid "Picking List"
+msgstr "Lista de selección"
+
+#. module: l10n_ar_stock_picking_number
+#: view:cancel.picking.done:0
+#: view:stock.picking.out:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_stock_picking_number
+#: model:ir.model,name:l10n_ar_stock_picking_number.model_cancel_picking_done
+msgid "Return Picking"
+msgstr "Devolver remito"
+
+#. module: l10n_ar_stock_picking_number
+#: field:cancel.picking.done,reason:0
+msgid "Reason of cancellation"
+msgstr "Razón de cancelación"
+
+#. module: l10n_ar_stock_picking_number
+#: field:stock.picking,renum_pick_id:0
+#: field:stock.picking.out,renum_pick_id:0
+msgid "Renumerated"
+msgstr "Renumerado"
+
+#. module: l10n_ar_stock_picking_number
+#: model:ir.model,name:l10n_ar_stock_picking_number.model_stock_picking_out
+msgid "Delivery Orders"
+msgstr "Órdenes de entrega"
+
+#. module: l10n_ar_stock_picking_number
+#: view:cancel.picking.done:0
+msgid "or"
+msgstr "o"
+
