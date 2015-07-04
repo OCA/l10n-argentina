@@ -1,0 +1,7 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_tax_subjournal_report_config_payment","tax.subjournal.report.config payment","model_tax_subjournal_report_config","account.group_account_invoice",1,1,1,1
+"access_tax_subjournal_report_config_manager","tax.subjournal.report.config manager","model_tax_subjournal_report_config","account.group_account_manager",1,1,1,1
+"access_tax_subjournal_report_config_user","tax.subjournal.report.config user","model_tax_subjournal_report_config","account.group_account_user",1,0,0,0
+"access_subjournal_report_taxcode_column_payment","subjournal.report.taxcode.column payment","model_subjournal_report_taxcode_column","account.group_account_invoice",1,1,1,1
+"access_subjournal_report_taxcode_column_payment_manager","subjournal.report.taxcode.column manager","model_subjournal_report_taxcode_column","account.group_account_manager",1,1,1,1
+"access_subjournal_report_taxcode_column_payment_user","subjournal.report.taxcode.column user","model_subjournal_report_taxcode_column","account.group_account_user",1,0,0,0

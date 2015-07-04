@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <!--
+    Tax Report Config 
+    -->
+
+    <record id="view_tax_subjournal_report_configuration_form" model="ir.ui.view">
+      <field name="name">tax.subjournal.report.config.form</field>
+      <field name="model">tax.subjournal.report.config</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Subjournal Report Configuration">
+          <group colspan="4" col="6">
+            <field name="name" string="Configuration Name"/>
+            <field name="tax_report_id"/>
+            <field name="based_on"/>
+          </group>
+          <separator colspan="4" string="Columns"/>
+          <field name="tax_column_ids" colspan="4" nolabel="1">
+            <tree string="Columns" editable="bottom">
+              <field name="tax_code_id"/>
+              <field name="print_total"/>
+            </tree>
+          </field>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_tax_subjournal_report_configuration_tree" model="ir.ui.view">
+      <field name="name">tax.subjournal.report.config.tree</field>
+      <field name="model">tax.subjournal.report.config</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Subjournal Report Configuration">
+          <field name="name"/>
+          <field name="tax_report_id"/>
+          <field name="based_on"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_tax_subjournal_report_config" model="ir.actions.act_window">
+      <field name="name">Tax Subjournal Configuration</field>
+      <field name="res_model">tax.subjournal.report.config</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_tax_subjournal_config_tree_view" model="ir.actions.act_window.view">
+      <field eval="20" name="sequence"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="view_tax_subjournal_report_configuration_tree"/>
+      <field name="act_window_id" ref="action_tax_subjournal_report_config"/>
+    </record>
+
+    <menuitem action="action_tax_subjournal_report_config" id="menu_action_tax_subjournal_report_config" parent="account.next_id_27"/>
+
+  </data>
+</openerp>
+
