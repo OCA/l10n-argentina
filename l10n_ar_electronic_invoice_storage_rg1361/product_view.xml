@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_uom_afip_code_form" model="ir.ui.view">
+            <field name="name">res.uom.afip.code.inherit</field>
+            <field name="model">product.uom</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_uom_form_view"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <separator string="AFIP - RG1361" colspan="4"/>
+                    <field name="afip_code"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

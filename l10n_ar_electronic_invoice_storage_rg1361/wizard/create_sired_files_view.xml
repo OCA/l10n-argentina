@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+  <!--  SIRED Files Generation -->
+
+    <record id="view_create_sired_files" model="ir.ui.view">
+      <field name="name">SIRED Files Generation for RG1361</field>
+      <field name="model">create.sired.files</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Credit Card Settlement Parameters">
+          <label string="This wizard allows you to create files to import to SIAp for SIRED. The files generated will be attached to corresponding period." colspan="4"/>
+          <separator colspan="4"/>
+          <field name="period_id"/>
+          <separator string="Validation Errors" colspan="4"/>
+          <field name="notes" readonly="1" nolabel="1" colspan="4"/>
+          <group col="2" colspan="4">
+            <button icon='gtk-cancel' special="cancel" string="Cancel" />
+            <button name="create_files" string="Generate" colspan="1" type="object" icon="gtk-ok" />
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <act_window name="SIRED Files Generation"
+      res_model="create.sired.files"
+      src_model="account.period"
+      view_mode="form"
+      target="new"
+      key2="client_action_multi"
+      id="action_generate_sired_files"/>
+
+  </data>
+</openerp>

@@ -1,0 +1,231 @@
+TABLA DE COMPROBANTES (SEGUN RG 1785)
+Código	Descripción
+01	Facturas A
+02	Notas de Débito A
+03	Notas de Crédito A
+04	Recibos A
+05	Notas de Venta al contado A
+06	Facturas B
+07	Notas de Débito B
+08	Notas de Crédito B
+09	Recibos B
+10	Notas de Venta al contado B
+11	Facturas C
+12	Notas de Débito C
+13	Notas de Crédito C
+14	Documento aduanero
+15	Recibos C
+16	Notas de Venta al contado C
+19	Facturas de Exportación
+20	Notas de Débito por operaciones con el exterior
+21	Notas de Crédito por operaciones con el exterior
+22	Facturas  Permiso Exportación simplificado  Dto. 855/97
+30	Comprobantes de compra de bienes usados
+34	Comprobantes A del Anexo I, Apartado A, inc. f), R.G. N° 1415
+35	Comprobantes B del Anexo I, Apartado A, inc. f), R.G. N° 1415
+36	Comprobantes C del Anexo I, Apartado A, inc. f), R.G. N° 1415
+37	Notas de Débito o documento equivalente que cumplan con la R.G. N° 1415
+38	Notas de Crédito o documento equivalente que cumplan con la R.G. N° 1415
+39	Otros comprobantes A que cumplan con la R.G. N° 1415
+40	Otros comprobantes B que cumplan con la R.G. N° 1415
+41	Otros comprobantes C que cumplan con la R.G. N° 1415
+51	Facturas M
+52	Notas de Débito M
+53	Notas de Crédito M
+54	Recibos M
+55	Notas de Venta al contado M
+56	Comprobantes M del Anexo I, Apartado A, inc. f), R.G. N° 1415
+57	Otros comprobantes M que cumplan con la R.G. N° 1415
+58	Cuenta de Venta y Líquido producto M
+59	Liquidación M
+60	Cuenta de Venta y Líquido producto A
+61	Cuenta de Venta y Líquido producto B
+62	Cuenta de Venta y Líquido producto C
+63	Liquidación A
+64	Liquidación B
+65	Liquidación C
+80	Comprobante diario de cierre (zeta)
+81	TiqueFactura "A"
+82	TiqueFactura "B"
+83	Tique
+84	Comprobante/Factura de servicios públicos
+85	Nota de Crédito  servicios públicos
+86	Nota de Débito  servicios públicos
+87	Otros comprobantes  servicios del exterior
+88	Otros comprobantes  documentos exceptuados
+89	Otros comprobantes  documentos exceptuados  Notas de Débito
+90	Otros comprobantes  documentos exceptuados  Notas de Crédito
+92	Ajustes contables que incrementan el débito fiscal
+93	Ajustes contables que disminuyen el débito fiscal
+94	Ajustes contables que incrementan el crédito fiscal
+95	Ajustes contables que disminuyen el crédito fiscal
+96	Formulario 1116/B
+97	Formulario 1116/C
+
+
+TIPO DE RESPONSABLE
+Código	Tipo de responsable
+01	IVA Responsable Inscripto
+02	IVA Responsable no Inscripto
+03	IVA no Responsable
+04	IVA Sujeto Exento
+05	Consumidor Final
+06	Responsable Monotributo
+07	Sujeto no Categorizado
+08	Proveedor del Exterior
+09	Cliente del Exterior
+10	IVA Liberado  Ley N° 19.640
+11	IVA Responsable Inscripto  Agente de Percepción
+12	Pequeño Contribuyente Eventual
+13	Monotributista Social
+14	Pequeño Contribuyente Eventual Social
+
+
+CÓDIGOS DE MONEDA (s/R.G. 1886)
+Código	Moneda
+000	OTRAS MONEDAS
+PES	PESOS
+DOL	Dólar ESTADOUNIDENSE
+002	Dólar EEUU LIBRE
+003	FRANCOS FRANCESES
+004	LIRAS ITALIANAS
+005	PESETAS
+006	MARCOS ALEMANES
+007	FLORINES HOLANDESES
+008	FRANCOS BELGAS
+009	FRANCOS SUIZOS
+010	PESOS MEJICANOS
+011	PESOS URUGUAYOS
+012	REAL
+013	ESCUDOS PORTUGUESES
+014	CORONAS DANESAS
+015	CORONAS NORUEGAS
+016	CORONAS SUECAS
+017	CHELINES AUTRIACOS
+018	Dólar CANADIENSE
+019	YENS
+021	LIBRA ESTERLINA
+022	MARCOS FINLANDESES
+023	BOLIVAR
+024	CORONA CHECA
+025	DINAR (YUGOSLAVO)
+026	Dólar AUSTRALIANO
+027	DRACMA GRIEGO
+028	FLORIN (ANTILLAS HOLA
+029	GUARANI
+030	SHEKEL (ISRAEL)
+031	PESO BOLIVIANO
+032	PESO COLOMBIANO
+033	PESO CHILENO
+034	RAND
+035	NUEVO SOL PERUANO
+036	SUCRE (ECUATORIANO)
+040	LEI RUMANOS
+041	DERECHOS ESPECIALES DE GIRO
+042	PESOS DOMINICANOS
+043	BALBOAS PANAMEÑAS
+044	CORDOBAS NICARAGÜENSES
+045	DIRHAM MARROQUIES
+046	LIBRAS EGIPCIAS
+047	RIYALS SAUDITAS
+048	BRANCOS BELGAS FINANCIERAS
+049	GRAMOS DE ORO FINO
+050	LIBRAS IRLANDESAS
+051	Dólar DE HONG KONG
+052	Dólar DE SINGAPUR
+053	Dólar DE JAMAICA
+054	Dólar DE TAIWAN
+055	QUETZAL (GUATEMALTECOS)
+056	FORINT (HUNGRIA)
+057	BAHT (TAILANDIA)
+058	ECU
+059	DINAR KUWAITI
+060	EURO
+061	ZLTYS POLACOS
+062	RUPIAS HINDUES
+063	LEMPIRAS HONDUREÑAS
+
+
+CÓDIGOS DE JURISDICCIÓN DE INGRESOS BRUTOS
+Código de Jurisdicción	Descripción
+0	Capital Federal
+1	Buenos Aires
+2	Catamarca
+3	Córdoba
+4	Corrientes
+5	Entre Ríos
+6	Jujuy
+7	Mendoza
+8	La Rioja
+9	Salta
+10	San Juan
+11	San Luis
+12	Santa Fe
+13	Santiago del Estero
+14	Tucumán
+16	Chaco
+17	Chubut
+18	Formosa
+19	Misiones
+20	Neuquén
+21	La Pampa
+22	Río Negro
+23	Santa Cruz
+24	Tierra del Fuego
+
+
+
+UNIDADES DE MEDIDA
+Código	Descripción
+01	KILOGRAMO	
+02	METROS	
+03	METRO CUADRADO	
+04	METRO CUBICO	
+05	LITROS	
+06	1000 KILOWATT HORA	
+07	UNIDAD	
+08	PAR	
+09	DOCENA	
+10	QUILATE	
+11	MILLAR	
+12	MEGA-U. INT. ACT. ANTIB	
+13	UNIDAD INT. ACT. INMUNG	
+14	GRAMO	
+15	MILIMETRO	
+16	MILIMETRO CUBICO	
+17	KILOMETRO	
+18	HECTOLITRO	
+19	MEGA U. INT. ACT. INMUNG.	
+20	CENTIMETRO	
+21	KILOGRAMO ACTIVO	
+22	GRAMO ACTIVO	
+23	GRAMO BASE	
+24	UIACTHOR
+25	JUEGO O PAQUETE MAZO DE NAIPES	 	 
+26	MUIACTHOR	 	 
+27	CENTIMETRO CUBICO	 	 
+28	UIACTANT	 	 
+29	TONELADA
+30	DECAMETRO CUBICO
+31	HECTOMETRO CUBICO
+32	KILOMETRO CUBICO
+33	MICROGRAMO
+34	NANOGRAMO
+35	PICOGRAMO
+36	MUIACTANT
+37	UIACTIG
+41	MILIGRAMO
+47	MILILITRO
+48	CURIE
+49	MILICURIE
+50	MICROCURIE
+51	U. INTER. ACT. HOR.
+52	MEGA U. INTER. ACT. HOR.
+53	KILOGRAMO BASE
+54	GRUESA
+55	MUIACTIG
+61	KG. BRUTO
+62	PACK
+63	HORMA
+98	OTRAS UNIDADES
+99	BONIFICACION
