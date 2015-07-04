@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+        <record id="view_bank_import_statement_form" model="ir.ui.view">
+            <field name="name">account.bank.import.statement.form.inherit</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_bank_statement_form"/>
+            <field name="arch" type="xml">
+				<xpath expr="//div[@name='import_buttons']/button[@string='Import Invoice']" position="replace"/>
+            
+                <xpath expr="//div[@name='import_buttons']" position="inside">
+					<button class="oe_inline oe_stat_button" name="%(action_account_import_statement_lines)d"
+                            string="Import statement lines" type="action"
+                            attrs="{'invisible':[('state','=','confirm')]}" widget="statinfo" icon="fa-pencil-square-o"/>
+                </xpath>
+                
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='amount']" position="attributes">
+					<attribute name="on_change">bank_line_on_change_amount(type,amount)</attribute>
+				</xpath>
+				
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='bank_account_id']" position="attributes">
+					<attribute name="invisible">True</attribute>
+				</xpath>
+				
+				<xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='amount']" position="after">
+                    <field name="state"/>
+                    <button type="object" string="Confirm" name="button_confirm_bank_statement_line" states="draft" icon="terp-camera_test"/>
+                    <button type="object" string="Draft" name="button_draft_bank_statement_line" states="open" icon="gtk-cancel"/>
+                    <button type="object" string="Des-conciliated" name="button_conciliated_bank_statement_line" states="conciliated" icon="gtk-ok"/>
+                </xpath>
+                
+				<xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='partner_id']" position="before">
+                    <field name="type"/>
+                    <field name="account_id"/>
+                </xpath>
+				
+            </field>
+        </record>
+		
+        <record id="view_bank_import_statement_ar_form" model="ir.ui.view">
+            <field name="name">bank.statement.cancel.form.ar.inherit</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account_cancel.bank_statement_cancel_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='cancel']" position="attributes">
+					<attribute name="invisible">True</attribute>
+				</xpath>
+            </field>
+        </record>
+
+        <record id="view_bank_statement_lines_tree" model="ir.ui.view">
+            <field name="name">account.bank.statement.line.tree</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="arch" type="xml">
+                <tree colors="red:state=='open';black:state=='conciliated';blue:state=='draft';" string="Statement Lines">
+                    <field name="sequence" readonly="1" invisible="1"/>
+                    <field name="issue_date"/>
+                    <field name="payment_date"/>
+                    <field name="name"/>
+					<field name="aux_journal_id"/>
+                    <field name="ref"/>
+                    <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                    <field name="type" on_change="onchange_type(partner_id, type)"/>
+                    <field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
+                    <field name="amount"/>
+                    <field name="date" groups="base.group_extended"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+       
+        <record id="view_bank_statement_lines_search" model="ir.ui.view">
+            <field name="name">account.bank.statement.line.search</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Bank Statements Lines">
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="amount"/>
+                        <field name="partner_id" widget="selection"/>
+                        <field name="type"/>
+						<field name="aux_journal_id"/>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" context="{'group_by': 'partner_id'}" icon="terp-personal"/>
+                        <filter string="Type" context="{'group_by': 'type'}" icon="terp-stock_effects-object-colorize"/>
+                        <filter string="Journal" context="{'group_by': 'aux_journal_id'}" icon="terp-stock_effects-object-colorize"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_bank_statement_lines_tree" model="ir.actions.act_window">
+            <field name="name">Bank Statements Lines</field>
+            <field name="res_model">account.bank.statement.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="search_view_id" ref="view_bank_statement_lines_search"/>
+            <field name="view_id" ref="view_bank_statement_lines_tree"/>
+            <field name="context">{'st_lines': 'delete'}</field>
+            <field name="domain">[('bank_statement','=',True)]</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_bank_statement_lines_tree_bank">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_bank_statement_lines_tree"/>
+            <field name="act_window_id" ref="action_bank_statement_lines_tree"/>
+        </record>
+
+        <menuitem string="Bank Statements Lines" action="action_bank_statement_lines_tree" id="menu_bank_statement_lines_tree" parent="account.menu_finance_bank_and_cash" sequence="50"/>
+
+        <record id="view_ar_statement_lines_tree" model="ir.ui.view">
+            <field name="name">account.ar.statement.lines.tree</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:state=='open';black:state=='conciliated';blue:state=='draft';" string="Statement Lines" editable="top">
+                    <field name="sequence" readonly="1" invisible="1"/>
+                    <field name="issue_date"/>
+                    <field name="payment_date"/>
+                    <field name="name"/>
+                    <field name="ref"/>
+                    <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                    <field name="type" on_change="onchange_type(partner_id, type)"/>
+                    <field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
+                    <field name="amount"/>
+                    <field name="date" groups="base.group_extended"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_ar_statement_lines_search" model="ir.ui.view">
+            <field name="name">account.ar.statement.lines.search</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Bank Statements Lines">
+                    <group>
+                        <filter string="Not conciliated" domain="[('state','in',('draft','open'))]" icon="terp-document-new"/>
+                        <filter string="Conciliated" domain="[('state','=','conciliated')]" icon="terp-camera_test"/>
+                        <separator orientation="vertical"/>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="amount"/>
+                        <field name="partner_id" widget="selection"/>
+                        <field name="type"/>
+                        <field name="state"/>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" context="{'group_by': 'partner_id'}" icon="terp-personal"/>
+                        <filter string="Type" context="{'group_by': 'type'}" icon="terp-stock_effects-object-colorize"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_ar_statement_lines_tree" model="ir.actions.act_window">
+            <field name="name">Statements Lines</field>
+            <field name="res_model">account.bank.statement.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="search_view_id" ref="view_ar_statement_lines_search"/>
+            <field name="view_id" ref="view_ar_statement_lines_tree"/>
+            <field name="context">{'st_lines': 'remove'}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_ar_statement_lines_tree_bank">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_ar_statement_lines_tree"/>
+            <field name="act_window_id" ref="action_ar_statement_lines_tree"/>
+        </record>
+
+        <menuitem string="Statements Lines" action="action_ar_statement_lines_tree" id="menu_ar_statement_lines_tree" parent="account.menu_finance_bank_and_cash" sequence="70"/>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_project_import_wizard" model="ir.ui.view">
+          <field name="name">Import Projects</field>
+          <field name="model">project.import</field>
+          <field name="type">form</field>
+          <field name="arch" type="xml">
+            <form string="Import">
+              <separator string="Import" colspan="4"/>
+              <group col="4" colspan="4">
+                <field name="filename"/>
+                <newline/>
+                <button icon='gtk-cancel' special="cancel" string="Cancelar" />
+                <button name="read_file" string="Read file" type="object" icon="gtk-print" />
+              </group>
+            </form>
+          </field>
+        </record>
+        
+        <record id="action_project_import_wizard" model="ir.actions.act_window">
+            <field name="name">Import from XML</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_project_import_wizard"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_project_import_wizard" id="menu_project_import" parent="account.menu_finance_bank_and_cash" sequence="30"/>
+            
+  </data>
+</openerp>

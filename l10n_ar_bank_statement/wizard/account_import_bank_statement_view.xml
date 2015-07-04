@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+        <record id="account_import_statement_lines_view" model="ir.ui.view">
+             <field name="name">Import statement lines</field>
+             <field name="model">account.import.statement.lines</field>
+             <field name="type">form</field>
+             <field name="arch" type="xml">
+                <form string="Import Statement lines">
+                    <group colspan="4" col="6">
+                        <field name="lines" domain="[('state', '=', 'draft'),('bank_statement','=',True)]" colspan="4" height="300" width="800" nolabel="1"
+                        context="{'tree_view_ref':'l10n_ar_bank_statement.view_bank_statement_lines_tree', 'search_view_ref':'l10n_ar_bank_statement.view_bank_statement_lines_search'}">
+							<tree>
+								<field name="sequence" readonly="1" invisible="1"/>
+								<field name="date" groups="base.group_extended"/>
+								<field name="name"/>
+								<field name="journal_id"/>
+								<field name="ref"/>
+								<field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+								<field name="type" on_change="onchange_type(partner_id, type)"/>
+								<field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
+								<field name="amount"/>
+							</tree>
+						</field>
+                        <separator colspan="6"/>
+                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                        <button name="import_statement_lines" string="ADD" type="object" icon="gtk-ok"/>
+                    </group>
+                </form>
+             </field>
+        </record>
+
+        <record id="action_account_import_statement_lines" model="ir.actions.act_window">
+             <field name="name">Import statement lines</field>
+             <field name="res_model">account.import.statement.lines</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="account_import_statement_lines_view"/>
+             <field name="target">new</field>
+       </record>
+
+	</data>
+</openerp>
