@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+  <record id="view_account_tax_subjournal" model="ir.ui.view">
+    <field name="name">Account Tax Subjournal</field>
+    <field name="model">account.tax.subjournal</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Taxes Subjournal">
+        <separator string="Taxes Subjournal" colspan="4"/>
+        <field name="fiscalyear_id"/>
+        <field name="period" domain="[('fiscalyear_id','=',fiscalyear_id)]"/>
+        <separator string="Configuration"  colspan="4"/>
+        <field name="based_on" />
+        <field name="report_id" invisible="1" />
+        <field name="report_config_id" domain="[('tax_report_id','=',report_id), ('based_on','=',based_on)]" />
+        <group col="2" colspan="4">
+          <button icon='gtk-cancel' special="cancel"  string="Cancel" />
+          <button name="create_report" string="Print Report" colspan="1" type="object" icon="gtk-ok"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_account_tax_subjournal" model="ir.actions.act_window">
+    <field name="name">Account Tax Subjournal</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">account.tax.subjournal</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <menuitem
+    name="Taxes Subjournal"
+    parent="account.menu_tax_report"
+    action="action_account_tax_subjournal"
+    id="menu_account_tax_subjournal"
+    icon="STOCK_PRINT"/>
+
+  </data>
+</openerp>
