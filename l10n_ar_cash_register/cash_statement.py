@@ -62,8 +62,12 @@ class account_bank_statement(osv.osv):
                         'debit': st_line.amount < 0 and -st_line.amount or 0.0,
                         'credit': st_line.amount > 0 and st_line.amount or 0.0,
                         'account_id': st_line.account_id.id,
-                        'name': st_line.name
+                        'name': st_line.name,
+                        'analytic_account_id': st_line.analytic_id and st_line.analytic_id.id
                     }
+                    #~ if st_line.analytic_id and st_line.type in 'expenses':
+                        #~ vals.update({'analytic_account_id': st_line.analytic_id.id})
+                        
                     self.pool.get('account.bank.statement.line').process_reconciliation(cr, uid, st_line.id, [vals], context=context)
                 elif not st_line.journal_entry_id.id:
                     raise osv.except_osv(_('Error!'), _('All the account entries lines must be processed in order to close the statement.'))
@@ -75,8 +79,46 @@ class account_bank_statement(osv.osv):
             self.message_post(cr, uid, [st.id], body=_('Statement %s confirmed, journal items were created.') % (st.name,), context=context)
         self.link_bank_to_partner(cr, uid, ids, context=context)
         return self.write(cr, uid, ids, {'state': 'confirm', 'closing_date': time.strftime("%Y-%m-%d %H:%M:%S")}, context=context)
-        
-account_bank_statement()
+
+    def _prepare_move_line_vals(self, cr, uid, st_line, move_id, debit, credit, currency_id=False,
+                amount_currency=False, account_id=False, partner_id=False, context=None):
+        """Prepare the dict of values to create the move line from a
+           statement line.
+
+           :param browse_record st_line: account.bank.statement.line record to
+                  create the move from.
+           :param int/long move_id: ID of the account.move to link the move line
+           :param float debit: debit amount of the move line
+           :param float credit: credit amount of the move line
+           :param int/long currency_id: ID of currency of the move line to create
+           :param float amount_currency: amount of the debit/credit expressed in the currency_id
+           :param int/long account_id: ID of the account to use in the move line if different
+                  from the statement line account ID
+           :param int/long partner_id: ID of the partner to put on the move line
+           :return: dict of value to create() the account.move.line
+        """
+        acc_id = account_id or st_line.account_id.id
+        cur_id = currency_id or st_line.statement_id.currency.id
+        par_id = partner_id or (((st_line.partner_id) and st_line.partner_id.id) or False)
+        vals = {
+                'name': st_line.name,
+                'date': st_line.date,
+                'ref': st_line.ref,
+                'move_id': move_id,
+                'partner_id': par_id,
+                'account_id': acc_id,
+                'credit': credit,
+                'debit': debit,
+                'statement_id': st_line.statement_id.id,
+                'journal_id': st_line.statement_id.journal_id.id,
+                'period_id': st_line.statement_id.period_id.id,
+                'currency_id': amount_currency and cur_id,
+                'amount_currency': amount_currency,
+        }
+        #~ if st_line.analytic_id and st_line.type in 'income':
+            #~ vals.update({'analytic_account_id': st_line.analytic_id.id})
+            
+        return vals
 
 class account_cash_statement(osv.osv):
     
@@ -142,6 +184,8 @@ class account_bank_statement_line(osv.osv):
         'ref_voucher_id': fields.many2one('account.voucher', 'Ref. voucher'),
         'bank_statement': fields.boolean('Bank statement'),
         'creation_type': fields.char('Creation type', size=50, help="System: created by OpenERP, Manual: created by the user"),
+        'analytic_id': fields.many2one('account.analytic.account', 'Analytic account'),
+        'concept_id': fields.many2one('cash.statement.line.type', 'Concept'),
     }
     
     _defaults = {

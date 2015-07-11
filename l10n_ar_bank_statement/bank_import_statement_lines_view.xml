@@ -33,6 +33,7 @@
 				<xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='partner_id']" position="before">
                     <field name="type"/>
                     <field name="account_id"/>
+					<field name="analytic_id"/>
                 </xpath>
 				
             </field>
@@ -49,8 +50,8 @@
             </field>
         </record>
 
-        <record id="view_bank_statement_lines_tree" model="ir.ui.view">
-            <field name="name">account.bank.statement.line.tree</field>
+        <record id="view_ar_statement_lines_tree" model="ir.ui.view">
+            <field name="name">account.ar.statement.line.tree</field>
             <field name="model">account.bank.statement.line</field>
             <field name="arch" type="xml">
                 <tree colors="red:state=='open';black:state=='conciliated';blue:state=='draft';" string="Statement Lines">
@@ -63,6 +64,8 @@
                     <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
                     <field name="type" on_change="onchange_type(partner_id, type)"/>
                     <field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
+					<field name="analytic_id"/>
+					<field name="concept_id"/>
                     <field name="amount"/>
                     <field name="date" groups="base.group_extended"/>
                     <field name="state"/>
@@ -70,8 +73,8 @@
             </field>
         </record>
        
-        <record id="view_bank_statement_lines_search" model="ir.ui.view">
-            <field name="name">account.bank.statement.line.search</field>
+        <record id="view_ar_statement_lines_search" model="ir.ui.view">
+            <field name="name">account.ar.statement.line.search</field>
             <field name="model">account.bank.statement.line</field>
             <field name="arch" type="xml">
                 <search string="Search Bank Statements Lines">
@@ -88,31 +91,33 @@
                         <filter string="Partner" context="{'group_by': 'partner_id'}" icon="terp-personal"/>
                         <filter string="Type" context="{'group_by': 'type'}" icon="terp-stock_effects-object-colorize"/>
                         <filter string="Journal" context="{'group_by': 'aux_journal_id'}" icon="terp-stock_effects-object-colorize"/>
+						<filter string="Analytic account" context="{'group_by': 'analytic_id'}" icon="terp-stock_effects-object-colorize"/>
+						<filter string="Concept" context="{'group_by': 'concept_id'}" icon="terp-stock_effects-object-colorize"/>
                     </group>
                 </search>
             </field>
         </record>
 
         <record id="action_bank_statement_lines_tree" model="ir.actions.act_window">
-            <field name="name">Bank Statements Lines</field>
+            <field name="name">Statements Lines</field>
             <field name="res_model">account.bank.statement.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,graph</field>
-            <field name="search_view_id" ref="view_bank_statement_lines_search"/>
-            <field name="view_id" ref="view_bank_statement_lines_tree"/>
+            <field name="search_view_id" ref="view_ar_statement_lines_search"/>
+            <field name="view_id" ref="view_ar_statement_lines_tree"/>
             <field name="context">{'st_lines': 'delete'}</field>
-            <field name="domain">[('bank_statement','=',True)]</field>
         </record>
 
         <record model="ir.actions.act_window.view" id="action_bank_statement_lines_tree_bank">
             <field name="sequence" eval="1"/>
             <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_bank_statement_lines_tree"/>
+            <field name="view_id" ref="view_ar_statement_lines_tree"/>
             <field name="act_window_id" ref="action_bank_statement_lines_tree"/>
         </record>
 
         <menuitem string="Bank Statements Lines" action="action_bank_statement_lines_tree" id="menu_bank_statement_lines_tree" parent="account.menu_finance_bank_and_cash" sequence="50"/>
 
+<!--
         <record id="view_ar_statement_lines_tree" model="ir.ui.view">
             <field name="name">account.ar.statement.lines.tree</field>
             <field name="model">account.bank.statement.line</field>
@@ -127,6 +132,8 @@
                     <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
                     <field name="type" on_change="onchange_type(partner_id, type)"/>
                     <field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
+					<field name="analytic_id"/>
+					<field name="concept_id"/>
                     <field name="amount"/>
                     <field name="date" groups="base.group_extended"/>
                     <field name="state"/>
@@ -155,13 +162,16 @@
                     <group expand="0" string="Group By...">
                         <filter string="Partner" context="{'group_by': 'partner_id'}" icon="terp-personal"/>
                         <filter string="Type" context="{'group_by': 'type'}" icon="terp-stock_effects-object-colorize"/>
+						<filter string="Analytic account" context="{'group_by': 'analytic_id'}" icon="terp-stock_effects-object-colorize"/>
+						<filter string="Concept" context="{'group_by': 'concept_id'}" icon="terp-stock_effects-object-colorize"/>
                     </group>
                 </search>
             </field>
         </record>
+-->
 
         <record id="action_ar_statement_lines_tree" model="ir.actions.act_window">
-            <field name="name">Statements Lines</field>
+            <field name="name">Remove Statements Lines</field>
             <field name="res_model">account.bank.statement.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,graph</field>

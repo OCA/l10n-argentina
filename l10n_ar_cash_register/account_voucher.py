@@ -37,7 +37,6 @@ class account_voucher(osv.osv):
         stl = []
         
         for vou in self.browse(cr, uid, ids, context=context):
-            print 'cash'
             if vou.type in 'receipt':
                 sign = 1
                 aux_account = vou.partner_id.property_account_receivable.id
@@ -47,8 +46,6 @@ class account_voucher(osv.osv):
             
             for line in vou.payment_line_ids:
                 if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'cash':
-                    print 'cash'
-                    print line
                     aux_name = line.voucher_id.number
                     
                     amount = line.amount * sign
@@ -68,7 +65,6 @@ class account_voucher(osv.osv):
                             'ref_voucher_id': vou.id,
                             'creation_type': 'system',
                             'statement_id': statement[0],
-                            'bank_statement': False,
                             #~ 'ref': vou.reference,
                         }
 
@@ -84,8 +80,6 @@ class account_voucher(osv.osv):
         
         for voucher in self.browse(cr, uid, ids, context=None):
             for statement_line in voucher.statement_bank_line_ids:
-                #~ sql = 'delete from account_bank_statement_line where id = ' + str(statement_line.id)
-                #~ cr.execute(sql)
                 statement_line_obj.unlink(cr, uid, statement_line.id, context=None)
         return super(account_voucher, self).cancel_voucher(cr, uid, ids, context=None)
 
