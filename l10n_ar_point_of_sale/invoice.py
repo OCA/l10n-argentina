@@ -382,7 +382,7 @@ class invoice(models.Model):
                     if len(pos):
                         res['value'].update({'local': fiscal_position.local,
                                              'denomination_id': denomination_id,
-                                             'pos_ar_id': pos[0]})
+                                             'pos_ar_id': pos[0].id})
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
