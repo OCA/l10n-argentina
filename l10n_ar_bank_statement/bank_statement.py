@@ -120,11 +120,11 @@ class account_bank_statement(osv.osv):
                 #~ escribo el movimiento como conciliado
                 if st_line.state in 'draft':
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'statement_id': ''})
-                elif st_line.state in 'conciliated':
-                    continue
+                #~ elif st_line.state in 'conciliated':
+                    #~ continue
                 else:
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'state': 'conciliated'})
-                #~ compruebo los movimientos que son expense o income caja para generar los asientos
+                #~ compruebo los movimientos que son expense o income para generar los asientos
                 if not st_line.type in ('expenses', 'income'):
                     continue
                 #~ fin
