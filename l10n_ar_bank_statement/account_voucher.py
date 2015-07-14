@@ -55,7 +55,6 @@ class account_voucher(osv.osv):
                     'account_id': vou.partner_id.property_account_payable.id,
                     'state': 'draft',
                     'type': vou.type,
-                    'bank_statement': True,
                     'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
@@ -80,7 +79,6 @@ class account_voucher(osv.osv):
                     'ref': vou.number,
                     'state': 'draft',
                     'type': 'payment',
-                    'bank_statement': True,
                     'partner_id': vou.partner_id and vou.partner_id.id,
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
@@ -98,8 +96,6 @@ class account_voucher(osv.osv):
         
         for voucher in self.browse(cr, uid, ids, context=None):
             for statement_line in voucher.statement_bank_line_ids:
-                #~ sql = 'delete from account_bank_statement_line where id = ' + str(statement_line.id)
-                #~ cr.execute(sql)
                 if statement_line.state in 'open':
                     continue
                 statement_line_obj.unlink(cr, uid, statement_line.id, context=None)

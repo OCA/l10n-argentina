@@ -74,6 +74,7 @@
                 <xpath expr="//page/field[@name='line_ids']/tree/field[@name='ref']" position="after">
 					<field name="state" invisible="1"/>
 					<field name="type"/>
+					<field name="analytic_id"/>
 					<field name="account_id"/>
                 </xpath>
                 

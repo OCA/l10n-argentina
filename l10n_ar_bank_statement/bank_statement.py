@@ -44,11 +44,6 @@ class account_bank_statement_line(osv.osv):
 
     def button_conciliated_bank_statement_line(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state':'open'}, context=context)
-        
-    def create(self, cr, uid, vals, context=None):
-        if context.get('journal_type', '') in 'bank':
-            vals['bank_statement'] = True
-        return super(account_bank_statement_line, self).create(cr, uid, vals, context)
     
     def unlink(self, cr, uid, ids, context=None):
         print context
@@ -106,7 +101,6 @@ class account_bank_statement(osv.osv):
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        print 'sequence1111'
         print 'banco'
 
         for st in self.browse(cr, uid, ids, context=context):
@@ -126,11 +120,11 @@ class account_bank_statement(osv.osv):
                 #~ escribo el movimiento como conciliado
                 if st_line.state in 'draft':
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'statement_id': ''})
-                elif st_line.state in 'conciliated':
-                    continue
+                #~ elif st_line.state in 'conciliated':
+                    #~ continue
                 else:
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'state': 'conciliated'})
-                #~ compruebo los movimientos que son expense o income caja para generar los asientos
+                #~ compruebo los movimientos que son expense o income para generar los asientos
                 if not st_line.type in ('expenses', 'income'):
                     continue
                 #~ fin
@@ -142,8 +136,11 @@ class account_bank_statement(osv.osv):
                         'debit': st_line.amount < 0 and -st_line.amount or 0.0,
                         'credit': st_line.amount > 0 and st_line.amount or 0.0,
                         'account_id': st_line.account_id.id,
-                        'name': st_line.name
+                        'name': st_line.name,
+                        #~ 'analytic_account_id': st_line.analytic_id and st_line.analytic_id.id
                     }
+                    if st_line.analytic_id and st_line.type in 'expenses':
+                        vals.update({'analytic_account_id': st_line.analytic_id.id})
                     self.pool.get('account.bank.statement.line').process_reconciliation(cr, uid, st_line.id, [vals], context=context)
                 elif not st_line.journal_entry_id.id:
                     raise osv.except_osv(_('Error!'), _('All the account entries lines must be processed in order to close the statement.'))
@@ -191,7 +188,6 @@ class account_check_deposit(osv.osv_memory):
                 'account_id': check.deposit_bank_id.account_id.id,
                 'state': 'draft',
                 'type': 'receipt',
-                'bank_statement': True,
                 'partner_id': check.deposit_bank_id.partner_id.id,
                 'creation_type': 'system',
                 'ref_voucher_id': check.source_voucher_id.id,
@@ -241,7 +237,6 @@ class account_check_reject(osv.osv_memory):
                 'account_id': check.deposit_bank_id.account_id.id,
                 'state': 'draft',
                 'type': 'receipt',
-                'bank_statement': True,
                 'partner_id': check.deposit_bank_id.partner_id.id,
                 'creation_type': 'system',
                 'ref_voucher_id': check.source_voucher_id.id,
