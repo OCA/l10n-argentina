@@ -46,7 +46,6 @@ class account_bank_statement_line(osv.osv):
         return self.write(cr, uid, ids, {'state':'open'}, context=context)
     
     def unlink(self, cr, uid, ids, context=None):
-        print context
         if context is None:
             st_lines = False
             journal_type = False
@@ -85,13 +84,6 @@ class account_bank_statement_line(osv.osv):
                         cr.execute(sql)
                     return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
             else:
-                #~ t = self.browse(cr, uid, ids, context=context)
-#~ 
-                #~ if t.state not in ('draft') or t.creation_type in 'manual':
-                    #~ raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Bank/Cash Statement Line(s) which are not draft state or creation type manual!'))
-                #~ sql = 'delete from account_bank_statement_line where id = ' + str(ids)
-                #~ cr.execute(sql)
-                #~ self.unlink(cr, uid, ids, context=None)
                 return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
 
 
@@ -101,7 +93,6 @@ class account_bank_statement(osv.osv):
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        print 'banco'
 
         for st in self.browse(cr, uid, ids, context=context):
             j_type = st.journal_id.type
@@ -120,8 +111,6 @@ class account_bank_statement(osv.osv):
                 #~ escribo el movimiento como conciliado
                 if st_line.state in 'draft':
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'statement_id': ''})
-                #~ elif st_line.state in 'conciliated':
-                    #~ continue
                 else:
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'state': 'conciliated'})
                 #~ compruebo los movimientos que son expense o income para generar los asientos
@@ -208,12 +197,13 @@ class account_check_reject(osv.osv_memory):
     def action_reject(self, cr, uid, ids, context=None):
         third_check_obj = self.pool.get('account.third.check')
         
-        aux = super(account_check_deposit, self).action_reject(cr, uid, ids, context)
+        aux = super(account_check_reject, self).action_reject(cr, uid, ids, context)
         record_ids = context.get('active_ids', [])
         
         check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
 
         for check in check_objs:
+            print check
             
             if check.type in 'common':
                 aux_payment_date = check.issue_date
