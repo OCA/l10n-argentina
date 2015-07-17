@@ -29,11 +29,9 @@ class account_voucher(osv.osv):
     
     def proforma_voucher(self, cr, uid, ids, context=None):
         vouchers = super(account_voucher, self).proforma_voucher(cr, uid, ids, context=context)
-        print 'vouchers = super(account_voucher, self).proforma_voucher(cr, uid, ids, context=context)'
         stl = []
         
         for vou in self.browse(cr, uid, ids, context=context):
-            print 'bank'
             if vou.type in 'receipt':
                 sign = 1
                 aux_account = vou.partner_id.property_account_receivable.id
@@ -43,8 +41,7 @@ class account_voucher(osv.osv):
             for line in vou.payment_line_ids:
                 if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type not in 'bank':
                     continue
-                print 'bank'    
-                print line    
+
                 amount = line.amount * sign
                     
                 st_line = {

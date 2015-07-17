@@ -123,7 +123,6 @@ class account_check_reject(osv.osv_memory):
             }
 
             vals = invoice_line_obj.product_id_change(cr, uid, [], product=False, uom_id=False, qty=1, name=name, type='out_invoice', partner_id=partner.id, price_unit=check.amount, currency_id=False, context=context, company_id=check.company_id.id)
-            print vals
 
             invoice_line_vals.update(vals['value'])
             invoice_line_vals['price_unit'] = check.amount
