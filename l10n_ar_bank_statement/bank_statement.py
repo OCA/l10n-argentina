@@ -2,6 +2,8 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2010 Pexego Sistemas Informáticos. All Rights Reserved
+#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
+#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -93,13 +95,11 @@ class account_bank_statement(osv.osv):
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-
         for st in self.browse(cr, uid, ids, context=context):
             j_type = st.journal_id.type
             if not self.check_status_condition(cr, uid, st.state, journal_type=j_type):
                 continue
-
-            self.balance_check(cr, uid, st.id, journal_type=j_type, context=context)
+            
             if (not st.journal_id.default_credit_account_id) \
                     or (not st.journal_id.default_debit_account_id):
                 raise osv.except_osv(_('Configuration Error!'), _('Please verify that an account is defined in the journal.'))
@@ -137,6 +137,12 @@ class account_bank_statement(osv.osv):
             if move_ids:
                 self.pool.get('account.move').post(cr, uid, move_ids, context=context)
             self.message_post(cr, uid, [st.id], body=_('Statement %s confirmed, journal items were created.') % (st.name,), context=context)
+            
+            lines_to_statement = [(4, lid.id) for lid in st.line_ids]
+            self.write(cr, uid, ids, {'line_ids':lines_to_statement})
+            
+            self.balance_check(cr, uid, st.id, journal_type=j_type, context=context)
+                        
         self.link_bank_to_partner(cr, uid, ids, context=context)
         return self.write(cr, uid, ids, {'state': 'confirm', 'closing_date': time.strftime("%Y-%m-%d %H:%M:%S")}, context=context)
             

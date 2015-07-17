@@ -2,6 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2010 Eynes - Ingeniería del software All Rights Reserved
+#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
