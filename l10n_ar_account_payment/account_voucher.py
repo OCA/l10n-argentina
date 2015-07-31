@@ -298,7 +298,7 @@ class account_voucher(models.Model):
                 'number': name,
             })
             if voucher.journal_id.entry_posted:
-                move_pool.post([move_id])
+                move_recordset.post()
             # We automatically reconcile the account move lines.
             reconcile = False
             for rec_ids in rec_list_ids:
