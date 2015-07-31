@@ -11,5 +11,3 @@
 "access_denomination_account_accountant","invoice.denomination account_accountant","l10n_ar_point_of_sale.model_invoice_denomination","account.group_account_user",1,1,0,0
 "access_denomination_account_invoice","invoice.denomination account_invoice","l10n_ar_point_of_sale.model_invoice_denomination","account.group_account_invoice",1,1,1,1
 "access_denomination_account_manager","invoice.denomination account_manager","l10n_ar_point_of_sale.model_invoice_denomination","account.group_account_manager",1,1,1,1
-
-
