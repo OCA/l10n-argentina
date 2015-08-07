@@ -34,10 +34,6 @@ class sale_order(models.Model):
 
         pos_ar_obj = self.pool.get('pos.ar')
         
-        if not order.fiscal_position :
-            raise osv.except_osv( _('Error'),
-                                  _('Check the Fiscal Position Configuration')) 
-        
         res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order.warehouse_id.id), ('denomination_id', '=', denom_id)])
         if not len(res_pos):
             raise osv.except_osv( _('Error'),
@@ -51,7 +47,13 @@ class sale_order(models.Model):
         invoice_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
 
         # Denominacion
+        
+        if not order.fiscal_position :
+            raise osv.except_osv( _('Error'),
+                                  _('Check the Fiscal Position Configuration')) 
+        
         denom_id = order.fiscal_position.denomination_id
+     
         pos_ar_id = self._get_pos_ar(cr, uid, order, denom_id.id, context=context)
 
         inv_obj = self.pool.get('account.invoice')
