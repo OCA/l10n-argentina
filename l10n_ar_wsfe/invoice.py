@@ -240,8 +240,11 @@ class account_invoice(models.Model):
             detalle = {}
 
             fiscal_position = inv.fiscal_position
-            doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
-            doc_num = inv.partner_id.vat or '0'
+            # Si es un contacto, tomamos el partner que es el que tiene la informacion contable
+            partner_id = inv.partner_id.parent_id and inv.partner_id.parent_id or inv.partner_id
+
+            doc_type = partner_id.document_type_id and partner_id.document_type_id.afip_code or '99'
+            doc_num = partner_id.vat or '0'
 
             # Chequeamos si el concepto es producto, servicios o productos y servicios
             product_service = [l.product_id and l.product_id.type or 'consu' for l in inv.invoice_line]
@@ -261,7 +264,7 @@ class account_invoice(models.Model):
 
             if not fiscal_position:
                 raise except_orm(_('Customer Configuration Error'),
-                                     _('There is no fiscal position configured for the customer %s') % inv.partner_id.name)
+                                     _('There is no fiscal position configured for the customer %s') % partner_id.name)
 
             # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
             # cuenta que inv.number == 000X-00000NN o algo similar.
@@ -347,8 +350,8 @@ class account_invoice(models.Model):
             # de redondeo
             prec = obj_precision.precision_get('Account')
             if round(importe_total, prec) != round(inv.amount_total, prec):
-                raise except_orm(_('Error in amount_total!'), _("The total amount of the invoice does not corresponds to the total calculated."
-                                                                    "Maybe there is an rounding error!. (Amount Calculated: %f)") % (importe_total))
+                raise except_orm(_('Error in amount_total!'), _("The total amount of the invoice for %s does not corresponds to the total calculated."
+                                                                    "Maybe there is an rounding error!. (Amount Calculated: %f)") % (inv.partner_id.name, importe_total))
 
             # Detalle del array de IVA
             detalle['Iva'] = iva_array
@@ -455,10 +458,13 @@ class account_invoice(models.Model):
                     # Escribimos en el log del cliente web
                     #self.log(cr, uid, inv.id, msg, context)
 
+                # Si es un contacto, tomamos el partner que es el que tiene la informacion contable
+                partner_id = inv.partner_id.parent_id and inv.partner_id.parent_id or inv.partner_id
+
                 # Chequeamos que se corresponda con la factura que enviamos a validar
-                doc_type = inv.partner_id.document_type_id and inv.partner_id.document_type_id.afip_code or '99'
+                doc_type = partner_id.document_type_id and partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
-                doc_num = comp['DocNro'] == int(inv.partner_id.vat)
+                doc_num = comp['DocNro'] == int(partner_id.vat)
                 cbte = True
                 if inv.internal_number:
                     cbte = comp['CbteHasta'] == int(inv.internal_number.split('-')[1])
