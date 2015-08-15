@@ -3,56 +3,56 @@
   <data noupdate="1">
 
   <!-- Retenciones Tax Code -->
-  <record id="retencion_iva_sufrida" model="account.tax.code">
+  <record id="retencion_iva_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion IVA Sufrida (Cobros)</field>
     <field name="code">501</field>
     <!--<field name="parent_id" ref="retencion_iva"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_iva_efectuada" model="account.tax.code">
+  <record id="retencion_iva_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion IVA Efectuada (Pagos)</field>
     <field name="code">502</field>
     <!--<field name="parent_id" ref="retencion_iva"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_iibb_caba_sufrida" model="account.tax.code">
+  <record id="retencion_iibb_caba_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion IIBB CABA Sufrida (Cobros)</field>
     <field name="code">503</field>
     <!--<field name="parent_id" ref="retencion_iibb"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_iibb_caba_efectuada" model="account.tax.code">
+  <record id="retencion_iibb_caba_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion IIBB CABA Efectuada (Pagos)</field>
     <field name="code">504</field>
     <!--<field name="parent_id" ref="retencion_iibb"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_ganancias_sufrida" model="account.tax.code">
+  <record id="retencion_ganancias_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion Ganancias Sufrida (Cobros)</field>
     <field name="code">505</field>
     <!--<field name="parent_id" ref="retencion_ganancias"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_ganancias_efectuada" model="account.tax.code">
+  <record id="retencion_ganancias_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion Ganancias Efectuada (Pagos)</field>
     <field name="code">506</field>
     <!--<field name="parent_id" ref="retencion_ganancias"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_suss_sufrida" model="account.tax.code">
+  <record id="retencion_suss_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion SUSS Sufrida (Cobros)</field>
     <field name="code">507</field>
     <!--<field name="parent_id" ref="retencion_ganancias"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="retencion_suss_efectuada" model="account.tax.code">
+  <record id="retencion_suss_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Retencion SUSS Efectuada (Pagos)</field>
     <field name="code">508</field>
     <!--<field name="parent_id" ref="retencion_ganancias"/>-->
@@ -60,70 +60,70 @@
   </record>
 
   <!-- Operaciones con Retencion -->
-  <record id="operaciones_con_retencion_sufrida" model="account.tax.code">
+  <record id="operaciones_con_retencion_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion Sufrida</field>
     <field name="code">600</field>
     <!--<field name="parent_id" ref="l10n_ar_chart_of_account.vat_code_chart_root"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_efectuada" model="account.tax.code">
+  <record id="operaciones_con_retencion_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion Efectuada</field>
     <field name="code">700</field>
     <!--<field name="parent_id" ref="l10n_ar_chart_of_account.vat_code_chart_root"/>-->
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_iva_sufrida" model="account.tax.code">
+  <record id="operaciones_con_retencion_iva_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion IVA Sufrida</field>
     <field name="code">601</field>
     <field name="parent_id" ref="operaciones_con_retencion_sufrida"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_iva_efectuada" model="account.tax.code">
+  <record id="operaciones_con_retencion_iva_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion IVA Efectuada</field>
     <field name="code">701</field>
     <field name="parent_id" ref="operaciones_con_retencion_efectuada"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_iibb_caba_sufrida" model="account.tax.code">
+  <record id="operaciones_con_retencion_iibb_caba_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion IIBB CABA Sufrida</field>
     <field name="code">602</field>
     <field name="parent_id" ref="operaciones_con_retencion_sufrida"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_iibb_caba_efectuada" model="account.tax.code">
+  <record id="operaciones_con_retencion_iibb_caba_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion IIBB CABA Efectuada</field>
     <field name="code">702</field>
     <field name="parent_id" ref="operaciones_con_retencion_efectuada"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_ganancias_sufrida" model="account.tax.code">
+  <record id="operaciones_con_retencion_ganancias_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion Ganancias Sufrida</field>
     <field name="code">603</field>
     <field name="parent_id" ref="operaciones_con_retencion_sufrida"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_ganancias_efectuada" model="account.tax.code">
+  <record id="operaciones_con_retencion_ganancias_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion Ganancias Efectuada</field>
     <field name="code">703</field>
     <field name="parent_id" ref="operaciones_con_retencion_efectuada"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_suss_sufrida" model="account.tax.code">
+  <record id="operaciones_con_retencion_suss_sufrida" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion SUSS Sufrida</field>
     <field name="code">604</field>
     <field name="parent_id" ref="operaciones_con_retencion_sufrida"/>
     <field name="sign">1.0</field>
   </record>
 
-  <record id="operaciones_con_retencion_suss_efectuada" model="account.tax.code">
+  <record id="operaciones_con_retencion_suss_efectuada" model="account.tax.code" forcecreate="0">
     <field name="name">Operaciones con Retencion SUSS Efectuada</field>
     <field name="code">704</field>
     <field name="parent_id" ref="operaciones_con_retencion_efectuada"/>
@@ -132,7 +132,7 @@
 
   <!-- Retenciones Accounts -->
   <!-- Cuenta de retencion de iva efectuada al momento de pagar a un proveedor -->
-  <record id="retencion_iva_a_depositar" model="account.account">
+  <record id="retencion_iva_a_depositar" model="account.account" forcecreate="0">
     <field name="code">212051</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
@@ -142,7 +142,7 @@
   </record>
 
   <!-- Cuenta de retencion de iva sufrida al momento de cobrar a un cliente -->
-  <record id="retencion_iva" model="account.account">
+  <record id="retencion_iva" model="account.account" forcecreate="0">
     <field name="code">114051</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('code', '=', '114*')]"/> <!-- Otros Creditos -->
@@ -152,7 +152,7 @@
   </record>
 
   <!-- Cuenta de retencion de iibb efectuada al momento de pagar a un proveedor -->
-  <record id="retencion_iibb_caba_a_depositar" model="account.account">
+  <record id="retencion_iibb_caba_a_depositar" model="account.account" forcecreate="0">
     <field name="code">212052</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
@@ -162,7 +162,7 @@
   </record>
 
   <!-- Cuenta de retencion de iibb sufrida al momento de cobrar a un cliente -->
-  <record id="retencion_iibb_caba" model="account.account">
+  <record id="retencion_iibb_caba" model="account.account" forcecreate="0">
     <field name="code">114052</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('code', '=', '114*')]"/>
@@ -172,7 +172,7 @@
   </record>
 
   <!-- Cuenta de retencion de ganancias efectuada al momento de pagar a un proveedor -->
-  <record id="retencion_ganancias_a_depositar" model="account.account">
+  <record id="retencion_ganancias_a_depositar" model="account.account" forcecreate="0">
     <field name="code">212053</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
@@ -182,7 +182,7 @@
   </record>
 
   <!-- Cuenta de retencion de ganancias sufrida al momento de cobrar a un cliente -->
-  <record id="retencion_ganancias" model="account.account">
+  <record id="retencion_ganancias" model="account.account" forcecreate="0">
     <field name="code">114053</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('code', '=', '114*')]"/>
@@ -192,7 +192,7 @@
   </record>
 
   <!-- Cuenta de retencion de suss efectuada al momento de pagar a un proveedor -->
-  <record id="retencion_suss_a_depositar" model="account.account">
+  <record id="retencion_suss_a_depositar" model="account.account" forcecreate="0">
     <field name="code">212054</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
@@ -202,7 +202,7 @@
   </record>
 
   <!-- Cuenta de retencion de suss sufrida al momento de cobrar a un cliente -->
-  <record id="retencion_suss" model="account.account">
+  <record id="retencion_suss" model="account.account" forcecreate="0">
     <field name="code">114054</field>
     <field name="reconcile" eval="False"/>
     <field name="parent_id" search="[('code', '=', '114*')]"/>
@@ -212,7 +212,7 @@
   </record>
 
   <!-- Retenciones Taxes -->
-  <record id="tax_retencion_iva_sufrida" model="account.tax">
+  <record id="tax_retencion_iva_sufrida" model="account.tax" forcecreate="0">
     <field name="name">Retencion IVA Sufrida</field>
     <field name="description">Retencion IVA Sufrida</field>
     <field name="sequence">30</field>
@@ -233,7 +233,7 @@
     <field name="type_tax_use">sale</field>
   </record>
 
-  <record id="tax_retencion_iva_efectuada" model="account.tax">
+  <record id="tax_retencion_iva_efectuada" model="account.tax" forcecreate="0">
     <field name="name">Retencion IVA Efectuada</field>
     <field name="description">Retencion IVA Efectuada</field>
     <field name="sequence">30</field>
@@ -254,7 +254,7 @@
     <field name="type_tax_use">purchase</field>
   </record>
 
-  <record id="tax_retencion_iibb_caba_sufrida" model="account.tax">
+  <record id="tax_retencion_iibb_caba_sufrida" model="account.tax" forcecreate="0">
     <field name="name">Retencion IIBB CABA Sufrida</field>
     <field name="description">Ret IIBB CABA Sufrida</field>
     <field name="sequence">31</field>
@@ -275,7 +275,7 @@
     <field name="type_tax_use">sale</field>
   </record>
 
-  <record id="tax_retencion_iibb_caba_efectuada" model="account.tax">
+  <record id="tax_retencion_iibb_caba_efectuada" model="account.tax" forcecreate="0">
     <field name="name">Retencion IIBB CABA Efectuada</field>
     <field name="description">Retencion IIBB CABA Efectuada</field>
     <field name="sequence">31</field>
@@ -296,7 +296,7 @@
     <field name="type_tax_use">purchase</field>
   </record>
 
-  <record id="tax_retencion_ganancias_sufrida" model="account.tax">
+  <record id="tax_retencion_ganancias_sufrida" model="account.tax" forcecreate="0">
     <field name="name">Retencion Ganancias Sufrida</field>
     <field name="description">Retenciones Ganancias Sufrida</field>
     <field name="sequence">34</field>
@@ -317,7 +317,7 @@
     <field name="type_tax_use">sale</field>
   </record>
 
-  <record id="tax_retencion_ganancias_efectuada" model="account.tax">
+  <record id="tax_retencion_ganancias_efectuada" model="account.tax" forcecreate="0">
     <field name="name">Retenciones Ganancias Efectuada</field>
     <field name="description">Retenciones Ganancias Efectuada</field>
     <field name="sequence">35</field>
@@ -338,7 +338,7 @@
     <field name="type_tax_use">purchase</field>
   </record>
 
-  <record id="tax_retencion_suss_sufrida" model="account.tax">
+  <record id="tax_retencion_suss_sufrida" model="account.tax" forcecreate="0">
     <field name="name">Retencion SUSS Sufrida</field>
     <field name="description">Retenciones SUSS Sufrida</field>
     <field name="sequence">34</field>
@@ -359,7 +359,7 @@
     <field name="type_tax_use">sale</field>
   </record>
 
-  <record id="tax_retencion_suss_efectuada" model="account.tax">
+  <record id="tax_retencion_suss_efectuada" model="account.tax" forcecreate="0">
     <field name="name">Retenciones SUSS Efectuada</field>
     <field name="description">Retenciones SUSS Efectuada</field>
     <field name="sequence">35</field>
@@ -381,49 +381,49 @@
   </record>
 
   <!-- Configuracion de Retenciones (retention.retention) -->
-  <record id="retention_retention_iva_sufrida" model="retention.retention">
+  <record id="retention_retention_iva_sufrida" model="retention.retention" forcecreate="0">
     <field name="name">Retencion IVA Sufrida</field>
     <field name="type">vat</field>
     <field name="tax_id" ref="tax_retencion_iva_sufrida" />
   </record>
 
-  <record id="retention_retention_iva_efectuada" model="retention.retention">
+  <record id="retention_retention_iva_efectuada" model="retention.retention" forcecreate="0">
     <field name="name">Retencion IVA Efectuada</field>
     <field name="type">vat</field>
     <field name="tax_id" ref="tax_retencion_iva_efectuada" />
   </record>
 
-  <record id="retention_retention_iibb_caba_sufrida" model="retention.retention">
+  <record id="retention_retention_iibb_caba_sufrida" model="retention.retention" forcecreate="0">
     <field name="name">Retencion IIBB CABA Sufrida</field>
     <field name="type">gross_income</field>
     <field name="tax_id" ref="tax_retencion_iibb_caba_sufrida" />
   </record>
 
-  <record id="retention_retention_iibb_caba_efectuada" model="retention.retention">
+  <record id="retention_retention_iibb_caba_efectuada" model="retention.retention" forcecreate="0">
     <field name="name">Retencion IIBB CABA Efectuada</field>
     <field name="type">gross_income</field>
     <field name="tax_id" ref="tax_retencion_iibb_caba_efectuada" />
   </record>
 
-  <record id="retention_retention_ganancias_sufrida" model="retention.retention">
+  <record id="retention_retention_ganancias_sufrida" model="retention.retention" forcecreate="0">
     <field name="name">Retencion Ganancias Sufrida</field>
     <field name="type">profit</field>
     <field name="tax_id" ref="tax_retencion_ganancias_sufrida" />
   </record>
 
-  <record id="retention_retention_ganancias_efectuada" model="retention.retention">
+  <record id="retention_retention_ganancias_efectuada" model="retention.retention" forcecreate="0">
     <field name="name">Retencion Ganancias Efectuada</field>
     <field name="type">profit</field>
     <field name="tax_id" ref="tax_retencion_ganancias_efectuada" />
   </record>
 
-  <record id="retention_retention_suss_sufrida" model="retention.retention">
+  <record id="retention_retention_suss_sufrida" model="retention.retention" forcecreate="0">
     <field name="name">Retencion SUSS Sufrida</field>
     <field name="type">other</field>
     <field name="tax_id" ref="tax_retencion_suss_sufrida" />
   </record>
 
-  <record id="retention_retention_suss_efectuada" model="retention.retention">
+  <record id="retention_retention_suss_efectuada" model="retention.retention" forcecreate="0">
     <field name="name">Retencion SUSS Efectuada</field>
     <field name="type">other</field>
     <field name="tax_id" ref="tax_retencion_suss_efectuada" />
