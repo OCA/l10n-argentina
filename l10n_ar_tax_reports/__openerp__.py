@@ -37,7 +37,7 @@
         "security/ir.model.access.csv",
         # "tax_report.xml",
         "tax_report_config_view.xml",
-        "wizard/account_tax_subjournal_view.xml",
+        #"wizard/account_tax_subjournal_view.xml",
     ],
     'demo_xml': [],
     'installable': True,
