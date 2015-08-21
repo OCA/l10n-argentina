@@ -50,5 +50,6 @@
     'test': [
     ],
     'active': False,
+    'application': True,
     'installable': True,
 }

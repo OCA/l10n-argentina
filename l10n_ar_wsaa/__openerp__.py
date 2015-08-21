@@ -46,7 +46,8 @@ python-m2crypto
     ],
     'demo': [
         'wsaa_demo.xml',
-        ],
+    ],
     'installable': True,
     'active': False,
+    'application': True,
 }

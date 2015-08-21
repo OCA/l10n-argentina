@@ -38,5 +38,6 @@
         "wizard/create_checkbook_view.xml"
     ],
     "active": False,
-    "installable": True
+    "installable": True,
+    'application': True,
 }

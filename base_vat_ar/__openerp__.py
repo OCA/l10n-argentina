@@ -41,8 +41,9 @@
     'update_xml': [
         'partner_view.xml',
         'partner_data.xml',
-        ],
+    ],
     'demo_xml': [],
     'installable': True,
+    'application': True,
     'active': False,
 }

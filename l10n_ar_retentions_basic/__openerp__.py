@@ -21,7 +21,8 @@
 {
     "name": "Retentions for ARGENTINA (Retenciones)",
     "version": "1.0",
-    "depends": ["base", "account", "account_accountant", "sale", "purchase", "account_voucher", "l10n_ar_account_payment", "l10n_ar_account_check"],
+    "depends": ["base", "account", "account_accountant", "sale", "purchase", "account_voucher",
+                "l10n_ar_account_payment", "l10n_ar_account_check"],
     "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -42,4 +43,5 @@
     'demo_xml': [],
     'installable': True,
     'active': False,
+    'application': True,
 }

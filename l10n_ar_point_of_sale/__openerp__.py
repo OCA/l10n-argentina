@@ -23,7 +23,7 @@
 {
     "name": "Point of Sale ARGENTINA",
     "version": "1.1",
-    "depends": ["base", "sale" ,"purchase", "account" , "account_accountant", "base_vat_ar" ],
+    "depends": ["base", "sale", "purchase", "account", "account_accountant", "base_vat_ar"],
     "author": "E-MIPS/Proyecto Aconcagua,Odoo Community Association (OCA)",
     "website": "http://proyectoaconcagua.com.ar",
     "license": "GPL-3",
@@ -42,10 +42,11 @@
     ],
     'demo': [
         #'partner_demo.xml',
-        ],
+    ],
     'test': [
         #'test/denomination_invoice.yml',
     ],
     'installable': True,
     'active': False,
+    'application': True,
 }

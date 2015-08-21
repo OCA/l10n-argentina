@@ -21,7 +21,8 @@
 {
     "name": "WSFE Perceptions",
     "version": "1.0",
-    "depends": ["base", "l10n_ar_point_of_sale", "l10n_ar_perceptions_basic", "l10n_ar_perceptions", "l10n_ar_wsfe" ],
+    "depends": ["base", "l10n_ar_point_of_sale", "l10n_ar_perceptions_basic",
+                "l10n_ar_perceptions", "l10n_ar_wsfe"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -30,10 +31,11 @@
     This module adds Perceptions to the detail of Electronic Invoice.
     """,
     "init_xml": [
-        ],
+    ],
     'update_xml': [
     ],
     'demo_xml': [],
     'installable': True,
     'active': False,
+    'application': True,
 }

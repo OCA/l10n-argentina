@@ -20,24 +20,24 @@
 #
 ##############################################################################
 {
-        "name" : "Cash Register",
-        "version" : "1.0",
-        "author" : "Eynes",
-        "website" : "http://www.eynes.com.ar",
-        "category" : "account",
-        "description": """""",
-        "depends" : [
-                'base',
-                'account_voucher',
-                'l10n_ar_account_payment',
-            ],
-        "init_xml" : [],
-        "data" : [
-                'payment_mode_receipt_view.xml',
-                'cash_statement_view.xml',
-                'wizard/pos_box.xml',
-            ],
-        "installable": True,
-        'active': False
+    "name": "Cash Register",
+    "version": "1.0",
+    "author": "Eynes",
+    "website": "http://www.eynes.com.ar",
+    "category": "account",
+    "description": """""",
+    "depends": [
+            'base',
+            'account_voucher',
+            'l10n_ar_account_payment',
+    ],
+    "init_xml": [],
+    "data": [
+            'payment_mode_receipt_view.xml',
+            'cash_statement_view.xml',
+            'wizard/pos_box.xml',
+    ],
+    "installable": True,
+    'application': True,
+    'active': False
 }
- 
