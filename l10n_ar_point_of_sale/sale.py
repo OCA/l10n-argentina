@@ -41,7 +41,6 @@ class sale_order(models.Model):
 
     @api.model
     def _make_invoice(self, order, lines):
-        import ipdb; ipdb.set_trace()
         invoice_id = super(sale_order, self)._make_invoice(order, lines)
 
         # Denominacion
