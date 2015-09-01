@@ -29,37 +29,35 @@ class sale_order(models.Model):
     _name = "sale.order"
     _inherit = "sale.order"
 
-    @api.v7
-    def _get_pos_ar(self, cr, uid, order, denom_id, context=None):
-
-        pos_ar_obj = self.pool.get('pos.ar')
-        
-        res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', order.warehouse_id.id), ('denomination_id', '=', denom_id)])
+    @api.model
+    def _get_pos_ar(self, order, denom):
+        pos_ar_obj = self.env['pos.ar']
+        res_pos = pos_ar_obj.search([('shop_id', '=', order.warehouse_id.id), ('denomination_id', '=', denom.id)], limit=1)
         if not len(res_pos):
-            raise osv.except_osv( _('Error'),
-                                  _('You need to set up a Shop and/or a Fiscal Position')) 
+            raise osv.except_osv(_('Error'),
+                                 _('You need to set up a Shop and/or a Fiscal Position'))
 
-        return res_pos[0]
+        return res_pos
 
-    @api.v7
-    def _make_invoice(self, cr, uid, order, lines, context=None):
-
-        invoice_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
+    @api.model
+    def _make_invoice(self, order, lines):
+        import ipdb; ipdb.set_trace()
+        invoice_id = super(sale_order, self)._make_invoice(order, lines)
 
         # Denominacion
-        
-        if not order.fiscal_position :
-            raise osv.except_osv( _('Error'),
-                                  _('Check the Fiscal Position Configuration')) 
-        
-        denom_id = order.fiscal_position.denomination_id
-     
-        pos_ar_id = self._get_pos_ar(cr, uid, order, denom_id.id, context=context)
+        if not order.fiscal_position:
+            raise osv.except_osv(_('Error'),
+                                 _('Check the Fiscal Position Configuration'))
 
-        inv_obj = self.pool.get('account.invoice')
-        vals = {'denomination_id' : denom_id.id , 'pos_ar_id': pos_ar_id }
-        #escribo en esa invoice y retorno su id como debe ser
-        inv_obj.write(cr, uid, invoice_id, vals)
+        denom = order.fiscal_position.denomination_id
+
+        pos_ar = self._get_pos_ar(order, denom)
+
+        inv_obj = self.env['account.invoice']
+        vals = {'denomination_id': denom.id, 'pos_ar_id': pos_ar.id}
+        # escribo en esa invoice y retorno su id como debe ser
+        invoice = inv_obj.browse(invoice_id)
+        invoice.write(vals)
 
         return invoice_id
 
