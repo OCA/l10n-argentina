@@ -37,12 +37,12 @@
         This module modify this, getting the country from the partner itself (the ISO Code has
         to be well defined) and if this is not defined, the original routine is executed.
     """,
-    "init_xml": [],
-    'update_xml': [
+    'data': [
         'partner_view.xml',
         'partner_data.xml',
+        'security/ir.model.access.csv',
         ],
-    'demo_xml': [],
+    'demo': [],
     'installable': True,
     'active': False,
 }

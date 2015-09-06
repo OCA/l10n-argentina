@@ -32,7 +32,7 @@
         Este módulo nos permite facturar de forma electrónica a través del Servicio Web
         que publica la AFIP.
     """,
-    'update_xml': [
+    'data': [
         'wsfe_data.xml',
         'wsfe_view.xml',
         'account_invoice_view.xml',
@@ -40,14 +40,11 @@
         'wizard/wsfe_sinchronize_voucher_view.xml',
         'security/ir.model.access.csv',
     ],
-    'init_xml': [
-        # 'wsfe_demo.xml',
-    ],
     'test': [
-        'test/invoice_customer.yml',
-        'test/refund_customer.yml',
-        'test/invoice_supplier.yml',
-        'test/invoice_massive.yml',
+#        'test/invoice_customer.yml',
+#        'test/refund_customer.yml',
+#        'test/invoice_supplier.yml',
+#        'test/invoice_massive.yml',
     ],
     'installable': True,
     'active': False,
