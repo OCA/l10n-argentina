@@ -249,7 +249,7 @@ class WSFEv1:
             res['events'] = events
 
         if 'ResultGet' in result:
-            res['response'] = result.ResultGet.PtoVta
+            res['response'] = result.ResultGet.PtoVenta
 
         # Retornamos
         return res
