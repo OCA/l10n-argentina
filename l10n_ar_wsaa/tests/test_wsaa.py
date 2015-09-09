@@ -21,11 +21,9 @@
 #
 ##############################################################################
 
-import unittest2
 import mock
 import common
 from openerp.tests.common import TransactionCase
-from datetime import datetime, timedelta, date
 from openerp import SUPERUSER_ID
 
 class TestWSAA(TransactionCase):

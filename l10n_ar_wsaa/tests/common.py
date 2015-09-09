@@ -58,7 +58,7 @@ class WSAA_Client(ClientMock):
         <destination>C=ar, O=emips, SERIALNUMBER=CUIT 30710981295, CN=emips</destination>
         <uniqueId>1211656281</uniqueId>
         <generationTime>2015-09-06T15:58:33.806-03:00</generationTime>
-        <expirationTime>2015-09-07T03:58:33.806-03:00</expirationTime>
+        <expirationTime>2015-10-07T03:58:33.806-03:00</expirationTime>
     </header>
     <credentials>
            <token>token_test</token>
