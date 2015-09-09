@@ -18,6 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp import api
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 from openerp.addons import decimal_precision as dp
@@ -61,6 +62,7 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         'infook': lambda *a: False,
     }
 
+    @api.v7
     def onchange_voucher(self, cr, uid, ids, voucher_type, pos_id, voucher_number, context=None):
 
         if not context:
@@ -155,7 +157,7 @@ class wsfe_sinchronize_voucher(osv.osv_memory):
         else:
             ref = reference
 
-        inv_obj._update_reference(cr, uid, inv, ref, context)
+        inv._update_reference(ref)
 
         # Llamamos al workflow para que siga su curso
         wf_service.trg_validate(uid, 'account.invoice', inv.id, 'invoice_massive_open', cr)

@@ -214,20 +214,16 @@ class wsfe_config(models.Model):
         last = res['response'].CbteNro
         return last
 
-    @api.model
+    @api.v7
     def get_voucher_info(self, cr, uid, ids, pos, voucher_type, number, context={}):
-        self.ensure_one()
-
-        conf = self
+        conf = self.browse(cr, uid, ids, context=context)
         token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_comp_consultar(pos, voucher_type, number)
 
-        self.check_errors(res)
-        self.check_observations(res)
-        #last = res['response'].CbteNro
-
+        # Chequeamos si hay errores
+        self.check_errors(cr, uid, res)
         res = res['response']
 
         result = {
