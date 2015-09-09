@@ -130,6 +130,15 @@ class wsfe_config(models.Model):
 
         return msg
 
+    @api.one
+    def get_server_state(self):
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
+
+        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+        res = _wsfe.fe_dummy()
+        return res
+
     @api.multi
     def get_invoice_CAE(self, pos, voucher_type, details):
         self.ensure_one()
@@ -266,6 +275,10 @@ class wsfe_config(models.Model):
         token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+
+        # DEBUG
+        res = _wsfe.fe_dummy()
+
         res = _wsfe.fe_param_get_tipos_iva()
 
         wsfe_tax_obj = self.env['wsfe.tax.codes']
