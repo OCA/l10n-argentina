@@ -40,6 +40,9 @@
         'wizard/wsfe_sinchronize_voucher_view.xml',
         'security/ir.model.access.csv',
     ],
+    'demo': [
+        'wsfe_demo.xml',
+    ],
     'test': [
 #        'test/invoice_customer.yml',
 #        'test/refund_customer.yml',
