@@ -20,3 +20,4 @@
 ##############################################################################
 import wsfe_massive_validation
 import wsfe_sinchronize_voucher
+import wsfe_massive_sinchronize

@@ -132,33 +132,12 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             raise except_orm(_("WSFE Error"),
                     _("Sinchronize process is not correct!"))
 
-        # Tomamos las facturas y mandamos a realizar los asientos contables primero.
-        invoice.action_move_create()
+        pos = int(self.pos_id.name)
+        number = self.voucher_number
+        date_invoice = self.date_invoice
 
-        invoice_vals = {
-            'internal_number': '%04d-%08d' % (int(self.pos_id.name), self.voucher_number),
-            'date_invoice': self.date_invoice,
-            'cae': self.cae,
-            'cae_due_date': self.cae_due_date,
-        }
-
-        invoice.write(invoice_vals)
-
-        # Escribimos los campos necesarios de la factura
-        invoice.write(invoice_vals)
-
-        invoice_name = invoice.name_get()[0][1]
-        if not invoice.reference:
-            ref = invoice_name
-        else:
-            ref = '%s [%s]' % (invoice_name, invoice.reference)
-
-        # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
-        invoice._update_reference(ref)
-
-        # Llamamos al workflow para que siga su curso
-        invoice.signal_workflow('invoice_massive_open')
-        #wf_service.trg_validate(uid, 'account.invoice', inv.id, 'invoice_massive_open', cr)
+        invoice.wsfe_relate_invoice(pos, number, date_invoice,
+                                    self.cae, self.cae_due_date)
 
         return {'type': 'ir.actions.act_window_close'}
 

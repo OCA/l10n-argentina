@@ -9,6 +9,7 @@ class WSFE_ConfigTest(object):
     """
     @classmethod
     def get_last_voucher(self, pos, voucher_type):
+        #invoices = filter(lambda x: x.state in ('open', 'paid'), test_invoices.values())
         return len(test_invoices)-1
 
     @classmethod

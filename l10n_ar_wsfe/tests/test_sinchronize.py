@@ -23,6 +23,7 @@
 
 import mock
 import time
+import unittest2
 from openerp.tests.common import TransactionCase
 from openerp.addons.l10n_ar_wsfe.tests.common import WSFE_Client, \
                                                      WSFE_ConfigTest, \
@@ -73,12 +74,13 @@ class TestWSFE(TransactionCase):
         self.currency_ars = self.browse_ref("base.ARS")
         self.account_rcv = self.browse_ref("account.a_recv")
         self.product = self.browse_ref("product.product_product_4")
+        test_invoices.clear()
 
     @mock.patch.object(WSFEv1, '_create_client', WSFE_Client._create_client)
     @mock.patch.object(wsfe_config, 'get_last_voucher', WSFE_ConfigTest.get_last_voucher)
     @mock.patch.object(wsfe_config, 'get_invoice_CAE', WSFE_ConfigTest.get_invoice_CAE_approved)
     @mock.patch.object(wsfe_config, 'get_voucher_info', WSFE_ConfigTest.get_voucher_info)
-    def test_voucher_sinchronize_01(self):
+    def test_01_voucher_sinchronize(self):
 
         # Validamos alguna factura
         invoice1 = self.create_invoice(self.partner_agrolait.id, 300)
@@ -86,7 +88,6 @@ class TestWSFE(TransactionCase):
         invoice2 = self.create_invoice(self.partner_agrolait.id, 400)
         invoice2.signal_workflow('invoice_open')
         invoice3 = self.create_invoice(self.partner_agrolait.id, 500)
-        invoice3.signal_workflow('invoice_open')
 
         wiz1 = self.wizard_sinchro.create(dict(
                                 voucher_type=self.voucher_invoice_A.id,
@@ -109,10 +110,32 @@ class TestWSFE(TransactionCase):
         # Y ahora tiene que estar Open
         self.assertEquals(wiz1.invoice_id.state, 'open')
 
-        # la del voucher type
-#        wiz1 = self.wizard_massive_sinchro.create(dict(
-#                                voucher_type=self.voucher_invoice_A.id,
-#                                pos_id=self.pos_demo.id))
-#
-#        # Sincronizamos
-#        wiz1.sinchronize()
+    @mock.patch.object(WSFEv1, '_create_client', WSFE_Client._create_client)
+    @mock.patch.object(wsfe_config, 'get_last_voucher', WSFE_ConfigTest.get_last_voucher)
+    @mock.patch.object(wsfe_config, 'get_invoice_CAE', WSFE_ConfigTest.get_invoice_CAE_approved)
+    @mock.patch.object(wsfe_config, 'get_voucher_info', WSFE_ConfigTest.get_voucher_info)
+    def test_02_voucher_massive_sinchronize(self):
+
+        # Validamos alguna factura
+        invoice1 = self.create_invoice(self.partner_agrolait.id, 400)
+        invoice1.signal_workflow('invoice_open')
+
+        invoice2 = self.create_invoice(self.partner_agrolait.id, 300)
+        invoice3 = self.create_invoice(self.partner_agrolait.id, 200)
+        invoice4 = self.create_invoice(self.partner_asustek.id, 400)
+        invoice5 = self.create_invoice(self.partner_asustek.id, 300)
+
+        # Asserteamos datos
+        self.assertEquals(len(test_invoices), 5)
+        draft_invoices = filter(lambda x: x.state=='draft', test_invoices.values())
+        self.assertEquals(len(draft_invoices), 4)
+
+        wiz1 = self.wizard_massive_sinchro.create(dict(
+                                voucher_type=self.voucher_invoice_A.id,
+                                pos_id=self.pos_demo.id))
+
+        # Sincronizamos
+        wiz1.sinchronize()
+
+        draft_invoices = filter(lambda x: x.state=='draft', test_invoices.values())
+        self.assertEquals(len(draft_invoices), 1)

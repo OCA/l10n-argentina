@@ -38,6 +38,7 @@
         'account_invoice_view.xml',
         'account_invoice_workflow.xml',
         'wizard/wsfe_sinchronize_voucher_view.xml',
+        'wizard/wsfe_massive_sinchronize_view.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [
