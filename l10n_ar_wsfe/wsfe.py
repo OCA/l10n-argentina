@@ -224,8 +224,7 @@ class wsfe_config(models.Model):
         return last
 
     @api.model
-    def get_voucher_info(self, cr, uid, ids, pos, voucher_type, number, context={}):
-        self.ensure_one()
+    def get_voucher_info(self, pos, voucher_type, number):
 
         conf = self
         token, sign = conf.wsaa_ticket_id.get_token_sign()
