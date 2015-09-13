@@ -76,8 +76,10 @@ class wsaa_ta(models.Model):
     ]
 
     @api.model
-    def _renew_ticket(self, wsaa_config, service):
+    def _renew_ticket(self):
 
+        wsaa_config = self.config_id
+        service = self.name.name
         user = self.env['res.users'].browse(SUPERUSER_ID)
         # user = user_obj.browse(cr, SUPERUSER_ID, uid)
         tz = pytz.timezone(user.partner_id.tz) or pytz.utc
@@ -108,8 +110,9 @@ class wsaa_ta(models.Model):
                 if datetime.now() + timedelta(minutes=10) < expiration_time:
                     return ticket.token, ticket.sign
 
-        service = ticket.name.name
-        vals = self._renew_ticket(ticket.config_id, service)
+        #service = ticket.name.name
+        #vals = self._renew_ticket(ticket.config_id, service)
+        vals = self._renew_ticket()
         self.write(vals)
         return vals['token'], vals['sign']
 

@@ -1,8 +1,10 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
+#    Copyright (c) 2015 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2015 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +20,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import wsfe_massive_validation
-import wsfe_sinchronize_voucher
-import wsfe_massive_sinchronize
+
+from . import test_wsaa

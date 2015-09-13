@@ -45,6 +45,7 @@ class WSFEv1:
         self.cuit = cuit
         self.token = token
         self.sign = sign
+        self.client = None
 
         # Creamos el cliente
         self._create_client(token, sign)
@@ -90,7 +91,12 @@ class WSFEv1:
 
     def fe_dummy(self):
         result = self.client.service.FEDummy()
-        return result
+        res = {}
+        res['response'] = {
+                'AppServer': result.AppServer,
+                'DbServer': result.DbServer,
+                'AuthServer': result.AuthServer}
+        return res
 
     def fe_param_get_tipos_cbte(self):
 

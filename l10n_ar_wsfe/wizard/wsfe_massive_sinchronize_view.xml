@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_wsfe_massive_sinchronize" model="ir.ui.view">
+            <field name="name">WSFE Massive Sinchronize</field>
+            <field name="model">wsfe.massive.sinchronize</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="WSFE Massive Sinchronize">
+                    <group>
+                        <group>
+                            <field name="voucher_type" widget="selection"/>
+                            <field name="pos_id" widget="selection"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="sinchronize" string="Sichronize" type="object" class="oe_highlight"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_wsfe_massive_sinchronize" model="ir.actions.act_window">
+             <field name="name">WSFE Massive Sinchronize</field>
+             <field name="res_model">wsfe.massive.sinchronize</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="view_wsfe_massive_sinchronize"/>
+             <field name="context">{}</field>
+             <field name="target">new</field>
+       </record>
+
+		<menuitem id="wsfe_massive_sinchronize" name="Massive Sinchronize" parent="l10n_ar_wsaa.base_afipws" sequence="40" action="action_wsfe_massive_sinchronize"/>
+
+    </data>
+</openerp>
