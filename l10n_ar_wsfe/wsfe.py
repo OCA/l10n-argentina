@@ -232,8 +232,10 @@ class wsfe_config(models.Model):
         _wsfe = wsfe(conf.cuit, token, sign, conf.url)
         res = _wsfe.fe_comp_consultar(pos, voucher_type, number)
 
-        # Chequeamos si hay errores
-        self.check_errors(cr, uid, res)
+        self.check_errors(res)
+        self.check_observations(res)
+        #last = res['response'].CbteNro
+
         res = res['response']
 
         result = {
