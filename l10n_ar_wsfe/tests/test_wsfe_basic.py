@@ -53,7 +53,4 @@ class TestWSFE(TransactionCase):
     @mock.patch.object(WSFEv1, 'fe_dummy', WSFE_Client.fe_dummy)
     @mock.patch.object(WSFEv1, '_create_client', WSFE_Client._create_client)
     def test_dummy(self):
-        import ipdb
-        ipdb.set_trace()
         res = self.wsfe_demo.get_server_state()
-        print res

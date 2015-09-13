@@ -22,3 +22,4 @@
 ##############################################################################
 
 from . import test_wsfe_basic
+from . import test_sinchronize
