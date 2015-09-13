@@ -48,7 +48,7 @@
             <field name="name">0001</field>
             <field name="desc">A0001</field>
             <field name="priority">10</field>
-            <field name="shop_id" ref="sale.sale_shop_1"/>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
             <field name="denomination_id" ref="denomination_A"/>
         </record>
 
@@ -56,8 +56,12 @@
             <field name="name">0001</field>
             <field name="desc">B0001</field>
             <field name="priority">10</field>
-            <field name="shop_id" ref="sale.sale_shop_1"/>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
             <field name="denomination_id" ref="denomination_B"/>
+        </record>
+
+        <record id="base.main_company" model="res.company">
+            <field name="currency_id" ref="base.ARS"/>
         </record>
 
     </data>
