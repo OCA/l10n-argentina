@@ -34,7 +34,7 @@ class TestWSAA(TransactionCase):
         self.wsaa_ta = self.env['wsaa.ta']
 
         self.wsaa_demo = self.browse_ref("l10n_ar_wsaa.wsaa_config_demo")
-        self.wsaa_service = self.browse_ref("l10n_ar_wsfe.afipws_service_wsfe")
+        self.wsaa_service = self.browse_ref("l10n_ar_wsaa.afipws_service_wsaa_test")
         user = self.env['res.users'].browse(SUPERUSER_ID)
         partner_id = user.partner_id
         partner_id.tz = 'America/Argentina/Buenos_Aires'
