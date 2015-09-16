@@ -383,6 +383,14 @@ class invoice(models.Model):
                         res['value'].update({'local': fiscal_position.local,
                                              'denomination_id': denomination_id,
                                              'pos_ar_id': pos[0]})
+        
+        else:
+            res['value'].update({
+                'local': False,
+                'denomination_id': False,
+                'pos_ar_id': False,
+            })
+        
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
