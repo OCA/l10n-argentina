@@ -10,6 +10,7 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="number" position="replace"/>
+                    <field name="internal_number" position="replace"/>
                     <field name="type" position="before">
                         <label for="internal_number" class="oe_edit_only" string="Invoice Number"/>
                         <h2>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="partner_bank_check_1" model="res.partner.bank">
+            <field name="name">Check Account Bank</field>
+            <field name="acc_number">123123123</field>
+            <field name="partner_id" ref="base.main_partner"></field>
+            <field name="state">bank</field>
+            <field name="account_id" ref="account.bnk"/>
+            <field name="bank" ref="base.res_bank_1"/>
+        </record>
+
+    </data>
+</openerp>

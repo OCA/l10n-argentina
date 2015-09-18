@@ -131,7 +131,6 @@ class account_voucher(osv.osv):
 
         return True
 
-
     def create_move_line_hook(self, cr, uid, voucher_id, move_id, move_lines, context={}):
         return move_lines
 

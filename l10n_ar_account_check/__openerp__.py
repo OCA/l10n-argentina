@@ -36,9 +36,7 @@
         'account_voucher',
         'l10n_ar_account_payment'
     ],
-    'init_xml': [],
-    'demo_xml': [],
-    'update_xml': [
+    'data': [
         'security/ir.model.access.csv',
         'wizard/add_checks_view.xml',
         'wizard/view_check_deposit.xml',
@@ -46,6 +44,9 @@
         'account_voucher_view.xml',
         'wizard/view_check_reject.xml',
         'partner_view.xml',
+    ],
+    'demo': [
+        'account_check_demo.xml',
     ],
     'test': [
     ],

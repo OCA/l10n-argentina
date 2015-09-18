@@ -275,7 +275,9 @@
                                 <field name="deposit_slip"/>
                             </group>
                         </group>
-                        <group string="Other Information">
+                        <notebook>
+                            <page string="Other Information">
+                        <group>
                             <group>
                                 <field name="bank_id"/>
                                 <field name="origin"/>
@@ -289,6 +291,8 @@
                                 <field name="deposit_bank_id" attrs="{'invisible': [('state', 'not in', ('deposited', 'rejected'))]}" />
                             </group>
                        </group>
+                       </page>
+                       </notebook>
                        <group string="Additional Information">
                        <div class="oe_clear"/>
                        <field name="note" colspan="4" nolabel="1" placeholder="Additional Information..."/>
