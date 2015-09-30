@@ -121,7 +121,7 @@ class TestWSFE(TransactionCase):
         invoice1.signal_workflow('invoice_open')
 
         invoice2 = self.create_invoice(self.partner_agrolait.id, 300)
-        invoice3 = self.create_invoice(self.partner_agrolait.id, 200)
+        invoice3 = self.create_invoice(self.partner_agrolait.id, 300)
         invoice4 = self.create_invoice(self.partner_asustek.id, 400)
         invoice5 = self.create_invoice(self.partner_asustek.id, 300)
 
@@ -135,7 +135,7 @@ class TestWSFE(TransactionCase):
                                 pos_id=self.pos_demo.id))
 
         # Sincronizamos
-        wiz1.sinchronize()
+        wiz1.with_context(commit=False).sinchronize()
 
         draft_invoices = filter(lambda x: x.state=='draft', test_invoices.values())
         self.assertEquals(len(draft_invoices), 1)

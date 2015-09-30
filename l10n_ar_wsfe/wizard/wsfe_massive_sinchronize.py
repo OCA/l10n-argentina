@@ -62,8 +62,10 @@ class wsfe_massive_sinchronize(models.TransientModel):
             ('state', 'in', ('draft','proforma2','proforma'))]
 
         invoice_ids = invoice_model.search(domain)
-        if len(invoice_ids) == 1:
-            return invoice_ids and invoice_ids[0]
+
+        # Si hay mas de una, retorna la primera
+        if len(invoice_ids):
+            return invoice_ids[0]
 
         return False
 
@@ -116,6 +118,8 @@ class wsfe_massive_sinchronize(models.TransientModel):
 
             invoice.wsfe_relate_invoice(pos, number, date_invoice,
                                         cae, cae_due_date)
-            cr.commit()
+
+            if self.env.context.get('commit', True):
+                cr.commit()
 
         return {'type': 'ir.actions.act_window_close'}
