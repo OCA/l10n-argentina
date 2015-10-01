@@ -509,7 +509,7 @@ class wsfex_config(osv.osv):
             msg = 'Codigo/s Observacion: %s [%s]' % (event, eve_code)
 
             # Escribimos en el log del cliente web
-            self.log(cr, uid, None, msg, context)
+            #self.log(cr, uid, None, msg, context)
 
         return msg
 

@@ -129,7 +129,7 @@ class wsfe_config(osv.osv):
             msg = msg + ' Codigo/s Observacion:' + ' '.join(obs_codes)
 
             # Escribimos en el log del cliente web
-            self.log(cr, uid, None, msg, context)
+            #self.log(cr, uid, None, msg, context)
 
         return msg
 

@@ -82,8 +82,8 @@ class sale_order(osv.osv):
             else:
                 self.write(cr, uid, [o.id], {'state': 'progress', 'date_confirm': time.strftime('%Y-%m-%d')})
             self.pool.get('sale.order.line').button_confirm(cr, uid, [x.id for x in o.order_line])
-            message = _("The quotation '%s' has been converted to a sales order.") % (o.name,)
-            self.log(cr, uid, o.id, message)
+#            message = _("The quotation '%s' has been converted to a sales order.") % (o.name,)
+#            self.log(cr, uid, o.id, message)
         return True
 
     

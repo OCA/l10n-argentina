@@ -55,8 +55,8 @@ class res_partner(osv.osv):
         for partner in self.browse(cr, uid, ids, context=context):
             if not partner.vat:
                 continue
-            if partner.country:
-                vat_country = partner.country.code.lower()
+            if partner.country_id:
+                vat_country = partner.country_id.code.lower()
                 vat_number = partner.vat
             else:
                 vat_country, vat_number = partner.vat[:2].lower(), partner.vat[2:].replace(' ', '')

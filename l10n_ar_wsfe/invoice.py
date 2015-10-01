@@ -275,12 +275,12 @@ class account_invoice(osv.osv):
             move_id = obj_inv.move_id and obj_inv.move_id.id or False
             self.pool.get('account.move').post(cr, uid, [move_id], context={'invoice':obj_inv})
 
-            for inv_id, name in self.name_get(cr, uid, [id], context=context):
-                ctx = context.copy()
-                if invtype in ('out_invoice', 'out_refund'):
-                    ctx = self.get_log_context(cr, uid, context=ctx)
-                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
-                self.log(cr, uid, inv_id, message, context=ctx)
+#            for inv_id, name in self.name_get(cr, uid, [id], context=context):
+#                ctx = context.copy()
+#                if invtype in ('out_invoice', 'out_refund'):
+#                    ctx = self.get_log_context(cr, uid, context=ctx)
+#                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
+#                self.log(cr, uid, inv_id, message, context=ctx)
 
         return True
 

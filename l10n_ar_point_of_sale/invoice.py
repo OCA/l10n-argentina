@@ -403,13 +403,12 @@ class invoice(osv.osv):
             # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
             self._update_reference(cr, uid, obj_inv, ref, context=context)
 
-
-            for inv_id, name in self.name_get(cr, uid, [id], context=context):
-                ctx = context.copy()
-                if invtype in ('out_invoice', 'out_refund'):
-                    ctx = self.get_log_context(cr, uid, context=ctx)
-                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
-                self.log(cr, uid, inv_id, message, context=ctx)
+#            for inv_id, name in self.name_get(cr, uid, [id], context=context):
+#                ctx = context.copy()
+#                if invtype in ('out_invoice', 'out_refund'):
+#                    ctx = self.get_log_context(cr, uid, context=ctx)
+#                message = _('Invoice ') + " '" + name + "' "+ _("is validated.")
+#                self.log(cr, uid, inv_id, message, context=ctx)
 
         return True
 
