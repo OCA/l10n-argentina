@@ -21,7 +21,7 @@
 
 {
     "name": "l10n_ar_wsfe_jasper",
-    "version": "2.0",
+    "version": "8.0.2.0.0",
     "depends": ["l10n_ar_wsfe", "jasper_reports"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",

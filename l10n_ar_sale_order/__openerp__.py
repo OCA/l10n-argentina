@@ -21,7 +21,7 @@
 
 {
     "name": "Sale Order interactive",
-    "version": "1.0",
+    "version": "8.0.1.0.0",
     "depends": ["base", "sale", "sale_stock"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",

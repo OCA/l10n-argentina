@@ -21,7 +21,7 @@
 ##############################################################################
 {
     "name": "WSAA",
-    "version": "1.0",
+    "version": "8.0.1.0.0",
     "depends": ["base", "account"],
     "author": "Proyecto Aconcagua",
     "website": "http://proyectoaconcagua.com.ar",

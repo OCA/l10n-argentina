@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name": "Tax Reports for Argentina",
-    "version": "1.0",
+    "version": "8.0.1.0.0",
     "depends": ["base", "account", "account_accountant",
                 "sale", "purchase", "l10n_ar_chart_of_account", "l10n_ar_account_payment",
                 "l10n_ar_retentions_basic", "l10n_ar_perceptions_basic"],
