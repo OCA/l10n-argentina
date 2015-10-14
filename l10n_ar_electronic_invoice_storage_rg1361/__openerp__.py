@@ -35,6 +35,6 @@
         'wizard/create_sired_files_view.xml',
     ],
     'demo_xml': [],
-    'installable': True,
+    'installable': False,
     'active': False,
 }

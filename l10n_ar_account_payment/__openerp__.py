@@ -41,6 +41,6 @@
         'payment_mode_receipt_view.xml',
     ],
     'demo_xml': [],
-    'installable': True,
+    'installable': False,
     'active': False,
 }

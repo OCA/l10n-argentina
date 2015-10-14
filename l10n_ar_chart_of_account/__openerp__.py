@@ -38,7 +38,7 @@ Accounting chart for Argetina in Open ERP.
         "l10n_chart_ar_wizard.xml"
     ],
     "active": False,
-    "installable": True,
+    'installable': False,
     "certificate" : "",
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

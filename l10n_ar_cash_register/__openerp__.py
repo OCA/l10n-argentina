@@ -37,7 +37,7 @@
                 'cash_statement_view.xml',
                 'wizard/pos_box.xml',
             ],
-        "installable": True,
+        'installable': False,
         'active': False
 }
  

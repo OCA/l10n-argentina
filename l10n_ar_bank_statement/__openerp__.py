@@ -37,7 +37,7 @@
                 'account_voucher_view.xml',
                 #~ 'wizard/project_import_wizard_view.xml',
             ],
-        "installable": True,
+        'installable': False,
         'active': False
 
 }

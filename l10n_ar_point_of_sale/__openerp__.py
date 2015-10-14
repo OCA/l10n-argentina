@@ -46,6 +46,6 @@
     'test': [
         #'test/denomination_invoice.yml',
     ],
-    'installable': True,
+    'installable': False,
     'active': False,
 }

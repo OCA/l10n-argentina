@@ -49,6 +49,6 @@
         'test/invoice_supplier.yml',
         'test/invoice_massive.yml',
     ],
-    'installable': True,
+    'installable': False,
     'active': False,
 }
