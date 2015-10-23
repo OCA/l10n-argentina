@@ -81,7 +81,7 @@ class TestWSFE(TransactionCase):
     @mock.patch.object(wsfe_config, 'get_invoice_CAE', WSFE_ConfigTest.get_invoice_CAE_approved)
     @mock.patch.object(wsfe_config, 'get_voucher_info', WSFE_ConfigTest.get_voucher_info)
     def test_01_voucher_sinchronize(self):
-
+        """Testeamos la sincronizacion masiva."""
         # Validamos alguna factura
         invoice1 = self.create_invoice(self.partner_agrolait.id, 300)
         invoice1.signal_workflow('invoice_open')
