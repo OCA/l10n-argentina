@@ -87,7 +87,6 @@ class WSAA:
 #            return None
 
         logger.debug("TRA Creado")
-        print etree.tostring(doc)
         return etree.tostring(doc)
 
 
