@@ -36,7 +36,7 @@ msgstr "Error de integridad !"
 #: code:addons/l10n_ar_point_of_sale/invoice.py:45
 #, python-format
 msgid "CD "
-msgstr "CD "
+msgstr "ND "
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/invoice.py:267
@@ -93,7 +93,7 @@ msgstr "Otro"
 #: code:addons/l10n_ar_point_of_sale/invoice.py:46
 #, python-format
 msgid "SD "
-msgstr "SD "
+msgstr "ND "
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_sale_order
@@ -208,7 +208,7 @@ msgstr "Neto Gravado"
 #: code:addons/l10n_ar_point_of_sale/invoice.py:44
 #, python-format
 msgid "SR "
-msgstr "SR "
+msgstr "NC "
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/invoice.py:399
@@ -377,7 +377,7 @@ msgstr "Impuestos sobre factura"
 #: code:addons/l10n_ar_point_of_sale/invoice.py:41
 #, python-format
 msgid "CI "
-msgstr "CI "
+msgstr "FAC "
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_account_move
@@ -432,13 +432,13 @@ msgstr "Facturas"
 #: code:addons/l10n_ar_point_of_sale/invoice.py:43
 #, python-format
 msgid "CR "
-msgstr "CR "
+msgstr "NC "
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/invoice.py:42
 #, python-format
 msgid "SI "
-msgstr "SI "
+msgstr "FP "
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_account_fiscal_position

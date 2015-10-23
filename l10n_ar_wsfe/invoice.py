@@ -487,6 +487,35 @@ class account_invoice(models.Model):
 
         return invoices_approbed
 
+    @api.one
+    def wsfe_relate_invoice(self, pos, number, date_invoice, cae, cae_due_date):
+        # Tomamos la factura y mandamos a realizar
+        # el asiento contable primero.
+        self.action_move_create()
+
+        invoice_vals = {
+            'internal_number': '%04d-%08d' % (pos, number),
+            'date_invoice': date_invoice,
+            'cae': cae,
+            'cae_due_date': cae_due_date,
+        }
+
+        # Escribimos los campos necesarios de la factura
+        self.write(invoice_vals)
+
+        invoice_name = self.name_get()[0][1]
+        if not self.reference:
+            ref = invoice_name
+        else:
+            ref = '%s [%s]' % (invoice_name, self.reference)
+
+        # Actulizamos el campo reference del move_id correspondiente a la creacion de la factura
+        self._update_reference(ref)
+
+        # Llamamos al workflow para que siga su curso
+        self.signal_workflow('invoice_massive_open')
+        return
+
 account_invoice()
 
 
