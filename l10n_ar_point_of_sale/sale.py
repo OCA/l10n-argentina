@@ -45,8 +45,7 @@ class sale_order(models.Model):
 
         # Denominacion
         if not order.fiscal_position:
-            raise osv.except_osv(_('Error'),
-                                 _('Check the Fiscal Position Configuration'))
+            raise osv.except_osv(_('Error'), _('Check the Fiscal Position Configuration. sale.order[#{0}] {1}'.format(order.id, order.name)))
 
         denom = order.fiscal_position.denomination_id
 
