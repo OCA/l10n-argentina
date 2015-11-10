@@ -35,6 +35,6 @@ class sale_order_line_make_invoice(osv.osv_memory):
 
         pos_ar_id = order_obj._get_pos_ar(cr, uid, order, denom_id, context=context)
         res['denomination_id'] = denom_id.id
-        res['pos_ar_id'] = pos_ar_id
+        res['pos_ar_id'] = pos_ar_id.id
 
         return res
