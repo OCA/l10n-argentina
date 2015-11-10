@@ -33,7 +33,7 @@ class sale_order_line_make_invoice(osv.osv_memory):
         # Denominacion
         denom_id = order.fiscal_position.denomination_id
 
-        pos_ar_id = order_obj._get_pos_ar(cr, uid, order, denom_id.id, context=context)
+        pos_ar_id = order_obj._get_pos_ar(cr, uid, order, denom_id, context=context)
         res['denomination_id'] = denom_id.id
         res['pos_ar_id'] = pos_ar_id
 
