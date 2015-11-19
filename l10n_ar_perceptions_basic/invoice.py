@@ -123,6 +123,16 @@ class account_invoice(models.Model):
 
             move_lines.insert(len(move_lines) - 1, (0, 0, move_line))
         return move_lines
+    
+    #~ Herencia para agregar las lineas de percepcion al realizar un reembolso
+    @api.model
+    def _prepare_refund(self, invoice, date=None, period_id=None, description=None, journal_id=None):
+
+        values = super(account_invoice, self)._prepare_refund(invoice, date=None, period_id=None, description=None, journal_id=None)
+
+        values['perception_ids'] = self._refund_cleanup_lines(invoice.perception_ids)
+
+        return values
 
 account_invoice()
 
