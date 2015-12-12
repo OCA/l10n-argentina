@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="payment_mode_receipt_cash" model="payment.mode.receipt">
+            <field name="name">Efectivo</field>
+            <field name="account_id" ref="account.cash"/>
+            <field name="currency" ref="base.ARS" />
+            <field name="type">receipt</field>
+        </record>
+
+        <record id="payment_mode_payment_cash" model="payment.mode.receipt">
+            <field name="name">Efectivo</field>
+            <field name="account_id" ref="account.cash"/>
+            <field name="currency" ref="base.ARS" />
+            <field name="type">payment</field>
+        </record>
+
+
+    </data>
+</openerp>

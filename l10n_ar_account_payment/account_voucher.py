@@ -31,7 +31,10 @@ class account_voucher(osv.osv):
 
     _columns = {
       'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
-      'journal_sequence': fields.many2one('ir.sequence', 'Book', readonly=True, states={'draft':[('readonly',False)]}),
+      # TODO: Chequear que al quitar el required de este campo, no moleste en
+      # los Sales Receipt y en los Purchase Receipts. Sino vamos a tener
+      # que ponerlo en la vista de cada uno de esos
+      'account_id':fields.many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]}),
     }
 
     def name_get(self, cr, uid, ids, context=None):
@@ -261,17 +264,6 @@ class account_voucher(osv.osv):
             move_id = move_pool.create(cr, uid, self.account_move_get(cr, uid, voucher.id, context=context), context=context)
             # Get the name of the account_move just created
             name = move_pool.browse(cr, uid, move_id, context=context).name
-
-            # Escribimos el numero del voucher
-            # Seteamos el numero de la OP
-            voucher_vals = {'number': 'name'}
-            if voucher.type in ('payment', 'receipt'):
-                if not voucher.reference:
-                    ref = self.pool.get('ir.sequence').next_by_id(cr, uid, voucher.journal_sequence.id, context=context)
-                    voucher_vals['reference'] = ref
-                    self._update_move_reference(cr, uid, move_id, ref, context=context)
-
-            self.write(cr, uid, [voucher.id], voucher_vals, context=context)
 
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
