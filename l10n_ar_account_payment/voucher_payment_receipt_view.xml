@@ -48,7 +48,23 @@
                         </tree>
                     </field>
                 </xpath>
-                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
+                <!-- Nombres de las etiquetas de los tree line_cr_ids y line_dr_ids -->
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="attributes">
+                    <attribute name="string">Invoices and outstanding transactions</attribute>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="attributes">
+                    <attribute name="string">Credits</attribute>
+                </xpath>
+
+                <!-- Suma del campo amount_unreconciled -->
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='amount_unreconciled']" position="attributes">
+                    <attribute name="sum">Total Unreconciled</attribute>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='amount_unreconciled']" position="attributes">
+                    <attribute name="sum">Total Unreconciled</attribute>
+                </xpath>
+
+                 <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
                     <field name="invoice_id"/>
                     <field name="ref"/>
                 </xpath>
@@ -106,6 +122,22 @@
                             <field name="amount" sum="Total"/>
                         </tree>
                     </field>
+                </xpath>
+
+                <!-- Nombres de las etiquetas de los tree line_cr_ids y line_dr_ids -->
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="attributes">
+                    <attribute name="string">Supplier Invoices and Outstanding transactions</attribute>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="attributes">
+                    <attribute name="string">Credits</attribute>
+                </xpath>
+
+                 <!-- Suma del campo amount_unreconciled -->
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='amount_unreconciled']" position="attributes">
+                    <attribute name="sum">Total Unreconciled</attribute>
+                </xpath>
+                <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='amount_unreconciled']" position="attributes">
+                    <attribute name="sum">Total Unreconciled</attribute>
                 </xpath>
 
                 <xpath expr="//page[@string='Payment Information']/field[@name='line_dr_ids']/tree/field[@name='move_line_id']" position="before">
