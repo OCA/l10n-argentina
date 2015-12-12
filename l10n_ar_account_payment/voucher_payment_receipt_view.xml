@@ -62,8 +62,7 @@
             </field>
         </record>
  
-
-
+        <!-- Supplier Payment -->
         <record model="ir.ui.view" id="view_vendor_l10n_ar_payment_form">
             <field name="name">account.voucher.l10n_ar.payment.form</field>
             <field name="model">account.voucher</field>
@@ -74,22 +73,14 @@
                     <attribute name="readonly">1</attribute>
                 </field>
                 -->
-                <field name="amount" position="replace"/>
-                <field name="reference" position="replace"/>
-
+                <field name="number" position="replace" />
                 <field name="account_id" position="before">
-                    <div class="oe_title">
-                        <div class="oe_edit_only">
-                            <b><label string="Payment Number"/></b>
-                        </div>
-                        <h1>
-                            <field name="reference"/>
-                        </h1>
-                    </div>
+                    <h1 attrs="{'invisible': [('number','=',False)]}"><field name="number"/></h1>
                 </field>
 
+                <field name="amount" position="replace"/>
+
                 <field name="journal_id" position="after">
-                    <field name="journal_sequence" required="1" domain="[('code','=','voucher.payment')]"/>
                     <field name="amount" class="oe_inline"
                            string="Paid Amount"
                            widget="monetary" options="{'currency_field': 'currency_id'}"
@@ -97,6 +88,7 @@
                 </field>
                 <field name="journal_id" position="attributes">
                     <attribute name="string">Journal</attribute>
+                    <attribute name="domain">[('type', '=', 'payment')]</attribute>
                 </field>
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="before">
                     <label for="payment_line_ids"/>
@@ -142,6 +134,11 @@
         <record id="account_voucher.action_vendor_receipt" model="ir.actions.act_window">
             <field name="domain">[('journal_id.type', '=', 'receipt'), ('type','=','receipt')]</field>
         </record>
+
+        <record id="account_voucher.action_vendor_payment" model="ir.actions.act_window">
+            <field name="domain">[('journal_id.type', '=', 'payment'), ('type','=','payment')]</field>
+        </record>
+
 
 
         <!-- required en account_id en las demas vistas -->
