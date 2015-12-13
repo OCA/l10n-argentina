@@ -40,7 +40,7 @@
         'voucher_sales_purchase_view.xml',
         'account_voucher_view.xml',
         #'account_payment_view.xml',
-        'payment_mode_receipt_view.xml',
+        'payment_methods_view.xml',
     ],
     'demo_xml': [
         'payment_mode_demo.xml',
