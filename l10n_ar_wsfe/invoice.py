@@ -142,10 +142,6 @@ class account_invoice(models.Model):
         self.write({})
 
         for obj_inv in self:
-            partner_country = obj_inv.partner_id.country_id and obj_inv.partner_id.country_id.id or False
-            company_country = obj_inv.company_id.country_id and obj_inv.company_id.country_id.id or False
-
-            id = obj_inv.id
             invtype = obj_inv.type
 
             # Chequeamos si es local por medio de la posicion fiscal

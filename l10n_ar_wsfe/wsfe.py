@@ -22,7 +22,7 @@
 from openerp.osv import osv
 from openerp import models, fields, api
 from openerp.tools.translate import _
-from wsfe_suds import WSFEv1 as wsfe
+from wsfetools.wsfe_suds import WSFEv1 as wsfe
 from datetime import datetime
 import time
 
