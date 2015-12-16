@@ -100,6 +100,17 @@ class wsfex_dst_cuit_codes(models.Model):
 
 wsfex_dst_cuit_codes()
 
+class wsfex_export_type_codes(models.Model):
+    _name = "wsfex.export_type.codes"
+    _description = "WSFEX Export Type Codes"
+    _order = 'code'
+
+    code = fields.Integer('Code', required=True)
+    name = fields.Char('Desc', required=True, size=64)
+    wsfex_config_id = fields.Many2one('wsfex.config')
+
+wsfex_export_type_codes()
+
 class wsfex_voucher_type_codes(models.Model):
     _name = "wsfex.voucher_type.codes"
     _description = "WSFEX Voucher Type Codes"
@@ -130,6 +141,7 @@ class wsfex_config(models.Model):
     incoterms_ids = fields.One2many('wsfex.incoterms.codes', 'wsfex_config_id' , 'Incoterms')
     dst_cuit_ids = fields.One2many('wsfex.dst_cuit.codes', 'wsfex_config_id' , 'DST CUIT')
     voucher_type_ids = fields.One2many('wsfex.voucher_type.codes', 'wsfex_config_id' , 'Voucher Type')
+    export_type_ids = fields.One2many('wsfex.export_type.codes', 'wsfex_config_id' , 'Export Type')
     company_id = fields.Many2one('res.company', 'Company Name' , required=True)
 
     _sql_constraints = [
@@ -253,6 +265,42 @@ class wsfex_config(models.Model):
                 res_c[0] = wsfex_param_obj.write({'name': r.Idi_Ds, 'wsfex_config_id': self.id})
 
         return True
+
+
+    def get_wsfex_export_types(self):
+        ta_model = self.env['wsaa.ta']
+
+        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+
+        _wsfex = wsfex(self.cuit, token, sign, self.url)
+        res = _wsfex.FEXGetPARAM("Tipo_Expo")
+
+        wsfex_param_obj = self.env['wsfex.export_type.codes']
+
+#        # Chequeamos los errores
+#        msg = self.check_errors(cr, uid, res, raise_exception=False, context=context)
+#        if msg:
+#            # TODO: Hacer un wrapping de los errores, porque algunos son
+#            # largos y se imprimen muy mal en pantalla
+#            raise osv.except_osv(_('Error reading taxes'), msg)
+
+        # Armo un lista con los codigos de los Impuestos
+        for r in res['response'][0]:
+            # El servicio de AFIP me devuelve dentro de la lista
+            # unos valores None
+            if not r:
+                continue
+            res_c = wsfex_param_obj.search([('code','=', r.Tex_Id )])
+
+            # Si no tengo los codigos de esos Impuestos en la db, los creo
+            if not len(res_c):
+                wsfex_param_obj.create({'code': r.Tex_Id, 'name': r.Tex_Ds, 'wsfex_config_id': self.id})
+            #~ Si los codigos estan en la db los modifico
+            else :
+                res_c[0] = wsfex_param_obj.write({'name': r.Tex_Ds, 'wsfex_config_id': self.id})
+
+        return True
+
 
     def get_wsfex_countries(self):
         ta_model = self.env['wsaa.ta']
