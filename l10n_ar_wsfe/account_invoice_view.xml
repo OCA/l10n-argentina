@@ -12,10 +12,24 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <field name="fiscal_position" position="after">
-					<field name="cae" string="CAE" readonly="1"/>
-					<field name="cae_due_date" readonly="1"/>
+                    <field name="local" invisible="1"/>
+                    <field name="export_type_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
+                    <field name="dst_country_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
+                    <field name="dst_cuit_id" widget="selection" attrs="{'invisible': [('local','=', True)]}"/>
+                    <field name="cae" string="CAE" readonly="1"/>
+                    <field name="cae_due_date" readonly="1"/>
                 </field>
-            </field>
+                <page string="Other Info" position="before">
+                    <page string="Shipping Permission" attrs="{'invisible': [('local','=', True)]}">
+                        <field name="shipping_perm_ids" nolabel="1" widget="one2many_list">
+                            <tree string="Shipping Permission" editable="bottom">
+                                <field name="name"/>
+                                <field name="dst_country_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+           </field>
         </record>
 
         <!-- Add CAI to Supplier Invoices -->

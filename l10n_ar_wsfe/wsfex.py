@@ -29,6 +29,17 @@ from wsfetools.wsfex_suds import WSFEX as wsfex
 from datetime import datetime
 import time
 
+
+class wsfex_shipping_permission(models.Model):
+    _name = "wsfex.shipping.permission"
+    _description = "WSFEX Currency Codes"
+
+    name = fields.Char('Code', required=True, size=16)
+    invoice_id = fields.Many2one('account.invoice', 'Invoice')
+    dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country', required=True)
+
+wsfex_shipping_permission()
+
 class wsfex_currency_codes(models.Model):
     _name = "wsfex.currency.codes"
     _description = "WSFEX Currency Codes"
@@ -92,7 +103,7 @@ wsfex_incoterms_codes()
 class wsfex_dst_cuit_codes(models.Model):
     _name = "wsfex.dst_cuit.codes"
     _description = "WSFEX DST CUIT Codes"
-    _order = 'code'
+    _order = 'name'
 
     code = fields.Float('Code', digits=(12,0), required=True)
     name = fields.Char('Desc', required=True, size=64)

@@ -38,6 +38,29 @@ class account_invoice(models.Model):
     cae = fields.Char('CAE/CAI', size=32, required=False, help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)')
     cae_due_date = fields.Date('CAE Due Date', required=False, help='Fecha de vencimiento del CAE')
     #'associated_inv_ids': fields.many2many('account.invoice', )
+    # Campos para facturas de exportacion. Aca ninguno es requerido,
+    # eso lo hacemos en la vista ya que depende de si es o no factura de exportacion
+    export_type_id = fields.Many2one('wsfex.export_type.codes', 'Export Type')
+    dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country')
+    dst_cuit_id = fields.Many2one('wsfex.dst_cuit.codes', 'Country CUIT')
+    shipping_perm_ids = fields.One2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions')
+
+    @api.multi
+    def onchange_partner_id(self, type, partner_id, date_invoice=False,
+            payment_term=False, partner_bank_id=False, company_id=False):
+
+        res = super(account_invoice, self).onchange_partner_id(type, partner_id,\
+                    date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
+
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            country_id = partner.country_id.id or False
+            if country_id:
+                dst_country = self.env['wsfex.dst_country.codes'].search([('country_id','=',country_id)])
+
+                if dst_country:
+                    res['value'].update({'dst_country_id': dst_country[0].id})
+        return res
 
     # Esto lo hacemos porque al hacer una nota de credito, no le setea la fiscal_position
     # Ademas, seteamos el comprobante asociado
