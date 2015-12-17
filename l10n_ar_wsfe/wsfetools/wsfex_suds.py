@@ -219,8 +219,8 @@ class WSFEX:
         if event:
             res['event'] = event
 
-        if 'FEXResultGet' in result:
-            res['response'] = result.FEXResultGet
+        if 'FEXResultAuth' in result:
+            res['response'] = result.FEXResultAuth
 
         return res
 

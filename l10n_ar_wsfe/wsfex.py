@@ -32,7 +32,7 @@ import time
 
 class wsfex_shipping_permission(models.Model):
     _name = "wsfex.shipping.permission"
-    _description = "WSFEX Currency Codes"
+    _description = "WSFEX Shipping Permission"
 
     name = fields.Char('Code', required=True, size=16)
     invoice_id = fields.Many2one('account.invoice', 'Invoice')
@@ -79,7 +79,7 @@ wsfex_lang_codes()
 class wsfex_dst_country_codes(models.Model):
     _name = "wsfex.dst_country.codes"
     _description = "WSFEX Dest Country Codes"
-    _order = 'code'
+    _order = 'name'
 
     code = fields.Char('Code', size=3, required=True)
     name = fields.Char('Desc', required=True, size=64)
@@ -199,7 +199,6 @@ class wsfex_config(models.Model):
 
     @api.one
     def get_wsfex_currencies(self):
-        import ipdb; ipdb.set_trace()
         ta_model = self.env['wsaa.ta']
 
         token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
@@ -223,7 +222,6 @@ class wsfex_config(models.Model):
         return True
 
     def get_wsfex_uoms(self):
-        import ipdb; ipdb.set_trace()
         ta_model = self.env['wsaa.ta']
 
         token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
@@ -420,5 +418,207 @@ class wsfex_config(models.Model):
                 res_c[0].write({'name': r.Cbte_Ds, 'wsfex_config_id': self.id})
 
         return True
+
+    # TODO: Migrar a v8
+    def check_error(self, cr, uid, res, raise_exception=True, context=None):
+        msg = ''
+        if 'error' in res:
+            error = res['error'].msg
+            err_code = str(res['error'].code)
+            msg = 'Codigo/s Error: %s[%s]' % (error, err_code)
+
+            if msg != '' and raise_exception:
+                raise osv.except_osv(_('WSFE Error!'), msg)
+
+        return msg
+
+    # TODO: Migrar a v8
+    def check_event(self, cr, uid, res, context):
+        msg = ''
+        if 'event' in res:
+            event = res['event'].msg
+            eve_code = str(res['event'].code)
+            msg = 'Codigo/s Observacion: %s [%s]' % (event, eve_code)
+
+            # Escribimos en el log del cliente web
+            self.log(cr, uid, None, msg, context)
+
+        return msg
+
+    # TODO: Migrar a v8
+    def get_invoice_CAE(self, cr, uid, ids, invoice_ids, pos, voucher_type, details, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfex = wsfex(conf.cuit, token, sign, conf.url)
+
+        # Agregamos la info que falta
+        details['Tipo_cbte'] = voucher_type
+        details['Punto_vta'] = pos
+        res = _wsfex.FEXAuthorize(details)
+
+        return res
+
+    # TODO: Migrar a v8
+    def _parse_result(self, cr, uid, ids, invoice_ids, result, context=None):
+
+        invoice_obj = self.pool.get('account.invoice')
+
+        if not context:
+            context = {}
+
+        invoices_approbed = {}
+
+        # Verificamos el resultado de la Operacion
+        # Si no fue aprobado
+        if 'error' in result:
+
+            msg = result['error'].msg
+            if context.get('raise-exception', True):
+                raise osv.except_osv(_('AFIP Web Service Error'),
+                                     _('La factura no fue aprobada. \n%s') % msg)
+
+        # Igualmente, siempre va a ser una para FExp
+        for inv in invoice_obj.browse(cr, uid, invoice_ids):
+            invoice_vals = {}
+
+            comp = result['response']
+
+            # Chequeamos que se corresponda con la factura que enviamos a validar
+            doc_num = comp['Cuit'] == int(inv.partner_id.vat)
+            cbte = True
+            if inv.internal_number:
+                cbte = comp['Cbte_nro'] == int(inv.internal_number.split('-')[1])
+            else:
+                # TODO: El nro de factura deberia unificarse para que se setee en una funcion
+                # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
+                invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
+
+            if not all([doc_num, cbte]):
+                raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
+
+            invoice_vals['cae'] = comp['Cae']
+            invoice_vals['cae_due_date'] = comp['Fch_venc_Cae']
+            invoices_approbed[inv.id] = invoice_vals
+
+        return invoices_approbed
+
+    # TODO: Migrar a v8
+    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
+
+        return 0
+
+    # TODO: Migrar a v8
+    def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
+        ta_obj = self.pool.get('wsaa.ta')
+
+        conf = self.browse(cr, uid, ids)[0]
+        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+
+        _wsfe = wsfex(conf.cuit, token, sign, conf.url)
+        res = _wsfe.FEXGetLast_CMP(pos, voucher_type)
+
+        self.check_error(cr, uid, res, context=context)
+        self.check_event(cr, uid, res, context=context)
+        last = res['response']
+        return last
+
+    # TODO: Migrar a v8
+    def prepare_details(self, cr, uid, conf, invoice_ids, context=None):
+        company_id = self.pool.get('res.users')._get_company(cr, uid)
+        #obj_precision = self.pool.get('decimal.precision')
+        invoice_obj = self.pool.get('account.invoice')
+        currency_code_obj = self.pool.get('wsfex.currency.codes')
+        uom_code_obj = self.pool.get('wsfex.uom.codes')
+
+        if len(invoice_ids) > 1:
+            raise osv.except_osv(_("WSFEX Error!"), _("You cannot inform more than one invoice to AFIP WSFEX"))
+
+        first_num = context.get('first_num', False)
+        Id = int(datetime.strftime(datetime.now(), '%Y%m%d%H%M%S'))
+        cbte_nro = 0
+
+        inv = invoice_obj.browse(cr, uid, invoice_ids[0], context=context)
+
+        # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
+        # cuenta que inv.number == 000X-00000NN o algo similar.
+        if not inv.internal_number:
+            if not first_num:
+                raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
+            inv_number = first_num
+        else:
+            inv_number = inv.internal_number
+
+        if not cbte_nro:
+            cbte_nro = inv_number.split('-')[1]
+            cbte_nro = int(cbte_nro)
+        else:
+            cbte_nro = cbte_nro + 1
+
+        date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
+        formatted_date_invoice = date_invoice.strftime('%Y%m%d')
+        #date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
+
+        cuit_pais = inv.dst_cuit_id and inv.dst_cuit_id.code or 0
+        inv_currency_id = inv.currency_id.id
+        curr_code_ids = currency_code_obj.search(cr, uid, [('currency_id', '=', inv_currency_id)], context=context)
+
+        if curr_code_ids:
+            curr_code = currency_code_obj.read(cr, uid, curr_code_ids[0], {'code'}, context=context)['code']
+        else:
+            raise osv.except_osv(_("WSFEX Error!"), _("Currency %s has not code configured") % inv.currency_id.name)
+
+        # Items
+        items = []
+        for i, line in enumerate(inv.invoice_line):
+            product_id = line.product_id
+            product_code = product_id and product_id.default_code or i
+            uom_id = line.uos_id.id
+            uom_code_ids = uom_code_obj.search(cr, uid, [('uom_id','=',uom_id)], context=context)
+            if not uom_code_ids:
+                raise osv.except_osv(_("WSFEX Error!"), _("There is no UoM Code defined for %s in line %s") % (line.uos_id.name, line.name))
+
+            uom_code = uom_code_obj.read(cr, uid, uom_code_ids[0], {'code'}, context=context)['code']
+
+            items.append({
+                'Pro_codigo' : i,#product_code,
+                'Pro_ds' : line.name,
+                'Pro_qty' : line.quantity,
+                'Pro_umed' : uom_code,
+                'Pro_precio_uni' : line.price_unit,
+                'Pro_total_item' : line.price_subtotal,
+                'Pro_bonificacion' : 0,
+            })
+
+
+        Cmp = {
+            'invoice_id' : inv.id,
+            'Id' : Id,
+            #'Tipo_cbte' : cbte_tipo,
+            'Fecha_cbte' : formatted_date_invoice,
+            #'Punto_vta' : pto_venta,
+            'Cbte_nro' : cbte_nro,
+            'Tipo_expo' : inv.export_type_id.code, #Exportacion de bienes
+            'Permiso_existente' : '', # TODO: manejo de permisos de embarque
+            'Dst_cmp' : inv.dst_country_id.code,
+            'Cliente' : inv.partner_id.name,
+            'Domicilio_cliente' : inv.partner_id.contact_address,
+            'Cuit_pais_cliente' : cuit_pais,
+            'Id_impositivo' : inv.partner_id.vat,
+            'Moneda_Id' : curr_code,
+            'Moneda_ctz' : 1.000000, # TODO: Obtener cotizacion usando el metodo de AFIP
+            'Imp_total' : inv.amount_total,
+            'Idioma_cbte' : 1,
+            'Items' : items
+        }
+
+        # Datos No Obligatorios
+        if inv.incoterm_id:
+            Cmp['Incoterms'] = inv.incoterm_id.code
+            Cmp['Incoterms_Ds'] = inv.incoterm_id.name
+
+        return Cmp
 
 wsfex_config()
