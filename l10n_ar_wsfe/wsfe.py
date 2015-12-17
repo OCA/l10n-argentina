@@ -271,7 +271,7 @@ class wsfe_config(models.Model):
 
         self.check_errors(res)
         self.check_observations(res)
-        last = res['response'].CbteNro
+        last = res['response']
         return last
 
     @api.model
@@ -370,7 +370,7 @@ class wsfe_config(models.Model):
 
     def prepare_details(self, invoices):
         obj_precision = self.env['decimal.precision']
-        invoice_obj = self.pool.get['account.invoice']
+        invoice_obj = self.env['account.invoice']
         company = self.env.user.company_id
 
         details = []
