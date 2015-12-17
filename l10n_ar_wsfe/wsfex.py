@@ -127,10 +127,10 @@ class wsfex_voucher_type_codes(models.Model):
     _description = "WSFEX Voucher Type Codes"
     _order = 'code'
 
-    code = fields.integer('Code', required=True)
-    name = fields.char('Desc', required=True, size=64)
-    voucher_type_id = fields.many2one('wsfe.voucher_type', string="OpenERP Voucher Type")
-    wsfex_config_id = fields.many2one('wsfex.config')
+    code = fields.Integer('Code', required=True)
+    name = fields.Char('Desc', required=True, size=64)
+    voucher_type_id = fields.Many2one('wsfe.voucher_type', string="OpenERP Voucher Type")
+    wsfex_config_id = fields.Many2one('wsfex.config')
 
 wsfex_voucher_type_codes()
 
@@ -199,9 +199,9 @@ class wsfex_config(models.Model):
 
     @api.one
     def get_wsfex_currencies(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("MON")
@@ -217,14 +217,15 @@ class wsfex_config(models.Model):
                 wsfex_cur_obj.create({'code': r.Mon_Id, 'name': r.Mon_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0].write({'name': r.Mon_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.Mon_Ds, 'wsfex_config_id': self.id})
 
         return True
 
+    @api.one
     def get_wsfex_uoms(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("UMed")
@@ -244,14 +245,15 @@ class wsfex_config(models.Model):
                 wsfex_uom_obj.create({'code': r.Umed_Id, 'name': r.Umed_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0] = wsfex_uom_obj.write({'name': r.Umed_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.Umed_Ds, 'wsfex_config_id': self.id})
 
         return True
 
+    @api.one
     def get_wsfex_langs(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("Idiomas")
@@ -271,15 +273,16 @@ class wsfex_config(models.Model):
                 wsfex_param_obj.create({'code': r.Idi_Id, 'name': r.Idi_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0] = wsfex_param_obj.write({'name': r.Idi_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.Idi_Ds, 'wsfex_config_id': self.id})
 
         return True
 
 
+    @api.one
     def get_wsfex_export_types(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("Tipo_Expo")
@@ -306,15 +309,16 @@ class wsfex_config(models.Model):
                 wsfex_param_obj.create({'code': r.Tex_Id, 'name': r.Tex_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0] = wsfex_param_obj.write({'name': r.Tex_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.Tex_Ds, 'wsfex_config_id': self.id})
 
         return True
 
 
+    @api.one
     def get_wsfex_countries(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("DST_pais")
@@ -338,10 +342,11 @@ class wsfex_config(models.Model):
 
         return True
 
+    @api.one
     def get_wsfex_incoterms(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("Incoterms")
@@ -361,14 +366,15 @@ class wsfex_config(models.Model):
                 wsfex_param_obj.create({'code': r.Inc_Id, 'name': r.Inc_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0].write({'name': r.Inc_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.Inc_Ds, 'wsfex_config_id': self.id})
 
         return True
 
+    @api.one
     def get_wsfex_dst_cuits(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("DST_CUIT")
@@ -388,19 +394,20 @@ class wsfex_config(models.Model):
                 wsfex_param_obj.create({'code': r.DST_CUIT, 'name': r.DST_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0].write({'name': r.DST_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.DST_Ds, 'wsfex_config_id': self.id})
 
         return True
 
+    @api.one
     def get_wsfex_voucher_types(self):
-        ta_model = self.env['wsaa.ta']
+        conf = self
 
-        token, sign = ta_model.get_token_sign([self.wsaa_ticket_id.id])
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("Tipo_Cbte")
 
-        wsfex_param_obj = self.pool.get('wsfex.voucher_type.codes')
+        wsfex_param_obj = self.env['wsfex.voucher_type.codes']
 
         # Armo un lista con los codigos de los Impuestos
         for r in res['response'][0]:
@@ -415,12 +422,11 @@ class wsfex_config(models.Model):
                 wsfex_param_obj.create({'code': r.Cbte_Id, 'name': r.Cbte_Ds, 'wsfex_config_id': self.id})
             #~ Si los codigos estan en la db los modifico
             else :
-                res_c[0].write({'name': r.Cbte_Ds, 'wsfex_config_id': self.id})
+                res_c.write({'name': r.Cbte_Ds, 'wsfex_config_id': self.id})
 
         return True
 
-    # TODO: Migrar a v8
-    def check_error(self, cr, uid, res, raise_exception=True, context=None):
+    def check_error(self, res, raise_exception=True):
         msg = ''
         if 'error' in res:
             error = res['error'].msg
@@ -432,25 +438,23 @@ class wsfex_config(models.Model):
 
         return msg
 
-    # TODO: Migrar a v8
-    def check_event(self, cr, uid, res, context):
+    def check_event(self, res):
         msg = ''
         if 'event' in res:
             event = res['event'].msg
             eve_code = str(res['event'].code)
             msg = 'Codigo/s Observacion: %s [%s]' % (event, eve_code)
 
+            # TODO: Donde lo ponemos a esto?
             # Escribimos en el log del cliente web
-            self.log(cr, uid, None, msg, context)
+            #self.log(cr, uid, None, msg, context)
 
         return msg
 
-    # TODO: Migrar a v8
-    def get_invoice_CAE(self, cr, uid, ids, invoice_ids, pos, voucher_type, details, context={}):
-        ta_obj = self.pool.get('wsaa.ta')
-
-        conf = self.browse(cr, uid, ids)[0]
-        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+    @api.multi
+    def get_invoice_CAE(self, pos, voucher_type, details):
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfex = wsfex(conf.cuit, token, sign, conf.url)
 
@@ -461,13 +465,7 @@ class wsfex_config(models.Model):
 
         return res
 
-    # TODO: Migrar a v8
-    def _parse_result(self, cr, uid, ids, invoice_ids, result, context=None):
-
-        invoice_obj = self.pool.get('account.invoice')
-
-        if not context:
-            context = {}
+    def _parse_result(self, invoices, result):
 
         invoices_approbed = {}
 
@@ -476,18 +474,18 @@ class wsfex_config(models.Model):
         if 'error' in result:
 
             msg = result['error'].msg
-            if context.get('raise-exception', True):
+            if self._context.get('raise-exception', True):
                 raise osv.except_osv(_('AFIP Web Service Error'),
                                      _('La factura no fue aprobada. \n%s') % msg)
 
         # Igualmente, siempre va a ser una para FExp
-        for inv in invoice_obj.browse(cr, uid, invoice_ids):
+        for inv in invoices:
             invoice_vals = {}
 
             comp = result['response']
 
             # Chequeamos que se corresponda con la factura que enviamos a validar
-            doc_num = comp['Cuit'] == int(inv.partner_id.vat)
+            #doc_num = comp['Cuit'] == int(inv.partner_id.vat)
             cbte = True
             if inv.internal_number:
                 cbte = comp['Cbte_nro'] == int(inv.internal_number.split('-')[1])
@@ -496,7 +494,7 @@ class wsfex_config(models.Model):
                 # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
                 invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
 
-            if not all([doc_num, cbte]):
+            if not all([cbte]):
                 raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
 
             invoice_vals['cae'] = comp['Cae']
@@ -549,128 +547,126 @@ class wsfex_config(models.Model):
         return wsfex_req_obj.create(cr, uid, vals)
 
     # TODO: Migrar a v8
-    def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):
-        ta_obj = self.pool.get('wsaa.ta')
+    def get_last_voucher(self, pos, voucher_type):
+        conf = self
 
-        conf = self.browse(cr, uid, ids)[0]
-        token, sign = ta_obj.get_token_sign(cr, uid, [conf.wsaa_ticket_id.id], context=context)
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
 
         _wsfe = wsfex(conf.cuit, token, sign, conf.url)
         res = _wsfe.FEXGetLast_CMP(pos, voucher_type)
 
-        self.check_error(cr, uid, res, context=context)
-        self.check_event(cr, uid, res, context=context)
+        self.check_error(res)
+        self.check_event(res)
         last = res['response']
         return last
 
-    # TODO: Migrar a v8
-    def prepare_details(self, cr, uid, conf, invoice_ids, context=None):
-        company_id = self.pool.get('res.users')._get_company(cr, uid)
-        #obj_precision = self.pool.get('decimal.precision')
-        voucher_type_obj = self.pool.get('wsfe.voucher_type')
-        invoice_obj = self.pool.get('account.invoice')
-        currency_code_obj = self.pool.get('wsfex.currency.codes')
-        uom_code_obj = self.pool.get('wsfex.uom.codes')
+    def prepare_details(self, invoices):
+        company = self.env.user.company_id
+        obj_precision = self.env['decimal.precision']
+        voucher_type_obj = self.env['wsfe.voucher_type']
+        invoice_obj = self.env['account.invoice']
+        currency_code_obj = self.env['wsfex.currency.codes']
+        uom_code_obj = self.env['wsfex.uom.codes']
 
-        if len(invoice_ids) > 1:
+        if len(invoices) > 1:
             raise osv.except_osv(_("WSFEX Error!"), _("You cannot inform more than one invoice to AFIP WSFEX"))
 
-        first_num = context.get('first_num', False)
+        first_num = self._context.get('first_num', False)
         Id = int(datetime.strftime(datetime.now(), '%Y%m%d%H%M%S'))
         cbte_nro = 0
 
-        inv = invoice_obj.browse(cr, uid, invoice_ids[0], context=context)
+        for inv in invoices:
 
-        # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
-        # cuenta que inv.number == 000X-00000NN o algo similar.
-        if not inv.internal_number:
-            if not first_num:
-                raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
-            inv_number = first_num
-        else:
-            inv_number = inv.internal_number
+            # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
+            # cuenta que inv.number == 000X-00000NN o algo similar.
+            if not inv.internal_number:
+                if not first_num:
+                    raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
+                inv_number = first_num
+            else:
+                inv_number = inv.internal_number
 
-        if not cbte_nro:
-            cbte_nro = inv_number.split('-')[1]
-            cbte_nro = int(cbte_nro)
-        else:
-            cbte_nro = cbte_nro + 1
+            if not cbte_nro:
+                cbte_nro = inv_number.split('-')[1]
+                cbte_nro = int(cbte_nro)
+            else:
+                cbte_nro = cbte_nro + 1
 
-        date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
-        formatted_date_invoice = date_invoice.strftime('%Y%m%d')
-        #date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
+            date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
+            formatted_date_invoice = date_invoice.strftime('%Y%m%d')
+            #date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
 
-        cuit_pais = inv.dst_cuit_id and inv.dst_cuit_id.code or 0
-        inv_currency_id = inv.currency_id.id
-        curr_code_ids = currency_code_obj.search(cr, uid, [('currency_id', '=', inv_currency_id)], context=context)
+            cuit_pais = inv.dst_cuit_id and inv.dst_cuit_id.code or 0
+            inv_currency_id = inv.currency_id.id
+            curr_codes = currency_code_obj.search([('currency_id', '=', inv_currency_id)])
 
-        if curr_code_ids:
-            curr_code = currency_code_obj.read(cr, uid, curr_code_ids[0], {'code'}, context=context)['code']
-        else:
-            raise osv.except_osv(_("WSFEX Error!"), _("Currency %s has not code configured") % inv.currency_id.name)
+            if curr_codes:
+                curr_code = curr_codes[0].code
+            else:
+                raise osv.except_osv(_("WSFEX Error!"), _("Currency %s has not code configured") % inv.currency_id.name)
 
-        # Items
-        items = []
-        for i, line in enumerate(inv.invoice_line):
-            product_id = line.product_id
-            product_code = product_id and product_id.default_code or i
-            uom_id = line.uos_id.id
-            uom_code_ids = uom_code_obj.search(cr, uid, [('uom_id','=',uom_id)], context=context)
-            if not uom_code_ids:
-                raise osv.except_osv(_("WSFEX Error!"), _("There is no UoM Code defined for %s in line %s") % (line.uos_id.name, line.name))
+            # Items
+            items = []
+            for i, line in enumerate(inv.invoice_line):
+                product_id = line.product_id
+                product_code = product_id and product_id.default_code or i
+                uom_id = line.uos_id.id
+                uom_codes = uom_code_obj.search([('uom_id','=',uom_id)])
+                if not uom_codes:
+                    raise osv.except_osv(_("WSFEX Error!"), _("There is no UoM Code defined for %s in line %s") % (line.uos_id.name, line.name))
 
-            uom_code = uom_code_obj.read(cr, uid, uom_code_ids[0], {'code'}, context=context)['code']
+                uom_code = uom_codes[0].code
 
-            items.append({
-                'Pro_codigo' : i,#product_code,
-                'Pro_ds' : line.name,
-                'Pro_qty' : line.quantity,
-                'Pro_umed' : uom_code,
-                'Pro_precio_uni' : line.price_unit,
-                'Pro_total_item' : line.price_subtotal,
-                'Pro_bonificacion' : 0,
-            })
+                items.append({
+                    'Pro_codigo' : i,#product_code,
+                    'Pro_ds' : line.name,
+                    'Pro_qty' : line.quantity,
+                    'Pro_umed' : uom_code,
+                    'Pro_precio_uni' : line.price_unit,
+                    'Pro_total_item' : line.price_subtotal,
+                    'Pro_bonificacion' : 0,
+                })
 
-        Cmps_asoc = []
-        for associated_inv in inv.associated_inv_ids:
-            tipo_cbte = voucher_type_obj.get_voucher_type(cr, uid, associated_inv, context=context)
-            pos, number = associated_inv.internal_number.split('-')
-            Cmp_asoc = {
-                'Cbte_tipo': tipo_cbte,
-                'Cbte_punto_vta': int(pos),
-                'Cbte_nro': int(number),
+            Cmps_asoc = []
+            for associated_inv in inv.associated_inv_ids:
+                tipo_cbte = voucher_type_obj.get_voucher_type(associated_inv)
+                pos, number = associated_inv.internal_number.split('-')
+                Cmp_asoc = {
+                    'Cbte_tipo': tipo_cbte,
+                    'Cbte_punto_vta': int(pos),
+                    'Cbte_nro': int(number),
+                }
+
+                Cmps_asoc.append(Cmp_asoc)
+
+            Cmp = {
+                'invoice_id' : inv.id,
+                'Id' : Id,
+                #'Tipo_cbte' : cbte_tipo,
+                'Fecha_cbte' : formatted_date_invoice,
+                #'Punto_vta' : pto_venta,
+                'Cbte_nro' : cbte_nro,
+                'Tipo_expo' : inv.export_type_id.code, #Exportacion de bienes
+                'Permiso_existente' : '', # TODO: manejo de permisos de embarque
+                'Dst_cmp' : inv.dst_country_id.code,
+                'Cliente' : inv.partner_id.name,
+                'Domicilio_cliente' : inv.partner_id.contact_address,
+                'Cuit_pais_cliente' : cuit_pais,
+                'Id_impositivo' : inv.partner_id.vat,
+                'Moneda_Id' : curr_code,
+                'Moneda_ctz' : 1.000000, # TODO: Obtener cotizacion usando el metodo de AFIP
+                'Imp_total' : inv.amount_total,
+                'Idioma_cbte' : 1,
+                'Items' : items
             }
 
-            Cmps_asoc.append(Cmp_asoc)
+            # Datos No Obligatorios
+            if inv.incoterm_id:
+                Cmp['Incoterms'] = inv.incoterm_id.code
+                Cmp['Incoterms_Ds'] = inv.incoterm_id.name
 
-        Cmp = {
-            'invoice_id' : inv.id,
-            'Id' : Id,
-            #'Tipo_cbte' : cbte_tipo,
-            'Fecha_cbte' : formatted_date_invoice,
-            #'Punto_vta' : pto_venta,
-            'Cbte_nro' : cbte_nro,
-            'Tipo_expo' : inv.export_type_id.code, #Exportacion de bienes
-            'Permiso_existente' : '', # TODO: manejo de permisos de embarque
-            'Dst_cmp' : inv.dst_country_id.code,
-            'Cliente' : inv.partner_id.name,
-            'Domicilio_cliente' : inv.partner_id.contact_address,
-            'Cuit_pais_cliente' : cuit_pais,
-            'Id_impositivo' : inv.partner_id.vat,
-            'Moneda_Id' : curr_code,
-            'Moneda_ctz' : 1.000000, # TODO: Obtener cotizacion usando el metodo de AFIP
-            'Imp_total' : inv.amount_total,
-            'Idioma_cbte' : 1,
-            'Items' : items
-        }
-
-        # Datos No Obligatorios
-        if inv.incoterm_id:
-            Cmp['Incoterms'] = inv.incoterm_id.code
-            Cmp['Incoterms_Ds'] = inv.incoterm_id.name
-
-        if Cmps_asoc:
-            Cmp['Cmps_Asoc'] = Cmps_asoc
+            if Cmps_asoc:
+                Cmp['Cmps_Asoc'] = Cmps_asoc
         return Cmp
 
 wsfex_config()

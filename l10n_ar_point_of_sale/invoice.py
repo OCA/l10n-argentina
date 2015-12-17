@@ -143,7 +143,7 @@ class invoice(models.Model):
     amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
     amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
     amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    local = fields.Boolean(string='Local', related='fiscal_position.local', default=True)
+    local = fields.Boolean(string='Local', related='fiscal_position.local', store=True, default=True)
 
     #Validacion para que el total de una invoice no pueda ser negativo.
     @api.one
@@ -380,6 +380,9 @@ class invoice(models.Model):
                         res['value'].update({'local': fiscal_position.local,
                                              'denomination_id': denomination_id,
                                              'pos_ar_id': pos[0].id})
+
+        else:
+            res['value']['local'] = True
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):

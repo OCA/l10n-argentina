@@ -131,7 +131,6 @@ class account_invoice(models.Model):
         self.ensure_one()
         inv = self
         voucher_type_obj = self.env['wsfe.voucher_type']
-        import ipdb; ipdb.set_trace()
 
         # Obtenemos el tipo de comprobante
         tipo_cbte = voucher_type_obj.get_voucher_type(inv)
