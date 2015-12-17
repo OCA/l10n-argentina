@@ -270,12 +270,9 @@ class invoice(models.Model):
         self.write({})
 
         for inv in self:
-            partner_country = inv.partner_id.country_id and inv.partner_id.country_id.id or False
-            company_country = inv.company_id.country_id and inv.company_id.country_id.id or False
 
+            local = True
             if self.type in ('in_invoice', 'in_refund'):
-                local = (partner_country == company_country) or partner_country == False
-            else:
                 local = self.fiscal_position.local
 
             #move_id = obj_inv.move_id and obj_inv.move_id.id or False
