@@ -9,13 +9,101 @@
             <field name="name">wsfe.account.invoice.form.inherit</field>
             <field name="model">account.invoice</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="inherit_id" ref="l10n_ar_point_of_sale.view_pos_invoice_form"/>
             <field name="arch" type="xml">
                 <field name="fiscal_position" position="after">
-					<field name="cae" string="CAE" readonly="1"/>
-					<field name="cae_due_date" readonly="1"/>
+                    <field name="local" invisible="1"/>
+					<field name="aut_cae" invisible="1"/>
+                    <field name="export_type_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
+                    <field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
+                    <field name="dst_cuit_id" widget="selection" attrs="{'invisible': [('local','=', True)]}"/>
                 </field>
-            </field>
+                <field name="pos_ar_id" position="after">
+                    <field name="cae" string="CAE" readonly="1"/>
+                    <field name="cae_due_date" readonly="1"/>
+                    <field name="incoterm_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
+                </field>
+                <page string="Other Info" position="before">
+                    <page string="Export Invoice" attrs="{'invisible': [('local','=', True)]}">
+                        <group string="Shipping Permissions">
+                            <field name="shipping_perm_ids" nolabel="1" widget="one2many_list">
+                                <tree string="Shipping Permission" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="dst_country_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Associated Invoices">
+                            <field name="associated_inv_ids" nolabel="1">
+                                <tree string="Associated Invoices">
+                                    <field name="partner_id" groups="base.group_user"/>
+                                    <field name="date_invoice"/>
+                                    <field name="denomination_id"/>
+                                    <field name="internal_number"/>
+                                    <field name="reference" invisible="1"/>
+                                    <field name="date_due"/>
+                                    <field name="origin"/>
+                                    <field name="residual" sum="Residual Amount"/>
+                                    <field name="amount_untaxed" sum="Untaxed Amount"/>
+                                    <field name="amount_total" sum="Total Amount"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="History Requests">
+                                <field name="wsfex_request_ids" nolabel="1">
+                                <tree string="Requests">
+                                    <field name="request_id"/>
+                                    <field name="date"/>
+                                    <field name="voucher_number"/>
+                                    <field name="voucher_type_id"/>
+                                    <field name="result"/>
+                                </tree>
+                                <form string="Requests" version="7.0">
+                                    <group>
+                                        <group>
+                                            <field name="voucher_type_id"/>
+                                            <field name="voucher_number"/>
+                                            <field name="request_id"/>
+                                         </group>
+                                        <group>
+                                            <field name="date"/>
+                                            <field name="result"/>
+                                            <field name="cae"/>
+                                            <field name="cae_duedate"/>
+                                        </group>
+                                     </group>
+                                    <group>
+                                        <group string="Error">
+                                            <field name="error" nolabel="1"/>
+                                        </group>
+                                        <group string="Event">
+                                            <field name="event" nolabel="1"/>
+                                        </group>
+                                    </group>
+                                    <group string="Details">
+                                        <field name="detail" nolabel="1"/>
+                                    </group>
+                               </form>
+                            </field>
+                        </group>
+                    </page>
+                </page>
+
+                <page string="Payments" position="after">
+                    <page string="WSFE Requests" attrs="{'invisible': ['|', ('aut_cae','=', False), ('local','=',False)]}">
+                        <field name="wsfe_request_ids" readonly="1">
+                            <tree string="WSFE Request Details">
+                                <field name="voucher_date"/>
+                                <field name="voucher_number"/>
+                                <field name="result"/>
+                                <field name="observations"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+
+           </field>
         </record>
 
         <!-- Add CAI to Supplier Invoices -->
