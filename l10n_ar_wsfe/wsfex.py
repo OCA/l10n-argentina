@@ -506,9 +506,47 @@ class wsfex_config(models.Model):
         return invoices_approbed
 
     # TODO: Migrar a v8
-    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, details, res, context=None):
+    def _log_wsfe_request(self, cr, uid, ids, pos, voucher_type_code, detail, res, context=None):
 
-        return 0
+        wsfex_req_obj = self.pool.get('wsfex.request.detail')
+        voucher_type_obj = self.pool.get('wsfe.voucher_type')
+        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
+        #voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
+
+        error = 'error' in res
+
+        # Esto es para fixear un bug que al hacer un refund, si fallaba algo con la AFIP
+        # se hace el rollback por lo tanto el refund que se estaba creando ya no existe en
+        # base de datos y estariamos violando una foreign key contraint. Por eso,
+        # chequeamos que existe info de la invoice_id, sino lo seteamos en False
+        read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
+
+        if not read_inv:
+            invoice_id = False
+        else:
+            invoice_id = detail['invoice_id']
+
+        vals = {
+            'invoice_id': invoice_id,
+            'request_id': detail['Id'],
+            'voucher_number': '%04d-%08d' % (pos, detail['Cbte_nro']),
+            'voucher_type_id': voucher_type_ids[0],
+            'date': detail['Fecha_cbte'],
+            'detail': str(detail),
+            'error': 'error' in res and res['error'] or '',
+            'event': 'event' in res and res['event'] or '',
+        }
+
+        if not error:
+            comp = res['response']
+            vals['cae'] = comp['Cae']
+            vals['cae_duedate'] = comp['Fch_venc_Cae']
+            vals['result'] = comp['Resultado']
+            vals['reprocess'] = comp['Reproceso']
+        else:
+            vals['result'] = 'R'
+
+        return wsfex_req_obj.create(cr, uid, vals)
 
     # TODO: Migrar a v8
     def get_last_voucher(self, cr, uid, ids, pos, voucher_type, context={}):

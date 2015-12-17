@@ -45,6 +45,8 @@ class account_invoice(models.Model):
     dst_cuit_id = fields.Many2one('wsfex.dst_cuit.codes', 'Country CUIT')
     shipping_perm_ids = fields.One2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions')
     incoterm_id = fields.Many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions.")
+    wsfex_request_ids = fields.One2many('wsfex.request.detail', 'invoice_id')
+
 
     @api.multi
     def onchange_partner_id(self, type, partner_id, date_invoice=False,
