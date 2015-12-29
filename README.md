@@ -15,6 +15,7 @@ addon | version | summary
 [l10n_ar_account_create_check](l10n_ar_account_create_check/) | 8.0.0.1.0 (unported) | Checkbook Management
 [l10n_ar_account_payment](l10n_ar_account_payment/) | 8.0.1.0.0 (unported) | Payments for ARGENTINA
 [l10n_ar_bank_statement](l10n_ar_bank_statement/) | 8.0.1.0.0 (unported) | Bank Statements
+[l10n_ar_base_country_state](l10n_ar_base_country_state/) | 9.0.1.0.0 | Argentina's States (Provincias)
 [l10n_ar_cash_register](l10n_ar_cash_register/) | 8.0.1.0.0 (unported) | Cash Register
 [l10n_ar_chart_of_account](l10n_ar_chart_of_account/) | 8.0.1.0.0 (unported) | Argentina - Chart of Account
 [l10n_ar_electronic_invoice_storage_rg1361](l10n_ar_electronic_invoice_storage_rg1361/) | 8.0.1.0.0 (unported) | l10n_ar_electronic_invoice_storage_rg1361
