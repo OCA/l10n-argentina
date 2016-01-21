@@ -30,7 +30,18 @@ class account_voucher(models.Model):
     _name = "account.voucher"
     _inherit = "account.voucher"
 
+    @api.model
+    def _get_journal(self):
+        res = super(account_voucher, self)._get_journal()
+        ttype = self.env.context.get('type', 'bank')
+        if ttype in ('payment', 'receipt'):
+            res = self._make_journal_search(ttype)
+            res = res[0] or False
+
+        return res
+
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
+    journal_id = fields.Many2one('account.journal', 'Journal', default=_get_journal, required=True, readonly=True, states={'draft':[('readonly',False)]})
     account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
 
     def name_get(self, cr, uid, ids, context=None):
