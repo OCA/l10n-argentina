@@ -22,6 +22,7 @@
 ##############################################################################
 
 import account_voucher
+import account
 import payment_mode_receipt
 import invoice
 
