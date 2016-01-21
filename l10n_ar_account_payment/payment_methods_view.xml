@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="action_journal_payment_methods_form" model="ir.actions.act_window">
+            <field name="name">Payment Methods</field>
+            <field name="res_model">account.journal</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type', 'in', ['cash', 'bank'])]</field>
+            <field name="context">{'default_type': 'cash'}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a journal.
+              </p><p>
+                A payment method is used to record transactions of all accounting data
+                related to the payment or receipts.
+              </p><p>
+                A typical company may use one journal per payment method (cash,
+                bank accounts, checks), then they will be available for using
+                on Customer and Supplier Payments.
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="action_journal_payment_methods_form" id="menu_action_payment_method" parent="account.menu_configuration_misc" sequence="15"/>
+
+    </data>
+</openerp>

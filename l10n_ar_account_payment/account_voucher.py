@@ -31,9 +31,6 @@ class account_voucher(models.Model):
     _inherit = "account.voucher"
 
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
-    # TODO: Chequear que al quitar el required de este campo, no moleste en
-    # los Sales Receipt y en los Purchase Receipts. Sino vamos a tener
-    # que ponerlo en la vista de cada uno de esos
     account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
 
     def name_get(self, cr, uid, ids, context=None):
@@ -71,14 +68,15 @@ class account_voucher(models.Model):
 
     @api.model
     def _get_payment_lines_default(self, ttype, currency_id):
-        pay_mod_pool = self.env['payment.mode.receipt']
-        modes = pay_mod_pool.search([('type', '=', ttype), ('currency', '=', currency_id)])
-        if not modes:
+        pay_method_obj = self.env['account.journal']
+        methods = pay_method_obj.search([('type', 'in', ['cash', 'bank']), '|', ('currency','=',currency_id), ('currency','=',False)])
+
+        if not methods:
             return {}
 
         lines = []
-        for mode in modes:
-            lines.append({'name': mode.name, 'amount': 0.0, 'amount_currency': 0.0, 'payment_mode_id': mode.id, 'currency': mode.currency.id})
+        for method in methods:
+            lines.append({'name': method.name ,'amount': 0.0 ,'amount_currency':0.0 ,'payment_mode_id': method.id, 'currency': method.currency.id})
 
         return lines
 
@@ -88,21 +86,6 @@ class account_voucher(models.Model):
             if payment_line.amount == 0:
                 payment_line.unlink()
         return True
-
-#    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
-#
-#        lines_to_unlink = []
-#
-#        for voucher in self.browse(cr, uid, ids, context=context):
-#            for payment_line in voucher.payment_line_ids:
-#                if payment_line.amount == 0:
-#                    lines_to_unlink.append(payment_line.id)
-#
-#                amount += payment_line.amount
-#
-#        if context.get('zero_check', False):
-#            self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
-#        return amount
 
     @api.multi
     def proforma_voucher(self):
@@ -174,8 +157,10 @@ class account_voucher(models.Model):
             debit = credit = 0.0
             if self.type in ('purchase', 'payment'):
                 credit = amount_in_company_currency
+                pl_account_id = pl.payment_mode_id.default_credit_account_id.id
             elif self.type in ('sale', 'receipt'):
                 debit = amount_in_company_currency
+                pl_account_id = pl.payment_mode_id.default_debit_account_id.id
             if debit < 0:
                 credit = -debit
                 debit = 0.0
@@ -188,7 +173,7 @@ class account_voucher(models.Model):
                 'name': pl.name or '/',
                 'debit': debit,
                 'credit': credit,
-                'account_id': pl.payment_mode_id.account_id.id,
+                'account_id': pl_account_id,
                 'move_id': move_id,
                 'journal_id': self.journal_id.id,
                 'period_id': self.period_id.id,
@@ -212,7 +197,7 @@ class account_voucher(models.Model):
             amount_debit += line['debit']
 
         if round(amount_credit, 3) != round(total_credit, 3) or round(amount_debit, 3) != round(total_debit, 3):
-            raise osv.except_osv(_('Voucher Error!'), _('Voucher Paid Amount and sum of different payment mode must be equal'))
+            raise osv.except_osv(_('Voucher Error!'), _('Voucher Paid Amount and sum of different payment method must be equal'))
 
         return move_lines
 
@@ -318,7 +303,6 @@ class account_voucher(models.Model):
         return default
 
 account_voucher()
-
 
 class account_voucher_line(models.Model):
     _name = 'account.voucher.line'
