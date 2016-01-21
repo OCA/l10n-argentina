@@ -42,7 +42,7 @@
         'payment_methods_view.xml',
     ],
     'demo': [
-        'payment_mode_demo.xml',
+        'payment_methods_demo.xml',
     ],
     'installable': True,
     'active': False,

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="receipt_journal" model="account.journal">
+            <field name="name">Talonario R0001</field>
+            <field name="code">R 0001</field>
+            <field name="type">receipt</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <record id="payment_journal" model="account.journal">
+            <field name="name">Talonario OP0001</field>
+            <field name="code">OP 0001</field>
+            <field name="type">payment</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</openerp>
