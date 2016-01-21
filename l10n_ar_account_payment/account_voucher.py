@@ -31,7 +31,10 @@ class account_voucher(models.Model):
     _inherit = "account.voucher"
 
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
-    journal_sequence = fields.Many2one('ir.sequence', 'Book', readonly=True, states={'draft': [('readonly', False)]})
+    # TODO: Chequear que al quitar el required de este campo, no moleste en
+    # los Sales Receipt y en los Purchase Receipts. Sino vamos a tener
+    # que ponerlo en la vista de cada uno de esos
+    account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
 
     def name_get(self, cr, uid, ids, context=None):
         if not ids:
@@ -252,17 +255,6 @@ class account_voucher(models.Model):
             # Get the name of the account_move just created
             name = move_recordset.name
             move_id = move_recordset.id
-
-            # Escribimos el numero del voucher
-            # Seteamos el numero de la OP
-            voucher_vals = {'number': 'name'}
-            if voucher.type in ('payment', 'receipt'):
-                if not voucher.reference:
-                    ref = self.env['ir.sequence'].next_by_id(voucher.journal_sequence.id)
-                    voucher_vals['reference'] = ref
-                    self._update_move_reference(move_id, ref)
-
-            voucher.write(voucher_vals)
 
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc

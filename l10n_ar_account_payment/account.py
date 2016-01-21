@@ -49,7 +49,6 @@ class account_journal(models.Model):
         """ Create new no_gap entry sequence for every new Joural
         """
 
-        import ipdb; ipdb.set_trace()
         # Creacion de secuencia. Si es de tipo payment o receipt
         # la secuencia la armamos de otra manera
         journal_type = vals['type']
