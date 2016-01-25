@@ -21,6 +21,6 @@
 ##############################################################################
 
 import account_voucher
-import payment_mode_receipt
+#import payment_mode_receipt
 import cash_statement
 import wizard

@@ -45,17 +45,17 @@ class account_voucher(osv.osv):
                 aux_account = vou.partner_id.property_account_payable.id
             
             for line in vou.payment_line_ids:
-                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'cash':
-                    aux_name = line.voucher_id.number
+                if line.payment_mode_id.type in 'cash':
+                    voucher_number = line.voucher_id.number
                     
                     amount = line.amount * sign
                     
                     statement = self.pool.get('account.bank.statement').search(cr, uid, 
-                    [('journal_id','=', line.payment_mode_id.journal_id.id),('state','=','open')], order='date', limit=1)
+                    [('journal_id','=', line.payment_mode_id.id),('state','=','open')], order='date', limit=1)
                     
                     if statement:
                         st_line = {
-                            'name': vou.reference,
+                            'name': voucher_number,
                             'date': line.date or vou.date,
                             'amount': amount,
                             'account_id': aux_account,
