@@ -14,7 +14,7 @@
         <separator string="Configuration"  colspan="4"/>
         <field name="based_on" />
         <field name="report_id" invisible="1" />
-        <field name="report_config_id" domain="[('tax_report_id','=',report_id), ('based_on','=',based_on)]" />
+        <field name="report_config_id" domain="[('based_on','=',based_on)]" />
         <group col="2" colspan="4">
           <button icon='gtk-cancel' special="cancel"  string="Cancel" />
           <button name="create_report" string="Print Report" colspan="1" type="object" icon="gtk-ok"/>
