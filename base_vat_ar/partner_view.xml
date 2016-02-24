@@ -9,7 +9,7 @@
       <field name="arch" type="xml">
         <field name="vat" position="before">
             <group>
-              <field name="document_type_id" widget="selection"/>
+              <field name="document_type_id" nolabel="1" placeholder="Document Type..." class="oe_inline" widget="selection"/>
             </group>
         </field>
       </field>
