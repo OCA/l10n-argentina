@@ -29,9 +29,22 @@ class account_voucher(osv.osv):
     _name = "account.voucher"
     _inherit = "account.voucher"
 
+    def _get_journal(self, cr, uid, context=None):
+        res = super(account_voucher, self)._get_journal(cr, uid, context)
+        ttype = context.get('type', 'bank')
+        if ttype in ('payment', 'receipt'):
+            res = self._make_journal_search(cr, uid, ttype, context=context)
+            res = res[0] or False
+
+        return res
+
     _columns = {
       'payment_line_ids': fields.one2many('payment.mode.receipt.line' , 'voucher_id' , 'Payments Lines'),
       'account_id':fields.many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]}),
+    }
+
+    _defaults = {
+        'journal_id':_get_journal,
     }
 
     def name_get(self, cr, uid, ids, context=None):
