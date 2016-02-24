@@ -152,39 +152,35 @@ class invoice(models.Model):
         if self.amount_total < 0:
             raise ValidationError(_('Error! The total amount cannot be negative'))
 
-#    @api.one
-#    @api.constrains('denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number')
-#    def _check_duplicate(self):
-#
-#        denomination_id = self.denomination_id
-#        pos_ar_id = self.pos_ar_id
-#        partner_id = self.partner_id or False
-#        company_id = self.company_id or False
-#
-#        partner_country = partner_id.country_id
-#        company_country = company_id.country_id
-#
-#        if self.type in ('in_invoice', 'in_refund'):
-#            local = (partner_country  == company_country) or partner_country == False
-#
-#            # Si no es local, no hacemos chequeos
-#            if not local:
-#                return
-#
-#        # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
-#        # duplicada hasta que no le pongan el numero
-#        if not invoice['internal_number']:
-#            return
-#
-#        if self.type in ('out_invoice', 'out_refund'):
-#            count = self.search_count([('denomination_id','=',denomination_id.id), ('pos_ar_id','=',pos_ar_id.id), ('is_debit_note','=',self.is_debit_note), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
-#
-#            if count > 1:
-#                raise ValidationError(_('Error! The Invoice is duplicated.'))
-#        else:
-#            count = self.search_count([('denomination_id','=',denomination_id.id), ('is_debit_note','=',self.is_debit_note), ('partner_id','=',partner_id.id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
-#            if count > 1:
-#                raise ValidationError(_('Error! The Invoice is duplicated.'))
+    @api.one
+    @api.constrains('denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number')
+    def _check_duplicate(self):
+
+        denomination_id = self.denomination_id
+        pos_ar_id = self.pos_ar_id
+        partner_id = self.partner_id or False
+
+        if self.type in ('in_invoice', 'in_refund'):
+            local = self.fiscal_position.local
+
+            # Si no es local, no hacemos chequeos
+            if not local:
+                return
+
+        # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
+        # duplicada hasta que no le pongan el numero
+        if not self.internal_number:
+            return
+
+        if self.type in ('out_invoice', 'out_refund'):
+            count = self.search_count([('denomination_id','=',denomination_id.id), ('pos_ar_id','=',pos_ar_id.id), ('is_debit_note','=',self.is_debit_note), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
+
+            if count > 1:
+                raise ValidationError(_('Error! The Invoice is duplicated.'))
+        else:
+            count = self.search_count([('denomination_id','=',denomination_id.id), ('is_debit_note','=',self.is_debit_note), ('partner_id','=',partner_id.id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
+            if count > 1:
+                raise ValidationError(_('Error! The Invoice is duplicated.'))
 
     @api.one
     def _check_fiscal_values(self):
