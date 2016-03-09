@@ -50,7 +50,7 @@ class res_partner(osv.osv):
             if not partner.vat:
                 continue
 
-            res = self.search_count(cr, uid, [('vat', '=', partner.vat), ('document_type_id', '=', partner.document_type_id.id)], context=context)
+            res = self.search_count(cr, uid, [('vat', '=', partner.vat), ('document_type_id', '=', partner.document_type_id.id), ('parent_id', '=', False)], context=context)
             if res > 1:
                 return False
         return True
