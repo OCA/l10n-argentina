@@ -94,6 +94,10 @@ class res_partner(osv.osv):
     _constraints = [(check_vat, _('The Vat does not seems to be correct.'), ["vat"]),
                     (check_vat_duplicated, _("There is another partner with same VAT Information"), ["vat", "document_type_id"])]
 
+    def _commercial_fields(self, cr, uid, context=None):
+        return super(res_partner, self)._commercial_fields(cr, uid, context=context) + ['document_type_id']
+
+
     def check_vat_ar(self,vat):
         """
         Check VAT Routine for Argentina.
