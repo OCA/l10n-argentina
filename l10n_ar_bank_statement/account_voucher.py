@@ -39,13 +39,13 @@ class account_voucher(osv.osv):
                 sign = -1
                 
             for line in vou.payment_line_ids:
-                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type not in 'bank':
+                if line.payment_mode_id and line.payment_mode_id.type not in 'bank':
                     continue
 
                 amount = line.amount * sign
                     
                 st_line = {
-                    'name': vou.reference,
+                    'name': vou.number,
                     'date': line.date or vou.date,
                     'payment_date': line.date or vou.date,
                     'amount': amount,
@@ -56,7 +56,7 @@ class account_voucher(osv.osv):
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
                     #~ 'ref': line.payment_mode_id.name,
-                    'aux_journal_id': line.payment_mode_id.journal_id.id,
+                    'aux_journal_id': line.payment_mode_id.id,
                 }
 
                 st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -80,7 +80,7 @@ class account_voucher(osv.osv):
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
                     'ref': vou.reference,
-                    'aux_journal_id': issued_check.account_bank_id.journal_id.id,
+                    'aux_journal_id': issued_check.account_bank_id.id,
                 }
 
                 st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)

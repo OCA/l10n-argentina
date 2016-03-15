@@ -61,7 +61,7 @@ class project_import(osv.osv_memory):
                 aux_account = vou.partner_id.property_account_payable.id
             
             for line in vou.payment_line_ids:
-                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'bank':
+                if line.payment_mode_id and line.payment_mode_id.type in 'bank':
                     aux_name = line.voucher_id.number
                     
                     if sign:
@@ -88,7 +88,7 @@ class project_import(osv.osv_memory):
                         'creation_type': 'system',
                         #~ 'ref': vou.reference,
                         'ref': vou.number,
-                        'journal_id': line.payment_mode_id.journal_id.id,
+                        'journal_id': line.payment_mode_id.id,
                     }
 
                     st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -127,7 +127,7 @@ class project_import(osv.osv_memory):
                         'creation_type': 'system',
                         'ref_voucher_id': check.source_voucher_id.id,
                         'ref': check.source_voucher_id.number,
-                        'journal_id': check.deposit_bank_id.journal_id.id,
+                        'journal_id': check.deposit_bank_id.id,
                     }
 
                     st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -156,7 +156,7 @@ class project_import(osv.osv_memory):
                     'partner_id': vou.partner_id and vou.partner_id.id,
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
-                    'journal_id': issued_check.account_bank_id.journal_id.id,
+                    'journal_id': issued_check.account_bank_id.id,
                 }
 
                 st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)    
