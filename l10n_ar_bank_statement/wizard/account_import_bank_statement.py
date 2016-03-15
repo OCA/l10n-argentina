@@ -25,8 +25,19 @@ from openerp.osv import osv, fields
 class account_import_statement_lines(osv.osv_memory):
     _name = "account.import.statement.lines"
     _description = "Account Import Statement Lines"
+
+
+    def default_get(self, cr, uid, fields, context=None):
+        res = super(account_import_statement_lines, self).default_get(cr, uid, fields, context=context)
+        aux = self.pool.get('account.bank.statement').browse(cr, uid, context['active_id'],context)
+        for field in fields:
+            if field in 'journal_id':
+                res.update({'journal_id': aux.journal_id.id})
+        return res
+
     _columns = {
         #~ , domain=[('journal_id','=',journal_id)]
+        'journal_id': fields.many2one('account.journal', 'Journal'),
         'lines': fields.many2many('account.bank.statement.line', 'account_bank_statement_line_rel_', 'statement_id', 'line_id', 'Account Bank Statement Lines')
     }
 

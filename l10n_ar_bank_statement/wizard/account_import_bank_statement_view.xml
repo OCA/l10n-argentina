@@ -5,27 +5,32 @@
         <record id="account_import_statement_lines_view" model="ir.ui.view">
              <field name="name">Import statement lines</field>
              <field name="model">account.import.statement.lines</field>
-             <field name="type">form</field>
              <field name="arch" type="xml">
                 <form string="Import Statement lines">
+                    <p class="oe_grey">
+                        You will be able
+                        to import statement line only to selected journal.
+                    </p>
                     <group colspan="4" col="6">
-                        <field name="lines" domain="[('state', '=', 'draft'),('bank_statement','=',True)]" colspan="4" height="300" width="800" nolabel="1"
+                        <field name="journal_id" invisible="1"/>
+                        <field name="lines" domain="[('state', '=', 'draft'),('aux_journal_id','=', journal_id)]" colspan="4" nolabel="1"
                         context="{'tree_view_ref':'l10n_ar_bank_statement.view_bank_statement_lines_tree', 'search_view_ref':'l10n_ar_bank_statement.view_bank_statement_lines_search'}">
-							<tree>
-								<field name="sequence" readonly="1" invisible="1"/>
-								<field name="date" groups="base.group_extended"/>
-								<field name="name"/>
-								<field name="journal_id"/>
-								<field name="ref"/>
-								<field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
-								<field name="type" on_change="onchange_type(partner_id, type)"/>
-								<field domain="[('journal_id','=',parent.journal_id), ('company_id', '=', parent.company_id)]" name="account_id"/>
-								<field name="amount"/>
-							</tree>
-						</field>
-                        <separator colspan="6"/>
-                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
-                        <button name="import_statement_lines" string="ADD" type="object" icon="gtk-ok"/>
+                            <tree create="false" delete="false">
+                                <field name="sequence" readonly="1" invisible="1"/>
+                                <field name="date"/>
+                                <field name="name"/>
+                                <field name="aux_journal_id"/>
+                                <field name="ref"/>
+                                <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                                <field name="type" on_change="onchange_type(partner_id, type)"/>
+                                <field name="account_id"/>
+                                <field name="amount"/>
+                            </tree>
+                        </field>
+                        <footer>
+                            <button special="cancel" string="Cancel"/>
+                            <button name="import_statement_lines" string="ADD" type="object" default_focus="1" class="oe_highlight"/>
+                        </footer>
                     </group>
                 </form>
              </field>
