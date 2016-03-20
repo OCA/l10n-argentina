@@ -714,7 +714,7 @@ msgstr "Calendario por Fecha de Endoso"
 #: code:addons/l10n_ar_account_check/wizard/check_reject.py:85
 #, python-format
 msgid "Check %s has to be deposited or delivered!"
-msgstr "Cheque %s ha sido depositado o entregado!"
+msgstr "Cheque %s tiene que ser depositado o entregado!"
 
 #. module: l10n_ar_account_check
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_add_issued_check
