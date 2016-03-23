@@ -155,7 +155,7 @@ class account_third_check(models.Model):
     origin = fields.Char('Origin', size=64)
     dest = fields.Char('Destiny', size=64)
     deposit_bank_id = fields.Many2one('res.partner.bank', 'Deposit Account')
-    source_voucher_id = fields.Many2one('account.voucher', 'Source Voucher', readonly=True)
+    source_voucher_id = fields.Many2one('account.voucher', 'Source Voucher', ondelete="cascade", readonly=True)
     debit_note_id = fields.Many2one('account.invoice', 'Debit Note', readonly=True, help="In case of rejection of the third check")
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', readonly=True, states={'draft': [('readonly', False)]}, default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
     note = fields.Text('Additional Information')
