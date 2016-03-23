@@ -50,10 +50,13 @@ class account_voucher(osv.osv):
                     
                     amount = line.amount * sign
                     
+                    voucher_date = line.voucher_id.date or fields.date.context_today(self,cr,uid,context=context)
                     statement = self.pool.get('account.bank.statement').search(cr, uid, 
-                    [('journal_id','=', line.payment_mode_id.id),('state','=','open')], order='date', limit=1)
+                    [('journal_id','=', line.payment_mode_id.id),('state','=','open'),
+                     ('date', '<=', voucher_date)], order='date desc')
                     
                     if statement:
+                        # Elegimos la primer caja que sera la que corresponde en fecha
                         st_line = {
                             'name': voucher_number,
                             'date': line.date or vou.date,
@@ -71,7 +74,6 @@ class account_voucher(osv.osv):
                         st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
                     else:
                         raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with cash and box not open."))
-
             return True
         
     def cancel_voucher(self, cr, uid, ids, vals, context=None):
