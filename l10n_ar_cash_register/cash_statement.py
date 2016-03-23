@@ -51,7 +51,7 @@ class account_bank_statement(osv.osv):
             move_ids = []
             for st_line in st.line_ids:
                 #~ compruebo los movimientos que son desde caja para generar los asientos
-                if not st_line.type in ('expenses', 'income'):
+                if not st_line.type in ('expenses', 'income', 'difference'):
                     continue
                 #~ fin
                 if not st_line.amount:
@@ -123,6 +123,32 @@ class account_bank_statement(osv.osv):
 class account_cash_statement(osv.osv):
     
     _inherit = "account.bank.statement"
+
+    def _update_balances(self, cr, uid, ids, context=None):
+        """
+            Set starting and ending balances according to pieces count
+        """
+        res = {}
+        for statement in self.browse(cr, uid, ids, context=context):
+            if (statement.journal_id.type not in ('cash',)):
+                continue
+            if not statement.journal_id.cash_control:
+                # Quitamos el codigo original que escribia el
+                # balance final real con el balance final teorico
+                # Esto permite registrar una diferencia de caja
+                continue
+            start = end = 0
+            for line in statement.details_ids:
+                start += line.subtotal_opening
+                end += line.subtotal_closing
+            data = {
+                'balance_start': start,
+                'balance_end_real': end,
+            }
+            res[statement.id] = data
+            super(account_cash_statement, self).write(cr, uid, [statement.id], data, context=context)
+        return res
+
     
     def button_confirm_cash(self, cr, uid, ids, context=None):
         print 'cajero'
@@ -144,12 +170,14 @@ class account_cash_statement(osv.osv):
                 if not obj.journal_id.profit_account_id:
                     raise osv.except_osv(_('Error!'), _('There is no Profit Account on the journal %s.') % (obj.journal_id.name,))
 
+            # Asentamos la diferencia
             values = {
                 'statement_id' : obj.id,
                 'journal_id' : obj.journal_id.id,
                 'account_id' : account.id,
                 'amount' : obj.difference,
                 'name' : name,
+                'type' : 'difference',
             }
             absl_proxy.create(cr, uid, values, context=context)
 
@@ -177,6 +205,7 @@ class account_bank_statement_line(osv.osv):
         'type': fields.selection([
             ('expenses','Expenses'),
             ('income','Income'),
+            ('difference','Difference'),
             ('general','General'),
             ('payment','Payment'),
             ('receipt','Receipt')
