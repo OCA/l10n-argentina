@@ -40,23 +40,21 @@ class sale_order(models.Model):
         return res_pos
 
     @api.model
-    def _make_invoice(self, order, lines):
-        invoice_id = super(sale_order, self)._make_invoice(order, lines)
+    def _prepare_invoice(self, order, lines):
 
-        # Denominacion
-        if not order.fiscal_position:
+        fpos_obj = self.env['account.fiscal.position']
+        res = super(sale_order, self)._prepare_invoice(order, lines)
+
+        fiscal_position = res['fiscal_position']
+        if not fiscal_position:
             raise osv.except_osv(_('Error'), _('Check the Fiscal Position Configuration. sale.order[#{0}] {1}'.format(order.id, order.name)))
 
-        denom = order.fiscal_position.denomination_id
+        fiscal_position = fpos_obj.browse(fiscal_position)
+        denom = fiscal_position.denomination_id
 
         pos_ar = self._get_pos_ar(order, denom)
-
-        inv_obj = self.env['account.invoice']
         vals = {'denomination_id': denom.id, 'pos_ar_id': pos_ar.id}
-        # escribo en esa invoice y retorno su id como debe ser
-        invoice = inv_obj.browse(invoice_id)
-        invoice.write(vals)
-
-        return invoice_id
+        res.update(vals)
+        return res
 
 sale_order()
