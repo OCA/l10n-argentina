@@ -44,13 +44,6 @@ class account_voucher(models.Model):
     journal_id = fields.Many2one('account.journal', 'Journal', default=_get_journal, required=True, readonly=True, states={'draft':[('readonly',False)]})
     account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
 
-    def name_get(self, cr, uid, ids, context=None):
-        if not ids:
-            return []
-        if context is None:
-            context = {}
-        return [(r['id'], (str("%s - %.2f" % (r['reference'], r['amount'])) or '')) for r in self.read(cr, uid, ids, ['reference', 'amount'], context, load='_classic_write')]
-
     @api.multi
     def _get_payment_lines_amount(self):
         amount = 0.0
