@@ -40,6 +40,7 @@
         'account_voucher_view.xml',
         #'account_payment_view.xml',
         'payment_methods_view.xml',
+        'account_journal_view.xml',
     ],
     'demo': [
         'payment_methods_demo.xml',

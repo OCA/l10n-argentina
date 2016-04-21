@@ -42,6 +42,7 @@ class account_journal(models.Model):
                                   " Select 'Opening/Closing Situation' for entries generated for new fiscal years."\
                                   " Select 'Receipt' for Receipt Vouchers."\
                                   " Select 'Payment' for Payment Vouchers.")
+    priority = fields.Integer()
 
 
     @api.model

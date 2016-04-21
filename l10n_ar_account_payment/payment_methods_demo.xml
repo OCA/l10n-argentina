@@ -6,6 +6,7 @@
             <field name="name">Talonario R0001</field>
             <field name="code">R 0001</field>
             <field name="type">receipt</field>
+            <field name="priority">5</field>
             <field name="user_id" ref="base.user_root"/>
         </record>
 
@@ -13,8 +14,8 @@
             <field name="name">Talonario OP0001</field>
             <field name="code">OP 0001</field>
             <field name="type">payment</field>
+            <field name="priority">7</field>
             <field name="user_id" ref="base.user_root"/>
         </record>
-
     </data>
 </openerp>
