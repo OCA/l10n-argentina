@@ -200,7 +200,7 @@ class account_voucher(models.Model):
             amount_credit += line['credit']
             amount_debit += line['debit']
 
-        if abs(round(amount_credit, 3)-round(amount_debit, 3)) != abs(round(total_credit, 3)-round(total_debit, 3)):
+        if abs(round(amount_credit-amount_debit, 3)) != abs(round(total_credit-total_debit, 3)):
             raise osv.except_osv(_('Voucher Error!'), _('Voucher Paid Amount and sum of different payment method must be equal'))
 
         return move_lines
