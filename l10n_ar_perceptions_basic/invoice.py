@@ -75,8 +75,12 @@ class perception_tax_line(osv.osv):
         inv = inv_obj.browse(cr, uid, invoice_id)
         company_currency = inv.company_id.currency_id.id
 
-        base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
-        tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+        if inv.type in ('out_invoice', ):
+            base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+            tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+        else:  # inv is out_refund
+            base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.ref_base_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+            tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.ref_tax_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
         return (tax_amount, base_amount)
 
 perception_tax_line()
