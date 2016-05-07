@@ -67,8 +67,12 @@ class perception_tax_line(models.Model):
         currency = invoice.currency_id.with_context(date=invoice.date_invoice or fields.Date.context_today(invoice))
         company_currency = invoice.company_id.currency_id
 
-        base_amount = currency.compute(base * tax.base_sign, company_currency, round=False)
-        tax_amount = currency.compute(amount * tax.tax_sign, company_currency, round=False)
+        if invoice.type in ('out_invoice', ):
+            base_amount = currency.compute(base * tax.base_sign, company_currency, round=False)
+            tax_amount = currency.compute(amount * tax.tax_sign, company_currency, round=False)
+        else:  # invoice is out_refund
+            base_amount = currency.compute(base * tax.ref_base_sign, company_currency, round=False)
+            tax_amount = currency.compute(amount * tax.ref_tax_sign, company_currency, round=False)
         return (tax_amount, base_amount)
 
 perception_tax_line()
