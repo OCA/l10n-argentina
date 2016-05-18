@@ -204,7 +204,7 @@ class account_third_check(models.Model):
             'currency_id': company_currency != current_currency and current_currency or False,
             'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
-            'date_maturity': voucher.date_due
+            'date_maturity': self.payment_date or self.issue_date,
         }
 
         return move_line
