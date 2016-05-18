@@ -145,8 +145,8 @@ class account_check_reject(osv.osv_memory):
                 lines.append((0, 0, invoice_line_vals))
 
             invoice_vals['invoice_line'] = lines
-            
-            invoice_vals['pos_ar_id'] = invoice_vals['pos_ar_id'] and invoice_vals['pos_ar_id'].id
+
+            invoice_vals['pos_ar_id'] = invoice_vals['pos_ar_id']
 
             # Creamos la nota de debito
             debit_note_id = invoice_obj.create(cr, uid, invoice_vals)
