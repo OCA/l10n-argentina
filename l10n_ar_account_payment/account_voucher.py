@@ -34,11 +34,13 @@ class account_voucher(models.Model):
     def _get_journal(self):
         res = super(account_voucher, self)._get_journal() #
         ttype = self.env.context.get('type', 'bank')
-        if ttype in ('payment', 'receipt'):
+
+        # Pago inmediato, al contado, desde el boton de la factura
+        immediate = self.env.context.get('immediate_payment', False)
+
+        if not immediate and ttype in ('payment', 'receipt'):
             rec = self.env['account.journal'].search([('type', '=', ttype)], limit=1 , order= 'priority')
             res = rec[0] or False
-
-
         return res
 
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
@@ -120,6 +122,45 @@ class account_voucher(models.Model):
         res = currency.compute(amount, company_currency)
         return res
 
+    #
+    @api.multi
+    def _create_move_line_payment(self, move_id, name, journal_id, amount,
+            company_currency, current_currency, sign):
+
+        amount_in_company_currency = self._convert_paid_amount_in_company_currency(amount)
+
+        debit = credit = 0.0
+        if self.type in ('purchase', 'payment'):
+            credit = amount_in_company_currency
+            pl_account_id = journal_id.default_credit_account_id.id
+        elif self.type in ('sale', 'receipt'):
+            debit = amount_in_company_currency
+            pl_account_id = journal_id.default_debit_account_id.id
+        if debit < 0:
+            credit = -debit
+            debit = 0.0
+        if credit < 0:
+            debit = -credit
+            credit = 0.0
+        sign = debit - credit < 0 and -1 or 1
+
+        move_line = {
+            'name': name or '/',
+            'debit': debit,
+            'credit': credit,
+            'account_id': pl_account_id,
+            'move_id': move_id,
+            'journal_id': self.journal_id.id,
+            'period_id': self.period_id.id,
+            'partner_id': self.partner_id.id,
+            'currency_id': company_currency <> current_currency and current_currency or False,
+            'amount_currency': company_currency <> current_currency and sign * amount or 0.0,
+            'date': self.date,
+            'date_maturity': self.date_due
+        }
+
+        return move_line
+
     # Heredada para agregar un hook y los asientos para varias formas de pago
     @api.multi
     def create_move_lines(self, move_id, company_currency, current_currency):
@@ -156,39 +197,20 @@ class account_voucher(models.Model):
             if pl.amount == 0.0:
                 continue
 
-            amount_in_company_currency = self._convert_paid_amount_in_company_currency(pl.amount)
-
-            debit = credit = 0.0
-            if self.type in ('purchase', 'payment'):
-                credit = amount_in_company_currency
-                pl_account_id = pl.payment_mode_id.default_credit_account_id.id
-            elif self.type in ('sale', 'receipt'):
-                debit = amount_in_company_currency
-                pl_account_id = pl.payment_mode_id.default_debit_account_id.id
-            if debit < 0:
-                credit = -debit
-                debit = 0.0
-            if credit < 0:
-                debit = -credit
-                credit = 0.0
-            sign = debit - credit < 0 and -1 or 1
-
-            move_line = {
-                'name': pl.name or '/',
-                'debit': debit,
-                'credit': credit,
-                'account_id': pl_account_id,
-                'move_id': move_id,
-                'journal_id': self.journal_id.id,
-                'period_id': self.period_id.id,
-                'partner_id': self.partner_id.id,
-                'currency_id': company_currency <> current_currency and current_currency or False,
-                'amount_currency': company_currency <> current_currency and sign * pl.amount or 0.0,
-                'date': self.date,
-                'date_maturity': self.date_due
-            }
+            move_line = self._create_move_line_payment(move_id, pl.name,
+                            pl.payment_mode_id, pl.amount,
+                            company_currency, current_currency, sign)
 
             move_lines.append(move_line)
+
+        # Si es pago contado
+        if self.journal_id.type not in ('receipt', 'payment'):
+            move_line = self._create_move_line_payment(move_id, _('Immediate'),
+                            self.journal_id, self.amount,
+                            company_currency, current_currency, sign)
+
+            move_lines.append(move_line)
+
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
         self.create_move_line_hook(move_id, move_lines)

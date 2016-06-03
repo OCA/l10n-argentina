@@ -28,35 +28,8 @@ class invoice(models.Model):
     _inherit = 'account.invoice'
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
-        if not ids:
-            return []
-        inv = self.browse(cr, uid, ids[0], context=context)
-        if inv.type in ('out_invoice', 'out_refund'):
-            view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.voucher.l10n_ar.receipt.form')], context=context)
-        else:
-            view_id = self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'account.voucher.l10n_ar.payment.form')], context=context)
-
-        res = {
-            'name': _("Pay Invoice"),
-            'view_mode': 'form',
-            'view_id': view_id,
-            'view_type': 'form',
-            'res_model': 'account.voucher',
-            'type': 'ir.actions.act_window',
-            'nodestroy': True,
-            'target': 'current',
-            'domain': '[]',
-            'context': {
-                    'default_partner_id': inv.partner_id.id,
-                    #'default_amount': inv.residual,
-                    'default_name': inv.name,
-                    'close_after_process': True,
-                    'invoice_type': inv.type,
-                    'invoice_id': inv.id,
-                    'default_type': inv.type in ('out_invoice', 'out_refund') and 'receipt' or 'payment'
-            }
-        }
-
+        res = super(invoice, self).invoice_pay_customer(cr, uid, ids, context)
+        res['context']['immediate_payment'] = True
         return res
 
 invoice()

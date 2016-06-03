@@ -25,6 +25,3 @@ import account_voucher
 import account
 import payment_methods
 import invoice
-
-
-
