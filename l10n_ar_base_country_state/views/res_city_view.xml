@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_res_city_tree" model="ir.ui.view">
+            <field name="name">res.city.tree</field>
+            <field name="model">res.city</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="City">
+                <field name="name"/>
+                <field name="state_id"/>
+            </tree>
+            </field>
+        </record>
+
+        <record id="view_res_city_form" model="ir.ui.view">
+            <field name="name">res.city.form</field>
+            <field name="model">res.city</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <form string="City">
+				<group col="4" colspan="2" string="Basic City info">
+                    <field name="name"/>
+                    <field name="zip_code"/>
+                    <field name="afip_code"/>
+                    <field name="country_id" options="{'no_open': True}"/>
+                    <field name="state_id" domain="[('country_id', '=?', country_id)]" 
+                        options="{'no_open': True}"/>
+                </group>
+            </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_res_city_view">
+            <field name="name">City</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.city</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem 
+            id="menu_res_city"
+            parent="base.menu_localisation"
+            sequence="2"
+            action="act_res_city_view"
+            name="Cities"
+            />
+
+    </data>
+</openerp>
