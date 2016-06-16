@@ -1,0 +1,59 @@
+<openerp>
+<data>
+
+    <!-- Extend Partner's form view -->
+
+    <record id="view_partner_form_add_city_id" model="ir.ui.view">
+        <field name="name">res.partner.logistic.form.add.city_id</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page/field[@name='child_ids']/kanban/field[@name='city']" 
+                position="replace">
+                <field name="city" invisible="1"/>
+                <field name="city_id"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='child_ids']/form/sheet/group/div/div/field[@name='city']" 
+                position="replace">
+                <field name="city" invisible="1"/>
+                <field name="city_id" placeholder="City" style="width:90%%"/>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/div/div/field[@name='city']" position="replace">
+                <field name="city" invisible="1"/>
+                <field name="city_id" placeholder="City..."/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='child_ids']/kanban/field[@name='state_id']" 
+                position="attributes">
+                <attribute name="domain">[("country_id", "=?", country_id)]</attribute>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/div/div/field[@name='state_id']" position="attributes">
+                <attribute name="domain">[("country_id", "=?", country_id)]</attribute>
+                <attribute name="style">width:66%%</attribute>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='child_ids']/form/sheet/group/div/div/field[@name='state_id']" 
+                position="attributes">
+                <attribute name="domain">[("country_id", "=?", country_id)]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Company's form view -->
+
+    <record id="view_company_logistic_form" model="ir.ui.view">
+        <field name="name">res.company.logistic.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <field name='city' position="replace">
+                <field name="city" invisible="1"/>
+                <field name="city_id" placeholder="City..." style="width:90%%"/>
+            </field>
+            <field name='state_id' position="attributes">
+                <attribute name="domain">[("country_id", "=?", country_id)]</attribute>
+                <attribute name="style">width:66%%</attribute>
+            </field>
+        </field>
+    </record>
+
+</data>
+</openerp>
