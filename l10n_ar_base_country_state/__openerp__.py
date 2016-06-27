@@ -21,8 +21,8 @@
 
 {
     "name": "Base Argentina's States (aka Provinces)",
-    "version": "1.0",
-    "depends": ["base"],
+    "version": "1.1",
+    "depends": ["base", "account"],
     "author": "Gabriel Davini",
     "category": "Base Modules",
     "description": """
@@ -30,7 +30,12 @@
         * States (aka provinces) for Argentina.
     """,
     "init_xml": [],
-    'data': ['country_state_data.xml'],
+    'data': [
+        'data/country_state_data.xml',
+        'data/res_city_data.xml',
+        'views/partner_view.xml',
+        'views/res_city_view.xml',
+    ],
     'demo_xml': [],
     'installable': True,
     'application': True,
