@@ -132,7 +132,7 @@ class account_invoice(osv.osv):
                 plt_obj.write(cr, uid, p.id, {'date': move_line['date']})
 
             move_lines.insert(len(move_lines)-1, (0, 0, move_line))
-        return move_lines
+        return super(account_invoice, self).finalize_invoice_move_lines(cr, uid, invoice_browse, move_lines)
 
 account_invoice()
 

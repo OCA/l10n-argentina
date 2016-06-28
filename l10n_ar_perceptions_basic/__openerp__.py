@@ -31,15 +31,12 @@
     1) Implementation of Perceptions Taxes for Argentina
        based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
     """,
-    "init_xml": [
-        "perception_data.xml",
-        ],
-    'update_xml': [
+    "data": [
         'security/ir.model.access.csv',
         'perception_view.xml',
         'account_invoice_view.xml',
     ],
-    'demo_xml': [],
+    'demo': [],
     'installable': True,
     'active': False,
 }

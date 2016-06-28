@@ -32,7 +32,7 @@
        based on tax objects of OpenERP like account.tax and account.tax.code.
     """,
     "init_xml": [
-        'retention_data.xml',
+        #'retention_data.xml',
         ],
     'update_xml': [
         'security/ir.model.access.csv',
