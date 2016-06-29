@@ -76,8 +76,8 @@ class account_voucher(osv.osv):
                         raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with cash and box not open."))
             return True
         
-    def cancel_voucher(self, cr, uid, ids, vals, context=None):
-        
+    def cancel_voucher(self, cr, uid, ids, context=None):
+
         statement_line_obj = self.pool.get('account.bank.statement.line')
         
         for voucher in self.browse(cr, uid, ids, context=None):
