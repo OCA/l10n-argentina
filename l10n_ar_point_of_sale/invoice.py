@@ -97,28 +97,13 @@ class invoice(models.Model):
 
     @api.one
     @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
-    def _amount_all_ar(self):
-        account_invoice_tax = self.env['account.invoice.tax']
-        account_tax = self.env['account.tax']
-        ctx = dict(self._context)
-        amount_tax = 0.0
-        amount_base = 0.0
-        amount_exempt = 0.0
-        for taxe in account_invoice_tax.compute(self.with_context(ctx)).values():
-            amount_tax += taxe['amount']
-            tax = account_tax.browse(taxe['tax_id'])
-            tax_group = tax.tax_group
-            amount_exempt += tax_group == 'vat' and taxe['is_exempt'] and taxe['base'] or 0.0
-            amount_base +=  tax_group == 'vat' and not taxe['is_exempt'] and taxe['base'] or 0.0
-
-        self.amount_tax = amount_tax
+    def _compute_amount(self):
         self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line)
+        self.amount_tax = sum(line.amount for line in self.tax_line)
         self.amount_total = self.amount_untaxed + self.amount_tax
-
-
-        self.amount_no_taxed = self.amount_untaxed - amount_base - amount_exempt
-        self.amount_taxed = amount_base
-        self.amount_exempt = amount_exempt
+        self.amount_exempt = sum(line.price_subtotal for line in self.invoice_line if any(map(lambda x: x.is_exempt, line.invoice_line_tax_id)))
+        self.amount_no_taxed = sum(line.price_subtotal for line in self.invoice_line if not line.invoice_line_tax_id)
+        self.amount_taxed = sum(line.price_subtotal for line in self.invoice_line if any(map(lambda x: (x.tax_group=='vat' and not x.is_exempt), line.invoice_line_tax_id)))
 
 #    def _get_invoice_line(self, cr, uid, ids, context=None):
 #        result = {}
@@ -137,12 +122,12 @@ class invoice(models.Model):
     denomination_id = fields.Many2one('invoice.denomination', readonly=True, states={'draft':[('readonly',False)]})
     internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created.")
     amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
     local = fields.Boolean(string='Local', default=True)
 
     #Validacion para que el total de una invoice no pueda ser negativo.
