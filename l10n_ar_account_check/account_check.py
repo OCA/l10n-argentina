@@ -267,7 +267,8 @@ class account_third_check(models.Model):
         voucher_obj = self.env['account.voucher']
         vals = {'state': 'delivered'}
         for check in self:
-            voucher = voucher_obj.search([('third_check_ids', '=', check.id)])
+            voucher = voucher_obj.search([('third_check_ids', '=', check.id),
+                ('state', '!=', 'cancel')])
             # voucher = voucher_obj.browse(cr, uid, voucher_ids[0], context=context)  # check.dest_voucher_id
 
             if not check.endorsement_date:
