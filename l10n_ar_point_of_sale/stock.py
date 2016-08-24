@@ -38,7 +38,7 @@ class stock_picking(models.Model):
         fiscal_position_id = res['fiscal_position']
         if not fiscal_position_id:
             raise osv.except_osv(_('Error'),
-                                 _('The order hasn\'t got Fiscal Position configured.')) 
+                                 _('The order hasn\'t got Fiscal Position configured.'))
         reads = fiscal_pos_obj.read(cr, uid, fiscal_position_id, ['denomination_id', 'denom_supplier_id'], context=context)
 
         # Es de cliente
@@ -46,10 +46,13 @@ class stock_picking(models.Model):
         pos_ar_id = None
         if inv_type in ('out_invoice', 'out_refund'):
             denomination_id = reads['denomination_id'][0]
-            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', move.warehouse_id.id), ('denomination_id', '=', denomination_id)])
+            warehouse_id = move.warehouse_id.id
+            if not warehouse_id:
+                warehouse_id = move.picking_type_id.warehouse_id.id
+            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', warehouse_id), ('denomination_id', '=', denomination_id)])
             if not res_pos:
                 raise osv.except_osv( _('Error'),
-                                   _('You need to set up a Point of Sale in your Warehouse')) 
+                                   _('You need to set up a Point of Sale in your Warehouse'))
             pos_ar_id = res_pos[0]
         else:
             denomination_id = reads['denom_supplier_id'][0]
