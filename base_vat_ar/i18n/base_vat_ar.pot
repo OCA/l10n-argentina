@@ -1,0 +1,117 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* base_vat_ar
+#
+msgid "Base VAT for Argentina"
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-01 15:23+0000\n"
+"PO-Revision-Date: 2016-09-01 15:23+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_vat_ar
+#: field:res.document.type,afip_code:0
+msgid "Afip code"
+msgstr ""
+
+#. module: base_vat_ar
+#: view:res.partner:base_vat_ar.view_partner_document_type_form
+msgid "Check Validity"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,create_uid:0
+msgid "Created by"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,create_date:0
+msgid "Created on"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,display_name:0
+msgid "Display Name"
+msgstr ""
+
+#. module: base_vat_ar
+#: view:res.partner:base_vat_ar.view_partner_document_type_form
+msgid "Document Type..."
+msgstr ""
+
+#. module: base_vat_ar
+#: model:ir.actions.act_window,name:base_vat_ar.action_res_document_type
+#: model:ir.model,name:base_vat_ar.model_res_document_type
+#: view:res.document.type:base_vat_ar.view_res_document_type_form
+#: view:res.document.type:base_vat_ar.view_res_document_type_tree
+#: field:res.document.type,name:0
+#: field:res.partner,document_type_id:0
+msgid "Document type"
+msgstr ""
+
+#. module: base_vat_ar
+#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
+msgid "Document types"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,id:0
+msgid "ID"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,__last_update:0
+msgid "Last Modified on"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,write_uid:0
+msgid "Last Updated by"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,write_date:0
+msgid "Last Updated on"
+msgstr ""
+
+#. module: base_vat_ar
+#: model:ir.model,name:base_vat_ar.model_res_partner
+msgid "Partner"
+msgstr ""
+
+#. module: base_vat_ar
+#: code:addons/base_vat_ar/partner.py:94
+#: constraint:res.partner:0
+#, python-format
+msgid "The Vat does not seems to be correct."
+msgstr ""
+
+#. module: base_vat_ar
+#: code:addons/base_vat_ar/partner.py:95
+#: constraint:res.partner:0
+#, python-format
+msgid "There is another partner with same VAT Information"
+msgstr ""
+
+#. module: base_vat_ar
+#: view:res.partner:base_vat_ar.view_partner_document_type_form
+#: field:res.partner,vat:0
+msgid "VAT"
+msgstr ""
+
+#. module: base_vat_ar
+#: view:res.partner:base_vat_ar.view_partner_document_type_form
+msgid "VAT Subjected"
+msgstr ""
+
+#. module: base_vat_ar
+#: field:res.document.type,verification_required:0
+msgid "Verification required"
+msgstr ""
+
