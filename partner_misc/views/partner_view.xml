@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+    <record id="view_partner_document_type_form_inherit_required" model="ir.ui.view">
+        <field name="name">res.partner.document.type.inherit.required</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_vat_ar.view_partner_document_type_form"/>
+        <field name="arch" type="xml">
+            <field name="document_type_id" position="attributes">
+                <attribute name="attrs">{'required': [('is_company', '=', True), ('customer', '=', True)]}</attribute>
+            </field>
+            <field name="vat" position="attributes">
+                <attribute name="attrs">{'required': [('is_company', '=', True), ('customer', '=', True)]}</attribute>
+            </field>
+        </field>
+    </record>
+
+</data>
+</openerp>
