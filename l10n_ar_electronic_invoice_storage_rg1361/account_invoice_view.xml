@@ -6,9 +6,9 @@
             <field name="name">rg1361.account.invoice.form.inherit</field>
             <field name="model">account.invoice</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="inherit_id" ref="l10n_ar_wsfe.wsfe_account_invoice_form"/>
             <field name="arch" type="xml">
-                <field name="currency_id" position="after">
+                <field name="incoterm_id" position="after">
                     <field name="operation_code"/>
                 </field>
             </field>
@@ -18,14 +18,13 @@
             <field name="name">rg1361.account.supplier.invoice.form.inherit</field>
             <field name="model">account.invoice</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="inherit_id" ref="l10n_ar_wsfe.cai_account_supplier_invoice_form"/>
             <field name="arch" type="xml">
-                <field name="currency_id" position="after">
+                <field name="cae_due_date" position="after">
                     <field name="operation_code"/>
                 </field>
             </field>
         </record>
-
 
     </data>
 </openerp>
