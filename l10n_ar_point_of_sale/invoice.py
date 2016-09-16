@@ -354,7 +354,8 @@ class invoice(models.Model):
 
                 if type in ['in_invoice', 'in_refund', 'in_debit']:  # Supplier invoice
                     denom_sup_id = fiscal_position.denom_supplier_id.id
-                    res['value'].update({'denomination_id': denom_sup_id})
+                    res['value'].update({'denomination_id': denom_sup_id,
+                                         'local': fiscal_position.local})
                 else:  # Customer invoice
                     pos = pos_pool.search([('denomination_id', '=', denomination_id)], order='priority asc', limit=1)
                     if len(pos):
