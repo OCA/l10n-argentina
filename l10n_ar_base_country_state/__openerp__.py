@@ -32,7 +32,7 @@
     "init_xml": [],
     'data': ['country_state_data.xml'],
     'demo_xml': [],
-    'installable': True,
+    'installable': False,
     'application': True,
     'active': False,
 }
