@@ -21,7 +21,7 @@
 
 {
     "name": "Base Argentina's States (aka Provinces)",
-    "version": "1.1",
+    "version": "8.0.1.1.0",
     "depends": ["base", "account"],
     "author": "Gabriel Davini",
     "category": "Base Modules",
