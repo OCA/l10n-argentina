@@ -33,7 +33,6 @@
             ],
         "init_xml" : [],
         "data" : [
-                #'payment_mode_receipt_view.xml',
                 'cash_statement_view.xml',
                 'wizard/pos_box.xml',
             ],

@@ -44,7 +44,6 @@ class account_bank_statement(osv.osv):
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        print 'button_confirm_bank CASH'
 
         for st in self.browse(cr, uid, ids, context=context):
             j_type = st.journal_id.type
@@ -75,8 +74,6 @@ class account_bank_statement(osv.osv):
                         'name': st_line.name,
                         'analytic_account_id': st_line.analytic_id and st_line.analytic_id.id
                     }
-                    #~ if st_line.analytic_id and st_line.type in 'expenses':
-                        #~ vals.update({'analytic_account_id': st_line.analytic_id.id})
                         
                     self.pool.get('account.bank.statement.line').process_reconciliation(cr, uid, st_line.id, [vals], context=context)
                 elif not st_line.journal_entry_id.id:
@@ -125,10 +122,9 @@ class account_bank_statement(osv.osv):
                 'currency_id': amount_currency and cur_id,
                 'amount_currency': amount_currency,
         }
-        #~ if st_line.analytic_id and st_line.type in 'income':
-            #~ vals.update({'analytic_account_id': st_line.analytic_id.id})
             
         return vals
+
 
 class account_cash_statement(osv.osv):
     
@@ -161,7 +157,6 @@ class account_cash_statement(osv.osv):
 
     
     def button_confirm_cash(self, cr, uid, ids, context=None):
-        print 'cajero'
         absl_proxy = self.pool.get('account.bank.statement.line')
 
         TABLES = ((_('Profit'), 'profit_account_id'), (_('Loss'), 'loss_account_id'),)
@@ -248,14 +243,13 @@ class account_bank_statement_line(osv.osv):
             amount = amount
 
         return { 'value': { 'amount': amount } }
-    
-        
-    #~ def unlink(self, cr, uid, ids, context=None):
-        #~ for t in self.browse(cr, uid, ids, context=context):
-            #~ if t.state in 'conciliated':
-                #~ raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Cash Statement Line(s) which are conciliated state !'))
-                #~ 
-        #~ return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
+
+#    def unlink(self, cr, uid, ids, context=None):
+#        for t in self.browse(cr, uid, ids, context=context):
+#            if t.state in 'conciliated':
+#                raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Cash Statement Line(s) which are conciliated state !'))
+#
+#        return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
 
 account_bank_statement_line()
     

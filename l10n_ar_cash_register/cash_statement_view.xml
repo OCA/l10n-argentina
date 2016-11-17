@@ -51,20 +51,6 @@
             action="action_cash_statement_type"
             parent="account.menu_configuration_misc"
             sequence="460"/>
-        
-<!--
-		<record id="view_bank_statement_form_ar" model="ir.ui.view">
-			<field name="name">account.bank.statement.form.ar</field>
-			<field name="model">account.bank.statement</field>
-			<field name="inherit_id" ref="account.view_bank_statement_form2"/>
-			<field name="arch" type="xml">
-				<xpath expr="/form/sheet/group/group/field[@name='balance_end']" position="after">
-					<field name="balance_end_real" widget="monetary"/>
-				</xpath>
-                <xpath expr="//form/sheet/group/group/field[@name='total_entry_encoding']" position="replace"/>
-			</field>
-		</record>
--->
 		
         <record id="view_cash_statement_ar_tree_voucher" model="ir.ui.view">
             <field name="name">account.cash.statement.ar.voucher.tree.inherit</field>

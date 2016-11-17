@@ -64,11 +64,16 @@ class account_voucher(osv.osv):
                             'account_id': aux_account,
                             'state': 'conciliated',
                             'type': vou.type,
-                            'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
+                            # Si el voucher no tiene partner, ponemos el de la compania
+                            'partner_id': line.voucher_id.partner_id and
+                                            line.voucher_id.partner_id.id or
+                                            line.voucher_id.company_id.partner_id.id,
+                            'company_id': vou.company_id.id,
                             'ref_voucher_id': vou.id,
                             'creation_type': 'system',
                             'statement_id': statement[0],
                             #~ 'ref': vou.reference,
+                            'journal_id': line.payment_mode_id.id,
                         }
 
                         st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)

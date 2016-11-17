@@ -29,7 +29,6 @@ class CashBox(osv.osv_memory):
     _inherit = 'CashBox'
     _columns = {
         'statement_line_type_id' : fields.many2one('cash.statement.line.type', 'Type', required=True),
-        #~ 'employee_id': fields.many2one('hr.employee', 'Employee'),
         'voucher': fields.char('Voucher', size=40),
     }
 
@@ -45,7 +44,6 @@ class CashBoxIn(CashBox):
     _inherit = 'cash.box.in'
     _columns = {
         'statement_line_type_id' : fields.many2one('cash.statement.line.type', 'Type', required=True),
-        #~ 'employee_id': fields.many2one('hr.employee', 'Employee'),
         'voucher': fields.char('Voucher', size=40),
     }
 
@@ -61,7 +59,6 @@ class CashBoxIn(CashBox):
         return {
             'statement_id' : record.id,
             'journal_id' : record.journal_id.id,
-            #~ 'account_id' : record.journal_id.internal_account_id.id,
             'account_id' : box.statement_line_type_id.account_id.id,
             'amount' : box.amount or 0.0,
             'ref' : '%s' % (box.ref or ''),
@@ -79,7 +76,6 @@ class CashBoxOut(CashBox):
     _inherit = 'cash.box.out'
     _columns = {
         'statement_line_type_id' : fields.many2one('cash.statement.line.type', 'Type', required=True),
-        #~ 'employee_id': fields.many2one('hr.employee', 'Employee'),
         'voucher': fields.char('Voucher', size=40),
     }
 
@@ -96,10 +92,8 @@ class CashBoxOut(CashBox):
         return {
             'statement_id' : record.id,
             'journal_id' : record.journal_id.id,
-            #~ 'account_id' : record.journal_id.internal_account_id.id,
             'account_id' : box.statement_line_type_id.account_id.id,
             'amount' : -amount if amount > 0.0 else amount,
-            #~ 'name' : box.name,
             'name' : box.statement_line_type_id.name,
             'type': 'expenses',
             'state': 'conciliated',
