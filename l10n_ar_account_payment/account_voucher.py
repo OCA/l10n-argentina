@@ -23,6 +23,7 @@
 
 from openerp import models, fields, api, _
 from openerp.osv import osv
+from openerp.exceptions import RedirectWarning
 
 
 class account_voucher(models.Model):
@@ -40,6 +41,11 @@ class account_voucher(models.Model):
 
         if not immediate and ttype in ('payment', 'receipt'):
             rec = self.env['account.journal'].search([('type', '=', ttype)], limit=1 , order= 'priority')
+            if not rec:
+                action = self.env.ref('account.action_account_journal_form')
+                msg = _('Cannot find a Payment/Receipt journal. \nPlease create at least one.')
+                raise RedirectWarning(msg, action.id, _('Go to the journal configuration'))
+
             res = rec[0] or False
         return res
 
