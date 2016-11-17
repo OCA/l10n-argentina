@@ -24,9 +24,10 @@
         "author" : "Eynes",
         "website" : "http://www.eynes.com.ar",
         "category" : "account",
-        "description": """""",
+        "description": """Manage bank statement from receipt and payment.""",
         "depends" : [
                 'l10n_ar_cash_register',
+		'l10n_ar_account_check',
                 'account_cancel',
             ],
         "init_xml" : [],
@@ -35,7 +36,6 @@
                 'wizard/account_import_bank_statement_view.xml',
                 'bank_import_statement_lines_view.xml',
                 'account_voucher_view.xml',
-                #~ 'wizard/project_import_wizard_view.xml',
             ],
         "installable": True,
         'active': False

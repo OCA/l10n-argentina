@@ -29,11 +29,15 @@ class account_voucher(osv.osv):
     
     def proforma_voucher(self, cr, uid, ids, context=None):
         vouchers = super(account_voucher, self).proforma_voucher(cr, uid, ids, context=context)
+        bank_st_line_obj = self.pool.get('account.bank.statement.line')
+
         stl = []
         
         for vou in self.browse(cr, uid, ids, context=context):
             if vou.type in 'receipt':
                 sign = 1
+                # TODO: Por que esta variable no se usa y se deja siempre
+                # la cuenta account_payable?
                 aux_account = vou.partner_id.property_account_receivable.id
             if vou.type in 'payment':
                 sign = -1
@@ -52,14 +56,17 @@ class account_voucher(osv.osv):
                     'account_id': vou.partner_id.property_account_payable.id,
                     'state': 'draft',
                     'type': vou.type,
-                    'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
+                    # Si el voucher no tiene partner, ponemos el de la compania
+                    'partner_id': line.voucher_id.partner_id and
+                                    line.voucher_id.partner_id.id or
+                                    line.voucher_id.company_id.partner_id.id,
+                    'company_id': vou.company_id.id,
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
-                    #~ 'ref': line.payment_mode_id.name,
-                    'aux_journal_id': line.payment_mode_id.id,
+                    'journal_id': line.payment_mode_id.id,
                 }
 
-                st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
+                st_id = bank_st_line_obj.create(cr, uid, st_line, context)
                 
             for issued_check in vou.issued_check_ids:
                 if issued_check.type in 'common':
@@ -80,7 +87,7 @@ class account_voucher(osv.osv):
                     'ref_voucher_id': vou.id,
                     'creation_type': 'system',
                     'ref': vou.reference,
-                    'aux_journal_id': issued_check.account_bank_id.journal_id.id,
+                    'journal_id': issued_check.account_bank_id.journal_id.id,
                 }
 
                 st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)

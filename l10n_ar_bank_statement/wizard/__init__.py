@@ -21,4 +21,3 @@
 ##############################################################################
 
 import account_import_bank_statement
-#~ import project_import_wizard
