@@ -34,19 +34,21 @@ class perception_tax_line(osv.osv):
         'invoice_id': fields.many2one('account.invoice', 'Invoice', ondelete='cascade'),
         'account_id': fields.many2one('account.account', 'Tax Account', required=True,
                                       domain=[('type','<>','view'),('type','<>','income'), ('type', '<>', 'closed')]),
-        'base': fields.float('Base', digits_compute=dp.get_precision('Account')),
-        'amount': fields.float('Amount', digits_compute=dp.get_precision('Account')),
+        'base': fields.float('Base (Company Cur)', digits_compute=dp.get_precision('Account')),
+        'amount': fields.float('Amount (Company Cur)', digits_compute=dp.get_precision('Account')),
         'perception_id': fields.many2one('perception.perception', 'Perception Configuration', required=True, help="Perception configuration used '\
                                        'for this perception tax, where all the configuration resides. Accounts, Tax Codes, etc."),
         'base_code_id': fields.many2one('account.tax.code', 'Base Code', help="The account basis of the tax declaration."),
-        'base_amount': fields.float('Base Code Amount', digits_compute=dp.get_precision('Account')),
         'tax_code_id': fields.many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration."),
-        'tax_amount': fields.float('Tax Code Amount', digits_compute=dp.get_precision('Account')),
         'company_id': fields.related('account_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True),
         'partner_id': fields.related('invoice_id', 'partner_id', type='many2one', relation='res.partner', string='Partner', readonly=True),
         'vat': fields.related('invoice_id', 'partner_id', 'vat', type='char', string='CIF/NIF', readonly=True),
         'state_id': fields.many2one('res.country.state', string="State/Province"),
         'ait_id': fields.many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade'),
+        # Campos multimoneda
+        'currency_id': fields.many2one('res.currency', 'Currency', required=False, readonly=True),
+        'base_currency': fields.float('Base Amount', digits_compute=dp.get_precision('Account')),
+        'tax_currency': fields.float('Tax Amount', digits_compute=dp.get_precision('Account')),
     }
 
     def onchange_perception(self, cr, uid, ids, perception_id, context):
@@ -75,8 +77,11 @@ class perception_tax_line(osv.osv):
         inv = inv_obj.browse(cr, uid, invoice_id)
         company_currency = inv.company_id.currency_id.id
 
-        base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
-        tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context={'date': inv.date_invoice or time.strftime('%Y-%m-%d')}, round=False)
+        if not context.get('date', False):
+            context['date'] = inv.date_invoice or time.strftime('%Y-%m-%d')
+
+        base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context=context, round=False)
+        tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context=context, round=False)
         return (tax_amount, base_amount)
 
 perception_tax_line()
@@ -106,7 +111,7 @@ class account_invoice(osv.osv):
 
         for p in invoice_browse.perception_ids:
             sign = p.perception_id.tax_id.base_sign
-            tax_amount, base_amount = plt_obj._compute(cr, uid, p.perception_id.id, invoice_browse.id, p.base, p.amount)
+            tax_amount, base_amount = plt_obj._compute(cr, uid, p.perception_id.id, invoice_browse.id, p.base_currency, p.tax_currency)
 
             # ...y ahora creamos la linea contable perteneciente a la base imponible de la perception
             # Notar que credit & debit son 0.0 ambas. Lo que cuenta es el tax_code_id y el tax_amount
@@ -166,16 +171,17 @@ class account_invoice_tax(osv.osv):
             tax = line.perception_id.tax_id
             val['invoice_id'] = inv.id
             val['name'] = line.name
-            val['amount'] = line.amount
+            val['amount'] = line.tax_currency
             val['manual'] = False
             val['sequence'] = 10
             val['is_exempt'] = False
-            val['base'] = line.base
+            val['base'] = line.base_currency
             val['tax_id'] = tax.id
 
             # Computamos tax_amount y base_amount
             tax_amount, base_amount = percep_tax_line_obj._compute(cr, uid, line.perception_id.id, invoice_id,
                                                                    val['base'], val['amount'], context)
+
 
             if inv.type in ('out_invoice','in_invoice'):
                 val['base_code_id'] = line.base_code_id.id
@@ -200,6 +206,14 @@ class account_invoice_tax(osv.osv):
                 tax_grouped[key]['base'] += val['base']
                 tax_grouped[key]['base_amount'] += val['base_amount']
                 tax_grouped[key]['tax_amount'] += val['tax_amount']
+
+            # Llenamos los campos multimoneda de perception.tax.line
+            currency_vals = {
+                'currency_id': cur.id,
+                'base': base_amount,
+                'amount': tax_amount,
+            }
+            percep_tax_line_obj.write(cr, uid, line.id, currency_vals)
 
         for t in tax_grouped.values():
             t['base'] = cur_obj.round(cr, uid, cur, t['base'])
