@@ -64,8 +64,10 @@
               <tree string="Perception Lines">
                 <field name="date" />
                 <field name="perception_id" string="Perception Type"/>
-                <field name="base" />
-                <field name="amount" />
+                <field name="base_currency" />
+                <field name="tax_currency" />
+                <field name="currency_id" invisible="1"/>
+                <field name="base" invisible="1"/>
                 <field name="state_id" />
               </tree>
               <form string="Perception Lines" version="7.0">
@@ -80,8 +82,10 @@
                           <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
                       </group>
                       <group string="Amounts" name="amount">
-                          <field name="base" />
-                          <field name="amount" />
+                          <field name="base" invisible="1" />
+                          <field name="amount" invisible="1" />
+                          <field name="base_currency" />
+                          <field name="tax_currency" />
                           <field name="account_id" invisible="1" />
                           <field name="base_code_id" invisible="1" />
                           <field name="tax_code_id" invisible="1" />
