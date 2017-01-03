@@ -37,6 +37,9 @@
         "account_voucher_view.xml",
         "wizard/create_checkbook_view.xml"
     ],
+    "demo": [
+        "account_check_demo.xml",
+    ],
     "active": False,
     "installable": True
 }
