@@ -61,7 +61,8 @@ class account_invoice(osv.osv):
                 cae_due_date = datetime.now()
                 cae = '0'*14
 
-            code = cuit+'%02d'%int(inv_code)+pos+cae+cae_due_date.strftime('%Y%m%d')+'4'
+            #code = cuit+'%02d'%int(inv_code)+pos+cae+cae_due_date.strftime('%Y%m%d')+'4'
+            code = '%s%02d%04d%s%s4' % (cuit or 11*'0', int(inv_code), int(pos), cae, cae_due_date.strftime('%Y%m%d'))
             
             res[inv.id] = code
         return res
