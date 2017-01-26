@@ -13,6 +13,9 @@
             <field name="vat" position="attributes">
                 <attribute name="attrs">{'required': [('is_company', '=', True), ('customer', '=', True)]}</attribute>
             </field>
+            <field name="property_account_position" position="attributes">
+                <attribute name="attrs">{'required': [('is_company', '=', True), ('customer', '=', True)]}</attribute>
+            </field>
         </field>
     </record>
 
