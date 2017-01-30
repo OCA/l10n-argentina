@@ -13,12 +13,14 @@
                 </field>
                 -->
                 <field name="amount" position="replace"/>
+                <!--
                 <field name="journal_id" position="after">
                     <field name="amount" class="oe_inline"
                            string="Paid Amount"
                            widget="monetary" options="{'currency_field': 'currency_id'}"
                            on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
                 </field>
+                -->
                 <field name="journal_id" position="attributes">
                     <attribute name="string">Journal</attribute>
                     <attribute name="domain">[('type', '=', 'receipt')]</attribute>
@@ -59,8 +61,48 @@
                     <field name="invoice_id"/>
                     <field name="ref"/>
                 </xpath>
+
+                <xpath expr="//sheet/notebook/page[@string='Payment Information']/group" position="replace">
+                   <group col="3">
+                       <group>
+                           <field name="narration" colspan="2" nolabel="1"/>
+                       </group>
+                       <group>
+                       </group>
+                       <group>
+                       </group>
+                   </group>
+                </xpath>
+                <xpath expr="//sheet/group" position="after">
+                   <group>
+                       <group >
+                           <field name="amount" class="oe_inline"
+                               string="Paid Amount"
+                               widget="monetary" options="{'currency_field': 'currency_id'}"
+                               on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
+                           <field name="is_multi_currency" invisible="1"/>
+                           <field name="payment_rate" required="1" class="oe_inline" on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)" attrs="{'invisible':[('is_multi_currency','=',False)]}"/>
+                           <field name="payment_rate_currency_id" class="oe_inline" on_change="onchange_payment_rate_currency(currency_id, payment_rate, payment_rate_currency_id, date, amount, company_id, context)" groups="base.group_multi_currency" attrs="{'invisible':[('is_multi_currency','=',False)]}"/>
+                           <field name="paid_amount_in_company_currency" invisible="1"/>
+                       </group>
+                       <group>
+                            <field name="writeoff_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="payment_option" required="1" attrs="{'invisible':[('writeoff_amount','=',0)]}"/>
+                            <field name="writeoff_acc_id"
+                                   attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')]}"
+                                   domain="[('type','=','other')]"/>
+                            <field name="comment"
+                                   attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)]}"/>
+                            <field name="analytic_id"
+                                   groups="analytic.group_analytic_accounting"
+                                   attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)]}"/>
+                        </group>
+                       <field name="currency_help_label" nolabel="1" class="oe_grey" attrs="{'invisible':[('is_multi_currency','=',False)]}"/>
+                    </group>
+                </xpath>
             </field>
         </record>
+
  
         <!-- Supplier Payment -->
         <record model="ir.ui.view" id="view_vendor_l10n_ar_payment_form">
@@ -80,12 +122,14 @@
 
                 <field name="amount" position="replace"/>
 
+                <!--
                 <field name="journal_id" position="after">
                     <field name="amount" class="oe_inline"
                            string="Paid Amount"
                            widget="monetary" options="{'currency_field': 'currency_id'}"
                            on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
                 </field>
+                -->
                 <field name="journal_id" position="attributes">
                     <attribute name="string">Journal</attribute>
                     <attribute name="domain">[('type', '=', 'payment')]</attribute>
@@ -126,6 +170,43 @@
                 <xpath expr="//page[@string='Payment Information']/field[@name='line_cr_ids']/tree/field[@name='move_line_id']" position="before">
                     <field name="invoice_id"/>
                     <field name="ref"/>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@string='Payment Information']/group" position="replace">
+                   <group col="3">
+                       <group>
+                           <field name="narration" colspan="2" nolabel="1"/>
+                       </group>
+                       <group>
+                       </group>
+                       <group>
+                       </group>
+                   </group>
+                </xpath>
+                <xpath expr="//sheet/group" position="after">
+                   <group>
+                       <group>
+                            <field name="amount" class="oe_inline"
+                               string="Paid Amount"
+                               widget="monetary" options="{'currency_field': 'currency_id'}"
+                               on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
+                            <field name="is_multi_currency" invisible="1"/>
+                            <field name="payment_rate" required="1" class="oe_inline" on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)" attrs="{'invisible':[('is_multi_currency','=',False)]}"/>
+                            <field name="payment_rate_currency_id" class="oe_inline" on_change="onchange_payment_rate_currency(currency_id, payment_rate, payment_rate_currency_id, date, amount, company_id, context)" groups="base.group_multi_currency" attrs="{'invisible':[('is_multi_currency','=',False)]}"/>
+                            <field name="paid_amount_in_company_currency" invisible="1"/>
+                       </group>
+                       <group>
+                            <field name="writeoff_amount" widget='monetary' options='{"currency_field": "currency_id"}'/>
+                            <field name="payment_option" required="1"/>
+                            <field name="writeoff_acc_id"
+                                   attrs="{'invisible':[('payment_option','!=','with_writeoff')], 'required':[('payment_option','=','with_writeoff')]}"
+                                   domain="[('type','=','other')]"/>
+                            <field name="comment"
+                                   attrs="{'invisible':[('payment_option','!=','with_writeoff')]}"/>
+                            <field name="analytic_id"
+                                   groups="analytic.group_analytic_accounting"/>
+                        </group>
+                        <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey" attrs="{'invisible':[('is_multi_currency','=',False)]}"/>
+                    </group>
                 </xpath>
             </field>
         </record>
