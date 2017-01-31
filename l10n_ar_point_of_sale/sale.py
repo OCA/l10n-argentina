@@ -54,22 +54,22 @@ class sale_order(osv.osv):
  
         return res_pos[0]
 
-    #overwrite    
-    def _make_invoice(self, cr, uid, order, lines, context=None):
-        
-        invoice_id = super(sale_order, self)._make_invoice(cr, uid, order, lines, context)
-    
-        # Para la denomination, se deberia? preguntar si esta seteada la fiscal position y sino lazar una exept??                         
+    def _prepare_invoice(self, cr, uid, order, lines, context=None):
+        invoice_vals = super(sale_order, self)._prepare_invoice(
+            cr, uid, order, lines, context=context)
+
+        if not order.fiscal_position:
+            raise osv.except_osv(_("Sale Error"),
+                    _("You have to set up Fiscal Position in this Order."))
+
         denom_id = order.fiscal_position.denomination_id
         pos_ar_id = self._get_pos_ar(cr, uid, order, denom_id.id, context=context)
                                  
-        inv_obj = self.pool.get('account.invoice')
-        vals = {'denomination_id' : denom_id.id , 'pos_ar_id': pos_ar_id }
-        #escribo en esa invoice y retorno su id como debe ser
-        inv_obj.write(cr, uid, invoice_id, vals)
-                
-        return invoice_id
-    
+        invoice_vals.update({'denomination_id' : denom_id.id ,
+                             'pos_ar_id': pos_ar_id })
+
+        return invoice_vals
+
     def action_wait(self, cr, uid, ids, *args):
         for o in self.browse(cr, uid, ids):
             if not o.fiscal_position:
