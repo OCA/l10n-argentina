@@ -25,7 +25,7 @@
     "name" : "Checkbook Management",
     "version" : "8.0.0.1.0",
     "author" : "eynes.com.ar,Odoo Community Association (OCA)",
-    "website" : "www.eynes.com.ar",
+    "website" : "http://eynes.com.ar/",
     "category" : "Localisation/Argentine",
     "description": """Checkbook management for Own Checks""",
     "license": "AGPL-3",
