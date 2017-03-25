@@ -6,6 +6,7 @@ Argentina localization for Odoo
 Write me. 
 
 [//]: # (addons)
+
 Available addons
 ----------------
 addon | version | summary
