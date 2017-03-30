@@ -35,7 +35,6 @@ class account_invoice(osv.osv):
         perc_array = []
 
         for perception in inv.perception_ids:
-            print perception.name, perception.base, perception.amount
             code = codes[perception.perception_id.jurisdiccion]
             perc = {'Id': code, 'BaseImp': perception.base, 'Importe': perception.amount, 'Alic': 0.0}
             perc_array.append(perc)
