@@ -310,72 +310,75 @@
 		<!-- * Voucher Types * -->
 		<!-- ***************** -->
 		<!-- Form View for WSFE Request -->
-		<record id="view_wsfe_request_form" model="ir.ui.view">
-			<field name="name">wsfe.request.form</field>
-			<field name="model">wsfe.request</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="WSFE Request" version="7.0">
-					<sheet>
-						<h1>
-							<label string="WSFE Request"/>
-						</h1>
-						<group col="4" colspan="6">
-							<separator colspan="6" string="Header"/>
-							<field name="date_request"/>
-							<field name="pos_ar"/>
-							<field name="voucher_type"/>
-							<field name="nregs"/>
-							<field name="result"/>
-							<field name="reprocess"/>
-							<field name="name" colspan="4"/>
-						</group>
-						<notebook colspan="4">
-							<page string="Request Details">
-								<separator string="Details" colspan="4" />
-								<field name="detail_ids" colspan="4" nolabel="1">
-									<tree>
-									  <field name="name"/>
-									  <field name="doctype"/>
-									  <field name="docnum"/>
-									  <field name="voucher_date"/>
-									  <field name="voucher_number"/>
-									  <field name="amount_total"/>
-									  <field name="cae"/>
-									  <field name="result"/>
-									</tree>
-									<form>
-									  <group colspan="4" col="6">
-										  <group colspan="4" col="4">
-											  <separator string="Main Information" colspan="4"/>
-											  <field name="voucher_date"/>
-											  <field name="voucher_number"/>
-											  <field name="name"/>
-											  <field name="concept"/>
-											  <field name="amount_total"/>
-											  <field name="result"/>
-										  </group>
-										  <group colspan="2">
-											  <field name="doctype"/>
-											  <field name="docnum"/>
-											  <field name="cae"/>
-											  <field name="cae_duedate"/>
-										  </group>
-									  </group>
-									  <separator string="Observations" colspan="4"/>
-										  <field name="observations" nolabel="1" colspan="4"/>
-									 </form>
-								</field>
-							</page>
-							<page string="Other Information">
-								<separator string="Errors" colspan="4" />
-								<field name="errors" colspan="4" nolabel="1" />
-							</page>
-						</notebook>
-					</sheet>
-				</form>
-			</field>
-		</record>
+        <record id="view_wsfe_request_form" model="ir.ui.view">
+            <field name="name">wsfe.request.form</field>
+            <field name="model">wsfe.request</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="WSFE Request" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="WSFE Request"/>
+                        </h1>
+                        <group col="4" colspan="6">
+                            <separator colspan="6" string="Header"/>
+                            <field name="date_request"/>
+                            <field name="pos_ar"/>
+                            <field name="voucher_type"/>
+                            <field name="nregs"/>
+                            <field name="result"/>
+                            <field name="reprocess"/>
+                            <field name="name" colspan="4"/>
+                        </group>
+                        <notebook colspan="4">
+                            <page string="Request Details">
+                                <separator string="Details" colspan="4" />
+                                <field name="detail_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                      <field name="name"/>
+                                      <field name="doctype"/>
+                                      <field name="docnum"/>
+                                      <field name="voucher_date"/>
+                                      <field name="voucher_number"/>
+                                      <field name="amount_total"/>
+                                      <field name="currency"/>
+                                      <field name="currency_rate"/>
+                                      <field name="cae"/>
+                                      <field name="result"/>
+                                    </tree>
+                                    <form>
+                                      <group string="Main Information">
+                                          <group>
+                                              <field name="voucher_date"/>
+                                              <field name="voucher_number"/>
+                                              <field name="name"/>
+                                              <field name="concept"/>
+                                              <field name="amount_total"/>
+                                              <field name="result"/>
+                                          </group>
+                                          <group>
+                                              <field name="doctype"/>
+                                              <field name="docnum"/>
+                                              <field name="cae"/>
+                                              <field name="cae_duedate"/>
+                                              <field name="currency"/>
+                                              <field name="currency_rate"/>
+                                          </group>
+                                      </group>
+                                      <separator string="Observations" colspan="4"/>
+                                          <field name="observations" nolabel="1" colspan="4"/>
+                                     </form>
+                                </field>
+                            </page>
+                            <page string="Other Information">
+                                <separator string="Errors" colspan="4" />
+                                <field name="errors" colspan="4" nolabel="1" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
 		<!-- Tree View for WSFE Request -->
 		<record id="view_wsfe_request_tree" model="ir.ui.view">

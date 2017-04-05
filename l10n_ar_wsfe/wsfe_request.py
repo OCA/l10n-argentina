@@ -60,6 +60,8 @@ class wsfe_request_detail(osv.osv):
         'amount_total' : fields.char('Amount Total', size=64, readonly=True),
         'cae' : fields.char('CAE', required=False, readonly=True, size=64),
         'cae_duedate' : fields.date('CAE Due Date', required=False, readonly=True),
+        'currency': fields.char('Currency', required=False, readonly=True),
+        'currency_rate': fields.float('Currency Rate', required=False, readonly=True),
         'result' : fields.selection([('A', 'Approved'),('R', 'Rejected')], 'Result', readonly=True),
         'observations' : fields.text('Observations', readonly=True),
     }
