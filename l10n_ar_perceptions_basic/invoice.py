@@ -80,8 +80,12 @@ class perception_tax_line(osv.osv):
         if not context.get('date', False):
             context['date'] = inv.date_invoice or time.strftime('%Y-%m-%d')
 
-        base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context=context, round=False)
-        tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context=context, round=False)
+        if inv.type in ('out_invoice', 'in_invoice'):
+            base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.base_sign, context=context, round=False)
+            tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.tax_sign, context=context, round=False)
+        else: # inv is refund
+            base_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, base * tax.ref_base_sign, context=context, round=False)
+            tax_amount = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, amount * tax.ref_tax_sign, context=context, round=False)
         return (tax_amount, base_amount)
 
 perception_tax_line()
