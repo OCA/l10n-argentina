@@ -80,13 +80,15 @@ class account_invoice(models.Model):
                 fiscal_position = refund.partner_id.property_account_position
                 vals = {'fiscal_position': fiscal_position.id}
 
+            # Agregamos el comprobante asociado y otros campos necesarios
+            # si es de exportacion
             if not invoice.local:
                 vals['export_type_id'] = invoice.export_type_id.id
                 vals['dst_country_id'] = invoice.dst_country_id.id
                 vals['dst_cuit_id'] = invoice.dst_cuit_id.id
                 vals['associated_inv_ids'] = [(4, invoice.id)]
+            vals['associated_inv_ids'] = [(4, invoice.id)]
 
-            # Agregamos el comprobante asociado y otros campos necesarios
             if vals:
                 self.write(cr, uid, refund_id, vals)
         return new_ids
