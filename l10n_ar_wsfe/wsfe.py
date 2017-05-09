@@ -455,7 +455,7 @@ class wsfe_config(models.Model):
             currency_code = currency_code_ids[0].code
 
             # Cotizacion
-            company_id = self.env['res.company'].browse(1)
+            company_id = self.env.user.company_id
             company_currency_id = company_id.currency_id
             invoice_rate = 1.0
             if inv.currency_id.id != company_currency_id:
