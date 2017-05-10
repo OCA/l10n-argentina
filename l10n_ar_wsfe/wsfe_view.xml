@@ -339,6 +339,8 @@
                                       <field name="voucher_date"/>
                                       <field name="voucher_number"/>
                                       <field name="amount_total"/>
+                                      <field name="currency"/>
+                                      <field name="currency_rate"/>
                                       <field name="cae"/>
                                       <field name="result"/>
                                     </tree>
@@ -358,6 +360,8 @@
                                               <field name="docnum"/>
                                               <field name="cae"/>
                                               <field name="cae_duedate"/>
+                                              <field name="currency"/>
+                                              <field name="currency_rate"/>
                                           </group>
                                       </group>
                                       <separator string="Observations" colspan="4"/>

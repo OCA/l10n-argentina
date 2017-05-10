@@ -236,6 +236,8 @@ class wsfe_config(models.Model):
                 'cae': comp['CAE'],
                 'cae_duedate': comp['CAEFchVto'],
                 'result': comp['Resultado'],
+                'currency': detail['MonId'],
+                'currency_rate': detail['MonCotiz'],
                 'observations': '\n'.join(comp['Observaciones']),
             }
 
@@ -424,9 +426,9 @@ class wsfe_config(models.Model):
             formatted_date_invoice = date_invoice.strftime('%Y%m%d')
             date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
 
-            company_currency_id = company.currency_id.id
-            if inv.currency_id.id != company_currency_id:
-                raise osv.except_osv(_("WSFE Error!"), _("Currency cannot be different to company currency. Also check that company currency is ARS"))
+#            company_currency_id = company.currency_id.id
+#            if inv.currency_id.id != company_currency_id:
+#                raise osv.except_osv(_("WSFE Error!"), _("Currency cannot be different to company currency. Also check that company currency is ARS"))
 
             detalle['invoice_id'] = inv.id
 
@@ -440,9 +442,27 @@ class wsfe_config(models.Model):
                 detalle['FchServDesde'] = formatted_date_invoice
                 detalle['FchServHasta'] = formatted_date_invoice
                 detalle['FchVtoPago'] = date_due
-            # TODO: Cambiar luego por la currency de la factura
-            detalle['MonId'] = 'PES'
-            detalle['MonCotiz'] = 1
+
+            # Obtenemos la moneda de la factura
+            # Lo hacemos por el wsfex_config, por cualquiera de ellos
+            # si es que hay mas de uno
+            currency_code_obj = self.env['wsfex.currency.codes']
+            currency_code_ids = currency_code_obj.search([('currency_id', '=', inv.currency_id.id)])
+
+            if not currency_code_ids:
+                raise osv.except_osv(_("WSFE Error!"), _("Currency has to be configured correctly in WSFEX Configuration."))
+
+            currency_code = currency_code_ids[0].code
+
+            # Cotizacion
+            company_id = self.env.user.company_id
+            company_currency_id = company_id.currency_id
+            invoice_rate = 1.0
+            if inv.currency_id.id != company_currency_id:
+                invoice_rate = inv.currency_rate
+
+            detalle['MonId'] = currency_code
+            detalle['MonCotiz'] = invoice_rate
 
             iva_array = []
 
