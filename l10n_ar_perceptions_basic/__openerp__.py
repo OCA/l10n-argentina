@@ -21,7 +21,7 @@
 {
     "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
     "version": "8.0.1.0.0",
-    "depends": ["base", "account", "account_accountant", "sale", "purchase", "l10n_ar_point_of_sale"],
+    "depends": ["l10n_ar_point_of_sale"],
     "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
@@ -32,7 +32,7 @@
        based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
     """,
     "init_xml": [
-        "perception_data.xml",
+        #"perception_data.xml",
     ],
     'data': [
         'security/ir.model.access.csv',
