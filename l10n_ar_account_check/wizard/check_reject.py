@@ -149,7 +149,8 @@ class account_check_reject(osv.osv_memory):
             invoice_vals['invoice_line'] = lines
 
             # Creamos la nota de debito
-            debit_note_id = invoice_obj.create(cr, uid, invoice_vals)
+            debit_note_id = invoice_obj.create(cr, uid, invoice_vals, context=context)
+            invoice_obj.button_reset_taxes(cr, uid, [debit_note_id], context=context)
 
             # TODO: Chequear que es lo mismo el estado en el que este, asi quitamos
             # este if que parece no tener sentido
