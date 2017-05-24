@@ -126,7 +126,7 @@ class account_invoice(models.Model):
                 p.write({'date': move_line['date']})
 
             move_lines.insert(len(move_lines) - 1, (0, 0, move_line))
-        return move_lines
+        return super(account_invoice, self).finalize_invoice_move_lines(move_lines)
 
 account_invoice()
 
