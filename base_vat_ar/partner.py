@@ -45,6 +45,16 @@ res_document_type()
 class res_partner(osv.osv):
     _inherit = 'res.partner'
     
+    def check_vat_duplicated(self, cr, uid, ids, context=None):
+        for partner in self.browse(cr, uid, ids, context=context):
+            if not partner.vat:
+                continue
+
+            res = self.search_count(cr, uid, [('vat', '=', partner.vat), ('document_type_id', '=', partner.document_type_id.id), ('parent_id', '=', False)], context=context)
+            if res > 1:
+                return False
+        return True
+
     _columns = {
 		'document_type_id': fields.many2one('res.document.type', 'Document type'),
 	}
@@ -81,7 +91,12 @@ class res_partner(osv.osv):
                     return False
         return True
 
-    _constraints = [(check_vat, _('The Vat does not seems to be correct.'), ["vat"])]
+    _constraints = [(check_vat, _('The Vat does not seems to be correct.'), ["vat"]),
+                    (check_vat_duplicated, _("There is another partner with same VAT Information"), ["vat", "document_type_id"])]
+
+    def _commercial_fields(self, cr, uid, context=None):
+        return super(res_partner, self)._commercial_fields(cr, uid, context=context) + ['document_type_id']
+
 
     def check_vat_ar(self,vat):
         """

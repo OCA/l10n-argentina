@@ -67,6 +67,7 @@
                     <field name="payment_date"/>
                     <field name="account_bank_id" />
                     <field name="bank_id"/>
+                    <field name="voucher_id"/>
                     <field name="amount" sum="Total Amount" />
                     <field name="type" invisible="1"/>
                     <field name="state"/>

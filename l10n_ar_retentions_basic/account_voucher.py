@@ -225,7 +225,7 @@ class account_voucher(models.Model):
 
             # Escribimos valores del voucher en la retention tax line
             ret_vals = {
-                'voucher_number': voucher.reference,
+                'voucher_number': voucher.number,
                 'partner_id': voucher.partner_id.id,
             }
             ret.write(ret_vals)

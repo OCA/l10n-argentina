@@ -31,10 +31,19 @@ class account_bank_statement(osv.osv):
     _name = "account.bank.statement"
     _inherit = "account.bank.statement"
     
+    def _all_lines_reconciled(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for statement in self.browse(cr, uid, ids, context=context):
+            res[statement.id] = all([line.journal_entry_id.id or line.account_id.id or line.state=='conciliated' for line in statement.line_ids])
+        return res
+
+    _columns = {
+        'all_lines_reconciled': fields.function(_all_lines_reconciled, string='All lines reconciled', type='boolean'),
+    }
+
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        print 'button_confirm_bank CASH'
 
         for st in self.browse(cr, uid, ids, context=context):
             j_type = st.journal_id.type
@@ -51,7 +60,7 @@ class account_bank_statement(osv.osv):
             move_ids = []
             for st_line in st.line_ids:
                 #~ compruebo los movimientos que son desde caja para generar los asientos
-                if not st_line.type in ('expenses', 'income'):
+                if not st_line.type in ('expenses', 'income', 'difference'):
                     continue
                 #~ fin
                 if not st_line.amount:
@@ -65,8 +74,6 @@ class account_bank_statement(osv.osv):
                         'name': st_line.name,
                         'analytic_account_id': st_line.analytic_id and st_line.analytic_id.id
                     }
-                    #~ if st_line.analytic_id and st_line.type in 'expenses':
-                        #~ vals.update({'analytic_account_id': st_line.analytic_id.id})
                         
                     self.pool.get('account.bank.statement.line').process_reconciliation(cr, uid, st_line.id, [vals], context=context)
                 elif not st_line.journal_entry_id.id:
@@ -115,17 +122,41 @@ class account_bank_statement(osv.osv):
                 'currency_id': amount_currency and cur_id,
                 'amount_currency': amount_currency,
         }
-        #~ if st_line.analytic_id and st_line.type in 'income':
-            #~ vals.update({'analytic_account_id': st_line.analytic_id.id})
             
         return vals
+
 
 class account_cash_statement(osv.osv):
     
     _inherit = "account.bank.statement"
+
+    def _update_balances(self, cr, uid, ids, context=None):
+        """
+            Set starting and ending balances according to pieces count
+        """
+        res = {}
+        for statement in self.browse(cr, uid, ids, context=context):
+            if (statement.journal_id.type not in ('cash',)):
+                continue
+            if not statement.journal_id.cash_control:
+                # Quitamos el codigo original que escribia el
+                # balance final real con el balance final teorico
+                # Esto permite registrar una diferencia de caja
+                continue
+            start = end = 0
+            for line in statement.details_ids:
+                start += line.subtotal_opening
+                end += line.subtotal_closing
+            data = {
+                'balance_start': start,
+                'balance_end_real': end,
+            }
+            res[statement.id] = data
+            super(account_cash_statement, self).write(cr, uid, [statement.id], data, context=context)
+        return res
+
     
     def button_confirm_cash(self, cr, uid, ids, context=None):
-        print 'cajero'
         absl_proxy = self.pool.get('account.bank.statement.line')
 
         TABLES = ((_('Profit'), 'profit_account_id'), (_('Loss'), 'loss_account_id'),)
@@ -144,12 +175,14 @@ class account_cash_statement(osv.osv):
                 if not obj.journal_id.profit_account_id:
                     raise osv.except_osv(_('Error!'), _('There is no Profit Account on the journal %s.') % (obj.journal_id.name,))
 
+            # Asentamos la diferencia
             values = {
                 'statement_id' : obj.id,
                 'journal_id' : obj.journal_id.id,
                 'account_id' : account.id,
                 'amount' : obj.difference,
                 'name' : name,
+                'type' : 'difference',
             }
             absl_proxy.create(cr, uid, values, context=context)
 
@@ -177,6 +210,7 @@ class account_bank_statement_line(osv.osv):
         'type': fields.selection([
             ('expenses','Expenses'),
             ('income','Income'),
+            ('difference','Difference'),
             ('general','General'),
             ('payment','Payment'),
             ('receipt','Receipt')
@@ -209,14 +243,13 @@ class account_bank_statement_line(osv.osv):
             amount = amount
 
         return { 'value': { 'amount': amount } }
-    
-        
-    #~ def unlink(self, cr, uid, ids, context=None):
-        #~ for t in self.browse(cr, uid, ids, context=context):
-            #~ if t.state in 'conciliated':
-                #~ raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Cash Statement Line(s) which are conciliated state !'))
-                #~ 
-        #~ return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
+
+#    def unlink(self, cr, uid, ids, context=None):
+#        for t in self.browse(cr, uid, ids, context=context):
+#            if t.state in 'conciliated':
+#                raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Cash Statement Line(s) which are conciliated state !'))
+#
+#        return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
 
 account_bank_statement_line()
     

@@ -23,6 +23,7 @@
 
 from openerp import models, fields, api, _
 from openerp.osv import osv
+from openerp.exceptions import RedirectWarning
 
 
 class account_voucher(models.Model):
@@ -30,16 +31,27 @@ class account_voucher(models.Model):
     _name = "account.voucher"
     _inherit = "account.voucher"
 
+    @api.model #convert old API calls to decorated function to new API signature
+    def _get_journal(self):
+        res = super(account_voucher, self)._get_journal() #
+        ttype = self.env.context.get('type', 'bank')
+
+        # Pago inmediato, al contado, desde el boton de la factura
+        immediate = self.env.context.get('immediate_payment', False)
+
+        if not immediate and ttype in ('payment', 'receipt'):
+            rec = self.env['account.journal'].search([('type', '=', ttype)], limit=1 , order= 'priority')
+            if not rec:
+                action = self.env.ref('account.action_account_journal_form')
+                msg = _('Cannot find a Payment/Receipt journal. \nPlease create at least one.')
+                raise RedirectWarning(msg, action.id, _('Go to the journal configuration'))
+
+            res = rec[0] or False
+        return res
+
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
-    journal_sequence = fields.Many2one('ir.sequence', 'Book', readonly=True, states={'draft': [('readonly', False)]})
-
-    def name_get(self, cr, uid, ids, context=None):
-        if not ids:
-            return []
-        if context is None:
-            context = {}
-        return [(r['id'], (str("%s - %.2f" % (r['reference'], r['amount'])) or '')) for r in self.read(cr, uid, ids, ['reference', 'amount'], context, load='_classic_write')]
-
+    journal_id = fields.Many2one('account.journal', 'Journal', default=_get_journal, required=True, readonly=True, states={'draft':[('readonly',False)]})
+    account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
     @api.multi
     def _get_payment_lines_amount(self):
         amount = 0.0
@@ -68,14 +80,15 @@ class account_voucher(models.Model):
 
     @api.model
     def _get_payment_lines_default(self, ttype, currency_id):
-        pay_mod_pool = self.env['payment.mode.receipt']
-        modes = pay_mod_pool.search([('type', '=', ttype), ('currency', '=', currency_id)])
-        if not modes:
+        pay_method_obj = self.env['account.journal']
+        methods = pay_method_obj.search([('type', 'in', ['cash', 'bank']), '|', ('currency','=',currency_id), ('currency','=',False)])
+
+        if not methods:
             return {}
 
         lines = []
-        for mode in modes:
-            lines.append({'name': mode.name, 'amount': 0.0, 'amount_currency': 0.0, 'payment_mode_id': mode.id, 'currency': mode.currency.id})
+        for method in methods:
+            lines.append({'name': method.name ,'amount': 0.0 ,'amount_currency':0.0 ,'payment_mode_id': method.id, 'currency': method.currency.id})
 
         return lines
 
@@ -85,21 +98,6 @@ class account_voucher(models.Model):
             if payment_line.amount == 0:
                 payment_line.unlink()
         return True
-
-#    def _hook_get_amount(self, cr, uid, ids, amount, context=None):
-#
-#        lines_to_unlink = []
-#
-#        for voucher in self.browse(cr, uid, ids, context=context):
-#            for payment_line in voucher.payment_line_ids:
-#                if payment_line.amount == 0:
-#                    lines_to_unlink.append(payment_line.id)
-#
-#                amount += payment_line.amount
-#
-#        if context.get('zero_check', False):
-#            self.pool.get('payment.mode.receipt.line').unlink(cr, uid, lines_to_unlink, context=context)
-#        return amount
 
     @api.multi
     def proforma_voucher(self):
@@ -129,6 +127,45 @@ class account_voucher(models.Model):
         company_currency = self.company_id.currency_id
         res = currency.compute(amount, company_currency)
         return res
+
+    #
+    @api.multi
+    def _create_move_line_payment(self, move_id, name, journal_id, amount,
+            company_currency, current_currency, sign):
+
+        amount_in_company_currency = self._convert_paid_amount_in_company_currency(amount)
+
+        debit = credit = 0.0
+        if self.type in ('purchase', 'payment'):
+            credit = amount_in_company_currency
+            pl_account_id = journal_id.default_credit_account_id.id
+        elif self.type in ('sale', 'receipt'):
+            debit = amount_in_company_currency
+            pl_account_id = journal_id.default_debit_account_id.id
+        if debit < 0:
+            credit = -debit
+            debit = 0.0
+        if credit < 0:
+            debit = -credit
+            credit = 0.0
+        sign = debit - credit < 0 and -1 or 1
+
+        move_line = {
+            'name': name or '/',
+            'debit': debit,
+            'credit': credit,
+            'account_id': pl_account_id,
+            'move_id': move_id,
+            'journal_id': self.journal_id.id,
+            'period_id': self.period_id.id,
+            'partner_id': self.partner_id.id,
+            'currency_id': company_currency <> current_currency and current_currency or False,
+            'amount_currency': company_currency <> current_currency and sign * amount or 0.0,
+            'date': self.date,
+            'date_maturity': self.date_due
+        }
+
+        return move_line
 
     # Heredada para agregar un hook y los asientos para varias formas de pago
     @api.multi
@@ -166,37 +203,20 @@ class account_voucher(models.Model):
             if pl.amount == 0.0:
                 continue
 
-            amount_in_company_currency = self._convert_paid_amount_in_company_currency(pl.amount)
-
-            debit = credit = 0.0
-            if self.type in ('purchase', 'payment'):
-                credit = amount_in_company_currency
-            elif self.type in ('sale', 'receipt'):
-                debit = amount_in_company_currency
-            if debit < 0:
-                credit = -debit
-                debit = 0.0
-            if credit < 0:
-                debit = -credit
-                credit = 0.0
-            sign = debit - credit < 0 and -1 or 1
-
-            move_line = {
-                'name': pl.name or '/',
-                'debit': debit,
-                'credit': credit,
-                'account_id': pl.payment_mode_id.account_id.id,
-                'move_id': move_id,
-                'journal_id': self.journal_id.id,
-                'period_id': self.period_id.id,
-                'partner_id': self.partner_id.id,
-                'currency_id': company_currency <> current_currency and current_currency or False,
-                'amount_currency': company_currency <> current_currency and sign * pl.amount or 0.0,
-                'date': self.date,
-                'date_maturity': self.date_due
-            }
+            move_line = self._create_move_line_payment(move_id, pl.name,
+                            pl.payment_mode_id, pl.amount,
+                            company_currency, current_currency, sign)
 
             move_lines.append(move_line)
+
+        # Si es pago contado
+        if self.journal_id.type not in ('receipt', 'payment'):
+            move_line = self._create_move_line_payment(move_id, _('Immediate'),
+                            self.journal_id, self.amount,
+                            company_currency, current_currency, sign)
+
+            move_lines.append(move_line)
+
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
         self.create_move_line_hook(move_id, move_lines)
@@ -261,17 +281,6 @@ class account_voucher(models.Model):
             name = move_recordset.name
             move_id = move_recordset.id
 
-            # Escribimos el numero del voucher
-            # Seteamos el numero de la OP
-            voucher_vals = {'number': 'name'}
-            if voucher.type in ('payment', 'receipt'):
-                if not voucher.reference:
-                    ref = self.env['ir.sequence'].next_by_id(voucher.journal_sequence.id)
-                    voucher_vals['reference'] = ref
-                    self._update_move_reference(move_id, ref)
-
-            voucher.write(voucher_vals)
-
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
                 move_line_vals = self.create_move_lines(move_id, company_currency, current_currency)
@@ -334,7 +343,6 @@ class account_voucher(models.Model):
         return default
 
 account_voucher()
-
 
 class account_voucher_line(models.Model):
     _name = 'account.voucher.line'

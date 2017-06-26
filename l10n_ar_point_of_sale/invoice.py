@@ -97,28 +97,13 @@ class invoice(models.Model):
 
     @api.one
     @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
-    def _amount_all_ar(self):
-        account_invoice_tax = self.env['account.invoice.tax']
-        account_tax = self.env['account.tax']
-        ctx = dict(self._context)
-        amount_tax = 0.0
-        amount_base = 0.0
-        amount_exempt = 0.0
-        for taxe in account_invoice_tax.compute(self.with_context(ctx)).values():
-            amount_tax += taxe['amount']
-            tax = account_tax.browse(taxe['tax_id'])
-            tax_group = tax.tax_group
-            amount_exempt += tax_group == 'vat' and taxe['is_exempt'] and taxe['base'] or 0.0
-            amount_base +=  tax_group == 'vat' and not taxe['is_exempt'] and taxe['base'] or 0.0
-
-        self.amount_tax = amount_tax
+    def _compute_amount(self):
         self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line)
+        self.amount_tax = sum(line.amount for line in self.tax_line)
         self.amount_total = self.amount_untaxed + self.amount_tax
-
-
-        self.amount_no_taxed = self.amount_untaxed - amount_base - amount_exempt
-        self.amount_taxed = amount_base
-        self.amount_exempt = amount_exempt
+        self.amount_exempt = sum(line.price_subtotal for line in self.invoice_line if any(map(lambda x: x.is_exempt, line.invoice_line_tax_id)))
+        self.amount_no_taxed = sum(line.price_subtotal for line in self.invoice_line if not line.invoice_line_tax_id)
+        self.amount_taxed = sum(line.price_subtotal for line in self.invoice_line if any(map(lambda x: (x.tax_group=='vat' and not x.is_exempt), line.invoice_line_tax_id)))
 
 #    def _get_invoice_line(self, cr, uid, ids, context=None):
 #        result = {}
@@ -137,12 +122,12 @@ class invoice(models.Model):
     denomination_id = fields.Many2one('invoice.denomination', readonly=True, states={'draft':[('readonly',False)]})
     internal_number = fields.Char(string='Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created.")
     amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
-    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_amount_all_ar')
+    amount_exempt = fields.Float(string='Amount Exempt', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_no_taxed = fields.Float(string='No Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_taxed = fields.Float(string='Taxed', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
+    amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
     local = fields.Boolean(string='Local', default=True)
 
     #Validacion para que el total de una invoice no pueda ser negativo.
@@ -152,39 +137,35 @@ class invoice(models.Model):
         if self.amount_total < 0:
             raise ValidationError(_('Error! The total amount cannot be negative'))
 
-#    @api.one
-#    @api.constrains('denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number')
-#    def _check_duplicate(self):
-#
-#        denomination_id = self.denomination_id
-#        pos_ar_id = self.pos_ar_id
-#        partner_id = self.partner_id or False
-#        company_id = self.company_id or False
-#
-#        partner_country = partner_id.country_id
-#        company_country = company_id.country_id
-#
-#        if self.type in ('in_invoice', 'in_refund'):
-#            local = (partner_country  == company_country) or partner_country == False
-#
-#            # Si no es local, no hacemos chequeos
-#            if not local:
-#                return
-#
-#        # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
-#        # duplicada hasta que no le pongan el numero
-#        if not invoice['internal_number']:
-#            return
-#
-#        if self.type in ('out_invoice', 'out_refund'):
-#            count = self.search_count([('denomination_id','=',denomination_id.id), ('pos_ar_id','=',pos_ar_id.id), ('is_debit_note','=',self.is_debit_note), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
-#
-#            if count > 1:
-#                raise ValidationError(_('Error! The Invoice is duplicated.'))
-#        else:
-#            count = self.search_count([('denomination_id','=',denomination_id.id), ('is_debit_note','=',self.is_debit_note), ('partner_id','=',partner_id.id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
-#            if count > 1:
-#                raise ValidationError(_('Error! The Invoice is duplicated.'))
+    @api.one
+    @api.constrains('denomination_id', 'pos_ar_id', 'type', 'is_debit_note', 'internal_number')
+    def _check_duplicate(self):
+
+        denomination_id = self.denomination_id
+        pos_ar_id = self.pos_ar_id
+        partner_id = self.partner_id or False
+
+        if self.type in ('in_invoice', 'in_refund'):
+            local = self.fiscal_position.local
+
+            # Si no es local, no hacemos chequeos
+            if not local:
+                return
+
+        # Si la factura no tiene seteado el numero de factura, devolvemos True, porque no sabemos si estara
+        # duplicada hasta que no le pongan el numero
+        if not self.internal_number:
+            return
+
+        if self.type in ('out_invoice', 'out_refund'):
+            count = self.search_count([('denomination_id','=',denomination_id.id), ('pos_ar_id','=',pos_ar_id.id), ('is_debit_note','=',self.is_debit_note), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=',self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
+
+            if count > 1:
+                raise ValidationError(_('Error! The Invoice is duplicated.'))
+        else:
+            count = self.search_count([('denomination_id','=',denomination_id.id), ('is_debit_note','=',self.is_debit_note), ('partner_id','=',partner_id.id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
+            if count > 1:
+                raise ValidationError(_('Error! The Invoice is duplicated.'))
 
     @api.one
     def _check_fiscal_values(self):
@@ -373,7 +354,8 @@ class invoice(models.Model):
 
                 if type in ['in_invoice', 'in_refund', 'in_debit']:  # Supplier invoice
                     denom_sup_id = fiscal_position.denom_supplier_id.id
-                    res['value'].update({'denomination_id': denom_sup_id})
+                    res['value'].update({'denomination_id': denom_sup_id,
+                                         'local': fiscal_position.local})
                 else:  # Customer invoice
                     pos = pos_pool.search([('denomination_id', '=', denomination_id)], order='priority asc', limit=1)
                     if len(pos):

@@ -58,6 +58,9 @@ class wsfe_request_detail(models.Model):
     result = fields.Selection([('A', 'Approved'), ('R', 'Rejected')], 'Result', readonly=True)
     observations = fields.Text('Observations', readonly=True)
 
+    currency = fields.Char('Currency', required=False, readonly=True)
+    currency_rate = fields.Float('Currency Rate', required=False, readonly=True)
+
 wsfe_request_detail()
 
 class wsfex_request_detail(models.Model):

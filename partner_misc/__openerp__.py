@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#    All Rights Reserved. See AUTHORS for details.
+#    Copyright (c) 2015 Eynes - Ingenieria del software.
+#    (http://www.eynes.com.ar) All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,6 +19,24 @@
 #
 ##############################################################################
 
-import account_voucher
-import cash_statement
-import wizard
+{
+    'name': 'Partner Miscellaneous',
+    'version': '8.0.0.0.1',
+    'category': 'Localisation Modules',
+    'description': """
+    This Modules brings up some special configurations:
+
+    * Make vat and document_type_id fields required when customer is True.
+    """,
+    'author': 'Eynes',
+    'website': 'http://www.eynes.com.ar/',
+    'depends': ['base_vat_ar'],
+    'init_xml': [],
+    'data': [
+        'views/partner_view.xml',
+    ],
+    'demo_xml': [],
+    'test': [],
+    'installable': True,
+}
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

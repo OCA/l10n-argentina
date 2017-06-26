@@ -36,6 +36,7 @@ class invoice_denomination(models.Model):
             ('C','C'),
             ('M','M'),
             ('X','X'),
+            ('ANA','ANA'),
             ('E','E')], string="Denomination")
     desc = fields.Char(string="Description", required=True, size=100)
     vat_discriminated = fields.Boolean(string="Vat Discriminated in Invoices", default=False, help="If True, the vat will be discriminated at invoice report.")

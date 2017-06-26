@@ -33,14 +33,18 @@
     This module provide :
      Implementation of Receipt/Payments for Argentina
     """,
-    "init_xml": [],
-    'update_xml': [
+    'data': [
         'security/ir.model.access.csv',
         'voucher_payment_receipt_view.xml',
+        'voucher_sales_purchase_view.xml',
+        'account_voucher_view.xml',
         #'account_payment_view.xml',
-        'payment_mode_receipt_view.xml',
+        'payment_methods_view.xml',
+        'account_journal_view.xml',
     ],
-    'demo_xml': [],
+    'demo': [
+        'payment_methods_demo.xml',
+    ],
     'installable': True,
     'active': False,
 }

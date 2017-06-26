@@ -45,37 +45,44 @@ class account_voucher(osv.osv):
                 aux_account = vou.partner_id.property_account_payable.id
             
             for line in vou.payment_line_ids:
-                if line.payment_mode_id.journal_id and line.payment_mode_id.journal_id.type in 'cash':
-                    aux_name = line.voucher_id.number
+                if line.payment_mode_id.type in 'cash':
+                    voucher_number = line.voucher_id.number
                     
                     amount = line.amount * sign
                     
+                    voucher_date = line.voucher_id.date or fields.date.context_today(self,cr,uid,context=context)
                     statement = self.pool.get('account.bank.statement').search(cr, uid, 
-                    [('journal_id','=', line.payment_mode_id.journal_id.id),('state','=','open')], order='date', limit=1)
+                    [('journal_id','=', line.payment_mode_id.id),('state','=','open'),
+                     ('date', '<=', voucher_date)], order='date desc')
                     
                     if statement:
+                        # Elegimos la primer caja que sera la que corresponde en fecha
                         st_line = {
-                            'name': vou.reference,
+                            'name': voucher_number,
                             'date': line.date or vou.date,
                             'amount': amount,
                             'account_id': aux_account,
                             'state': 'conciliated',
                             'type': vou.type,
-                            'partner_id': line.voucher_id.partner_id and line.voucher_id.partner_id.id,
+                            # Si el voucher no tiene partner, ponemos el de la compania
+                            'partner_id': line.voucher_id.partner_id and
+                                            line.voucher_id.partner_id.id or
+                                            line.voucher_id.company_id.partner_id.id,
+                            'company_id': vou.company_id.id,
                             'ref_voucher_id': vou.id,
                             'creation_type': 'system',
                             'statement_id': statement[0],
                             #~ 'ref': vou.reference,
+                            'journal_id': line.payment_mode_id.id,
                         }
 
                         st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
                     else:
                         raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with cash and box not open."))
-
             return True
         
-    def cancel_voucher(self, cr, uid, ids, vals, context=None):
-        
+    def cancel_voucher(self, cr, uid, ids, context=None):
+
         statement_line_obj = self.pool.get('account.bank.statement.line')
         
         for voucher in self.browse(cr, uid, ids, context=None):

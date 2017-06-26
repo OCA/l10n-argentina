@@ -34,7 +34,7 @@ class account_bank_statement_line(osv.osv):
     _columns = {
         'payment_date': fields.date('Payment date'),
         'issue_date': fields.date('Issue date'),
-        'aux_journal_id': fields.many2one('account.journal', 'Journal', select=True),
+        'journal_id': fields.many2one('account.journal', 'Journal', select=True),
         'statement_id': fields.many2one('account.bank.statement', 'Statement', select=True, ondelete='restrict'),
     }
 
@@ -188,7 +188,7 @@ class account_check_deposit(osv.osv_memory):
                 'ref_voucher_id': check.source_voucher_id.id,
                 #~ 'ref': check.source_voucher_id.number,
                 'ref': check.source_voucher_id.reference,
-                'aux_journal_id': check.deposit_bank_id.journal_id.id,
+                'journal_id': check.deposit_bank_id.journal_id.id,
             }
 
             st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
@@ -238,7 +238,7 @@ class account_check_reject(osv.osv_memory):
                 'ref_voucher_id': check.source_voucher_id.id,
                 #~ 'ref': check.source_voucher_id.number,
                 'ref': check.source_voucher_id.reference,
-                'aux_journal_id': check.deposit_bank_id.journal_id.id,
+                'journal_id': check.deposit_bank_id.journal_id.id,
             }
 
             st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
