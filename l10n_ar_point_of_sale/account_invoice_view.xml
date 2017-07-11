@@ -34,6 +34,9 @@
                         <field name="base_code_id" invisible="1"/>
                         <field name="tax_code_id" invisible="1"/>
                    </xpath>
+                   <xpath expr="//field[@name='tax_line']/tree/field[@name='base']" position="attributes">
+                        <attribute name="readonly">0</attribute>
+                   </xpath>
                 </data>
             </field>
         </record>
