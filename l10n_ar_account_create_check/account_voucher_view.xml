@@ -10,8 +10,9 @@
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//field[@name='issued_check_ids']/form/group/group/field[@name='number']" position="before">
-                    <field name="check_id" attrs="{'readonly': [('state','in',['issued','cancel'])]}" domain="[('state','=','draft')]"/>
-                    <field name="checkbook_id" invisible="1"/>
+                    <field name="checkbook_id" required="1"/>
+                    <field name="check_id" attrs="{'readonly': [('state','in',['issued','cancel'])]}"
+                        domain="[('state','=','draft'), ('checkbook_id', '=?', checkbook_id)]"/>
                 </xpath>
             </data>
         </field>
