@@ -1,98 +1,22 @@
-# Translation of OpenERP Server.
+# Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* l10n_ar_account_create_check
-# Sebastian Kennedy <skennedy@e-mips.com.ar>, 2013.
+# Gabriel Davini <gabrielfranciscodavini@gmail.com>, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 6.1\n"
+"Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-18 03:03+0000\n"
-"PO-Revision-Date: 2013-06-18 00:05-0300\n"
-"Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
+"POT-Creation-Date: 2017-07-25 21:09+0000\n"
+"PO-Revision-Date: 2017-07-25 18:16-0300\n"
+"Last-Translator: Gabriel Davini <gabrielfranciscodavini@gmail.com>\n"
 "Language-Team: Spanish; Castilian <>\n"
+"Language: es_AR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
-
-#. module: l10n_ar_account_create_check
-#: field:wizard.create.check,end_num:0
-msgid "End number of check"
-msgstr "Número final de la chequera"
-
-#. module: l10n_ar_account_create_check
-#: view:wizard.create.check:0
-msgid "Create"
-msgstr "Crear"
-
-#. module: l10n_ar_account_create_check
-#: model:ir.model,name:l10n_ar_account_create_check.model_wizard_create_check
-msgid "wizard create check"
-msgstr "Wizard Crear Chequera"
-
-#. module: l10n_ar_account_create_check
-#: field:account.checkbook.check,state:0
-msgid "State"
-msgstr "Estado"
-
-#. module: l10n_ar_account_create_check
-#: selection:account.checkbook.check,state:0
-msgid "Draft"
-msgstr "Borrador"
-
-#. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:45
-#, python-format
-msgid "End number cannot be lower than Start number"
-msgstr "El número de cheque final no puede ser menor al número de comienzo."
-
-#. module: l10n_ar_account_create_check
-#: view:account.checkbook:0 field:account.issued.check,checkbook_id:0
-#: model:ir.model,name:l10n_ar_account_create_check.model_account_checkbook
-msgid "Checkbook"
-msgstr "Chequera"
-
-#. module: l10n_ar_account_create_check
-#: selection:account.checkbook,type:0
-msgid "Post-dated"
-msgstr "Diferido"
-
-#. module: l10n_ar_account_create_check
-#: help:account.checkbook,type:0
-msgid ""
-"If common, checks only have issued_date. If post-dated they also have "
-"payment date"
-msgstr ""
-"Los cheques comunes solo tienen Fecha de Emisión. Si son diferidos también "
-"tendrán Fecha de Pago."
-
-#. module: l10n_ar_account_create_check
-#: view:account.checkbook:0
-msgid "Checks"
-msgstr "Cheques"
-
-#. module: l10n_ar_account_create_check
-#: field:account.checkbook.check,name:0
-msgid "Check Number"
-msgstr "Número de Cheque"
-
-#. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:45
-#, python-format
-msgid "Error creating Checkbook"
-msgstr "Error creando la Chequera"
-
-#. module: l10n_ar_account_create_check
-#: selection:account.checkbook.check,state:0
-msgid "Used"
-msgstr "Utilizado"
-
-#. module: l10n_ar_account_create_check
-#: field:account.checkbook,company_id:0
-msgid "Company"
-msgstr "Compañía"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #. module: l10n_ar_account_create_check
 #: help:account.checkbook,account_check_id:0
@@ -105,20 +29,34 @@ msgstr ""
 "módulo."
 
 #. module: l10n_ar_account_create_check
-#: view:account.checkbook:0 field:account.checkbook,check_ids:0
+#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
+msgid "Annull"
+msgstr "Anular"
+
+#. module: l10n_ar_account_create_check
+#: view:account.issued.check:l10n_ar_account_create_check.view_account_issued_check_checkbook_form
+msgid "Annull Check"
+msgstr "Anular Cheque"
+
+#. module: l10n_ar_account_create_check
+#: view:account.checkbook:l10n_ar_account_create_check.view_account_checkbook_form
+msgid "Annull Checks"
+msgstr "Anular Cheques"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook.check,state:0
+msgid "Annulled"
+msgstr "Anulado"
+
+#. module: l10n_ar_account_create_check
+#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
+msgid "Are you sure you want to continue?"
+msgstr "¿Está seguro que desea continuar?"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,check_ids:0
 msgid "Available Checks"
 msgstr "Cheques Disponibles"
-
-#. module: l10n_ar_account_create_check
-#: field:account.checkbook,issued_check_ids:0
-#: model:ir.model,name:l10n_ar_account_create_check.model_account_issued_check
-msgid "Issued Checks"
-msgstr "Cheques Propios"
-
-#. module: l10n_ar_account_create_check
-#: view:account.checkbook:0
-msgid "Configuration"
-msgstr "Configuración"
 
 #. module: l10n_ar_account_create_check
 #: field:account.checkbook,bank_id:0
@@ -132,38 +70,27 @@ msgid "Bank Account"
 msgstr "Cuenta Bancaria"
 
 #. module: l10n_ar_account_create_check
-#: field:account.checkbook.check,checkbook_id:0
-#: field:wizard.create.check,checkbook_num:0
-msgid "Checkbook number"
-msgstr "Número de Chequera"
+#: code:addons/l10n_ar_account_create_check/checkbook.py:116
+#, python-format
+msgid "Can't annull done checks!"
+msgstr "¡No puede anular cheques en estado 'Realizado'!"
 
 #. module: l10n_ar_account_create_check
-#: selection:account.checkbook,type:0
-msgid "Common"
-msgstr "Común"
+#: code:addons/l10n_ar_account_create_check/checkbook.py:144
+#, python-format
+msgid "Can't annull issued checks!"
+msgstr "¡No puede anular cheques ya emitidos!"
 
 #. module: l10n_ar_account_create_check
-#: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_wizard_create_check
-#: model:ir.ui.menu,name:l10n_ar_account_create_check.menu_wizard_create_check
-msgid "Create checkbook"
-msgstr "Crear chequera"
+#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
+#: view:wizard.create.check:l10n_ar_account_create_check.view_wizard_create_check
+msgid "Cancel"
+msgstr "Cancelar"
 
 #. module: l10n_ar_account_create_check
-#: view:account.checkbook:0
-#: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_account_checkbook
-#: model:ir.ui.menu,name:l10n_ar_account_create_check.menu_checkbook
-msgid "Checkbooks"
-msgstr "Chequeras"
-
-#. module: l10n_ar_account_create_check
-#: field:wizard.create.check,start_num:0
-msgid "Start number of check"
-msgstr "Número inicial de la chequera"
-
-#. module: l10n_ar_account_create_check
-#: field:account.checkbook,type:0
-msgid "Checkbook Type"
-msgstr "Tipo de Chequera"
+#: field:account.issued.check,check_id:0
+msgid "Check"
+msgstr "Cheque"
 
 #. module: l10n_ar_account_create_check
 #: field:account.checkbook,account_check_id:0
@@ -171,24 +98,17 @@ msgid "Check Account"
 msgstr "Cuenta Contable de Cheques"
 
 #. module: l10n_ar_account_create_check
-#: field:account.checkbook,name:0
-msgid "Checkbook Number"
-msgstr "Número de Chequera"
+#: field:account.checkbook.check,name:0
+msgid "Check Number"
+msgstr "Número de Cheque"
 
 #. module: l10n_ar_account_create_check
-#: view:wizard.create.check:0
-msgid "Cancel"
-msgstr "Cancelar"
-
-#. module: l10n_ar_account_create_check
-#: field:account.checkbook,partner_id:0
-msgid "Partner"
-msgstr "Partner"
-
-#. module: l10n_ar_account_create_check
-#: view:wizard.create.check:0
-msgid "Create checkbooks"
-msgstr "Crear chequera"
+#: view:account.checkbook:l10n_ar_account_create_check.view_account_checkbook_form
+#: field:account.issued.check,checkbook_id:0
+#: model:ir.model,name:l10n_ar_account_create_check.model_account_checkbook
+#: field:wizard.annull.checks,checkbook_id:0
+msgid "Checkbook"
+msgstr "Chequera"
 
 #. module: l10n_ar_account_create_check
 #: model:ir.model,name:l10n_ar_account_create_check.model_account_checkbook_check
@@ -196,6 +116,233 @@ msgid "Checkbook Check"
 msgstr "Cheques de Chequera"
 
 #. module: l10n_ar_account_create_check
-#: field:account.issued.check,check_id:0
-msgid "Check"
-msgstr "Cheque"
+#: field:account.checkbook,name:0
+msgid "Checkbook Number"
+msgstr "Número de Chequera"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,type:0
+msgid "Checkbook Type"
+msgstr "Tipo de Chequera"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook.check,checkbook_id:0
+#: field:wizard.create.check,checkbook_num:0
+msgid "Checkbook number"
+msgstr "Número de Chequera"
+
+#. module: l10n_ar_account_create_check
+#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
+msgid "Checkbook:"
+msgstr "Chequera: "
+
+#. module: l10n_ar_account_create_check
+#: view:account.checkbook:l10n_ar_account_create_check.view_account_checkbook_tree
+#: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_account_checkbook
+#: model:ir.ui.menu,name:l10n_ar_account_create_check.menu_checkbook
+msgid "Checkbooks"
+msgstr "Chequeras"
+
+#. module: l10n_ar_account_create_check
+#: view:account.checkbook:l10n_ar_account_create_check.view_account_checkbook_form
+#: field:wizard.annull.checks,checks:0
+msgid "Checks"
+msgstr "Cheques"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook,state:0
+msgid "Closed"
+msgstr "Cerrada"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook,type:0
+msgid "Common"
+msgstr "Común"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,company_id:0 field:wizard.create.check,company_id:0
+msgid "Company"
+msgstr "Compañía"
+
+#. module: l10n_ar_account_create_check
+#: view:wizard.create.check:l10n_ar_account_create_check.view_wizard_create_check
+msgid "Create"
+msgstr "Crear"
+
+#. module: l10n_ar_account_create_check
+#: model:ir.ui.menu,name:l10n_ar_account_create_check.menu_wizard_create_check
+msgid "Create Checkbook"
+msgstr "Crear Chequera"
+
+#. module: l10n_ar_account_create_check
+#: model:ir.actions.act_window,name:l10n_ar_account_create_check.action_wizard_create_check
+msgid "Create checkbook"
+msgstr "Crear chequera"
+
+#. module: l10n_ar_account_create_check
+#: view:wizard.create.check:l10n_ar_account_create_check.view_wizard_create_check
+msgid "Create checkbooks"
+msgstr "Crear chequera"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,create_uid:0
+#: field:account.checkbook.check,create_uid:0
+#: field:wizard.annull.checks,create_uid:0
+#: field:wizard.create.check,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,create_date:0
+#: field:account.checkbook.check,create_date:0
+#: field:wizard.annull.checks,create_date:0
+#: field:wizard.create.check,create_date:0
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,display_name:0
+#: field:account.checkbook.check,display_name:0
+#: field:wizard.annull.checks,display_name:0
+#: field:wizard.create.check,display_name:0
+msgid "Display Name"
+msgstr "Nombre a mostrar"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook.check,state:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook.check,state:0
+msgid "Assigned"
+msgstr "Asignado"
+
+#. module: l10n_ar_account_create_check
+#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:55
+#, python-format
+msgid "End number cannot be lower than Start number"
+msgstr "El número de cheque final no puede ser menor al número de comienzo."
+
+#. module: l10n_ar_account_create_check
+#: field:wizard.create.check,end_num:0
+msgid "End number of check"
+msgstr "Número final de la chequera"
+
+#. module: l10n_ar_account_create_check
+#: code:addons/l10n_ar_account_create_check/checkbook.py:71
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: l10n_ar_account_create_check
+#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:55
+#, python-format
+msgid "Error creating Checkbook"
+msgstr "Error creando la Chequera"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,id:0 field:account.checkbook.check,id:0
+#: field:wizard.annull.checks,id:0 field:wizard.create.check,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_account_create_check
+#: help:account.checkbook,type:0
+msgid ""
+"If common, checks only have issued_date. If post-dated they also have "
+"payment date"
+msgstr ""
+"Los cheques comunes solo tienen Fecha de Emisión. Si son diferidos también "
+"tendrán Fecha de Pago."
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,issued_check_ids:0
+#: model:ir.model,name:l10n_ar_account_create_check.model_account_issued_check
+msgid "Issued Checks"
+msgstr "Cheques Propios"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,__last_update:0
+#: field:account.checkbook.check,__last_update:0
+#: field:wizard.annull.checks,__last_update:0
+#: field:wizard.create.check,__last_update:0
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,write_uid:0
+#: field:account.checkbook.check,write_uid:0
+#: field:wizard.annull.checks,write_uid:0 field:wizard.create.check,write_uid:0
+msgid "Last Updated by"
+msgstr "Última modificación por"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,write_date:0
+#: field:account.checkbook.check,write_date:0
+#: field:wizard.annull.checks,write_date:0
+#: field:wizard.create.check,write_date:0
+msgid "Last Updated on"
+msgstr "Última modificación el"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook,state:0
+msgid "Open"
+msgstr "Abierta"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,partner_id:0
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook,type:0
+msgid "Post-dated"
+msgstr "Diferido"
+
+#. module: l10n_ar_account_create_check
+#: model:ir.actions.act_window,name:l10n_ar_account_create_check.wizard_annull_checks_wizard_action
+#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
+msgid "Select checks"
+msgstr "Seleccionar cheques"
+
+#. module: l10n_ar_account_create_check
+#: field:wizard.create.check,start_num:0
+msgid "Start number of check"
+msgstr "Número inicial de la chequera"
+
+#. module: l10n_ar_account_create_check
+#: field:account.checkbook,state:0 field:account.checkbook.check,state:0
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ar_account_create_check
+#: selection:account.checkbook.check,state:0
+msgid "Used"
+msgstr "Utilizado"
+
+#. module: l10n_ar_account_create_check
+#: model:ir.model,name:l10n_ar_account_create_check.model_wizard_annull_checks
+msgid "Wizard to annull checks related to one Checkbook"
+msgstr "Asistente para anular cheques de la Chequera"
+
+#. module: l10n_ar_account_create_check
+#: code:addons/l10n_ar_account_create_check/checkbook.py:71
+#, python-format
+msgid "You cannot delete this checkbook because it has Issued Checks"
+msgstr "No puede borrar esta Chequera porque tiene Cheques emitidos asociados"
+
+#. module: l10n_ar_account_create_check
+#: view:account.issued.check:l10n_ar_account_create_check.view_account_issued_check_checkbook_form
+msgid "draft,issued,annulled"
+msgstr "draft,issued,annulled"
+
+#. module: l10n_ar_account_create_check
+#: view:wizard.create.check:l10n_ar_account_create_check.view_wizard_create_check
+msgid "or"
+msgstr "o"
+
+#. module: l10n_ar_account_create_check
+#: model:ir.model,name:l10n_ar_account_create_check.model_wizard_create_check
+msgid "wizard create check"
+msgstr "Asistente para Crear Chequera"

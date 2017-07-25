@@ -21,26 +21,23 @@
 #
 ##############################################################################
 
-{
-    "name" : "Checkbook Management",
-    "version" : "8.0.0.1.0",
-    "author" : "eynes.com.ar,Odoo Community Association (OCA)",
-    "website" : "www.eynes.com.ar",
-    "category" : "Localisation/Argentine",
-    "description": """Checkbook management for Own Checks""",
-    "license": "AGPL-3",
-    "depends": ["base", "l10n_ar_account_check"],
-    "init_xml": [],
-    "data": [
-        "security/ir.model.access.csv",
-        "wizard/annull_checks_view.xml",
-        "checkbook_view.xml",
-        "account_voucher_view.xml",
-        "wizard/create_checkbook_view.xml",
-    ],
-    "demo": [
-        "account_check_demo.xml",
-    ],
-    "active": False,
-    "installable": True
-}
+from openerp import api, fields, models
+
+
+class WizardAnnullChecks(models.TransientModel):
+    _name = 'wizard.annull.checks'
+    _description = 'Wizard to annull checks related to one Checkbook'
+
+    def get_default_checkbook(self):
+        return self.env.context.get("active_ids", [self.env.context.get("active_id", False)])[0]
+
+    checkbook_id = fields.Many2one('account.checkbook', string='Checkbook', required=True,
+                                   default=get_default_checkbook)
+    checks = fields.Many2many('account.checkbook.check', 'wizard_annull_checks_rel', 'wiz_id',
+                              'check_id', string='Checks', required=True)
+
+    @api.multi
+    def button_annull_checks(self):
+        self.checks.annull_check()
+        state = self.checkbook_id.calc_state()
+        return self.checkbook_id.write({"state": state})
