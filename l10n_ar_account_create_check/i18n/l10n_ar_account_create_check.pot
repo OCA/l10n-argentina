@@ -41,6 +41,11 @@ msgid "Annulled"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
+#: field:account.checkbook,annulled_checks:0
+msgid "Annulled Checks"
+msgstr ""
+
+#. module: l10n_ar_account_create_check
 #: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
 msgid "Are you sure you want to continue?"
 msgstr ""
@@ -204,11 +209,6 @@ msgstr ""
 #. module: l10n_ar_account_create_check
 #: selection:account.checkbook.check,state:0
 msgid "Draft"
-msgstr ""
-
-#. module: l10n_ar_account_create_check
-#: selection:account.checkbook.check,state:0
-msgid "Assigned"
 msgstr ""
 
 #. module: l10n_ar_account_create_check

@@ -49,6 +49,11 @@ msgid "Annulled"
 msgstr "Anulado"
 
 #. module: l10n_ar_account_create_check
+#: field:account.checkbook,annulled_checks:0
+msgid "Annulled Checks"
+msgstr "Cheques Anulados"
+
+#. module: l10n_ar_account_create_check
 #: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
 msgid "Are you sure you want to continue?"
 msgstr "¿Está seguro que desea continuar?"
@@ -212,11 +217,6 @@ msgstr "Nombre a mostrar"
 #: selection:account.checkbook.check,state:0
 msgid "Draft"
 msgstr "Borrador"
-
-#. module: l10n_ar_account_create_check
-#: selection:account.checkbook.check,state:0
-msgid "Assigned"
-msgstr "Asignado"
 
 #. module: l10n_ar_account_create_check
 #: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:55

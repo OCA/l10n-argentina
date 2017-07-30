@@ -41,11 +41,19 @@ class account_checkbook(models.Model):
 
         return state
 
+    @api.depends("check_ids", "check_ids.state", "state")
+    def calc_anulled_checks(self):
+        for checkbook in self:
+            checkbook.annulled_checks = [
+                (6, False, checkbook.check_ids.filtered(lambda c: c.state == "annulled").ids)
+            ]
+
     name = fields.Char('Checkbook Number', size=32, required=True)
     bank_id = fields.Many2one('res.bank', 'Bank', required=True)
     bank_account_id = fields.Many2one('res.partner.bank', 'Bank Account', required=True)
     account_check_id = fields.Many2one('account.account', 'Check Account', help="Account used for account moves with checks. If not set, account in treasury configuration is used.")
-    check_ids = fields.One2many('account.checkbook.check', 'checkbook_id', 'Available Checks', domain=[('state', '=', 'draft')], readonly=True)
+    check_ids = fields.One2many('account.checkbook.check', 'checkbook_id', 'Available Checks')
+    annulled_checks = fields.One2many('account.checkbook.check', string="Annulled Checks", compute="calc_anulled_checks")
     issued_check_ids = fields.One2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True)
     # partner_id = fields.Related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True)
     partner_id = fields.Many2one(related='company_id.partner_id', string="Partner", store=True, default=lambda self: self.env.user.company_id.partner_id.id)

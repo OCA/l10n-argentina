@@ -92,6 +92,9 @@
                         <page string="Checks">
                             <label for="check_ids" class="oe_title"/>
                             <field name="check_ids" nolabel="1" colspan="4" widget="many2many_tags"
+                                readonly="1" domain="[('state', '!=', 'annulled')]"/>
+                            <label for="annulled_checks" class="oe_title"/>
+                            <field name="annulled_checks" nolabel="1" colspan="4" widget="many2many_tags"
                                 domain="[('state', '=', 'annulled')]"/>
                             <label for="issued_check_ids"/>
                             <field name="issued_check_ids" colspan="4" nolabel="1"/>
