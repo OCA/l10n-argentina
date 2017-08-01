@@ -23,8 +23,8 @@
 ##############################################################################
 
 import time
-from openerp.tools.translate import _
-from openerp import models, fields, api
+
+from openerp import _, api, exceptions, fields, models
 from openerp.osv import osv
 
 
@@ -35,7 +35,18 @@ class account_check_config(models.Model):
     _name = 'account.check.config'
     _description = 'Check Account Configuration'
 
-    account_id = fields.Many2one('account.account', 'Main Check Account', required=True, help="In Argentina, Valores a Depositar is used, for example")
+    @api.multi
+    def name_get(self):
+        ret = []
+        for config in self:
+            ret.append((config.id, "%s: %s" % (config.company_id.name, config.account_id.name)))
+
+        return ret
+
+    account_id = fields.Many2one('account.account', 'Main Check Account', required=True,
+                                 help="In Argentina, Valores a Depositar is used, for example")
+    deferred_account_id = fields.Many2one('account.account', 'Deferred Check Account',
+                                          required=True)
     company_id = fields.Many2one('res.company', 'Company', required=True)
 
     _sql_constraints = [
@@ -75,14 +86,26 @@ class account_issued_check(models.Model):
         # Buscamos la cuenta contable para el asiento del cheque
         # Esta cuenta se corresponde con la cuenta de banco de donde
         # pertenece el cheque
-        account_id = self.account_bank_id.account_id.id
+        if self.type == 'postdated':
+            # Buscamos la configuracion de cheques
+            check_config_obj = self.env['account.check.config']
+            config = check_config_obj.search([('company_id', '=', voucher.company_id.id)])
+            if not len(config):
+                err = _('There is no check configuration for this Company!')
+                raise exceptions.ValidationError(err)
+
+            account_id = config.deferred_account_id.id
+            date_maturity = self.payment_date
+        else:
+            account_id = self.account_bank_id.account_id.id
+            date_maturity = voucher.date_due
+
         if not account_id:
             raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
-
         amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(self.amount)
 
         debit = credit = 0.0
@@ -110,7 +133,7 @@ class account_issued_check(models.Model):
             'currency_id': company_currency != current_currency and current_currency or False,
             'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
-            'date_maturity': voucher.date_due
+            'date_maturity': date_maturity,
         }
 
         return move_line

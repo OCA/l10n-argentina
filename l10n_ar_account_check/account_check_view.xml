@@ -14,8 +14,9 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Checks Config">
-                    <field name="account_id"/>
                     <field name="company_id"/>
+                    <field name="account_id"/>
+                    <field name="deferred_account_id"/>
                 </tree>
             </field>
         </record>
@@ -31,8 +32,9 @@
                             <label string="Account Check Configuration"/>
                         </h1>
                         <group>
-                            <field name="account_id"/>
                             <field name="company_id"/>
+                            <field name="account_id"/>
+                            <field name="deferred_account_id"/>
                         </group>
                     </sheet>
                 </form>

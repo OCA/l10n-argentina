@@ -100,6 +100,11 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: l10n_ar_account_check
+#: field:account.check.config,company_id:0
+msgid "Deferred Check Account"
+msgstr "Cuenta para cheques diferidos"
+
+#. module: l10n_ar_account_check
 #: code:addons/l10n_ar_account_check/account_check.py:199
 #: code:addons/l10n_ar_account_check/wizard/check_reject.py:111
 #, python-format

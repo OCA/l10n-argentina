@@ -44,7 +44,11 @@ class account_checkbook(models.Model):
     @api.depends("check_ids", "check_ids.state", "state")
     def calc_anulled_checks(self):
         query = """
-        SELECT id FROM account_checkbook_check WHERE state = 'annulled' AND checkbook_id = %s
+        SELECT id
+        FROM account_checkbook_check
+        WHERE state = 'annulled'
+            AND checkbook_id = %s
+        ORDER BY id
         """
         for checkbook in self:
             self.env.cr.execute(query, (checkbook.id,))
