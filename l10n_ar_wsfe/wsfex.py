@@ -485,7 +485,7 @@ class wsfex_config(models.Model):
             comp = result['response']
 
             # Chequeamos que se corresponda con la factura que enviamos a validar
-            #doc_num = comp['Cuit'] == int(inv.partner_id.vat)
+#            doc_num = comp['Cuit'] == int(inv.partner_id.vat)
             cbte = True
             if inv.internal_number:
                 cbte = comp['Cbte_nro'] == int(inv.internal_number.split('-')[1])
@@ -494,8 +494,8 @@ class wsfex_config(models.Model):
                 # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
                 invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
 
-            if not all([cbte]):
-                raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
+#            if not all([cbte]):
+#                raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
 
             invoice_vals['cae'] = comp['Cae']
             invoice_vals['cae_due_date'] = comp['Fch_venc_Cae']
@@ -619,7 +619,7 @@ class wsfex_config(models.Model):
 
                 items.append({
                     'Pro_codigo' : i,#product_code,
-                    'Pro_ds' : line.name,
+                    'Pro_ds' : line.name.encode('ascii', errors='ignore'),
                     'Pro_qty' : line.quantity,
                     'Pro_umed' : uom_code,
                     'Pro_precio_uni' : line.price_unit,
