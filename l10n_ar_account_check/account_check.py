@@ -77,7 +77,16 @@ class account_issued_check(models.Model):
     origin = fields.Char('Origin', size=64)
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
     company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, default=lambda self: self.env.user.company_id.id)
-    state = fields.Selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State', default='draft')
+    state = fields.Selection(
+        [
+            ('draft', 'Draft'),
+            ('waiting', 'Waiting Accreditation'),
+            ('issued', 'Issued'),
+            ('cancel', 'Cancelled'),
+        ],
+        'State',
+        default='draft',
+    )
 
     @api.model
     def create_voucher_move_line(self):
@@ -148,6 +157,33 @@ class account_issued_check(models.Model):
             if check.state != 'draft':
                 raise osv.except_osv(_('Check Error'), _('You cannot delete an issued check that is not in Draft state [See %s].') % (check.voucher_id))
         return super(account_issued_check, self).unlink()
+
+    def accredit_checks(self):
+        #TODO: create the corresponding moves
+        for check in self:
+            if check.state != "waiting":
+                raise exceptions.ValidationError(_("Check %s can't be accredited!") % check.number)
+
+        return self.write({"state": "issued"})
+
+    def accredit_checks_cron_task(self):
+        """ Search postdated checks and accredit them. This method is meant to be used by a cron
+        task.
+        """
+        # on multicompany installations you must configure a cron task for each company or run it
+        # as a multicompany user.
+        company_ids = self.env.user.company_ids.ids or [self.env.user.company_id.id]
+        checks = self.search(
+            [
+                ("type", "=", "postdated"),
+                ("state", "=", "waiting"),
+                ("payment_date", "<=", fields.Date.context_today(self)),
+                ("company_id", "in", company_ids),
+            ],
+            order="number",
+        )
+
+        return checks.accredit_checks()
 
 account_issued_check()
 

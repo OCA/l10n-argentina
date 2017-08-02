@@ -38,7 +38,7 @@
     ],
     'init_xml': [],
     'demo_xml': [],
-    'update_xml': [
+    'data': [
         'security/ir.model.access.csv',
         'wizard/add_checks_view.xml',
         'wizard/view_check_deposit.xml',
@@ -46,6 +46,8 @@
         'account_voucher_view.xml',
         'wizard/view_check_reject.xml',
         'partner_view.xml',
+        'wizard/accredit_checks_view.xml',
+        'data/ir_cron_data.xml',
     ],
     'test': [
     ],

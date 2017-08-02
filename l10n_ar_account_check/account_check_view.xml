@@ -126,23 +126,29 @@
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Issued Checks">
-				   <filter icon="terp-check" string="Common" name="common"
-					   domain="[('type','=', 'common')]"/>
-				   <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
-					   domain="[('type','=', 'postdated')]"/>
-				   <separator orientation="vertical"/>
-				   <field name="number"/>
-				   <field name="issue_date"/>
-				   <field name="receiving_partner_id"/>
-				   <group expand="0" string="Extended Filters" colspan="10" col="6">
-					   <field name="payment_date"/>
-					   <field name="bank_id"/>
-					   <field name="amount"/>
-					</group>
-                    <group expand="0" string="Group By..." colspan="10" col="8" groups="base.group_extended">
-                        <filter string="Bank Account" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'account_bank_id'}"/>
-                        <filter string="Payment Date" icon="terp-go-month" domain="[]" context="{'group_by':'payment_date'}" help="Payment Date"/>
-                        <filter string="Receiving Partner" icon="terp-personal" domain="[]" context="{'group_by':'receiving_partner_id'}"/>
+                    <filter string="Common" name="common" domain="[('type','=', 'common')]"/>
+                    <separator/>
+                    <filter string="Post-dated" domain="[('type','=', 'postdated')]"/>
+                    <separator/>
+                    <filter string="Cancelled" domain="[('state', '=', 'cancel')]"/>
+                    <separator/>
+                    <filter string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <separator/>
+                    <filter string="Waiting Accreditation" domain="[('state', '=', 'waiting')]"/>
+                    <separator/>
+                    <filter string="Issued" domain="[('state', '=', 'issued')]"/>
+                    <separator/>
+                    <field name="number"/>
+                    <field name="issue_date"/>
+                    <field name="receiving_partner_id"/>
+                    <field name="amount"/>
+                    <field name="bank_id"/>
+                    <field name="payment_date"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Bank Account" context="{'group_by':'account_bank_id'}"/>
+                        <filter string="Payment Date" context="{'group_by':'payment_date'}" help="Payment Date"/>
+                        <filter string="Receiving Partner" context="{'group_by':'receiving_partner_id'}"/>
+                        <filter string="State" context="{'group_by': 'state'}"/>
                     </group>
                </search>
             </field>
