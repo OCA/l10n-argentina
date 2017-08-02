@@ -596,12 +596,13 @@ class wsfex_config(models.Model):
             formatted_date_invoice = date_invoice.strftime('%Y%m%d')
             #date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
 
-            cuit_pais = inv.dst_cuit_id and inv.dst_cuit_id.code or 0
+            cuit_pais = inv.dst_cuit_id and int(inv.dst_cuit_id.code) or 0
             inv_currency_id = inv.currency_id.id
             curr_codes = currency_code_obj.search([('currency_id', '=', inv_currency_id)])
 
             if curr_codes:
                 curr_code = curr_codes[0].code
+                curr_rate = company.currency_id.id==inv_currency_id and 1.0 or inv.currency_rate
             else:
                 raise osv.except_osv(_("WSFEX Error!"), _("Currency %s has not code configured") % inv.currency_id.name)
 
@@ -639,6 +640,9 @@ class wsfex_config(models.Model):
 
                 Cmps_asoc.append(Cmp_asoc)
 
+            # TODO: Agregar permisos
+            shipping_perm = 'S' and inv.shipping_perm_ids or 'N'
+
             Cmp = {
                 'invoice_id' : inv.id,
                 'Id' : Id,
@@ -647,14 +651,14 @@ class wsfex_config(models.Model):
                 #'Punto_vta' : pto_venta,
                 'Cbte_nro' : cbte_nro,
                 'Tipo_expo' : inv.export_type_id.code, #Exportacion de bienes
-                'Permiso_existente' : '', # TODO: manejo de permisos de embarque
+                'Permiso_existente' : shipping_perm,
                 'Dst_cmp' : inv.dst_country_id.code,
-                'Cliente' : inv.partner_id.name,
-                'Domicilio_cliente' : inv.partner_id.contact_address,
+                'Cliente' : inv.partner_id.name.encode('ascii', errors='ignore'),
+                'Domicilio_cliente' : inv.partner_id.contact_address.encode('ascii', errors='ignore'),
                 'Cuit_pais_cliente' : cuit_pais,
                 'Id_impositivo' : inv.partner_id.vat,
                 'Moneda_Id' : curr_code,
-                'Moneda_ctz' : 1.000000, # TODO: Obtener cotizacion usando el metodo de AFIP
+                'Moneda_ctz' : curr_rate,
                 'Imp_total' : inv.amount_total,
                 'Idioma_cbte' : 1,
                 'Items' : items
