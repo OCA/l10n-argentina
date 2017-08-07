@@ -17,6 +17,7 @@
                     <field name="company_id"/>
                     <field name="account_id"/>
                     <field name="deferred_account_id"/>
+                    <field name="deferred_journal_id"/>
                 </tree>
             </field>
         </record>
@@ -35,6 +36,7 @@
                             <field name="company_id"/>
                             <field name="account_id"/>
                             <field name="deferred_account_id"/>
+                            <field name="deferred_journal_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -84,6 +86,7 @@
             <field name="arch" type="xml">
                 <form string="Issued Checks" version="7.0">
                     <header>
+                        <button name="accredit_checks" string="Accredit Check" type="object" states="waiting" class="oe_highlight"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued" statusbar_colors='{"cancel":"red"}'/>
                     </header>
                     <sheet>
@@ -113,6 +116,8 @@
                             </group>
                             <group>
                                 <field name="origin"/>
+                                <field name="payment_move_id" readonly="1"/>
+                                <field name="clearance_move_id" readonly="1"/>
                             </group>
                          </group>
                     </sheet>

@@ -182,6 +182,7 @@ class account_voucher(models.Model):
 
                 res = check.create_voucher_move_line()
                 res['move_id'] = move_id
+                res['issued_check_id'] = check.id
                 move_lines.append(res)
 
                 if check.type == 'postdated':
@@ -189,7 +190,7 @@ class account_voucher(models.Model):
                 else:
                     state = 'issued'
 
-                vals = {'state': state, 'receiving_partner_id': self.partner_id.id}
+                vals = {'state': state, 'payment_move_id': move_id, 'receiving_partner_id': self.partner_id.id}
 
                 if not check.origin:
                     vals['origin'] = self.reference
