@@ -35,6 +35,7 @@ class wizard_create_check(osv.osv_memory):
         'end_num': fields.char('End number of check', size=20, required=True),
         'checkbook_num': fields.char('Checkbook number', size=20, required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
+        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date"),
     }
 
     _defaults = {
@@ -57,7 +58,7 @@ class wizard_create_check(osv.osv_memory):
             # Creamos los cheques numerados
             checks = []
             for n in range(start_num, end_num + 1):
-                check_vals = {'name': str(n)}
+                check_vals = {'name': str(n), 'type': form.type}
                 checks.append((0, 0, check_vals))
 
             # Creamos la chequera
@@ -65,7 +66,8 @@ class wizard_create_check(osv.osv_memory):
                 'name': form.checkbook_num,
                 'bank_id': form.bank_account_id.bank.id,
                 'bank_account_id': form.bank_account_id.id,
-                'check_ids': checks
+                'check_ids': checks,
+                'type': form.type,
             }
 
             checkbook_id = checkbook_obj.create(cr, uid, checkbook_vals, context)
