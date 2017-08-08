@@ -28,7 +28,7 @@
                                         <field name="number"/>
                                         <field name="type" readonly="1"/>
                                         <field name="amount"/>
-                                        <field name="bank_id" readonly="1"/>
+                                        <field name="bank_id" invisible="1"/>
                                         <field name="company_id" invisible="0"/>
                                     </group>
                                     <group>
