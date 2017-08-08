@@ -78,6 +78,7 @@ class account_issued_check(models.Model):
     voucher_id = fields.Many2one('account.voucher', 'Voucher')
     payment_move_id = fields.Many2one('account.move', 'Payment Account Move')
     clearance_move_id = fields.Many2one('account.move', 'Clearance Account Move')
+    accredited = fields.Boolean('Accredited', compute='_compute_accredit_state')
     origin = fields.Char('Origin', size=64)
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
     company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, default=lambda self: self.env.user.company_id.id)
@@ -91,6 +92,14 @@ class account_issued_check(models.Model):
         'State',
         default='draft',
     )
+
+    @api.depends('clearance_move_id')
+    def _compute_accredit_state(self):
+        for check in self:
+            if check.clearance_move_id:
+                check.accredited = True
+            else:
+                check.accredited = False
 
     @api.model
     def create_voucher_move_line(self):
@@ -191,8 +200,9 @@ class account_issued_check(models.Model):
                         }
             move_id = move_obj.create(move_vals)
 
-            check.write({'move_id': move_id.id})
+            check.write({'clearance_move_id': move_id.id})
 
+            # Creamos la línea contable que iguala el pago del cheque
             check_move_line_vals = {    'journal_id': def_check_journal.id,
                                         'period_id': current_period.id,
                                         'date': current_date,
@@ -204,6 +214,7 @@ class account_issued_check(models.Model):
 
             clearance_move_line = move_line_obj.create(check_move_line_vals)
 
+            # Creamos la línea contable que refiere a la acreditación por parte del banco
             bank_move_line_vals = {     'journal_id': def_check_journal.id,
                                         'period_id': current_period.id,
                                         'date': current_date,
@@ -244,6 +255,27 @@ class account_issued_check(models.Model):
         )
 
         return checks.accredit_checks()
+
+    @api.multi
+    def break_conciliation(self):
+        for check in self:
+            if check.state != "issued":
+                raise exceptions.ValidationError(_("Can't break conciliation of a not issued check!"))
+            if not check.accredited:
+                raise exceptions.ValidationError(_("Can't break conciliation of a not accredited check!"))
+
+        for check in self:
+            move_lines = check.clearance_move_id.line_id
+            for move_line in move_lines:
+                if move_line.reconcile_id:
+                    move_lines_rm = [move_line_rec.id for move_line_rec in move_line.reconcile_id.line_id]
+                    move_lines_rm.remove(move_line.id)
+                    move_line.reconcile_id.unlink()
+
+            check.clearance_move_id.button_cancel()
+            check.clearance_move_id.unlink()
+            check.write({'state': 'waiting'})
+
 
 account_issued_check()
 

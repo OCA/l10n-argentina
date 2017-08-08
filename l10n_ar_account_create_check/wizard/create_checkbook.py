@@ -35,7 +35,7 @@ class wizard_create_check(osv.osv_memory):
         'end_num': fields.char('End number of check', size=20, required=True),
         'checkbook_num': fields.char('Checkbook number', size=20, required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date"),
+        'type': fields.selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date", required=True),
     }
 
     _defaults = {

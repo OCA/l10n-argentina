@@ -87,6 +87,8 @@
                 <form string="Issued Checks" version="7.0">
                     <header>
                         <button name="accredit_checks" string="Accredit Check" type="object" states="waiting" class="oe_highlight"/>
+                        <button name="break_conciliation" string="Break Conciliation" type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|', ('state', 'not in', ['issued']), ('accredited', '=', 'False')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued" statusbar_colors='{"cancel":"red"}'/>
                     </header>
                     <sheet>
@@ -118,6 +120,7 @@
                                 <field name="origin"/>
                                 <field name="payment_move_id" readonly="1"/>
                                 <field name="clearance_move_id" readonly="1"/>
+                                <field name="accredited" invisible="1"/>
                             </group>
                          </group>
                     </sheet>
