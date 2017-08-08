@@ -8,10 +8,15 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@string='Refund Invoice']" position="replace" >
+                    <button type='action' string='Refund Invoice' groups="base.group_user"
+                        name="%(account.action_account_invoice_refund)d"
+                        attrs="{'invisible': ['|', ('type', '=', 'out_refund'), ('state', 'not in', ('open', 'paid'))]}"/>
+                </xpath>
                 <data>
                     <field name="number" position="replace"/>
                     <field name="internal_number" position="replace"/>
-                    
+
                     <field name="type" position="before">
                         <label for="internal_number" class="oe_edit_only" string="Invoice Number"/>
                         <h2>
@@ -71,7 +76,7 @@
                 </field>
             </field>
         </record>
-        
+
         <record id="view_pos_invoice_supplier_form" model="ir.ui.view">
             <field name="name">account.invoice.form.inherit3</field>
             <field name="model">account.invoice</field>
@@ -80,7 +85,7 @@
             <field name="arch" type="xml">
                     <field name="number" position="replace"/>
                     <field name="internal_number" position="replace"/>
-                    
+
                     <xpath expr="//form/sheet/div[@class='oe_title']" position="replace">
                         <h1>
                             <label string="Draft Invoice" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
@@ -188,6 +193,6 @@
         <menuitem action="account.action_invoice_tree2" id="account.menu_action_invoice_tree2" sequence="5" parent="account.menu_finance_payables"/>
         <menuitem action="account.action_invoice_tree4" id="account.menu_action_invoice_tree4" sequence="6" parent="account.menu_finance_payables"/>
         <menuitem action="action_supplier_debit_note_tree" sequence="7" id="menu_supplier_debit_note" parent="account.menu_finance_payables"/>
-    
+
     </data>
 </openerp>
