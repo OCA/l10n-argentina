@@ -173,6 +173,10 @@ class account_issued_check(models.Model):
         return ret
 
     def create(self, cr, uid, vals, context=None):
+        checkbook = vals.get('checkbook', False)
+        if checkbook:
+            vals['account_bank_id'] = checkbook.bank_account_id.id
+            vals['type'] = checkbook.type
         a = vals.get('check_id', False)
         if a:
             self.pool.get('account.checkbook.check').write(cr, uid, a, {'state': 'done'})
