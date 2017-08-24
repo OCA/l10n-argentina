@@ -25,7 +25,7 @@
                             <form string="Issued Checks">
                                 <group>
                                     <group>
-                                        <field name="number"/>
+                                        <field name="number" invisible="1"/>
                                         <field name="type" readonly="1"/>
                                         <field name="amount"/>
                                         <field name="bank_id" invisible="1"/>
