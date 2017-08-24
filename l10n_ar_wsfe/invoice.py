@@ -366,30 +366,3 @@ class account_invoice(osv.osv):
         return True
 
 account_invoice()
-
-
-class account_invoice_tax(osv.osv):
-    _name = "account.invoice.tax"
-    _inherit = "account.invoice.tax"
-
-
-    def hook_compute_invoice_taxes(self, cr, uid, invoice_id, tax_grouped, context=None):
-        tax_obj = self.pool.get('account.tax')
-        cur_obj = self.pool.get('res.currency')
-        inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
-        cur = inv.currency_id
-
-        for t in tax_grouped.values():
-            # Para solucionar el problema del redondeo con AFIP
-            ta = tax_obj.browse(cr, uid, t['tax_id'], context=context)
-            t['amount'] = t['base']*ta.amount
-            t['tax_amount'] = t['base_amount']*ta.amount
-
-            t['base'] = cur_obj.round(cr, uid, cur, t['base'])
-            t['amount'] = cur_obj.round(cr, uid, cur, t['amount'])
-            t['base_amount'] = cur_obj.round(cr, uid, cur, t['base_amount'])
-            t['tax_amount'] = cur_obj.round(cr, uid, cur, t['tax_amount'])
-
-        return super(account_invoice_tax, self).hook_compute_invoice_taxes(cr, uid, invoice_id, tax_grouped, context)
-
-account_invoice_tax()
