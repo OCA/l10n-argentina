@@ -173,7 +173,9 @@ class account_issued_check(models.Model):
         return ret
 
     def create(self, cr, uid, vals, context=None):
-        checkbook = vals.get('checkbook', False)
+        checkbook_id = vals.get('checkbook_id', False)
+        checkbook_obj = self.pool['account.checkbook']
+        checkbook = checkbook_obj.browse(cr, uid, [checkbook_id])
         if checkbook:
             vals['account_bank_id'] = checkbook.bank_account_id.id
             vals['type'] = checkbook.type
