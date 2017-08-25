@@ -2,6 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
+#    Copyright (C) 2008-2011  Thymbra
 #    Copyright (c) 2011-2014 E-MIPS (http://www.e-mips.com.ar)
 #    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
@@ -21,8 +22,12 @@
 #
 ##############################################################################
 
-import account
-import account_check
-import account_voucher
-import res_partner_bank
-import wizard
+from openerp import models, fields, api
+from openerp.tools.translate import _
+
+
+class account_move_line(models.Model):
+    _name = 'account.move.line'
+    _inherit = 'account.move.line'
+
+    issued_check_id = fields.Many2one('account.issued.check', 'Issued Check')

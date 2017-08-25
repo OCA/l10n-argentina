@@ -22,9 +22,10 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, exceptions
 from openerp.tools.translate import _
 
+from openerp.exceptions import except_orm
 
 class account_voucher(models.Model):
     _name = 'account.voucher'
@@ -182,6 +183,7 @@ class account_voucher(models.Model):
 
                 res = check.create_voucher_move_line()
                 res['move_id'] = move_id
+                res['issued_check_id'] = check.id
                 move_lines.append(res)
 
                 if check.type == 'postdated':
@@ -189,7 +191,7 @@ class account_voucher(models.Model):
                 else:
                     state = 'issued'
 
-                vals = {'state': state, 'receiving_partner_id': self.partner_id.id}
+                vals = {'state': state, 'payment_move_id': move_id, 'receiving_partner_id': self.partner_id.id}
 
                 if not check.origin:
                     vals['origin'] = self.reference
@@ -228,6 +230,11 @@ class account_voucher(models.Model):
 
             # Cancelamos los cheques emitidos
             issued_checks = voucher.issued_check_ids
+            for check in issued_checks:
+                if check.type == 'postdated' and check.accredited:
+                    err = _('Check number %s is postdated and has already been accredited!\nPlease break the conciliation of that check first.') % check.number
+                    raise exceptions.ValidationError(err)
+
             issued_checks.cancel_check()
 
         return res
