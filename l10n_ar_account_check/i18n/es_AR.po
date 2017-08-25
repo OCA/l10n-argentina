@@ -100,6 +100,11 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: l10n_ar_account_check
+#: field:account.check.config,company_id:0
+msgid "Deferred Check Account"
+msgstr "Cuenta para cheques diferidos"
+
+#. module: l10n_ar_account_check
 #: code:addons/l10n_ar_account_check/account_check.py:199
 #: code:addons/l10n_ar_account_check/wizard/check_reject.py:111
 #, python-format
@@ -234,7 +239,9 @@ msgstr "Cheque propio"
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,state:0
 #: view:account.third.check:0
+#: view:account.issued.check:0
 #: field:account.third.check,state:0
+#: field:account.issued.check,state:0
 msgid "State"
 msgstr "Estado"
 
@@ -461,6 +468,8 @@ msgstr "Añadir cheques"
 #. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
 #: selection:account.third.check,state:0
+#: selection:account.issued.check,state:0
+#: view:account.issued.check:0
 msgid "Draft"
 msgstr "Borrador"
 
@@ -555,6 +564,12 @@ msgid "Destiny Account"
 msgstr "Cuenta Destino"
 
 #. module: l10n_ar_account_check
+#: view:account.issued.check:0
+#: selection:account.issued.check,state:0
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
 msgid "En Cartera"
 msgstr "En Cartera"
@@ -609,6 +624,8 @@ msgstr "Error en el cheque!"
 #. module: l10n_ar_account_check
 #: field:account.add.issued.check,issued:0
 #: field:account.issued.check,issued:0
+#: view:account.issued.check:0
+#: selection:account.issued.check,state:0
 msgid "Issued"
 msgstr "Emitido"
 
@@ -811,3 +828,19 @@ msgstr "Gastos"
 msgid "Total"
 msgstr "Total"
 
+#. module: l10n_ar_account_check
+#: selection:account.issued.check,state:0
+#: view:account.issued.check:0
+msgid "Waiting Accreditation"
+msgstr "Esperando Acreditación"
+
+#. module: l10n_ar_account_check
+#: model:ir.actions.act_window,name:l10n_ar_account_check.wizard_accredit_checks_action
+msgid "Accredit Checks"
+msgstr "Acreditar Cheques"
+
+#. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/wizard/accredit_checks.py:165
+#, python-format
+msgid "Check %s can't be accredited!"
+msgstr "El cheque %s no puede ser acreditado"

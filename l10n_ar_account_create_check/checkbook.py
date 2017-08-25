@@ -44,7 +44,11 @@ class account_checkbook(models.Model):
     @api.depends("check_ids", "check_ids.state", "state")
     def calc_anulled_checks(self):
         query = """
-        SELECT id FROM account_checkbook_check WHERE state = 'annulled' AND checkbook_id = %s
+        SELECT id
+        FROM account_checkbook_check
+        WHERE state = 'annulled'
+            AND checkbook_id = %s
+        ORDER BY id
         """
         for checkbook in self:
             self.env.cr.execute(query, (checkbook.id,))
@@ -169,6 +173,12 @@ class account_issued_check(models.Model):
         return ret
 
     def create(self, cr, uid, vals, context=None):
+        checkbook_id = vals.get('checkbook_id', False)
+        checkbook_obj = self.pool['account.checkbook']
+        checkbook = checkbook_obj.browse(cr, uid, [checkbook_id])
+        if checkbook:
+            vals['account_bank_id'] = checkbook.bank_account_id.id
+            vals['type'] = checkbook.type
         a = vals.get('check_id', False)
         if a:
             self.pool.get('account.checkbook.check').write(cr, uid, a, {'state': 'done'})

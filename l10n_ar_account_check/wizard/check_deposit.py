@@ -25,7 +25,6 @@
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 import time
-from openerp import netsvc
 
 
 class account_check_deposit(osv.osv_memory):

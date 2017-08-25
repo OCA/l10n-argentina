@@ -2,8 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2011-2014 E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    Copyright (c) 2017 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,8 +20,25 @@
 #
 ##############################################################################
 
-import account
-import account_check
-import account_voucher
-import res_partner_bank
-import wizard
+from openerp import models, api, fields
+
+
+class WizardAccreditChecks(models.TransientModel):
+    _name = 'wizard.accredit.checks'
+    _description = 'Select several checks which are Waiting Accreditation so you can accredit them'
+
+    def get_default_checks(self):
+        check_ids = self.env.context.get("active_ids", [])
+        return [(6, False, check_ids)]
+
+    issued_checks = fields.Many2many(
+        'account.issued.check',
+        'wiz_accredit_check_rel',
+        'wiz_id',
+        'check_id',
+        default=get_default_checks,
+    )
+
+    @api.multi
+    def button_accredit_checks(self):
+        return self.issued_checks.accredit_checks()
