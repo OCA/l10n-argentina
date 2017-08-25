@@ -21,10 +21,11 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
-import openerp.addons.decimal_precision as dp
-from openerp.exceptions import ValidationError
 import re
+
+import openerp.addons.decimal_precision as dp
+from openerp import _, api, fields, models
+from openerp.exceptions import ValidationError
 
 
 class invoice(models.Model):
@@ -104,6 +105,18 @@ class invoice(models.Model):
         self.amount_exempt = sum(line.price_subtotal for line in self.invoice_line if any(map(lambda x: x.is_exempt, line.invoice_line_tax_id)))
         self.amount_no_taxed = sum(line.price_subtotal for line in self.invoice_line if not line.invoice_line_tax_id)
         self.amount_taxed = sum(line.price_subtotal for line in self.invoice_line if any(map(lambda x: (x.tax_group=='vat' and not x.is_exempt), line.invoice_line_tax_id)))
+
+    @api.multi
+    def action_cancel(self):
+        allowed_states = self.env.context.get("cancel_states", ('draft', 'proforma2', 'proforma'))
+        for inv in self:
+            if inv.type == "out_refund" and inv.state not in allowed_states:
+                state_tags = [_(tag) for state, tag in self._columns["state"].selection
+                              if state in allowed_states]
+                err = _("Credit Note can only be cancelled in these states: %s!")
+                raise ValidationError(err % ', '.join(state_tags))
+
+        return super(invoice, self).action_cancel()
 
 #    def _get_invoice_line(self, cr, uid, ids, context=None):
 #        result = {}

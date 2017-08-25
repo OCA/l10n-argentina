@@ -481,3 +481,19 @@ msgstr "Reembolso"
 msgid "Retention"
 msgstr "Retención"
 
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/invoice.py:57
+#, python-format
+msgid "Credit Note can only be cancelled in these states: %s!"
+msgstr "¡Una Nota de Crédito sólo puede cancerlarse en estos estados: %s!"
+
+#. module: l10n_ar_point_of_sale
+#: selection:account.invoice,state:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ar_point_of_sale
+#: selection:account.invoice,state:0
+msgid "Pro-forma"
+msgstr "Pro-Forma"
