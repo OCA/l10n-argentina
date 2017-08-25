@@ -19,13 +19,11 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
-from openerp.exceptions import except_orm, Warning, RedirectWarning
-from openerp import models, fields, api, _
-from datetime import datetime
-from openerp import pooler
-import time
 import re
+
+from openerp import _, api, exceptions, fields, models, pooler
+from openerp.exceptions import except_orm
+from openerp.osv import osv
 
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>"
 
@@ -166,15 +164,17 @@ class account_invoice(models.Model):
         return next_number
 
     # Heredado para no cancelar si es una factura electronica
-    # TODO: Migrar a v8
-    def action_cancel(self, cr, uid, ids, context=None):
+    @api.multi
+    def action_cancel(self):
+        for inv in self:
+            if inv.aut_cae:
+                err = _("You cannot cancel an Electronic Invoice because it has been informed to A"
+                        "FIP.")
+                raise exceptions.ValidationError(err)
 
-        invoices = self.read(cr, uid, ids, ['aut_cae'])
-        for i in invoices:
-            if i['aut_cae']:
-                raise osv.except_osv(_("Electronic Invoice Error!"), _("You cannot cancel an Electronic Invoice because it has been informed to AFIP."))
-
-        return super(account_invoice, self).action_cancel(cr, uid, ids, context=context)
+        #ctx = dict(self.env.context)
+        #return super(account_invoice, self).with_context(ctx).action_cancel()
+        return super(account_invoice, self).action_cancel()
 
     @api.multi
     def action_number(self):

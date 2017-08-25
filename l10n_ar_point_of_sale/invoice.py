@@ -108,7 +108,8 @@ class invoice(models.Model):
 
     @api.multi
     def action_cancel(self):
-        allowed_states = self.env.context.get("cancel_states", ('draft', 'proforma2', 'proforma'))
+        allowed_states = self.env.context.get("cancel_states",
+                                              ('draft', 'proforma2', 'proforma', 'open'))
         for inv in self:
             if inv.type == "out_refund" and inv.state not in allowed_states:
                 state_tags = [_(tag) for state, tag in self._columns["state"].selection
