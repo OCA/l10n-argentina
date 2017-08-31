@@ -43,6 +43,8 @@ class account_checkbook(models.Model):
 
     @api.depends("check_ids", "check_ids.state", "state")
     def calc_anulled_checks(self):
+        if type(self.id) !=  int:
+            return False
         query = """
         SELECT id
         FROM account_checkbook_check
@@ -58,6 +60,7 @@ class account_checkbook(models.Model):
                 check_ids = []
 
             checkbook.annulled_checks = [(6, False, check_ids)]
+        return True
 
     name = fields.Char('Checkbook Number', size=32, required=True)
     bank_id = fields.Many2one('res.bank', 'Bank', required=True)
