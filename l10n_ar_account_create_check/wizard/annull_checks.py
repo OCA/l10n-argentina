@@ -2,8 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2008-2011  Thymbra
-#    Copyright (c) 2011-2014 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2013 Eynes S.R.L. (http://www.eynes.com.ar) All Rights Reserved.
 #    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
 #
@@ -22,35 +21,23 @@
 #
 ##############################################################################
 
-{
-    'name': 'Account Checks',
-    'version': '8.0.1.0.0',
-    'author': 'Thymbra/E-MIPS/Eynes,Odoo Community Association (OCA)',
-    'description': """
-    Allows to manage checks
-    """,
-    'category': 'Generic Modules/Accounting',
-    'website': 'http://www.e-mips.com.ar http://www.eynes.com.ar',
-    'depends': [
-        'account',
-        'account_voucher',
-        'l10n_ar_account_payment'
-    ],
-    'init_xml': [],
-    'demo_xml': [],
-    'data': [
-        'security/ir.model.access.csv',
-        'wizard/add_checks_view.xml',
-        'wizard/view_check_deposit.xml',
-        'account_check_view.xml',
-        'account_voucher_view.xml',
-        'wizard/view_check_reject.xml',
-        'partner_view.xml',
-        'wizard/accredit_checks_view.xml',
-        'data/ir_cron_data.xml',
-    ],
-    'test': [
-    ],
-    'active': False,
-    'installable': True,
-}
+from openerp import api, fields, models
+
+
+class WizardAnnullChecks(models.TransientModel):
+    _name = 'wizard.annull.checks'
+    _description = 'Wizard to annull checks related to one Checkbook'
+
+    def get_default_checkbook(self):
+        return self.env.context.get("active_ids", [self.env.context.get("active_id", False)])[0]
+
+    checkbook_id = fields.Many2one('account.checkbook', string='Checkbook', required=True,
+                                   default=get_default_checkbook)
+    checks = fields.Many2many('account.checkbook.check', 'wizard_annull_checks_rel', 'wiz_id',
+                              'check_id', string='Checks', required=True)
+
+    @api.multi
+    def button_annull_checks(self):
+        self.checks.annull_check()
+        state = self.checkbook_id.calc_state()
+        return self.checkbook_id.write({"state": state})

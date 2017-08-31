@@ -22,35 +22,12 @@
 #
 ##############################################################################
 
-{
-    'name': 'Account Checks',
-    'version': '8.0.1.0.0',
-    'author': 'Thymbra/E-MIPS/Eynes,Odoo Community Association (OCA)',
-    'description': """
-    Allows to manage checks
-    """,
-    'category': 'Generic Modules/Accounting',
-    'website': 'http://www.e-mips.com.ar http://www.eynes.com.ar',
-    'depends': [
-        'account',
-        'account_voucher',
-        'l10n_ar_account_payment'
-    ],
-    'init_xml': [],
-    'demo_xml': [],
-    'data': [
-        'security/ir.model.access.csv',
-        'wizard/add_checks_view.xml',
-        'wizard/view_check_deposit.xml',
-        'account_check_view.xml',
-        'account_voucher_view.xml',
-        'wizard/view_check_reject.xml',
-        'partner_view.xml',
-        'wizard/accredit_checks_view.xml',
-        'data/ir_cron_data.xml',
-    ],
-    'test': [
-    ],
-    'active': False,
-    'installable': True,
-}
+from openerp import models, fields, api
+from openerp.tools.translate import _
+
+
+class account_move_line(models.Model):
+    _name = 'account.move.line'
+    _inherit = 'account.move.line'
+
+    issued_check_id = fields.Many2one('account.issued.check', 'Issued Check')

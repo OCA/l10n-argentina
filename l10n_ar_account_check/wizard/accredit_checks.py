@@ -2,8 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 Eynes S.R.L. (http://www.eynes.com.ar) All Rights Reserved.
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    Copyright (c) 2017 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,26 +20,25 @@
 #
 ##############################################################################
 
-{
-    "name" : "Checkbook Management",
-    "version" : "8.0.0.1.0",
-    "author" : "eynes.com.ar,Odoo Community Association (OCA)",
-    "website" : "www.eynes.com.ar",
-    "category" : "Localisation/Argentine",
-    "description": """Checkbook management for Own Checks""",
-    "license": "AGPL-3",
-    "depends": ["base", "l10n_ar_account_check"],
-    "init_xml": [],
-    "data": [
-        "security/ir.model.access.csv",
-        "wizard/annull_checks_view.xml",
-        "checkbook_view.xml",
-        "account_voucher_view.xml",
-        "wizard/create_checkbook_view.xml",
-    ],
-    "demo": [
-        "account_check_demo.xml",
-    ],
-    "active": False,
-    "installable": True
-}
+from openerp import models, api, fields
+
+
+class WizardAccreditChecks(models.TransientModel):
+    _name = 'wizard.accredit.checks'
+    _description = 'Select several checks which are Waiting Accreditation so you can accredit them'
+
+    def get_default_checks(self):
+        check_ids = self.env.context.get("active_ids", [])
+        return [(6, False, check_ids)]
+
+    issued_checks = fields.Many2many(
+        'account.issued.check',
+        'wiz_accredit_check_rel',
+        'wiz_id',
+        'check_id',
+        default=get_default_checks,
+    )
+
+    @api.multi
+    def button_accredit_checks(self):
+        return self.issued_checks.accredit_checks()

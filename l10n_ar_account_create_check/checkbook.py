@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import api, exceptions, fields, models
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 
@@ -30,16 +30,55 @@ class account_checkbook(models.Model):
     _name = "account.checkbook"
     _description = "Checkbook"
 
+    def calc_state(self):
+        checkbook = self
+        done_qty = len(checkbook.check_ids.filtered(lambda c: c.state == 'done'))
+        annulled_qty = len(checkbook.check_ids.filtered(lambda c: c.state == 'annulled'))
+        if checkbook.check_ids and done_qty + annulled_qty == len(checkbook.check_ids):
+            state = 'closed'
+        else:
+            state = 'open'
+
+        return state
+
+    @api.depends("check_ids", "check_ids.state", "state")
+    def calc_anulled_checks(self):
+        query = """
+        SELECT id
+        FROM account_checkbook_check
+        WHERE state = 'annulled'
+            AND checkbook_id = %s
+        ORDER BY id
+        """
+        for checkbook in self:
+            self.env.cr.execute(query, (checkbook.id,))
+            try:
+                check_ids = [result[0] for result in self.env.cr.fetchall()]
+            except (IndexError, TypeError):
+                check_ids = []
+
+            checkbook.annulled_checks = [(6, False, check_ids)]
+
     name = fields.Char('Checkbook Number', size=32, required=True)
     bank_id = fields.Many2one('res.bank', 'Bank', required=True)
     bank_account_id = fields.Many2one('res.partner.bank', 'Bank Account', required=True)
     account_check_id = fields.Many2one('account.account', 'Check Account', help="Account used for account moves with checks. If not set, account in treasury configuration is used.")
-    check_ids = fields.One2many('account.checkbook.check', 'checkbook_id', 'Available Checks', domain=[('state', '=', 'draft')], readonly=True)
+    check_ids = fields.One2many('account.checkbook.check', 'checkbook_id', 'Available Checks',
+                                domain=[('state', '=', 'draft')], readonly=True)
+    annulled_checks = fields.One2many('account.checkbook.check', string="Annulled Checks", compute="calc_anulled_checks")
     issued_check_ids = fields.One2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True)
     # partner_id = fields.Related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True)
     partner_id = fields.Many2one(related='company_id.partner_id', string="Partner", store=True, default=lambda self: self.env.user.company_id.partner_id.id)
     company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.user.company_id.id)
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date", default='common')
+    state = fields.Selection(
+        [
+            ('open', 'Open'),
+            ('closed', 'Closed'),
+        ],
+        'State',
+        default='open',
+    )
 
     @api.onchange('bank_account_id')
     def onchange_bank_account(self):
@@ -61,6 +100,10 @@ class account_checkbook(models.Model):
             return check_ids[0]
         return False
 
+    @api.multi
+    def annull_checks(self):
+        return self.mapped("check_ids").annull_check()
+
 
 account_checkbook()
 
@@ -74,10 +117,24 @@ class checkbook_check(models.Model):
     name = fields.Char('Check Number', size=20, required=True)
     checkbook_id = fields.Many2one('account.checkbook', 'Checkbook number', ondelete='cascade', required=True)
     # Para tener una referencia a que cheque se convirtio
-    # 'issued_check_id': fields.many2one('account.issued.check', 'Issued Check', readonly=True),
-    state = fields.Selection([('draft', 'Draft'), ('done', 'Used')], 'State', readonly=True, default='draft')
+    #issued_checks = fields.One2many('account.issued.check', 'check_id', string='Issued Checks')
+    state = fields.Selection(
+        [
+            ('draft', 'Draft'),
+            ('done', 'Used'),
+            ('annulled', 'Annulled'),
+        ],
+        'State',
+        readonly=True,
+        default='draft',
+    )
 
-checkbook_check()
+    def annull_check(self):
+        for check in self:
+            if check.state == 'done':
+                raise exceptions.ValidationError(_("Can't annull done checks!"))
+
+        return self.write({'state': 'annulled'})
 
 
 class account_issued_check(models.Model):
@@ -96,17 +153,32 @@ class account_issued_check(models.Model):
         self.number = self.check_id.name
         self.type = checkbook.type
 
-    def write(self, cr, uid, ids, vals, context=None):
-        a = vals.get('check_id', False)
-        if a:
-            sql = 'select check_id from account_issued_check where id = ' + str(ids[0])
-            cr.execute(sql)
-            aux_check_id = cr.fetchone()
-            self.pool.get('account.checkbook.check').write(cr, uid, aux_check_id, {'state': 'draft'})
-            self.pool.get('account.checkbook.check').write(cr, uid, a, {'state': 'done'})
-        return super(account_issued_check, self).write(cr, uid, ids, vals, context=context)
+    @api.multi
+    def write(self, vals):
+        if 'check_id' in vals:
+            # update check state when the field is changed
+            new_check_id = vals['check_id']
+            self.mapped("check_id").write({'state': 'draft'})
+            self.env['account.checkbook.check'].browse(new_check_id).write({'state': 'done'})
+
+        ret = super(account_issued_check, self).write(vals)
+
+        state = vals.get('state', '')
+        if state == 'issued':
+            # update checkbook after the check was issued
+            for check in self:
+                state = check.checkbook_id.calc_state()
+                check.checkbook_id.write({"state": state})
+
+        return ret
 
     def create(self, cr, uid, vals, context=None):
+        checkbook_id = vals.get('checkbook_id', False)
+        checkbook_obj = self.pool['account.checkbook']
+        checkbook = checkbook_obj.browse(cr, uid, [checkbook_id])
+        if checkbook:
+            vals['account_bank_id'] = checkbook.bank_account_id.id
+            vals['type'] = checkbook.type
         a = vals.get('check_id', False)
         if a:
             self.pool.get('account.checkbook.check').write(cr, uid, a, {'state': 'done'})

@@ -50,12 +50,13 @@
 		<field name="model">account.checkbook</field>
 		<field name="type">tree</field>
 		<field name="arch" type="xml">
-			<tree string="Checkbooks">
+			<tree string="Checkbooks" colors="grey:state=='closed';">
 				<field name="name"/>
 				<field name="bank_account_id"/>
 				<field name="bank_id"/>
 				<field name="type"/>
 				<field name="account_check_id"/>
+				<field name="state"/>
 			</tree>
 		</field>
 	</record>
@@ -66,35 +67,42 @@
 		<field name="type">form</field>
 		<field name="arch" type="xml">
 			<form string="Checkbook" version="7.0">
+                <header>
+                    <button string="Annull Checks" type="action" name="%(wizard_annull_checks_wizard_action)d"
+                        class="oe_highlight"/>
+                    <field name="state" statusbar_visible=" " widget="statusbar"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
-                    <h1><label for="name"/><field name="name" class="oe_inline"/></h1>
-                </div>
-                <group>
+                        <h1><label for="name"/><field name="name" class="oe_inline"/></h1>
+                    </div>
                     <group>
-                        <field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
-                        <field name="bank_id"/>
-                        <field name="partner_id" invisible="1"/>
+                        <group>
+                            <field name="bank_account_id" domain="[('partner_id','=',partner_id)]"/>
+                            <field name="bank_id"/>
+                            <field name="partner_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="type"/>
+                            <field name="account_check_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
                     </group>
-                    <group>
-                    <field name="type"/>
-                    <field name="account_check_id"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                    </group>
-                </group>
-                <notebook colspan="4">
-                    <page string="Checks">
-                        <label for="check_ids" class="oe_title"/>
-                        <field name="check_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
-                        <label for="issued_check_ids"/>
-                        <field name="issued_check_ids" colspan="4" nolabel="1"/>
-                    </page>
-                </notebook>
+                    <notebook colspan="4">
+                        <page string="Checks">
+                            <label for="check_ids" class="oe_title"/>
+                            <field name="check_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
+                            <label for="annulled_checks" class="oe_title"/>
+                            <field name="annulled_checks" nolabel="1" colspan="4" widget="many2many_tags"/>
+                            <label for="issued_check_ids"/>
+                            <field name="issued_check_ids" colspan="4" nolabel="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
 			</form>
 		</field>
 	</record>
-	
+
 	<record model="ir.actions.act_window" id="action_account_checkbook">
 		<field name="name">Checkbooks</field>
 		<field name="res_model">account.checkbook</field>

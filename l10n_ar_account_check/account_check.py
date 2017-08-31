@@ -23,9 +23,10 @@
 ##############################################################################
 
 import time
-from openerp.tools.translate import _
-from openerp import models, fields, api
+
+from openerp import _, api, exceptions, fields, models
 from openerp.osv import osv
+from openerp.exceptions import except_orm
 
 
 class account_check_config(models.Model):
@@ -35,7 +36,19 @@ class account_check_config(models.Model):
     _name = 'account.check.config'
     _description = 'Check Account Configuration'
 
-    account_id = fields.Many2one('account.account', 'Main Check Account', required=True, help="In Argentina, Valores a Depositar is used, for example")
+    @api.multi
+    def name_get(self):
+        ret = []
+        for config in self:
+            ret.append((config.id, "%s: %s" % (config.company_id.name, config.account_id.name)))
+
+        return ret
+
+    account_id = fields.Many2one('account.account', 'Main Check Account', required=True,
+                                 help="In Argentina, Valores a Depositar is used, for example")
+    deferred_account_id = fields.Many2one('account.account', 'Deferred Check Account',
+                                          required=True)
+    deferred_journal_id = fields.Many2one('account.journal', 'Deferred Check Journal', required=True)
     company_id = fields.Many2one('res.company', 'Company', required=True)
 
     _sql_constraints = [
@@ -63,10 +76,30 @@ class account_issued_check(models.Model):
     clearing = fields.Selection([('24', '24 hs'), ('48', '48 hs'), ('72', '72 hs')], 'Clearing', default='24')
     account_bank_id = fields.Many2one('res.partner.bank', 'Bank Account')
     voucher_id = fields.Many2one('account.voucher', 'Voucher')
+    payment_move_id = fields.Many2one('account.move', 'Payment Account Move')
+    clearance_move_id = fields.Many2one('account.move', 'Clearance Account Move')
+    accredited = fields.Boolean('Accredited', compute='_compute_accredit_state')
     origin = fields.Char('Origin', size=64)
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
     company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, default=lambda self: self.env.user.company_id.id)
-    state = fields.Selection([('draft', 'Draft'), ('issued', 'Issued'), ('cancel', 'Cancelled')], 'State', default='draft')
+    state = fields.Selection(
+        [
+            ('draft', 'Draft'),
+            ('waiting', 'Waiting Accreditation'),
+            ('issued', 'Issued'),
+            ('cancel', 'Cancelled'),
+        ],
+        'State',
+        default='draft',
+    )
+
+    @api.depends('clearance_move_id')
+    def _compute_accredit_state(self):
+        for check in self:
+            if check.clearance_move_id:
+                check.accredited = True
+            else:
+                check.accredited = False
 
     @api.model
     def create_voucher_move_line(self):
@@ -75,14 +108,26 @@ class account_issued_check(models.Model):
         # Buscamos la cuenta contable para el asiento del cheque
         # Esta cuenta se corresponde con la cuenta de banco de donde
         # pertenece el cheque
-        account_id = self.account_bank_id.account_id.id
+        if self.type == 'postdated':
+            # Buscamos la configuracion de cheques
+            check_config_obj = self.env['account.check.config']
+            config = check_config_obj.search([('company_id', '=', voucher.company_id.id)])
+            if not len(config):
+                err = _('There is no check configuration for this Company!')
+                raise exceptions.ValidationError(err)
+
+            account_id = config.deferred_account_id.id
+            date_maturity = self.payment_date
+        else:
+            account_id = self.account_bank_id.account_id.id
+            date_maturity = voucher.date_due
+
         if not account_id:
             raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
-
         amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(self.amount)
 
         debit = credit = 0.0
@@ -110,7 +155,7 @@ class account_issued_check(models.Model):
             'currency_id': company_currency != current_currency and current_currency or False,
             'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
-            'date_maturity': voucher.date_due
+            'date_maturity': date_maturity,
         }
 
         return move_line
@@ -125,6 +170,112 @@ class account_issued_check(models.Model):
             if check.state != 'draft':
                 raise osv.except_osv(_('Check Error'), _('You cannot delete an issued check that is not in Draft state [See %s].') % (check.voucher_id))
         return super(account_issued_check, self).unlink()
+
+    @api.multi
+    def accredit_checks(self):
+        #TODO: create the corresponding moves
+        for check in self:
+            if check.state != "waiting":
+                raise exceptions.ValidationError(_("Check %s can't be accredited!") % check.number)
+
+        for check in self:
+            company = self.env.user.company_id
+            check_conf_obj = self.env['account.check.config']
+            def_check_account = check_conf_obj.search([('company_id', '=', company.id)]).deferred_account_id
+            def_check_journal = check_conf_obj.search([('company_id', '=', company.id)]).deferred_journal_id
+            if not def_check_journal:
+                raise except_orm(_("Error!"),_("There is no Journal configured for deferred checks."))
+
+
+            current_date = time.strftime('%Y-%m-%d')
+
+            period_obj = self.env['account.period']
+            current_period = period_obj.search([('date_start', '<=', current_date), ('date_stop', '>=', current_date)])
+
+            move_line_obj = self.env['account.move.line']
+            move_obj = self.env['account.move']
+            name_ref = 'Clearance Check ' + check.number
+            move_vals = {   'ref': name_ref,
+                            'journal_id': def_check_journal.id,
+                        }
+            move_id = move_obj.create(move_vals)
+
+            check.write({'clearance_move_id': move_id.id})
+
+            # Creamos la línea contable que iguala el pago del cheque
+            check_move_line_vals = {    'journal_id': def_check_journal.id,
+                                        'period_id': current_period.id,
+                                        'date': current_date,
+                                        'name': name_ref,
+                                        'account_id': def_check_account.id,
+                                        'debit': check.amount,
+                                        'move_id': move_id.id,
+                                   }
+
+            clearance_move_line = move_line_obj.create(check_move_line_vals)
+
+            # Creamos la línea contable que refiere a la acreditación por parte del banco
+            bank_move_line_vals = {     'journal_id': def_check_journal.id,
+                                        'period_id': current_period.id,
+                                        'date': current_date,
+                                        'name': name_ref,
+                                        'account_id': check.checkbook_id.bank_account_id.account_id.id,
+                                        'credit': check.amount,
+                                        'move_id': move_id.id,
+                                   }
+
+            move_line_obj.create(bank_move_line_vals)
+
+
+            move_lines_to_reconcile = []
+            payment_move_line = move_line_obj.search([('issued_check_id', '=', check.id)])
+            move_lines_to_reconcile.append(payment_move_line.id)
+            move_lines_to_reconcile.append(clearance_move_line.id)
+            reconcile_recordset = move_line_obj.browse(move_lines_to_reconcile)
+            reconcile_recordset.reconcile()
+
+        return self.write({"state": "issued"})
+
+
+    def accredit_checks_cron_task(self):
+        """ Search postdated checks and accredit them. This method is meant to be used by a cron
+        task.
+        """
+        # on multicompany installations you must configure a cron task for each company or run it
+        # as a multicompany user.
+        company_ids = self.env.user.company_ids.ids or [self.env.user.company_id.id]
+        checks = self.search(
+            [
+                ("type", "=", "postdated"),
+                ("state", "=", "waiting"),
+                ("payment_date", "<=", fields.Date.context_today(self)),
+                ("company_id", "in", company_ids),
+            ],
+            order="number",
+        )
+
+        return checks.accredit_checks()
+
+    @api.multi
+    def break_conciliation(self):
+        for check in self:
+            if check.state != "issued":
+                raise exceptions.ValidationError(_("Can't break conciliation of a not issued check!"))
+            if not check.accredited:
+                raise exceptions.ValidationError(_("Can't break conciliation of a not accredited check!"))
+
+        for check in self:
+            move_lines = check.clearance_move_id.line_id
+            for move_line in move_lines:
+                if move_line.reconcile_id:
+                    move_lines_rm = [move_line_rec.id for move_line_rec in move_line.reconcile_id.line_id]
+                    move_lines_rm.remove(move_line.id)
+                    move_line.reconcile_id.unlink()
+
+            check.clearance_move_id.button_cancel()
+            check.clearance_move_id.unlink()
+            check.write({'state': 'waiting'})
+
 
 account_issued_check()
 

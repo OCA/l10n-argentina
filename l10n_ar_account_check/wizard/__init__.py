@@ -22,6 +22,7 @@
 #
 ##############################################################################
 
-import check_deposit
-import check_reject
-import add_checks
+import check_deposit  # noqa
+import check_reject  # noqa
+import add_checks  # noqa
+import accredit_checks  # noqa

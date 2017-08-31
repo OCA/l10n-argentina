@@ -21,6 +21,7 @@
 #
 ##############################################################################
 
+import account
 import account_check
 import account_voucher
 import res_partner_bank
