@@ -119,7 +119,7 @@
                             <group>
                                 <field name="origin"/>
                                 <field name="payment_move_id" readonly="1"/>
-                                <field name="clearance_move_id" readonly="1"/>
+                                <field name="clearance_move_id" attrs="{'readonly': True, 'invisible': [('type', '=', 'common')]}"/>
                                 <field name="accredited" invisible="1"/>
                             </group>
                          </group>
