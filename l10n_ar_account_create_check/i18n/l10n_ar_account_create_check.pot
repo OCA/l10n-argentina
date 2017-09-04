@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-25 21:09+0000\n"
-"PO-Revision-Date: 2017-07-25 21:09+0000\n"
+"POT-Creation-Date: 2017-09-04 20:48+0000\n"
+"PO-Revision-Date: 2017-09-04 20:48+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,13 +21,13 @@ msgid "Account used for account moves with checks. If not set, account in treasu
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
-msgid "Annull"
+#: field:account.issued.check,accredited:0
+msgid "Accredited"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: view:account.issued.check:l10n_ar_account_create_check.view_account_issued_check_checkbook_form
-msgid "Annull Check"
+#: view:wizard.annull.checks:l10n_ar_account_create_check.view_wizard_annull_checks_form
+msgid "Annull"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
@@ -67,15 +67,9 @@ msgid "Bank Account"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/checkbook.py:116
+#: code:addons/l10n_ar_account_create_check/checkbook.py:138
 #, python-format
 msgid "Can't annull done checks!"
-msgstr ""
-
-#. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/checkbook.py:144
-#, python-format
-msgid "Can't annull issued checks!"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
@@ -119,6 +113,7 @@ msgstr ""
 
 #. module: l10n_ar_account_create_check
 #: field:account.checkbook,type:0
+#: field:wizard.create.check,type:0
 msgid "Checkbook Type"
 msgstr ""
 
@@ -147,12 +142,18 @@ msgid "Checks"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
+#: field:account.issued.check,clearance_move_id:0
+msgid "Clearance Account Move"
+msgstr ""
+
+#. module: l10n_ar_account_create_check
 #: selection:account.checkbook,state:0
 msgid "Closed"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
 #: selection:account.checkbook,type:0
+#: selection:wizard.create.check,type:0
 msgid "Common"
 msgstr ""
 
@@ -212,7 +213,7 @@ msgid "Draft"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:55
+#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:56
 #, python-format
 msgid "End number cannot be lower than Start number"
 msgstr ""
@@ -223,13 +224,13 @@ msgid "End number of check"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/checkbook.py:71
+#: code:addons/l10n_ar_account_create_check/checkbook.py:94
 #, python-format
 msgid "Error"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:55
+#: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:56
 #, python-format
 msgid "Error creating Checkbook"
 msgstr ""
@@ -244,6 +245,7 @@ msgstr ""
 
 #. module: l10n_ar_account_create_check
 #: help:account.checkbook,type:0
+#: help:wizard.create.check,type:0
 msgid "If common, checks only have issued_date. If post-dated they also have payment date"
 msgstr ""
 
@@ -288,7 +290,13 @@ msgid "Partner"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
+#: field:account.issued.check,payment_move_id:0
+msgid "Payment Account Move"
+msgstr ""
+
+#. module: l10n_ar_account_create_check
 #: selection:account.checkbook,type:0
+#: selection:wizard.create.check,type:0
 msgid "Post-dated"
 msgstr ""
 
@@ -320,14 +328,9 @@ msgid "Wizard to annull checks related to one Checkbook"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
-#: code:addons/l10n_ar_account_create_check/checkbook.py:71
+#: code:addons/l10n_ar_account_create_check/checkbook.py:94
 #, python-format
 msgid "You cannot delete this checkbook because it has Issued Checks"
-msgstr ""
-
-#. module: l10n_ar_account_create_check
-#: view:account.issued.check:l10n_ar_account_create_check.view_account_issued_check_checkbook_form
-msgid "draft,issued,annulled"
 msgstr ""
 
 #. module: l10n_ar_account_create_check
