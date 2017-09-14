@@ -458,7 +458,7 @@ class wsfe_config(models.Model):
             company_id = self.env.user.company_id
             company_currency_id = company_id.currency_id
             invoice_rate = 1.0
-            if inv.currency_id.id != company_currency_id:
+            if inv.currency_id.id != company_currency_id.id:
                 invoice_rate = inv.currency_rate
 
             detalle['MonId'] = currency_code
