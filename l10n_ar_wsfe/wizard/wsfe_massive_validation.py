@@ -84,7 +84,7 @@ class account_invoice_confirm(osv.osv_memory):
             raise osv.except_osv(_('WSFE Error!'), _("You are trying to validate several invoices but not all of them are the same type. For example, all Customer Invoices or all Customer Refund"))
 
         # Preparamos el lote de facturas para la AFIP
-        next_wsfe_number = inv_obj._get_next_wsfe_number(cr, uid, data_inv[0].id, context=context)
+        next_wsfe_number = inv_obj._get_next_wsfe_number(cr, uid, data_inv[0].id, conf, context=context)
         next_system_number = inv_obj.get_next_invoice_number(cr, uid, data_inv[0].id, context=context)
 
         if not conf.homologation:
@@ -93,14 +93,15 @@ class account_invoice_confirm(osv.osv_memory):
 
         num = "%s-%08d" % (invoice.pos_ar_id.name, next_wsfe_number)
         context['first_num'] = num
-        fe_det_req = inv_obj.wsfe_invoice_prepare_detail(cr, uid, context['active_ids'], context)
+        fe_det_req = wsfe_conf_obj.prepare_details(cr, uid, conf.id, data_inv, context)
 
         # Llamamos a la funcion para validar contra la AFIP
         pos = int(invoice.pos_ar_id.name)
 
-        result = wsfe_conf_obj.get_invoice_CAE(cr, uid, [conf.id], pos, tipo_cbte, fe_det_req, context=context)
+        result = wsfe_conf_obj.get_invoice_CAE(cr, uid, conf.id, pos, tipo_cbte, fe_det_req, context=context)
+
         context['raise-exception'] = False
-        invoices_approbed = inv_obj._parse_result(cr, uid, context['active_ids'], result, context=context)
+        invoices_approbed = wsfe_conf_obj._parse_result(cr, uid, conf.id, data_inv, result, context=context)
 
         req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
