@@ -145,7 +145,6 @@ class wsfe_config(models.Model):
 
     @api.multi
     def get_invoice_CAE(self, pos, voucher_type, details):
-        self.ensure_one()
 
         conf = self
         token, sign = conf.wsaa_ticket_id.get_token_sign()
@@ -155,6 +154,7 @@ class wsfe_config(models.Model):
 
         return res
 
+    @api.multi
     def _parse_result(self, invoices, result):
 
         invoices_approbed = {}
@@ -370,6 +370,7 @@ class wsfe_config(models.Model):
 
         return True
 
+    @api.multi
     def prepare_details(self, invoices):
         obj_precision = self.env['decimal.precision']
         invoice_obj = self.env['account.invoice']
