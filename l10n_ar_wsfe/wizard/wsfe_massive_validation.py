@@ -101,14 +101,14 @@ class account_invoice_confirm(osv.osv_memory):
         result = wsfe_conf_obj.get_invoice_CAE(cr, uid, conf.id, pos, tipo_cbte, fe_det_req, context=context)
 
         context['raise-exception'] = False
-        invoices_approbed = wsfe_conf_obj._parse_result(cr, uid, conf.id, data_inv, result, context=context)
+        invoices_approved = wsfe_conf_obj._parse_result(cr, uid, conf.id, data_inv, result, context=context)
 
         req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
-        invoices_not_approbed = [j for j in context['active_ids'] if j not in invoices_approbed.keys()]
+        invoices_not_approved = [j for j in context['active_ids'] if j not in invoices_approved.keys()]
 
         # Para las facturas aprobadas creo los asientos, y seguimos adelante con el workflow
-        for invoice_id, invoice_vals in invoices_approbed.iteritems():
+        for invoice_id, invoice_vals in invoices_approved.iteritems():
             invoice = inv_obj.browse(cr, uid, invoice_id)
             invoice.action_move_create()
 
