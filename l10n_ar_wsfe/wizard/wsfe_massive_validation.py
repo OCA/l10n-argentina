@@ -42,6 +42,8 @@ class account_invoice_confirm(osv.osv_memory):
 
         if context is None:
             context = {}
+        else:
+            context2 = dict(context)
         data_inv = inv_obj.browse(cr, uid, context['active_ids'], context=context)
 
         # Primero tenemos que chequear si al menos alguna de las facturas se debe hacer por factura electronica
@@ -92,16 +94,16 @@ class account_invoice_confirm(osv.osv_memory):
                 raise osv.except_osv(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_system_number), int(next_wsfe_number)))
 
         num = "%s-%08d" % (invoice.pos_ar_id.name, next_wsfe_number)
-        context['first_num'] = num
-        fe_det_req = wsfe_conf_obj.prepare_details(cr, uid, conf.id, data_inv, context)
+        context2['first_num'] = num
+        fe_det_req = wsfe_conf_obj.prepare_details(cr, uid, conf.id, data_inv, context2)
 
         # Llamamos a la funcion para validar contra la AFIP
         pos = int(invoice.pos_ar_id.name)
 
-        result = wsfe_conf_obj.get_invoice_CAE(cr, uid, conf.id, pos, tipo_cbte, fe_det_req, context=context)
+        result = wsfe_conf_obj.get_invoice_CAE(cr, uid, conf.id, pos, tipo_cbte, fe_det_req, context=context2)
 
-        context['raise-exception'] = False
-        invoices_approved = wsfe_conf_obj._parse_result(cr, uid, conf.id, data_inv, result, context=context)
+        context2['raise-exception'] = False
+        invoices_approved = wsfe_conf_obj._parse_result(cr, uid, conf.id, data_inv, result, context=context2)
 
         req_id = wsfe_conf_obj._log_wsfe_request(cr, uid, ids, pos, tipo_cbte, fe_det_req, result)
 
