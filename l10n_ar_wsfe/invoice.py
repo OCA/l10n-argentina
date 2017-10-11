@@ -286,6 +286,25 @@ class account_invoice(models.Model):
     def hook_add_taxes(self, inv, detalle):
         return detalle
 
+    def _sanitize_taxes(self, invoice):
+
+        # Sanitize taxes: puede pasar que tenga un IVA con un monto de impuesto 0.0
+        # Esto pasa porque el monto sobre el que se aplica es muy chico.
+        # Quitamos el impuesto
+        zero_taxes = invoice.tax_line.filtered(lambda x: x.amount==0.0)
+
+        if not zero_taxes:
+            return
+
+        tax_in_zero = zero_taxes.mapped(lambda x: x.tax_id.id)
+        lines_no_taxes = invoice.invoice_line.filtered(
+                lambda x: x.invoice_line_tax_id.id in tax_in_zero)
+
+        tax_remove = map(lambda x: (3, x, _), tax_in_zero)
+        lines_no_taxes.write({'invoice_line_tax_id': tax_remove})
+
+        invoice.button_reset_taxes()
+
     @api.multi
     def action_aut_cae(self):
         voucher_type_obj = self.env['wsfe.voucher_type']
@@ -301,6 +320,7 @@ class account_invoice(models.Model):
                 #self.write(cr, uid, ids, {'cae' : 'NA'})
                 return True
 
+            self._sanitize_taxes(inv)
             pos_ar = inv.pos_ar_id
             # Chequeamos si corresponde Factura Electronica
             # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
