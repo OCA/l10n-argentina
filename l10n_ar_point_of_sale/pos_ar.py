@@ -36,6 +36,7 @@ class invoice_denomination(models.Model):
             ('C','C'),
             ('M','M'),
             ('X','X'),
+            ('OC','OC'), # Otros comprobantes
             ('ANA','ANA'),
             ('E','E')], string="Denomination")
     desc = fields.Char(string="Description", required=True, size=100)
