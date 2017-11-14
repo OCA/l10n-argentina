@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <menuitem id="menu_treasury_root" name="Treasury" sequence="60"/>
+        <menuitem id="menu_treasury_root" name="Treasury" sequence="60" groups="account.group_account_user"/>
         <menuitem id="menu_treasury_issued_check_menu" name="Issued Checks" parent="menu_treasury_root" sequence="10"/>
         <menuitem id="menu_treasury_configuration" name="Configuration" parent="menu_treasury_root" sequence="30"/>
 
