@@ -104,7 +104,7 @@
                    </field>
 
                     <xpath expr="//button[@string='Ask Refund']" position="replace" >
-                      <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund'
+                      <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund' groups="account.group_account_invoice"
                         states='open,paid' attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True)]}"/>
                     </xpath>
                     <field name="fiscal_position" position="attributes">
