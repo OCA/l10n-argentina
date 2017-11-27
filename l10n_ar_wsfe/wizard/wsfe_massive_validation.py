@@ -110,9 +110,12 @@ class account_invoice_confirm(osv.osv_memory):
         invoices_not_approved = [j for j in context['active_ids'] if j not in invoices_approved.keys()]
 
         # Para las facturas aprobadas creo los asientos, y seguimos adelante con el workflow
+        # Permitir que el parametro 'no_create_move' evite la creación de asientos
+        no_create_move = context.get('no_create_move', False)
         for invoice_id, invoice_vals in invoices_approved.iteritems():
             invoice = inv_obj.browse(cr, uid, invoice_id)
-            invoice.action_move_create()
+            if not no_create_move:
+                invoice.action_move_create()
 
             inv_obj.write(cr, uid, invoice_id, invoice_vals)
 
@@ -123,7 +126,8 @@ class account_invoice_confirm(osv.osv_memory):
             else:
                 ref = reference
 
-            invoice._update_reference(ref)
+            if not no_create_move:
+                invoice._update_reference(ref)
 
             # Llamamos al workflow para que siga su curso
             wf_service.trg_validate(uid, 'account.invoice', invoice.id, 'invoice_massive_open', cr)
