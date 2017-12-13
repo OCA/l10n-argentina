@@ -37,23 +37,12 @@ def _do_update(cr):
             }
             cr.execute(q, q_params)
             seq_id = cr.fetchone()[0]
-            # Get the currency of the account associated or in defect the company currency
-            q = """
-                SELECT COALESCE(acc.currency_id, rc.currency_id) currency_id
-                FROM account_account acc JOIN res_company rc ON rc.id=acc.company_id
-                WHERE acc.id = %(acc_id)s
-            """
-            q_params = {
-                'acc_id': acc_id
-            }
-            cr.execute(q, q_params)
-            curr_id = cr.fetchone()[0]
             # Generate the journal
             q = """
                 INSERT INTO account_journal
-                (code, company_id, name, sequence_id, type, default_debit_account_id, default_credit_account_id, currency)
+                (code, company_id, name, sequence_id, type, default_debit_account_id, default_credit_account_id)
                 VALUES
-                (%(code)s, %(company_id)s, %(name)s, %(sequence_id)s, %(type)s, %(debit_acc)s, %(credit_acc)s, %(currency)s)
+                (%(code)s, %(company_id)s, %(name)s, %(sequence_id)s, %(type)s, %(debit_acc)s, %(credit_acc)s)
                 RETURNING id
             """
             q_params = {
@@ -64,7 +53,6 @@ def _do_update(cr):
                 'type': 'bank',
                 'debit_acc': acc_id,
                 'credit_acc': acc_id,
-                'currency': curr_id,
             }
             cr.execute(q, q_params)
             aj_id = cr.fetchone()[0]
