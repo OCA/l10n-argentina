@@ -46,7 +46,7 @@ def _do_update(cr):
             }
             cr.execute(q, q_params)
             payment_journal_id = cr.fetchone()[0]
-        q = "UPDATE account_voucher SET journal_id=%(j_id)s WHERE type ~ 'payment'"
+        q = "UPDATE account_voucher SET journal_id=%(j_id)s WHERE type ~ 'payment' AND journal_id IS NULL;"
         q_params = {'j_id': payment_journal_id}
         cr.execute(q, q_params)
 
@@ -88,7 +88,7 @@ def _do_update(cr):
             }
             cr.execute(q, q_params)
             receipt_journal_id = cr.fetchone()[0]
-        q = "UPDATE account_voucher SET journal_id=%(j_id)s WHERE type ~ 'receipt'"
+        q = "UPDATE account_voucher SET journal_id=%(j_id)s WHERE type ~ 'receipt' AND journal_id IS NULL;"
         q_params = {'j_id': receipt_journal_id}
         cr.execute(q, q_params)
     except psycopg2.ProgrammingError:

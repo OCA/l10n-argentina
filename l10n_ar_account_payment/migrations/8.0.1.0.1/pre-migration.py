@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import psycopg2
+import logging
 
+logger = logging.getLogger(__name__)
 
 def _do_update(cr):
     """
@@ -9,6 +11,26 @@ def _do_update(cr):
     2. Update payment.mode.receipt.line to point the corrects journals
     """
     try:
+        cr.execute("""
+            SELECT
+                tc.constraint_name, tc.table_name, kcu.column_name,
+                ccu.table_name AS foreign_table_name,
+                ccu.column_name AS foreign_column_name
+            FROM
+                information_schema.table_constraints AS tc
+                JOIN information_schema.key_column_usage AS kcu
+                ON tc.constraint_name = kcu.constraint_name
+                JOIN information_schema.constraint_column_usage AS ccu
+                ON ccu.constraint_name = tc.constraint_name
+            WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name='payment_mode_receipt_line' AND kcu.column_name ~ 'payment_mode_id';
+        """)
+        if not cr.rowcount:
+            logger.warning("The foreign key payment_mode_id does not exist, discarding migration")
+            return True
+        q_res = cr.fetchone()
+        if q_res[3] == 'account_journal':  # The migration has nonsense here.
+            logger.warning("The module appears to be up to date")
+            return True
         cr.execute("ALTER TABLE account_journal ALTER COLUMN code TYPE varchar(10)")
         cr.execute("ALTER TABLE payment_mode_receipt_line DROP CONSTRAINT IF EXISTS payment_mode_receipt_line_payment_mode_id_fkey")
         cr.execute("""
