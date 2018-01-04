@@ -168,46 +168,19 @@ class account_voucher(models.Model):
                 amount += float(am)
         return amount
 
-    @api.onchange('payment_line_ids')
-    def onchange_payment_line(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_issued_checks_amount()
-        amount += self._get_third_checks_amount()
-        amount += self._get_third_checks_receipt_amount()
-        amount += self._get_retention_amount()
+    @api.multi
+    def _get_amount_hook(self):
+        return 0
 
-        self.amount = amount
-
-    @api.onchange('third_check_receipt_ids')
-    def onchange_third_receipt_checks(self):
+    @api.onchange('payment_line_ids','third_check_receipt_ids',
+                  'issued_check_ids','third_check_ids','retention_ids')
+    def onchange_amount_payment(self):
         amount = self._get_payment_lines_amount()
         amount += self._get_third_checks_receipt_amount()
-        amount += self._get_retention_amount()
-        self.amount = amount
-
-    @api.onchange('issued_check_ids')
-    def onchange_issued_checks(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_issued_checks_amount()
         amount += self._get_third_checks_amount()
-        amount += self._get_retention_amount()
-        self.amount = amount
-
-    @api.onchange('third_check_ids')
-    def onchange_third_checks(self):
-        amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
-        amount += self._get_third_checks_amount()
         amount += self._get_retention_amount()
-        self.amount = amount
-
-    @api.onchange('retention_ids')
-    def onchange_retentions(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_issued_checks_amount()
-        amount += self._get_third_checks_amount()
-        amount += self._get_third_checks_receipt_amount()
-        amount += self._get_retention_amount()
+        amount += self._get_amount_hook()
         self.amount = amount
 
     @api.multi
