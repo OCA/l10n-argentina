@@ -364,7 +364,9 @@ class invoice(models.Model):
                 fiscal_position = fiscal_pool.browse(fiscal_position_id)
                 res['value'].update({'fiscal_position': fiscal_position_id})
                 denomination_id = fiscal_position.denomination_id.id
-                res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
+                res.setdefault('domain', {}).update(
+                    {"pos_ar_id": [('denomination_id', '=', denomination_id)]}
+                )
 
                 if type in ['in_invoice', 'in_refund', 'in_debit']:  # Supplier invoice
                     denom_sup_id = fiscal_position.denom_supplier_id.id
@@ -379,6 +381,7 @@ class invoice(models.Model):
 
         else:
             res['value']['local'] = True
+
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):
