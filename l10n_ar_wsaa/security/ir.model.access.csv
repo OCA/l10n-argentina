@@ -7,4 +7,4 @@ access_afipws_service_user,afipws.service user,model_afipws_service,account.grou
 access_afipws_service_payment,afipws.service payment,model_afipws_service,account.group_account_invoice,1,0,0,0
 access_wsaa_ta_manager,wsaa.ta manager,model_wsaa_ta,account.group_account_manager,1,1,1,1
 access_wsaa_ta_user,wsaa.ta user,model_wsaa_ta,account.group_account_user,1,1,0,0
-access_wsaa_ta_payment,wsaa.ta payment,model_wsaa_ta,account.group_account_invoice,1,0,0,0
+access_wsaa_ta_payment,wsaa.ta payment,model_wsaa_ta,account.group_account_invoice,1,1,0,0
