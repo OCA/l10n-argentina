@@ -5,3 +5,4 @@ access_perception_perception_invoicing,perception.perception invoicing,model_per
 access_perception_tax_line_manager,perception.tax.line manager,model_perception_tax_line,account.group_account_manager,1,1,1,1
 access_perception_tax_line_user,perception.tax.line user,model_perception_tax_line,account.group_account_user,1,1,1,1
 access_perception_tax_line_invoicing,perception.tax.line invoicing,model_perception_tax_line,account.group_account_invoice,1,1,1,1
+access_perception_tax_line_base_user,perception.tax.line base_user,model_perception_tax_line,base.group_user,1,0,0,0
