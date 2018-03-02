@@ -76,9 +76,9 @@ class account_voucher(osv.osv):
                     
                 ref_number = issued_check.number
                 if ref_number:
-                    reference = 'Cheque nro ' + ref_number
+                    reference = _('Check No. ') + ref_number
                 else:
-                    reference = 'Chequera nro ' + issued_check.checkbook_id.name
+                    reference = _('Checkbook No. ') + issued_check.checkbook_id.name
 
                 st_line = {
                     'name': reference,
