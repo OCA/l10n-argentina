@@ -367,6 +367,11 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: l10n_ar_account_check
+#: field:account.third.check,crossed:0
+msgid "Crossed"
+msgstr "Cruzado"
+
+#. module: l10n_ar_account_check
 #: field:account.add.issued.check,date:0
 msgid "Date"
 msgstr "Fecha de Cobro"
@@ -702,6 +707,21 @@ msgstr "Cuenta Principal de Cheque"
 #: field:account.add.third.check,on_order:0
 msgid "On Order"
 msgstr "A la orden"
+
+#. module: l10n_ar_account_check
+#: field:account.third.check,not_order:0
+msgid "Not Order"
+msgstr "No a la Orden"
+
+#. module: l10n_ar_account_check
+#: field:account.third.check,bank_branch:0
+msgid "Bank Branch"
+msgstr "Sucursal"
+
+#. module: l10n_ar_account_check
+#: field:account.third.check,zip:0
+msgid "Zip Code"
+msgstr "Codigo Postal"
 
 #. module: l10n_ar_account_check
 #: help:account.issued.check,payment_date:0

@@ -81,6 +81,18 @@ msgid "Cannot remove Account Bank Statement Line(s) which are already confirm or
 msgstr "No puede eliminar un registro que fue confirmado o conciliado"
 
 #. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account_voucher.py:79
+#, python-format
+msgid "Check Nro. "
+msgstr "Cheque Nro. "
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account_voucher.py:81
+#, python-format
+msgid "Checkbook No. "
+msgstr "Chequera Nro. "
+
+#. module: l10n_ar_bank_statement
 #: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
 #: field:account.bank.statement.line,concept_id:0
 msgid "Concept"
