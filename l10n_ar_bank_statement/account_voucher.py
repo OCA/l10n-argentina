@@ -74,8 +74,14 @@ class account_voucher(osv.osv):
                 else:
                     aux_payment_date = issued_check.payment_date
                     
+                ref_number = issued_check.number
+                if ref_number:
+                    reference = 'Cheque nro ' + ref_number
+                else:
+                    reference = 'Chequera nro ' + issued_check.checkbook_id.name
+
                 st_line = {
-                    'name': 'Cheque nro ' + issued_check.number,
+                    'name': reference,
                     'issue_date': issued_check.issue_date,
                     'payment_date': aux_payment_date,
                     'amount': issued_check.amount*-1,

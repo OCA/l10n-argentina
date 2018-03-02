@@ -295,7 +295,11 @@
                         <group string="Other Information">
                             <group>
                                 <field name="bank_id"/>
+                                <field name="bank_branch"/>
+                                <field name="zip"/>
                                 <field name="origin"/>
+                                <field name="crossed"/>
+                                <field name="not_order"/>
                                 <field name="dest" attrs="{'invisible': [('state','!=','delivered')]}"/>
                             </group>
                              <group>

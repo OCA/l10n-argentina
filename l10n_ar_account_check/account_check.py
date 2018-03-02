@@ -144,8 +144,13 @@ class account_issued_check(models.Model):
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente al cheque
+        if self.number:
+            reference = _('Issued Check %s') % (self.number or '/')
+        else:
+            reference = _('Checkbook Number %s') % (self.checkbook_id.name or '/')
+
         move_line = {
-            'name': _('Issued Check %s') % self.number or '/',
+            'name': reference,
             'debit': debit,
             'credit': credit,
             'account_id': account_id,
@@ -314,6 +319,10 @@ class account_third_check(models.Model):
     signatory_vat = fields.Char('Signatory VAT', size=64)
     signatory_account = fields.Char('Signatory account', size=64)
     deposit_slip = fields.Char('Deposit Slip', size=64)
+    crossed = fields.Boolean('Crossed')
+    not_order = fields.Boolean('Not Order')
+    bank_branch = fields.Char('Bank Branch', size=64)
+    zip = fields.Char('Zip Code', size=64)
 
     @api.model
     def create_voucher_move_line(self, voucher):
