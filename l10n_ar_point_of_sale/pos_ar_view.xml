@@ -20,6 +20,7 @@
                             <group>
                                 <field name="name"/>
                                 <field name="denomination_id" select="1"/>
+                                <field name="show_in_reports"/>
                             </group>
                             <group>
                                 <field name="priority"/>

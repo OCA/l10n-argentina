@@ -53,6 +53,7 @@ class pos_ar(models.Model):
     #'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
     shop_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True)
     denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
+    show_in_reports = fields.Boolean('Show in reports?')
 
     @api.multi
     def name_get(self):
