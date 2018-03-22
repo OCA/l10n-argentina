@@ -25,6 +25,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     city_id = fields.Many2one('res.city', string='City')
+    city = fields.Char(related='city_id.name', store=True, readonly=False)
     zip = fields.Char(related="city_id.zip_code", store=True, readonly=False)
     state_id = fields.Many2one(related="city_id.state_id", store=True, readonly=False)
     country_id = fields.Many2one(related="city_id.state_id.country_id", store=True, readonly=False)
@@ -34,6 +35,7 @@ class ResCompany(models.Model):
     _inherit = "res.company"
 
     city_id = fields.Many2one('res.city', string='City')
+    city = fields.Char(related='city_id.name', store=True, readonly=False)
     zip = fields.Char(related="city_id.zip_code", store=True, readonly=False)
     state_id = fields.Many2one(related="city_id.state_id", store=True, readonly=False)
     country_id = fields.Many2one(related="city_id.state_id.country_id", store=True, readonly=False)
