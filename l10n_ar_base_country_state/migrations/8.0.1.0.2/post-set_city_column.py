@@ -25,7 +25,7 @@ import psycopg2
 __name__ = u"Store City name"
 
 """Because city field is now related to city_id.name on res.partner and res.company we relate the
-city_id's name to the partners and companies which already have the city_id field set."""
+city_id's name to the partners which already have the city_id field set."""
 
 
 def relate_city_name(cr):
@@ -38,18 +38,6 @@ def relate_city_name(cr):
             SET city = c.name
             FROM res_city AS c
             WHERE c.id = res_partner.city_id
-            """
-        )
-    except psycopg2.ProgrammingError:
-        cr.rollback()
-
-    try:
-        cr.execute(
-            """
-            UPDATE res_company
-            SET city = c.name
-            FROM res_city AS c
-            WHERE c.id = res_company.city_id
             """
         )
     except psycopg2.ProgrammingError:
