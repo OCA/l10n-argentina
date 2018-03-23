@@ -25,6 +25,17 @@ class ResCity(models.Model):
     _name = 'res.city'
     _description = 'Cities'
 
+    @api.multi
+    def name_get(self):
+        ret = []
+        for city in self:
+            if city.state_id:
+                ret.append((city.id, "%s (%s)" % (city.name, city.state_id.name or '')))
+            else:
+                ret.append((city.id, city.name))
+
+        return ret
+
     @api.onchange("state_id")
     def onchange_state_id(self):
         if self.state_id and self.country_id != self.state_id.country_id:
