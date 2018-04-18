@@ -16,6 +16,9 @@
                 <data>
                     <field name="number" position="replace"/>
                     <field name="internal_number" position="replace"/>
+                    <field name="partner_id" position="attributes">
+                        <attribute name="default_focus">1</attribute>
+                    </field>
 
                     <field name="type" position="before">
                         <label for="internal_number" class="oe_edit_only" string="Invoice Number"/>
@@ -85,6 +88,9 @@
             <field name="arch" type="xml">
                     <field name="number" position="replace"/>
                     <field name="internal_number" position="replace"/>
+                    <field name="partner_id" position="attributes">
+                        <attribute name="default_focus">1</attribute>
+                    </field>
 
                     <xpath expr="//form/sheet/div[@class='oe_title']" position="replace">
                         <h1>
