@@ -22,6 +22,8 @@
 ##############################################################################
 
 from osv import osv, fields
+from tools.translate import _
+
 
 class account_tax(osv.osv):
     _name = 'account.tax'
