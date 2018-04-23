@@ -22,6 +22,10 @@
                         <label string="Draft Debit Note " attrs="{'invisible': ['|',('state','not in',('draft',)), ('is_debit_note','=',False)]}"/>
                         <label string="Debit Note " attrs="{'invisible': ['|',('state','in',('draft','proforma','proforma2')), ('is_debit_note','=',False)]}"/>
                     </label>
+                    <field name="fiscal_position" position="after">
+                        <field name="is_final_consumer" invisible="1"/>
+                        <field name="contact_vat" attrs="{'invisible': [('is_final_consumer', '=', False)]}"/>
+                    </field>
 
                     <field name="number" position="replace"/>
                     <field name="internal_number" position="replace"/>
@@ -113,10 +117,6 @@
                     </xpath>
                     <field name="fiscal_position" position="attributes">
                         <attribute name="required">1</attribute>
-                    </field>
-                    <field name="fiscal_position" position="after">
-                        <field name="is_final_consumer" invisible="1"/>
-                        <field name="contact_vat" attrs="{'invisible': [('is_final_consumer', '=', False)]}"/>
                     </field>
                    <field name="amount_untaxed" position="replace">
                        <field name="amount_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
