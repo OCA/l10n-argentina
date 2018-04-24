@@ -443,17 +443,16 @@ class invoice(osv.osv):
             fiscal_position_id = res['value']['fiscal_position']
             fiscal_pool = self.pool.get('account.fiscal.position')
 
-            if partner_id:
-                # If it's a Final Consumer partner we search for that fiscal position
-                partner = self.pool["res.partner"].browse(cr, uid, partner_id, context=context)
-                if partner.contact_vat:
-                    fiscal_position_id = fiscal_pool.search(
-                        cr,
-                        uid,
-                        [("is_final_consumer", "=", True)],
-                        limit=1,
-                    )
-                    fiscal_position_id = fiscal_position_id and fiscal_position_id[0]
+            # If it's a Final Consumer partner we search for that fiscal position
+            partner = self.pool["res.partner"].browse(cr, uid, partner_id, context=context)
+            if partner.contact_vat:
+                fiscal_position_id = fiscal_pool.search(
+                    cr,
+                    uid,
+                    [("is_final_consumer", "=", True)],
+                    limit=1,
+                )
+                fiscal_position_id = fiscal_position_id and fiscal_position_id[0]
 
             if not fiscal_position_id:
                 property_obj = self.pool.get('ir.property')
