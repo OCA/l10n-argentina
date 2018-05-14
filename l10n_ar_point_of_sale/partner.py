@@ -21,10 +21,19 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import orm, fields
+from openerp.tools.translate import _
 
 
-class account_fiscal_position (osv.osv):
+class ResPartner(orm.Model):
+    _inherit = 'res.partner'
+
+    _columns = {
+        'contact_vat': fields.char('Contact VAT', size=32),
+    }
+
+
+class account_fiscal_position(orm.Model):
     _name = "account.fiscal.position"
     _inherit = "account.fiscal.position"
     _description = ""
@@ -32,9 +41,24 @@ class account_fiscal_position (osv.osv):
         'local' : fields.boolean('Local Fiscal Rules', help="Check this if it corresponds to apply local fiscal rules, like invoice number validation, etc"),
         'denomination_id' : fields.many2one('invoice.denomination','Denomination', required=True),
         'denom_supplier_id' : fields.many2one('invoice.denomination','Denomination', required=True),
+        'is_final_consumer': fields.boolean('Is final consumer'),
     }
 
     _defaults = {
         'local': True,
+        'is_final_consumer': False,
     }
-account_fiscal_position()
+
+    def _check_uniq_final_consumer(self, cr, uid, ids, context=None):
+        if self.search_count(cr, uid, [("is_final_consumer", "=", True)]) > 1:
+            return False
+
+        return True
+
+    _constraints = [
+        (
+            _check_uniq_final_consumer,
+            _('There must be only one Final Consumer Fiscal Position'),
+            ['is_final_consumer']
+        ),
+    ]

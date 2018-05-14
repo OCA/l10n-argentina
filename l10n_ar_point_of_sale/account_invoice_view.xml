@@ -22,6 +22,10 @@
                         <label string="Draft Debit Note " attrs="{'invisible': ['|',('state','not in',('draft',)), ('is_debit_note','=',False)]}"/>
                         <label string="Debit Note " attrs="{'invisible': ['|',('state','in',('draft','proforma','proforma2')), ('is_debit_note','=',False)]}"/>
                     </label>
+                    <field name="fiscal_position" position="after">
+                        <field name="is_final_consumer" invisible="1"/>
+                        <field name="contact_vat" attrs="{'invisible': [('is_final_consumer', '=', False)]}"/>
+                    </field>
 
                     <field name="number" position="replace"/>
                     <field name="internal_number" position="replace"/>
@@ -81,7 +85,7 @@
                 </field>
             </field>
         </record>
-        
+
         <record id="view_pos_invoice_supplier_form" model="ir.ui.view">
             <field name="name">account.invoice.form.inherit3</field>
             <field name="model">account.invoice</field>
@@ -197,6 +201,6 @@
         <menuitem action="account.action_invoice_tree2" id="account.menu_action_invoice_tree2" sequence="5" parent="account.menu_finance_payables"/>
         <menuitem action="account.action_invoice_tree4" id="account.menu_action_invoice_tree4" sequence="6" parent="account.menu_finance_payables"/>
         <menuitem action="action_supplier_debit_note_tree" sequence="7" id="menu_supplier_debit_note" parent="account.menu_finance_payables"/>
-    
+
     </data>
 </openerp>

@@ -157,6 +157,9 @@ class invoice(osv.osv):
         'denomination_id' : fields.many2one('invoice.denomination','Denomination', readonly=True, states={'draft':[('readonly',False)]}),
         'internal_number': fields.char('Invoice Number', size=32, readonly=True, states={'draft':[('readonly',False)]}, help="Unique number of the invoice, computed automatically when the invoice is created."),
         'local': fields.related('fiscal_position', 'local', type="boolean", string="Local", store=True),
+        'is_final_consumer': fields.related('fiscal_position', 'is_final_consumer', type="boolean",
+                                            string="Final Consumer", store=True),
+        'contact_vat': fields.char('Contact VAT', size=32),
         'amount_exempt': fields.function(_amount_all_ar, method=True, digits_compute=dp.get_precision('Account'), string='Amount Exempt',
             store={
                 'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line'], 10),
@@ -205,7 +208,7 @@ class invoice(osv.osv):
             'is_debit_note': lambda *a: False,
             'local': lambda *a: True,
     }
-            
+
     #Validacion para que el total de una invoice no pueda ser negativo.
     def _check_amount_total(self,cr,uid,ids,context=None):
         for invoice in self.read(cr,uid,ids,['amount_total'],context=context):
@@ -430,15 +433,27 @@ class invoice(osv.osv):
                 date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False)
 
         if partner_id:
-
-            fiscal_position_id = res['value']['fiscal_position']
-
             # HACK: Si no encontramos una fiscal position, buscamos una property que nos de el default
             # En realidad, si tenemos esa property creada desde el principio, todos los partners tendrian
             # su posicion fiscal. Pero si ya tenemos varios partners creados sin posicion fiscal, leemos
             # la property que creamos de la posicion fiscal para que quede como default y asi no tenemos
             # que hacerle muchas modificaciones al sistema. Igualmente, al setear una property que sea Global
             # ya no hace falta buscarla por codigo porque se la asigna solito a todos los que no tenian.
+
+            fiscal_position_id = res['value']['fiscal_position']
+            fiscal_pool = self.pool.get('account.fiscal.position')
+
+            # If it's a Final Consumer partner we search for that fiscal position
+            partner = self.pool["res.partner"].browse(cr, uid, partner_id, context=context)
+            if partner.contact_vat:
+                fiscal_position_id = fiscal_pool.search(
+                    cr,
+                    uid,
+                    [("is_final_consumer", "=", True)],
+                    limit=1,
+                )
+                fiscal_position_id = fiscal_position_id and fiscal_position_id[0]
+
             if not fiscal_position_id:
                 property_obj = self.pool.get('ir.property')
                 fpos_pro_id = property_obj.search(cr, uid, [('name','=','property_account_position'),('company_id','=',company_id)])
@@ -448,24 +463,33 @@ class invoice(osv.osv):
 
                 fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference',False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
 
-            fiscal_pool = self.pool.get('account.fiscal.position')
+            res['value']['fiscal_position'] = fiscal_position_id
             pos_pool = self.pool.get('pos.ar')
             if fiscal_position_id:
-                fiscal_position = fiscal_pool.browse(cr, uid , fiscal_position_id)
+                fiscal_position = fiscal_pool.browse(cr, uid, fiscal_position_id)
                 denomination_id = fiscal_position.denomination_id.id
-                res.update({'domain': {'pos_ar_id': [('denomination_id', '=', denomination_id)]}})
+                res.setdefault('domain', {}).setdefault('pos_ar_id', []).append(
+                    ('denomination_id', '=', denomination_id)
+                )
 
                 #para las invoices de suppliers
                 if type in ['in_invoice', 'in_refund', 'in_debit']:
-                    denom_sup_id = fiscal_pool.browse(cr, uid , fiscal_position_id).denom_supplier_id.id
+                    denom_sup_id = fiscal_pool.browse(cr, uid, fiscal_position_id).denom_supplier_id.id
                     res['value'].update({'denomination_id': denom_sup_id})
                 #para las customers invoices
                 else:
-                    pos = pos_pool.search( cr, uid , [('denomination_id','=',denomination_id)], order='priority asc', limit=1 )
+                    pos = pos_pool.search(cr, uid, [('denomination_id', '=', denomination_id)],
+                                          order='priority asc', limit=1)
                     if len(pos):
-                        res['value'].update({'local': fiscal_position.local,
-                                             'denomination_id': denomination_id,
-                                             'pos_ar_id': pos[0]})
+                        res['value'].update(
+                            {
+                                'local': fiscal_position.local,
+                                'denomination_id': denomination_id,
+                                'is_final_consumer': fiscal_position.is_final_consumer,
+                                'pos_ar_id': pos[0],
+                            }
+                        )
+
         return res
 
     def invoice_pay_customer(self, cr, uid, ids, context=None):

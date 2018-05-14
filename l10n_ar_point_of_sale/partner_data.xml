@@ -36,5 +36,12 @@
             <field name="denom_supplier_id" ref="denomination_C"/>
         </record>
 
+        <record id="fiscal_position_final_consumer" model="account.fiscal.position" forcecreate="0">
+            <field name="name">Consumidor Final</field>
+            <field name="denomination_id" ref="denomination_B"/>
+            <field name="denom_supplier_id" ref="denomination_C"/>
+            <field name="is_final_consumer" eval="True"/>
+        </record>
+
     </data>
 </openerp>

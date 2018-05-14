@@ -9,11 +9,24 @@
             <field name="inherit_id" ref="account.view_account_position_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-					<field name="denomination_id" string="Invoice Denomination"/>
-					<field name="denom_supplier_id" string="Supplier Denomination"/>
+                    <field name="denomination_id" string="Invoice Denomination"/>
+                    <field name="denom_supplier_id" string="Supplier Denomination"/>
                     <field name="local"/>
+                    <field name="is_final_consumer"/>
                 </field>
             </field>
         </record>
+
+        <record id="view_partner_contact_vat_form" model="ir.ui.view">
+            <field name="name">res.partner.contact.vat.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base_vat.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="title" position="after">
+                    <field name="contact_vat" attrs="{'invisible' : [('type', '!=', 'contact')]}"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
