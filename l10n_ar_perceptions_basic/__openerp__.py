@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
-    "version": "8.0.1.0.0",
+    "version": "8.0.1.0.1",
     "depends": ["l10n_ar_point_of_sale"],
     "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",

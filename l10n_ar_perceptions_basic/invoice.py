@@ -40,8 +40,8 @@ class perception_tax_line(models.Model):
     tax_code_id = fields.Many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration.")
     tax_amount = fields.Float('Tax Code Amount', digits_compute=dp.get_precision('Account'))
     company_id = fields.Many2one(related='account_id.company_id', string='Company', store=True, readonly=True)
-    partner_id = fields.Many2one(related='invoice_id.partner_id', string='Partner', readonly=True)
-    vat = fields.Char(related='invoice_id.partner_id.vat', string='CIF/NIF', readonly=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', readonly=True)
+    vat = fields.Char(related='partner_id.vat', string='CIF/NIF', readonly=True)
     state_id = fields.Many2one('res.country.state', string="State/Province")
     ait_id = fields.Many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade')
 
