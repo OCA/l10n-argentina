@@ -11,7 +11,7 @@
         <page string="Invoice Lines" position="after">
           <page string="Perceptions">
             <separator string="Applied Perceptions"/>
-            <field name="perception_ids" nolabel="1" colspan="4">
+            <field name="perception_ids" nolabel="1" colspan="4" context="{'default_partner_id': partner_id}">
               <tree string="Perception Lines">
                 <field name="date" />
                 <field name="perception_id" string="Perception Type"/>
@@ -26,6 +26,7 @@
                   <group>
                       <group string="Information" name="info">
                           <field name="name"/>
+                          <field name="partner_id" invisible="1"/>
                           <field name="state_id" />
                           <field name="date" />
                           <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
@@ -54,7 +55,7 @@
         <page string="Invoice" position="after">
           <page string="Perceptions">
             <separator string="Supported Perceptions"/>
-            <field name="perception_ids" nolabel="1" colspan="4">
+            <field name="perception_ids" nolabel="1" colspan="4" context="{'default_partner_id': partner_id}">
               <tree string="Perception Lines">
                 <field name="date" />
                 <field name="perception_id" string="Perception Type"/>
@@ -69,6 +70,7 @@
                   <group>
                       <group string="Information" name="info">
                           <field name="name"/>
+                          <field name="partner_id" invisible="1"/>
                           <field name="state_id" />
                           <field name="date" />
                           <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>

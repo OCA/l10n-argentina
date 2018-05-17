@@ -40,7 +40,7 @@ class perception_tax_line(models.Model):
     tax_code_id = fields.Many2one('account.tax.code', 'Tax Code', help="The tax basis of the tax declaration.")
     tax_amount = fields.Float('Tax Code Amount', digits_compute=dp.get_precision('Account'))
     company_id = fields.Many2one(related='account_id.company_id', string='Company', store=True, readonly=True)
-    partner_id = fields.Many2one('res.partner', string='Partner', readonly=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', required=True)
     vat = fields.Char(related='partner_id.vat', string='CIF/NIF', readonly=True)
     state_id = fields.Many2one('res.country.state', string="State/Province")
     ait_id = fields.Many2one('account.invoice.tax', 'Invoice Tax', ondelete='cascade')
@@ -83,6 +83,20 @@ class account_invoice(models.Model):
     _inherit = 'account.invoice'
 
     perception_ids = fields.One2many('perception.tax.line', 'invoice_id', string='Perception', readonly=True, states={'draft': [('readonly', False)]})
+
+    @api.multi
+    def onchange_partner_id(self, type, partner_id, date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+        """
+        If partner changes set the partner_id for existent perceptions
+        """
+        res = super(account_invoice, self).onchange_partner_id(type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)
+        perception_ids = self.perception_ids.ids
+        if partner_id and perception_ids:
+            upd_lst = []
+            for p in perception_ids:
+                upd_lst.append((1, p, {'partner_id': partner_id}))
+            res['value']['perception_ids'] = upd_lst
+        return res
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
