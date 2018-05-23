@@ -22,7 +22,7 @@
 ##############################################################################
 {
     "name": "Point of Sale ARGENTINA",
-    "version": "8.0.1.1.0",
+    "version": "8.0.1.1.1",
     "depends": ["base", "sale_stock", "sale" ,"purchase", "account" , "account_accountant", "base_vat_ar" ],
     "author": "E-MIPS/Proyecto Aconcagua,Odoo Community Association (OCA)",
     "website": "http://proyectoaconcagua.com.ar",
