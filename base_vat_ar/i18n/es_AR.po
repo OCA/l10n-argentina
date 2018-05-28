@@ -1,0 +1,99 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* base_vat_ar
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-28 19:50+0000\n"
+"PO-Revision-Date: 2018-05-28 19:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_afip_code
+msgid "Afip code"
+msgstr "Código AFIP"
+
+#. module: base_vat_ar
+#: model:ir.model,name:base_vat_ar.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_display_name
+msgid "Display Name"
+msgstr "Mostrar Nombre"
+
+#. module: base_vat_ar
+#: model:ir.ui.view,arch_db:base_vat_ar.view_partner_document_type_form
+msgid "Document Type..."
+msgstr "Tipo de documento..."
+
+#. module: base_vat_ar
+#: model:ir.actions.act_window,name:base_vat_ar.action_res_document_type
+#: model:ir.model,name:base_vat_ar.model_res_document_type
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_name
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_partner_document_type_id
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_users_document_type_id
+#: model:ir.ui.view,arch_db:base_vat_ar.view_res_document_type_form
+#: model:ir.ui.view,arch_db:base_vat_ar.view_res_document_type_tree
+msgid "Document type"
+msgstr "Tipo de documento"
+
+#. module: base_vat_ar
+#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
+msgid "Document types"
+msgstr "Tipos de Documento"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_id
+msgid "ID"
+msgstr "ID"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type___last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_write_uid
+msgid "Last Updated by"
+msgstr "Última actualización realizada por"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: base_vat_ar
+#: code:addons/base_vat_ar/models/partner.py:69
+#, python-format
+msgid "The Vat does not seems to be correct."
+msgstr "The Vat does not seems to be correct."
+
+#. module: base_vat_ar
+#: code:addons/base_vat_ar/models/partner.py:46
+#, python-format
+msgid "There is another partner with same VAT Information"
+msgstr "There is another partner with same VAT Information"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_verification_required
+msgid "Verification required"
+msgstr "Verification required"
