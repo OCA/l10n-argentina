@@ -19,13 +19,16 @@
                         <group>
                             <group>
                                 <field name="name"/>
-                                <field name="denomination_id" select="1"/>
+                                <!-- <field name="denomination_id" select="1"/> -->
                                 <field name="show_in_reports"/>
                             </group>
                             <group>
                                 <field name="priority"/>
                                 <field name="shop_id"/>
                             </group>
+                        </group>
+                        <group string="Available denominations">
+                            <field name="denomination_ids" string="Denominations"/>
                         </group>
                         <group string="Description">
                             <field name="desc" select="1" nolabel="1"/>
@@ -42,7 +45,7 @@
             <field name="arch" type="xml">
                 <tree string="POS AR">
                     <field name="name"/>
-                    <field name="denomination_id"/>
+                    <!-- <field name="denomination_id"/> -->
                     <field name="priority"/>
                     <field name="shop_id"/>
                 </tree>

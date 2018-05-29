@@ -52,17 +52,9 @@ class pos_ar(models.Model):
     priority = fields.Integer(string='Priority', required=True, size=6)
     #'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
     shop_id = fields.Many2one('stock.warehouse', string='Warehouse', required=True)
-    denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
+    # denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
     denomination_ids = fields.Many2many('invoice.denomination', 'posar_denomination_rel', 'pos_ar_id', 'denomination_id', string='Denominations')
     show_in_reports = fields.Boolean('Show in reports?', default=True)
-
-    @api.multi
-    def name_get(self):
-
-        res = []
-        for pos in self:
-            res.append((pos.id, "%s %s" % (pos.denomination_id.name, pos.name)))
-
-        return res
+    active = fields.Boolean('Active')
 
 pos_ar()

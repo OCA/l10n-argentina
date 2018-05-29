@@ -141,6 +141,18 @@ msgid "Description"
 msgstr "Descripción"
 
 #. module: l10n_ar_point_of_sale
+#: field:pos.ar,denomination_ids:0
+#: view:pos.ar:l10n_ar_point_of_sale.pos_ar_view_form
+msgid "Available denominations"
+msgstr "Denominaciones Disponibles"
+
+#. module: l10n_ar_point_of_sale
+#: field:pos.ar,denomination_ids:0
+#: view:pos.ar:l10n_ar_point_of_sale.pos_ar_view_form
+msgid "Denominations"
+msgstr "Denominaciones"
+
+#. module: l10n_ar_point_of_sale
 #: field:invoice.denomination,display_name:0
 #: field:pos.ar,display_name:0
 msgid "Display Name"
