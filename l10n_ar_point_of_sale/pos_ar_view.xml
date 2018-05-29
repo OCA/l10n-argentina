@@ -21,6 +21,7 @@
                                 <field name="name"/>
                                 <!-- <field name="denomination_id" select="1"/> -->
                                 <field name="show_in_reports"/>
+                                <field name="active" />
                             </group>
                             <group>
                                 <field name="priority"/>

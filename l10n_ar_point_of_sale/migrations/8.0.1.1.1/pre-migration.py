@@ -10,6 +10,7 @@ def _do_update(cr, installed_version):
     1. Store relation between pos_ar & denominations
     """
     try:
+        logger.info('Step 1: Back up old pos_ar in table old_denomination')
         q = """
             CREATE TABLE old_denomination(
                 pos_ar_id integer,
@@ -22,6 +23,7 @@ def _do_update(cr, installed_version):
             )
         """
         cr.execute(q)
+        logger.info('Step 2: Insert data in table old_denomination')
         q = """
             WITH q1 AS (
                 SELECT pa.id pos_ar_id, idd.id denomination_id, pa.shop_id,

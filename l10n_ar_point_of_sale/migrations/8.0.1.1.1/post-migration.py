@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 def _do_update(cr, installed_version):
     try:
+        logger.info('Step 1: Iterate in old_denominations to generate new pos_ar or update reference to new one')
         q = """
             SELECT pos_ar_id, pos_ar_name, shop_id FROM old_denomination
         """
@@ -38,7 +39,7 @@ def _do_update(cr, installed_version):
                 q_params = {
                     'shop_id': shop_id,
                     'name': pos_ar_name,
-                    'desc': pos_ar_name + ': A,B'
+                    'desc': pos_ar_name
                 }
                 cr.execute(q, q_params)
                 newid, = cr.fetchone()
@@ -53,6 +54,7 @@ def _do_update(cr, installed_version):
                 }
                 cr.execute(q, q_p)
         # Update invoices with corresponding new pos_ar
+        logger.info('Step 2: Updating old invoices with new pos_ar')
         q = """
             WITH q1 AS (
                 SELECT ai.id,od.new_pos_ar_id
@@ -63,6 +65,7 @@ def _do_update(cr, installed_version):
         """
         cr.execute(q)
         # Relate new pos_ar & with denominations
+        logger.info('Step 3: Relate new pos_ar with denominations previously configured')
         q = """
             WITH qz AS (
                 SELECT new_pos_ar_id pos_ar_id, denomination_id
@@ -72,6 +75,8 @@ def _do_update(cr, installed_version):
         """
         cr.execute(q)
         # Deactivate old pos_ar
+        cr.execute("UPDATE pos_ar SET active=True")
+        logger.info('Step 4: Deactivating old pos_ar. Zero data loss ensured.')
         cr.execute("UPDATE pos_ar SET active=False WHERE id IN (SELECT pos_ar_id FROM old_denomination)")
     except psycopg2.ProgrammingError as e:
         logger.warning(e)
