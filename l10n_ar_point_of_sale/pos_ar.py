@@ -55,6 +55,6 @@ class pos_ar(models.Model):
     # denomination_id = fields.Many2one('invoice.denomination', string='Denomination', required=True)
     denomination_ids = fields.Many2many('invoice.denomination', 'posar_denomination_rel', 'pos_ar_id', 'denomination_id', string='Denominations')
     show_in_reports = fields.Boolean('Show in reports?', default=True)
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
 
 pos_ar()
