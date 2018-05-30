@@ -359,7 +359,6 @@ class invoice(models.Model):
                 fpos_line_data = fpos_pro.read(['name', 'value_reference', 'res_id'])
                 fiscal_position_id = fpos_line_data and fpos_line_data[0].get('value_reference', False) and int(fpos_line_data[0]['value_reference'].split(',')[1]) or False
             fiscal_pool = self.env['account.fiscal.position']
-            pos_pool = self.env['pos.ar']
             if fiscal_position_id:
                 fiscal_position = fiscal_pool.browse(fiscal_position_id)
                 res['value'].update({'fiscal_position': fiscal_position_id})
@@ -373,11 +372,19 @@ class invoice(models.Model):
                     res['value'].update({'denomination_id': denom_sup_id,
                                          'local': fiscal_position.local})
                 else:  # Customer invoice
-                    pos = pos_pool.search([('denomination_id', '=', denomination_id)], order='priority asc', limit=1)
-                    if len(pos):
+                    q = """
+                        SELECT pa.id
+                        FROM pos_ar pa
+                            JOIN posar_denomination_rel pdr ON pa.id=pdr.pos_ar_id
+                        WHERE pdr.denomination_id=%(denomination_id)s ORDER BY priority asc LIMIT 1
+                    """
+                    self._cr.execute(q, {'denomination_id': denomination_id})
+                    pa_id = self._cr.fetchone()
+                    # pos = pos_pool.search([('denomination_id', '=', denomination_id)], order='priority asc', limit=1)
+                    if pa_id:
                         res['value'].update({'local': fiscal_position.local,
                                              'denomination_id': denomination_id,
-                                             'pos_ar_id': pos[0].id})
+                                             'pos_ar_id': pa_id[0]})
 
         else:
             res['value']['local'] = True

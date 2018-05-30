@@ -102,7 +102,7 @@ class account_invoice(models.Model):
             if not denomination_id:
                 raise except_orm(_('Error!'), _('Denomination not set in invoice'))
 
-            if inv.pos_ar_id.denomination_id.id != denomination_id:
+            if denomination_id not in inv.pos_ar_id.denomination_ids.ids:
                 raise except_orm(_('Error!'), _('Point of sale has not the same denomination as the invoice.'))
 
             # Chequeamos que la posicion fiscal y la denomination_id coincidan
