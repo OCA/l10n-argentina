@@ -1,9 +1,7 @@
 ##############################################################################
-
 #   Copyright (c) 2017-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
 #   Copyright (c) 2014-2018 Aconcagua Team
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-
 ##############################################################################
 
 from odoo import api, fields, models, _
@@ -66,7 +64,8 @@ class ResPartner(models.Model):
                 return True
             check = getattr(self, 'check_vat_' + vat_country)
             if not check(vat_number):
-                raise ValidationError(_('The Vat does not seems to be correct.'))
+                raise ValidationError(
+                    _('The Vat does not seems to be correct.'))
         return True
 
     @api.model
@@ -85,11 +84,11 @@ class ResPartner(models.Model):
         except ValueError:
             return False
 
-        l = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
+        check_list = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
 
         var1 = 0
         for i in range(10):
-            var1 = var1 + int(vat[i]) * l[i]
+            var1 = var1 + int(vat[i]) * check_list[i]
         var3 = 11 - var1 % 11
 
         if var3 == 11:
