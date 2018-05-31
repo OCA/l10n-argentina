@@ -21,7 +21,7 @@
 
 {
     "name": "WSFE (Factura Electronica)",
-    "version": "8.0.2.0.0",
+    "version": "8.0.2.0.1",
     "depends": ["base", "account", "base_vat_ar", "l10n_ar_point_of_sale", "l10n_ar_wsaa"],
     "author": "E-MIPS",
     "website": "http://e-mips.com.ar",
