@@ -4,7 +4,6 @@ import time
 import sys
 import email
 import urllib2
-from M2Crypto import BIO, SMIME
 from suds.client import Client
 from xml.sax import SAXParseException
 import logging
@@ -19,6 +18,10 @@ logger.setLevel(logging.DEBUG)
 #streamH.setFormatter(formatter)
 #logger.addHandler(streamH)
 
+try:
+    from M2Crypto import BIO, SMIME
+except ImportError as e:
+    logger.warning("Cannot import BIO & SMIME from M2Crypto: %s" % e)
 
 class WSAA:
     def __init__(self, cert, private_key, wsaaurl, service, tz):
