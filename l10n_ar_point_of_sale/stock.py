@@ -46,7 +46,7 @@ class stock_picking(models.Model):
         pos_ar_id = None
         if inv_type in ('out_invoice', 'out_refund'):
             denomination_id = reads['denomination_id'][0]
-            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', move.warehouse_id.id), ('denomination_id', '=', denomination_id)])
+            res_pos = pos_ar_obj.search(cr, uid,[('shop_id', '=', move.warehouse_id.id), ('denomination_ids', 'in', denomination_id)])
             if not res_pos:
                 raise osv.except_osv( _('Error'),
                                    _('You need to set up a Point of Sale in your Warehouse')) 
