@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- ASUSTek Supplier -->
+        <record id="base.res_partner_1" model="res.partner">
+            <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
+            <field name="property_account_position" ref="l10n_ar_point_of_sale.fiscal_position_mono"/>
+            <field name="document_type_id" ref="base_vat_ar.document_cuil"/>
+            <field name="vat">30710981295</field>
+        </record>
+
+        <!-- China Export Supplier -->
+        <record id="base.res_partner_3" model="res.partner">
+            <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
+            <field name="property_account_position" ref="l10n_ar_point_of_sale.fiscal_position_ri"/>
+            <field name="document_type_id" ref="base_vat_ar.document_cuit"/>
+            <field name="vat">30590360763</field>
+        </record>
+
+        <!-- Agrolait Customer -->
+        <record id="base.res_partner_2" model="res.partner">
+            <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
+            <field name="property_account_position" ref="l10n_ar_point_of_sale.fiscal_position_ri"/>
+            <field name="document_type_id" ref="base_vat_ar.document_cuit"/>
+            <field name="vat">33703122219</field>
+        </record>
+
+        <!-- Phillipp Miller of Mediapole Customer 
+        <record id="base.res_partner_address_15" model="res.partner">
+            <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
+            <field name="property_account_position" ref="l10n_ar_point_of_sale.fiscal_position_mono"/>
+            <field name="document_type_id" ref="base_vat_ar.document_dni"/>
+            <field name="vat">20874831</field>
+        </record>
+-->
+
+        <!-- Mediapole Customer 
+        <record id="base.res_partner_8" model="res.partner">
+            <field model="res.country" name="country_id" search="[('name','=','Argentina')]"/>
+            <field name="property_account_position" ref="l10n_ar_point_of_sale.fiscal_position_mono"/>
+            <field name="document_type_id" ref="base_vat_ar.document_cuit"/>
+            <field name="vat">30710981295</field>
+        </record>-->
+
+        <!-- Puntos de Ventas -->
+        <record id="point_of_sale_0001A" model="pos.ar">
+            <field name="name">0001</field>
+            <field name="desc">A0001</field>
+            <field name="priority">10</field>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
+            <field name="denomination_id" ref="denomination_A"/>
+        </record>
+
+        <record id="point_of_sale_0001B" model="pos.ar">
+            <field name="name">0001</field>
+            <field name="desc">B0001</field>
+            <field name="priority">10</field>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
+            <field name="denomination_id" ref="denomination_B"/>
+        </record>
+
+        <record id="base.main_company" model="res.company">
+            <field name="currency_id" ref="base.ARS"/>
+        </record>
+
+    </data>
+</openerp>

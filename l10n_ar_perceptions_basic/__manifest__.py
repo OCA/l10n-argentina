@@ -21,17 +21,27 @@
 ###############################################################################
 
 {
-    "name": "Base VAT Ar",
-    "version": "11.0.1.0.0",
-    "depends": ["base", "base_vat"],
-    "author": "Eynes, E-MIPS, Odoo Community Association (OCA)",
-    "category": "VAT Modules",
-    "description": "This module provides VAT Check for Argentina.",
-    "data": [
-        'views/partner_view.xml',
-        'data/partner_data.xml',
-        'security/ir.model.access.csv',
+    "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
+    "version": "8.0.1.0.1",
+    "depends": ["l10n_ar_point_of_sale"],
+    "author": "E-MIPS,Odoo Community Association (OCA)",
+    "website": "http://e-mips.com.ar",
+    "license": "GPL-3",
+    "category": "Localisation Modules",
+    "description": """
+    This module provide :
+    1) Implementation of Perceptions Taxes for Argentina
+       based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
+    """,
+    "init_xml": [
+        # "perception_data.xml",
     ],
-    "installable": True,
-    "active": False,
+    'data': [
+        # 'security/ir.model.access.csv',
+        'views/perception_view.xml',
+        'views/account_invoice_view.xml',
+    ],
+    'demo_xml': [],
+    'installable': True,
+    'active': False,
 }

@@ -1,0 +1,13 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_pos_ar_user","pos.ar user","l10n_ar_point_of_sale.model_pos_ar","base.group_user",1,0,0,0
+"access_pos_ar_sale_user","pos.ar sale_user","l10n_ar_point_of_sale.model_pos_ar","base.group_sale_salesman",1,0,0,0
+"access_pos_ar_sale_manager","pos.ar sale_manager","l10n_ar_point_of_sale.model_pos_ar","base.group_sale_manager",1,1,1,0
+"access_pos_ar_account_accountant","pos.ar account_accountant","l10n_ar_point_of_sale.model_pos_ar","account.group_account_user",1,1,0,0
+"access_pos_ar_account_invoice","pos.ar account_invoice","l10n_ar_point_of_sale.model_pos_ar","account.group_account_invoice",1,1,1,1
+"access_pos_ar_account_manager","pos.ar account_manager","l10n_ar_point_of_sale.model_pos_ar","account.group_account_manager",1,1,1,1
+"access_denomination_user","invoice.denomination user","l10n_ar_point_of_sale.model_invoice_denomination","base.group_user",1,0,0,0
+"access_denomination_sale_user","invoice.denomination sale_user","l10n_ar_point_of_sale.model_invoice_denomination","base.group_sale_salesman",1,0,0,0
+"access_denomination_sale_manager","invoice.denomination sale_manager","l10n_ar_point_of_sale.model_invoice_denomination","base.group_sale_manager",1,1,1,0
+"access_denomination_account_accountant","invoice.denomination account_accountant","l10n_ar_point_of_sale.model_invoice_denomination","account.group_account_user",1,1,0,0
+"access_denomination_account_invoice","invoice.denomination account_invoice","l10n_ar_point_of_sale.model_invoice_denomination","account.group_account_invoice",1,1,1,1
+"access_denomination_account_manager","invoice.denomination account_manager","l10n_ar_point_of_sale.model_invoice_denomination","account.group_account_manager",1,1,1,1

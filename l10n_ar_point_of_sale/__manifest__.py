@@ -19,19 +19,36 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-
 {
-    "name": "Base VAT Ar",
+    "name": "Point of Sale ARGENTINA",
     "version": "11.0.1.0.0",
-    "depends": ["base", "base_vat"],
-    "author": "Eynes, E-MIPS, Odoo Community Association (OCA)",
-    "category": "VAT Modules",
-    "description": "This module provides VAT Check for Argentina.",
-    "data": [
-        'views/partner_view.xml',
-        'data/partner_data.xml',
-        'security/ir.model.access.csv',
+    "depends": [
+        "base",
+        "sale_stock",
+        "sale",
+        "purchase",
+        "account",
+        "base_vat_ar"
     ],
-    "installable": True,
-    "active": False,
+    "author": "Eynes, E-MIPS, Proyecto Aconcagua, \
+        Odoo Community Association (OCA)",
+    "license": "GPL-3",
+    "category": "Aconcagua",
+    "description": """
+    Modulo base para normativas de facturacion Argentina
+    """,
+    "data": [
+        'data/partner_data.xml',
+        'views/pos_ar_view.xml',
+        # 'views/sale_view.xml',
+        'views/account_invoice_view.xml',
+        'views/partner_view.xml',
+        'views/account_view.xml',
+        # 'security/ir.model.access.csv',
+    ],
+    'test': [
+        # 'test/denomination_invoice.yml',
+    ],
+    'installable': True,
+    'active': False,
 }
