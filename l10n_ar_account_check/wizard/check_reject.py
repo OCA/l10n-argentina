@@ -194,3 +194,28 @@ class check_reject_expense(osv.osv_memory):
     }
 
 check_reject_expense()
+
+class check_reject_issued_check(osv.osv_memory):
+    _name = 'check.reject.issued.check'
+
+    _columns = {
+        'reject_date': fields.date('Reject Date', required=True),
+        'note': fields.text('Note')
+    }
+
+
+    def action_reject(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+
+        issued_check_obj = self.pool.get('account.issued.check')
+
+        record_ids = context.get('active_ids', [])
+        check_objs = issued_check_obj.browse(cr, uid, record_ids, context=context)
+        wizard = self.browse(cr, uid, ids[0], context=context)
+
+        for check in check_objs:
+            check.write({'reject_date': wizard.reject_date, 'note': wizard.note})
+            issued_check_obj.reject_check(cr, uid, [check.id], context=context)
+
+        return {'type': 'ir.actions.act_window_close'}

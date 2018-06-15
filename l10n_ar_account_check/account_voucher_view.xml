@@ -40,6 +40,8 @@
                                         <field name="signatory"/>
                                         <field name="origin"/>
                                         <field name="state" invisible="1"/>
+										<field name="crossed"/>
+										<field name="not_order"/>
                                     </group>
                                 </group>
                                 <field name="receiving_partner_id" invisible="1"/>
@@ -95,6 +97,8 @@
                                         <field name="type"/>
                                         <field name="amount"/>
                                         <field name="bank_id"/>
+										<field name="crossed"/>
+										<field name="not_order"/>
                                     </group>
                                     <group>
                                         <field name="receipt_date"/>

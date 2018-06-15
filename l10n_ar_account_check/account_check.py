@@ -70,6 +70,7 @@ class account_issued_check(models.Model):
     amount = fields.Float('Amount Check', required=True)
     issue_date = fields.Date('Issue Date')
     payment_date = fields.Date('Payment Date', help="Only if this check is post dated")
+    reject_date = fields.Date('Reject Date')
     receiving_partner_id = fields.Many2one('res.partner', 'Receiving Entity', required=False, readonly=True)
     bank_id = fields.Many2one('res.bank', 'Bank', required=True)
     signatory = fields.Char('Signatory', size=64)
@@ -80,6 +81,11 @@ class account_issued_check(models.Model):
     clearance_move_id = fields.Many2one('account.move', 'Clearance Account Move')
     accredited = fields.Boolean('Accredited', compute='_compute_accredit_state')
     origin = fields.Char('Origin', size=64)
+    crossed = fields.Boolean('Crossed')
+    not_order = fields.Boolean('Not Order')
+    note = fields.Text("Note")
+
+
     type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Check Type', default='common', help="If common, checks only have issued_date. If post-dated they also have payment date")
     company_id = fields.Many2one('res.company', 'Company', required=True, readonly=True, default=lambda self: self.env.user.company_id.id)
     state = fields.Selection(
@@ -88,6 +94,7 @@ class account_issued_check(models.Model):
             ('waiting', 'Waiting Accreditation'),
             ('issued', 'Issued'),
             ('cancel', 'Cancelled'),
+            ('rejected', 'Rejected')
         ],
         'State',
         default='draft',
@@ -280,6 +287,13 @@ class account_issued_check(models.Model):
             check.clearance_move_id.button_cancel()
             check.clearance_move_id.unlink()
             check.write({'state': 'waiting'})
+
+    @api.multi
+    def reject_check(self):
+        self.write({
+            'state': 'rejected',
+        })
+        return True
 
 
 account_issued_check()
