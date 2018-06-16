@@ -30,7 +30,7 @@
     Allows to manage checks
     """,
     'category': 'Generic Modules/Accounting',
-    'website': 'http://www.e-mips.com.ar http://www.eynes.com.ar',
+    'website': 'https://github.com/OCA/l10n-argentina',
     'depends': [
         'account',
         'account_voucher',
