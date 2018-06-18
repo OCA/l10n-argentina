@@ -201,8 +201,9 @@ class invoice(models.Model):
             if not self.pos_ar_id:
                 raise ValidationError(_('You have to select a Point of Sale.'))
 
-            if self.pos_ar_id.denomination_id.id != denomination_id:
-                raise ValidationError(_('Point of sale has not the same denomination as the invoice.'))
+            if denomination_id not in self.pos_ar_id.denomination_ids.ids:
+                err = _('Point of sale has not the same denomination as the invoice.')
+                raise ValidationError(err)
 
             # Chequeamos que la posicion fiscal y la denomination_id coincidan
             if self.fiscal_position.denomination_id.id != denomination_id:
