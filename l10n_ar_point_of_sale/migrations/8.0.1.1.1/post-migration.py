@@ -71,7 +71,7 @@ def _do_update(cr, installed_version):
                 SELECT new_pos_ar_id pos_ar_id, denomination_id
                 FROM old_denomination
             ) INSERT INTO posar_denomination_rel (pos_ar_id, denomination_id)
-            SELECT pos_ar_id, denomination_id FROM qz;
+            SELECT pos_ar_id, denomination_id FROM qz GROUP BY pos_ar_id, denomination_id;
         """
         cr.execute(q)
         # Deactivate old pos_ar
