@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- res.config form view -->
+        <record model="ir.ui.view" id="view_account_payment_settings_config_form">
+            <field name="name">account.payment.settings.config.inherit</field>
+            <field name="inherit_id" ref="account.view_account_config_settings"/>
+            <field name="model">account.config.settings</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//form/group/div//field[@name='module_account_followup']/.." position="after">
+                    <div>
+                        <field name="group_disable_auto_impute_receipts" class="oe_inline"/>
+                        <label for="group_disable_auto_impute_receipts"/>
+                        <field name="group_disable_auto_impute_payments" class="oe_inline"/>
+                        <label for="group_disable_auto_impute_payments"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>
+

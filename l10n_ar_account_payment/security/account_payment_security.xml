@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="group_disable_auto_impute_receipts" model="res.groups">
+            <field name="name">Disable Auto Impute Receipt Vouchers</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <record id="group_disable_auto_impute_payments" model="res.groups">
+            <field name="name">Disable Auto Impute Payment Vouchers</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+    </data>
+</openerp>
