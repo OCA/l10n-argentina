@@ -26,10 +26,10 @@ from datetime import date, timedelta
 import time
 
 class account_bank_statement_line(osv.osv):
-    
+
     def _check_amount(self, cr, uid, ids, context=None):
         return True
-        
+
     _inherit = "account.bank.statement.line"
     _columns = {
         'payment_date': fields.date('Payment date'),
@@ -46,15 +46,15 @@ class account_bank_statement_line(osv.osv):
 
     def button_conciliated_bank_statement_line(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state':'open'}, context=context)
-    
+
     def unlink(self, cr, uid, ids, context=None):
         if context is None:
             st_lines = False
             journal_type = False
-        else:           
+        else:
             st_lines = context.get('st_lines',False)
             journal_type = context.get('journal_type',False)
-            
+
         if st_lines and st_lines in 'remove':
             for id in ids:
                 sql = 'delete from account_bank_statement_line where id = ' + str(id)
@@ -78,7 +78,7 @@ class account_bank_statement_line(osv.osv):
                     return {}
                 else:
                     t = self.browse(cr, uid, ids, context=context)
-                    
+
                     if t:
                         if t.creation_type not in 'manual':
                             raise osv.except_osv(_('Invalid action !'), _('Cannot delete Account Bank Statement Line(s) which are not manual type!'))
@@ -91,7 +91,7 @@ class account_bank_statement_line(osv.osv):
 
 class account_bank_statement(osv.osv):
     _inherit = "account.bank.statement"
-    
+
     def button_confirm_bank(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -99,7 +99,7 @@ class account_bank_statement(osv.osv):
             j_type = st.journal_id.type
             if not self.check_status_condition(cr, uid, st.state, journal_type=j_type):
                 continue
-            
+
             if (not st.journal_id.default_credit_account_id) \
                     or (not st.journal_id.default_debit_account_id):
                 raise osv.except_osv(_('Configuration Error!'), _('Please verify that an account is defined in the journal.'))
@@ -108,6 +108,9 @@ class account_bank_statement(osv.osv):
                     raise osv.except_osv(_('Error!'), _('The account entries lines are not in valid state.'))
             move_ids = []
             for st_line in st.line_ids:
+                # Si la absl no tiene journal falla al cerrar
+                if not st_line.journal_id:
+                    self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'journal_id': st.journal_id.id})
                 #~ escribo el movimiento como conciliado
                 if st_line.state in 'draft':
                     self.pool.get('account.bank.statement.line').write(cr, uid, st_line.id, {'statement_id': ''})
@@ -137,37 +140,37 @@ class account_bank_statement(osv.osv):
             if move_ids:
                 self.pool.get('account.move').post(cr, uid, move_ids, context=context)
             self.message_post(cr, uid, [st.id], body=_('Statement %s confirmed, journal items were created.') % (st.name,), context=context)
-            
+
             lines_to_statement = [(4, lid.id) for lid in st.line_ids]
             self.write(cr, uid, ids, {'line_ids':lines_to_statement})
-            
+
             self.balance_check(cr, uid, st.id, journal_type=j_type, context=context)
-                        
+
         self.link_bank_to_partner(cr, uid, ids, context=context)
         return self.write(cr, uid, ids, {'state': 'confirm', 'closing_date': time.strftime("%Y-%m-%d %H:%M:%S")}, context=context)
-            
+
 account_bank_statement()
 
 class account_check_deposit(osv.osv_memory):
     _inherit = 'account.check.deposit'
-    
+
     def action_deposit(self, cr, uid, ids, context=None):
         third_check_obj = self.pool.get('account.third.check')
-        
+
         aux = super(account_check_deposit, self).action_deposit(cr, uid, ids, context)
         record_ids = context.get('active_ids', [])
-        
+
         check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
 
         for check in check_objs:
-            
+
             if check.type in 'common':
                 aux_payment_date = check.issue_date
             elif check.payment_date:
                 aux_payment_date = check.payment_date
             else:
                 aux_payment_date = check.deposit_date
-                
+
             if check.clearing in '24':
                 aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
             elif check.clearing in '48':
@@ -192,32 +195,32 @@ class account_check_deposit(osv.osv_memory):
             }
 
             st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
-            
+
         return True
-        
+
 account_check_deposit()
 
 class account_check_reject(osv.osv_memory):
     _inherit = 'account.check.reject'
-    
+
     def action_reject(self, cr, uid, ids, context=None):
         third_check_obj = self.pool.get('account.third.check')
-        
+
         aux = super(account_check_reject, self).action_reject(cr, uid, ids, context)
         record_ids = context.get('active_ids', [])
-        
+
         check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
 
         for check in check_objs:
             print check
-            
+
             if check.type in 'common':
                 aux_payment_date = check.issue_date
             elif check.payment_date:
                 aux_payment_date = check.payment_date
             else:
                 aux_payment_date = check.deposit_date
-                
+
             if check.clearing in '24':
                 aux_payment_date = date(int(aux_payment_date[0:4]),int(aux_payment_date[5:7]),int(aux_payment_date[8:10])) + timedelta(days=1)
             elif check.clearing in '48':
@@ -242,7 +245,7 @@ class account_check_reject(osv.osv_memory):
             }
 
             st_id = self.pool.get('account.bank.statement.line').create(cr, uid, st_line, context)
-            
+
         return True
-        
+
 account_check_reject()
