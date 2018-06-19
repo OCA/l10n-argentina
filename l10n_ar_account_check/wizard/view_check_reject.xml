@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <record model="ir.ui.view" id="account.check_reject_form_view">
+        <record model="ir.ui.view" id="account.check_reject_third_form_view">
             <field name="name">account.check.reject.wizard.form</field>
             <field name="model">account.check.reject</field>
             <field name="type">form</field>
@@ -43,7 +43,7 @@
             id="action_check_reject"/>
 
 
-        <record model="ir.ui.view" id="account.check_reject_form_view">
+        <record model="ir.ui.view" id="account.check_reject_issued_form_view">
             <field name="name">check.reject.issued.check.wizard.form</field>
             <field name="model">check.reject.issued.check</field>
             <field name="type">form</field>
