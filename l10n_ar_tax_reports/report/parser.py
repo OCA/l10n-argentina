@@ -259,10 +259,7 @@ class Parser(report_sxw.rml_parse):
             type = "NC"
 
         # TODO: Habria que ver si son comprobantes de Clientes o Proveedores, en lugar de mirar por los campos.
-        if inv.pos_ar_id and inv.pos_ar_id.denomination_ids:
-            denomination = inv.pos_ar_id.denomination_ids[0].name
-        elif inv.denomination_id:
-            denomination = inv.denomination_id.name
+        denomination = inv.denomination_id and inv.denomination_id.name or ''
 
         return '%s %s' % (type, denomination)
 
