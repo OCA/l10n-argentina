@@ -42,4 +42,5 @@ class PerceptionPerception(models.Model):
                                      ('provincial', 'Provincial'),
                                      ('municipal', 'Municipal')
                                      ], 'Jurisdiccion', default='nacional')
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    account_analytic_id = fields.Many2one('account.analytic.account',
+                                          string='Analytic Account')

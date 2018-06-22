@@ -66,7 +66,8 @@ class ResPartner(models.Model):
                 return True
             check = getattr(self, 'check_vat_' + vat_country)
             if not check(vat_number):
-                raise ValidationError(_('The Vat does not seems to be correct.'))
+                raise ValidationError(
+                    _('The Vat does not seems to be correct.'))
         return True
 
     @api.model

@@ -12,7 +12,6 @@ class SaleOrderLineMakeInvoice(models.TransientModel):
     _inherit = "sale.order.line.make.invoice"
 
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
-        __import__('ipdb').set_trace()
         order_obj = self.pool.get('sale.order')
         res = super(SaleOrderLineMakeInvoice, self)._prepare_invoice(
             cr, uid, order, lines, context=context)

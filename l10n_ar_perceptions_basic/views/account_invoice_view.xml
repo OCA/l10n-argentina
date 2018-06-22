@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
   <data>
 
     <record id="view_invoice_perception_form" model="ir.ui.view">
@@ -8,8 +8,10 @@
       <field name="type">form</field>
       <field name="inherit_id" ref="account.invoice_form"/>
       <field name="arch" type="xml">
-        <xpath expr="//notebook/page[@name='other_info']" position="before">
-          <page string="Perceptions">
+        <xpath expr="//notebook/page[@name='taxes']" position="attributes">
+          <attribute name="string">Taxes/Perceptions</attribute>
+        </xpath>
+        <xpath expr="//notebook/page[@name='taxes']/field[@name='tax_line_ids']" position="after">
             <separator string="Applied Perceptions"/>
             <field name="perception_ids" nolabel="1" colspan="4" context="{'default_partner_id': partner_id}">
               <tree string="Perception Lines">
@@ -19,7 +21,7 @@
                 <field name="amount" />
                 <field name="state_id" />
               </tree>
-              <form string="Perception Lines" version="7.0">
+              <form string="Perception Lines">
                   <h1>
                       <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'sale')]" />
                   </h1>
@@ -41,7 +43,6 @@
                   </group>
               </form>
             </field>
-          </page>
         </xpath>
       </field>
     </record>
@@ -52,8 +53,10 @@
       <field name="type">form</field>
       <field name="inherit_id" ref="account.invoice_supplier_form"/>
       <field name="arch" type="xml">
-        <xpath expr="//notebook/page[@name='other_info']" position="before">
-          <page string="Perceptions">
+        <xpath expr="//notebook/page[@name='taxes']" position="attributes">
+          <attribute name="string">Taxes/Perceptions</attribute>
+        </xpath>
+        <xpath expr="//notebook/page[@name='taxes']/field[@name='tax_line_ids']" position="after">
             <separator string="Supported Perceptions"/>
             <field name="perception_ids" nolabel="1" colspan="4" context="{'default_partner_id': partner_id}">
               <tree string="Perception Lines">
@@ -63,7 +66,7 @@
                 <field name="amount" />
                 <field name="state_id" />
               </tree>
-              <form string="Perception Lines" version="7.0">
+              <form string="Perception Lines">
                   <h1>
                       <field name="perception_id" class="oe_inline" domain="[('type_tax_use', '=', 'purchase')]" />
                   </h1>
@@ -85,9 +88,8 @@
                   </group>
               </form>
             </field>
-          </page>
         </xpath>
       </field>
     </record>
   </data>
-</openerp>
+</odoo>
