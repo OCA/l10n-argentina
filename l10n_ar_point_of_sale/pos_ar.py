@@ -57,4 +57,12 @@ class pos_ar(models.Model):
     show_in_reports = fields.Boolean('Show in reports?', default=True)
     active = fields.Boolean('Active', default=True)
 
+    @api.multi
+    def name_get(self):
+        result = []
+        for pa in self:
+            name = '%s [%s]' % (pa.name, pa.shop_id.name)
+            result.append((pa.id, name))
+        return result
+
 pos_ar()
