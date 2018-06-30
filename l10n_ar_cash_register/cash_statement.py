@@ -27,10 +27,10 @@ from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 
 class account_bank_statement(osv.osv):
-    
+
     _name = "account.bank.statement"
     _inherit = "account.bank.statement"
-    
+
     def _all_lines_reconciled(self, cr, uid, ids, name, args, context=None):
         res = {}
         for statement in self.browse(cr, uid, ids, context=context):
@@ -74,7 +74,7 @@ class account_bank_statement(osv.osv):
                         'name': st_line.name,
                         'analytic_account_id': st_line.analytic_id and st_line.analytic_id.id
                     }
-                        
+
                     self.pool.get('account.bank.statement.line').process_reconciliation(cr, uid, st_line.id, [vals], context=context)
                 elif not st_line.journal_entry_id.id:
                     raise osv.except_osv(_('Error!'), _('All the account entries lines must be processed in order to close the statement.'))
@@ -122,12 +122,12 @@ class account_bank_statement(osv.osv):
                 'currency_id': amount_currency and cur_id,
                 'amount_currency': amount_currency,
         }
-            
+
         return vals
 
 
 class account_cash_statement(osv.osv):
-    
+
     _inherit = "account.bank.statement"
 
     def _update_balances(self, cr, uid, ids, context=None):
@@ -155,7 +155,7 @@ class account_cash_statement(osv.osv):
             super(account_cash_statement, self).write(cr, uid, [statement.id], data, context=context)
         return res
 
-    
+
     def button_confirm_cash(self, cr, uid, ids, context=None):
         absl_proxy = self.pool.get('account.bank.statement.line')
 
@@ -187,17 +187,17 @@ class account_cash_statement(osv.osv):
             absl_proxy.create(cr, uid, values, context=context)
 
         return super(account_cash_statement, self).button_confirm_bank(cr, uid, ids, context=context)
-        
+
 account_cash_statement()
 
 class account_bank_statement_line(osv.osv):
-    
+
     def _check_amount(self, cr, uid, ids, context=None):
         return True
-        
+
     _name = "account.bank.statement.line"
     _inherit = "account.bank.statement.line"
-    
+
     _columns = {
         'statement_id': fields.many2one('account.bank.statement', 'Statement',
             select=True, ondelete='cascade'),
@@ -221,17 +221,18 @@ class account_bank_statement_line(osv.osv):
         'analytic_id': fields.many2one('account.analytic.account', 'Analytic account'),
         'concept_id': fields.many2one('cash.statement.line.type', 'Concept'),
     }
-    
+
     _defaults = {
         'state': 'draft',
         'creation_type': 'manual',
-        'bank_statement': False
+        'bank_statement': False,
+        'type': 'general',
     }
 
     _constraints = [
         (_check_amount, 'The amount of the voucher must be the same amount as the one on the statement line', ['amount']),
     ]
-    
+
     def bank_line_on_change_amount(self, cr, uid, ids, type, amount, context=None):
         """
         Force withdrawal movements to be negative and deposit ones to
@@ -252,9 +253,9 @@ class account_bank_statement_line(osv.osv):
 #        return super(account_bank_statement_line, self).unlink(cr, uid, ids, context)
 
 account_bank_statement_line()
-    
+
 class cash_statement_line_type(osv.osv):
-    
+
     _name = 'cash.statement.line.type'
 
     _columns = {
