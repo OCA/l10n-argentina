@@ -32,7 +32,7 @@ class sale_order(models.Model):
     @api.model
     def _get_pos_ar(self, order, denom):
         pos_ar_obj = self.env['pos.ar']
-        res_pos = pos_ar_obj.search([('shop_id', '=', order.warehouse_id.id), ('denomination_id', '=', denom.id)], limit=1)
+        res_pos = pos_ar_obj.search([('shop_id', '=', order.warehouse_id.id), ('denomination_ids', 'in', denom.id)], limit=1)
         if not len(res_pos):
             raise osv.except_osv(_('Error'),
                                  _('You need to set up a Shop and/or a Fiscal Position'))
