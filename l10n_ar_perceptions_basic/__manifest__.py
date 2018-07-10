@@ -38,6 +38,7 @@
     ],
     'data': [
         # 'security/ir.model.access.csv',
+        'data/account_data.xml',
         'views/perception_view.xml',
         'views/account_invoice_view.xml',
     ],
