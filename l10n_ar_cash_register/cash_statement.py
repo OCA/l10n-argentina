@@ -23,6 +23,7 @@
 import time
 
 from openerp.osv import fields, osv
+from openerp import api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 
@@ -232,6 +233,15 @@ class account_bank_statement_line(osv.osv):
     _constraints = [
         (_check_amount, 'The amount of the voucher must be the same amount as the one on the statement line', ['amount']),
     ]
+
+    @api.model
+    def default_get(self, fields):
+        res = super(account_bank_statement_line, self).default_get(fields)
+        type_in_fields = 'type' in res
+        po_in_ctx = 'pos_order' in self._context  # set in pos_improvements
+        if type_in_fields and po_in_ctx:
+            res['type'] = 'income'  # we need the pos absl to do accounting
+        return res
 
     def bank_line_on_change_amount(self, cr, uid, ids, type, amount, context=None):
         """
