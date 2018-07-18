@@ -37,6 +37,7 @@
         'views/partner_view.xml',
         'views/res_city_view.xml',
         'wizard/wizard_install_argentinean_cities_view.xml',
+        'security/ir.model.access.csv',
     ],
     'demo_xml': [],
     'installable': True,
