@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_city_all,access_res_city_all,l10n_ar_base_country_state.model_res_city,base.group_sale_salesman,1,1,0,0
+access_res_city_manager,access_res_city_manager,l10n_ar_base_country_state.model_res_city,base.group_sale_manager,1,1,0,0
+access_res_city_admin,access_res_city_admin,l10n_ar_base_country_state.model_res_city,base.group_system,1,1,1,1
