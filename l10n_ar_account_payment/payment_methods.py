@@ -41,10 +41,16 @@ class payment_mode_receipt_line(osv.osv):
     payment_mode_id = fields.Many2one('account.journal', 'Payment Method', required=False, domain=[('type', 'in', ['cash', 'bank'])])
     amount = fields.Float('Amount', digits=(16, 2), default=0.0, required=False, help='Payment amount in the company currency')
     amount_currency = fields.Float('Amount in Partner Currency', digits=(16, 2), required=False, help='Payment amount in the partner currency')
-    currency = fields.Many2one('res.currency', related='payment_mode_id.currency', string='Currency', store=True)
+    currency = fields.Many2one('res.currency', string='Currency', compute='_compute_currency', store=True)
     company_currency = fields.Many2one('res.currency', 'Company Currency', readonly=False, default=_get_company_currency)
     date = fields.Date('Payment Date', help="This date is informative only.")
     move_line_id = fields.Many2one('account.move.line', 'Entry line', domain=[('reconcile_id', '=', False), ('account_id.type', '=', 'payable')], help='This Entry Line will be referred for the information of the ordering customer.')
     voucher_id = fields.Many2one('account.voucher', 'Voucher')
+
+    @api.depends('payment_mode_id')
+    def _compute_currency(self):
+        for i in self:
+            i.currency = i.payment_mode_id.currency.id
+
 
 payment_mode_receipt_line()
