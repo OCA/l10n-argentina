@@ -19,4 +19,13 @@
 #
 ##############################################################################
 
-from . import models  # noqa
+from openerp import fields, models
+
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    def _get_default_lang(self):
+        return self.env.user.lang
+
+    lang = fields.Selection(default=_get_default_lang)
