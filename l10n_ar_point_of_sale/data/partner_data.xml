@@ -18,10 +18,32 @@
             <field name="desc">Denominacion C</field>
         </record>
 
+        <record id="denomination_E" model="invoice.denomination" forcecreate="0">
+            <field name="name">E</field>
+            <field name="desc">Denominacion E</field>
+        </record>
+
+        <record id="denomination_M" model="invoice.denomination" forcecreate="0">
+            <field name="name">M</field>
+            <field name="desc">Denominacion M</field>
+        </record>
+
         <record id="fiscal_position_ri" model="account.fiscal.position" forcecreate="0">
             <field name="name">RI</field>
             <field name="denomination_id" ref="denomination_A"/>
             <field name="denom_supplier_id" ref="denomination_A"/>
+        </record>
+
+        <record id="fiscal_position_rim" model="account.fiscal.position" forcecreate="0">
+            <field name="name">RIM</field>
+            <field name="denomination_id" ref="denomination_M"/>
+            <field name="denom_supplier_id" ref="denomination_M"/>
+        </record>
+
+        <record id="fiscal_position_exterior" model="account.fiscal.position" forcecreate="0">
+            <field name="name">Exterior</field>
+            <field name="denomination_id" ref="denomination_E"/>
+            <field name="denom_supplier_id" ref="denomination_E"/>
         </record>
 
         <record id="fiscal_position_mono" model="account.fiscal.position" forcecreate="0">
