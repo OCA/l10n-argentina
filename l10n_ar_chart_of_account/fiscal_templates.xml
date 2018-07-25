@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="fp_ri" model="account.fiscal.position.template">
+            <field name="name">Responsable Inscripto</field>
+            <field name="chart_template_id" ref="chart_ar_template"/>
+        </record>
+
+        <record id="fp_mono" model="account.fiscal.position.template">
+            <field name="name">Monotributo</field>
+            <field name="chart_template_id" ref="chart_ar_template"/>
+        </record>
+
+        <record id="fp_exento" model="account.fiscal.position.template">
+            <field name="name">Exento</field>
+            <field name="chart_template_id" ref="chart_ar_template"/>
+        </record>
+
+    </data>
+</openerp>
