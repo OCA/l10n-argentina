@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+        <record id="view_account_payment_order_form_inherit" model="ir.ui.view">
+            <field name="name">account.payment.order.form.inherit</field>
+            <field name="model">account.payment.order</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="period_id"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

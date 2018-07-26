@@ -65,7 +65,7 @@ class perception_tax_line(models.Model):
     # TODO: Tal vaz haya que ponerle estados a este objeto
     # para manejar tambien propiedades segun estados
     name = fields.Char('Perception', required=True, size=64)
-    date = fields.Date('Date', select=True)
+    date = fields.Date('Date', index=True)
     invoice_id = fields.Many2one('account.invoice', 'Invoice',
                                  ondelete='cascade')
     account_id = fields.Many2one('account.account',
@@ -74,8 +74,8 @@ class perception_tax_line(models.Model):
                                  domain=[('type', '<>', 'view'),
                                          ('type', '<>', 'income'),
                                          ('type', '<>', 'closed')])
-    base = fields.Float('Base', digits_compute=dp.get_precision('Account'))
-    amount = fields.Float('Amount', digits_compute=dp.get_precision('Account'))
+    base = fields.Float('Base', digits=dp.get_precision('Account'))
+    amount = fields.Float('Amount', digits=dp.get_precision('Account'))
     perception_id = fields.Many2one('perception.perception',
                                     string='Perception Configuration',
                                     required=True,
@@ -87,12 +87,12 @@ class perception_tax_line(models.Model):
         'account.tax.code', 'Base Code',
         help="The account basis of the tax declaration.")
     base_amount = fields.Float('Base Code Amount',
-                               digits_compute=dp.get_precision('Account'))
+                               digits=dp.get_precision('Account'))
     tax_code_id = fields.Many2one('account.tax.code',
                                   string='Tax Code',
                                   help="The tax basis of the tax declaration.")
     tax_amount = fields.Float('Tax Code Amount',
-                              digits_compute=dp.get_precision('Account'))
+                              digits=dp.get_precision('Account'))
     company_id = fields.Many2one(related='account_id.company_id',
                                  string='Company', store=True,
                                  readonly=True)
