@@ -29,7 +29,7 @@
         "base",
     ],
     "data": [
-        "views/model_view.xml",
+        "views/account_payment_order_receipt_view.xml",
     ],
     "qweb": ['static/src/xml/*.xml'],
     "installable": True,
