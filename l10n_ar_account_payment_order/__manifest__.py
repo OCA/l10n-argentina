@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Copyright (c) 2018 Eynes/E-MIPS
@@ -19,7 +18,7 @@
 ###############################################################################
 
 {
-    "name": "Module Name",
+    "name": "Payment Order",
     "category": "Accounting & Finance",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
@@ -27,9 +26,12 @@
     "description": "Module Description",
     "depends": [
         "base",
+        "account",
+        "analytic",
     ],
     "data": [
         "views/account_payment_order_receipt_view.xml",
+        "views/account_journal_view.xml",
     ],
     "qweb": ['static/src/xml/*.xml'],
     "installable": True,

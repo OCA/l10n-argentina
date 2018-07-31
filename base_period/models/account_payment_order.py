@@ -4,7 +4,7 @@
 ###############################################################################
 
 import logging
-from datetime import date, datetime
+from datetime import datetime
 from odoo import models, fields, api
 
 
@@ -19,7 +19,8 @@ class AccountPaymentOrder(models.Model):
     def _compute_period(self):
         for rec in self:
             period_obj = rec.env['date.period']
-            period_date = datetime.strptime(rec.account_date, '%Y-%m-%d').date()
+            period_date = datetime.strptime(
+                rec.account_date, '%Y-%m-%d').date()
             period = period_obj._get_period(period_date)
             rec.period_id = period.id
 

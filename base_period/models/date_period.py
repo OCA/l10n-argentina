@@ -24,7 +24,7 @@ class DatePeriod(models.Model):
     date_from = fields.Date(string="Start Date", required=True)
     date_to = fields.Date(string="End Date", required=True)
     invoice_ids = fields.One2many(comodel_name="account.invoice", inverse_name="period_id", string="Invoice")
-    voucher_ids = fields.One2many(comodel_name="account.voucher", inverse_name="period_id", string="Voucher")
+    # payment_order_ids = fields.One2many(comodel_name="account.payment.order", inverse_name="period_id", string="Voucher")
     move_ids = fields.One2many(comodel_name="account.move", inverse_name="period_id", string="Move")
     move_line_ids = fields.One2many(comodel_name="account.move.line", inverse_name="period_id", string="Move Line")
     inventory_ids = fields.One2many(comodel_name="stock.inventory", inverse_name="period_id", string="Stock Inventory")
