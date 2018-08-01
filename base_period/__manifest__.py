@@ -35,7 +35,7 @@
         "views/account_invoice_view.xml",
         "views/account_move_view.xml",
         "views/stock_inventory_view.xml",
-        # "views/account_voucher_view.xml",
+        "views/account_payment_order_receipt_view.xml",
     ],
     "qweb": ['static/src/xml/*.xml'],
     "installable": True,

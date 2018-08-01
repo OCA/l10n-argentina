@@ -18,8 +18,8 @@ _logger = logging.getLogger(__name__)
 class AccountPaymentOrder(models.Model):
     _name = 'account.payment.order'
 
+    @api.depends('journal_id', 'company_id')
     def _get_journal_currency(self):
-        __import__('ipdb').set_trace()
         for payment in self:
             payment.currency_id = payment.journal_id.currency_id and \
                 payment.journal_id.currency_id.id or \
@@ -46,9 +46,11 @@ class AccountPaymentOrder(models.Model):
             res = rec[0] or False
         return res.id
 
+    @api.depends('line_dr_ids', 'line_cr_ids')
     def _get_writeoff_amount(self):
         if not self:
-            self.writeoff_amount = ''
+            self.writeoff_amount = 0.0
+            return False
         for payment in self:
             debit = credit = 0.0
             sign = payment.type == 'payment' and -1 or 1
@@ -94,7 +96,7 @@ class AccountPaymentOrder(models.Model):
         __import__('ipdb').set_trace()
 
     name = fields.Char(string='Memo', default='')
-    number = fields.Char(string='Number', readonly=True, copy=False)
+    number = fields.Char(string='Number', copy=False)
     narration = fields.Text(string='Notes', default=_get_narration)
     partner_id = fields.Many2one(comodel_name='res.partner',
                                  string='Partner',
@@ -115,8 +117,7 @@ class AccountPaymentOrder(models.Model):
                               copy=False)
     move_line_ids = fields.One2many(comodel_name='account.move.line',
                                     related='move_id.line_ids',
-                                    string='Journal Items',
-                                    readonly=True)
+                                    string='Journal Items')
     date = fields.Date(string='Date',
                        default=lambda self: self._context.get(
                            'date', fields.Date.context_today(self)))
@@ -125,9 +126,11 @@ class AccountPaymentOrder(models.Model):
                                 ('cancel', 'Cancelled'),
                                 ('proforma', 'Pro-forma'),
                                 ('posted', 'Posted')],
-                             default='draft')
+                             default='draft',
+                             readonly=True)
     currency_id = fields.Many2one(comodel_name='res.currency',
                                   string='Currency',
+                                  readonly=True,
                                   required=True,
                                   compute='_get_journal_currency')
     amount = fields.Float(strin='Tax Amount',
@@ -173,7 +176,7 @@ class AccountPaymentOrder(models.Model):
                                  _company_default_get('sale.order'),
                                  required=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
-    payment_mode_line_id = fields.One2many(
+    payment_mode_line_ids = fields.One2many(
         comodel_name='account.payment.mode.line',
         inverse_name='payment_order_id',
         string='Payments Lines')
@@ -214,23 +217,60 @@ class AccountPaymentOrder(models.Model):
 
     def basic_onchange_partner(self):
         if self.journal_id.type in ('sale', 'sale_refund'):
-            account_id = self.partner_id.property_account_receivable.id
+            account_id = self.partner_id.property_account_receivable_id.id
         elif self.journal_id.type in ('purchase', 'purchase_refund', 'expense'):
-            account_id = self.partner_id.property_account_payable.id
-        elif self.type
+            account_id = self.partner_id.property_account_payable_id.id
+        elif self.type in ('sale', 'receipt'):
+            account_id = self.journal_id.default_debit_account_id.id
+        elif self.type in ('purchase', 'payment'):
+            account_id = self.journal_id.default_credit_account_id.id
+        else:
+            account_id = self.journal_id.default_credit_account_id.id or \
+                self.journal_id.default_debit_account_id.id
+        return account_id
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         if not self.journal_id:
-          return {}
+            return False
+        res = self.basic_onchange_partner()
+        vals = self.recompute_voucher_lines()
+        vals2 = self.recompute_payment_rate()
+
+    def recompute_voucher_lines(self):
+        """
+        Returns a dict that contains new values and context
+
+        @param partner_id: latest value from user input for field partner_id
+        @param args: other arguments
+        @param context: context arguments, like lang, time zone
+
+        @return: Returns a dict which contains new values, and context
+        """
+        currency_obj = self.env['res.currency']
+        move_line_obj = self.env['account.move.line']
+        partner_obj = self.env['res.partner']
+        journal_obj = self.env['account.journal']
+        line_obj = self.env['account.payment.order.line']
+
+        # set default values
+        default = {
+            'value': {'line_dr_ids': [], 'line_cr_ids': [], 'pre_line': False},
+        }
+
+        line_ids = line_obj.search([('payment_order_id', '=', self.id)])
+        for line in line_ids:
+            if line.type == 'cr':
+                default['value']
+
 
     def _get_payment_lines_amount(self):
         amount = 0.0
-        for payment_line in self.payment_mode_line_id:
+        for payment_line in self.payment_mode_line_ids:
             amount += float(payment_line.amount)
         return amount
 
-    @api.onchange('payment_mode_line_id')
+    @api.onchange('payment_mode_line_ids')
     def onchange_payment_line(self):
         amount = self._get_payment_lines_amount()
         self.amount = amount
@@ -239,7 +279,7 @@ class AccountPaymentOrder(models.Model):
 
     @api.multi
     def _clean_payment_lines(self):
-        for payment_line in self.payment_mode_line_id:
+        for payment_line in self.payment_mode_line_ids:
             if payment_line.amount == 0:
                 payment_line.unlink()
         return True
@@ -347,14 +387,19 @@ class AccountPaymentOrderLine(models.Model):
                                        compute='_compute_balance', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company',
                                  related='payment_order_id.company_id',
-                                 readonly=True, store=True)
+                                 store=True,
+                                 readonly=True)
     currency_id = fields.Many2one(comodel_name='res.currency',
-                                  string='Currency', readonly=True,
-                                  compute='_currency_id')
+                                  string='Currency',
+                                  compute='_currency_id',
+                                  readonly=True)
+    invoice_id = fields.Many2one(comodel_name='account.invoice', string='Invoice')
+    ref = fields.Char(string='Reference', size=64)
     # TODO: Este state sigue siendo util?,
     # requiere en move_line_id(draft) en vista
-    state = fields.Selection(string='State', readonly=True,
-                             related='payment_order_id.state')
+    state = fields.Selection(string='State',
+                             related='payment_order_id.state',
+                             readonly=True)
 
     @api.onchange('amount')
     def onchange_amount(self):
@@ -370,7 +415,6 @@ class AccountPaymentModeLine(models.Model):
 
     @api.depends('payment_mode_id')
     def _compute_currency(self):
-        __import__('ipdb').set_trace()
         for i in self:
             i.currency_id = i.payment_mode_id.currency_id.id
 
@@ -406,7 +450,7 @@ class AccountPaymentModeLine(models.Model):
                                   store=True)
     company_currency = fields.Many2one(comodel_name='res.currency',
                                        string='Company Currency',
-                                       default=_get_company_currency,
-                                       readonly=False)
+                                       readonly=True,
+                                       default=_get_company_currency)
     date = fields.Date(string='Payment Date',
                        help="This date is informative only.")

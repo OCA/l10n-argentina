@@ -15,14 +15,14 @@ class AccountPaymentOrder(models.Model):
     _name = 'account.payment.order'
     _inherit = 'account.payment.order'
 
-    @api.depends('account_date')
+    @api.depends('date')
     def _compute_period(self):
         for rec in self:
             period_obj = rec.env['date.period']
             period_date = datetime.strptime(
-                rec.account_date, '%Y-%m-%d').date()
+                rec.date, '%Y-%m-%d').date()
             period = period_obj._get_period(period_date)
             rec.period_id = period.id
 
     period_id = fields.Many2one(string="Period", comodel_name="date.period",
-                                compute='_compute_period', store=True)
+                                compute='_compute_period', store=True, required=True)
