@@ -46,7 +46,7 @@ class AccountPaymentOrder(models.Model):
             res = rec[0] or False
         return res.id
 
-    @api.depends('line_dr_ids', 'line_cr_ids')
+    @api.depends('debt_line_ids', 'income_line_ids')
     def _get_writeoff_amount(self):
         if not self:
             self.writeoff_amount = 0.0
@@ -54,9 +54,9 @@ class AccountPaymentOrder(models.Model):
         for payment in self:
             debit = credit = 0.0
             sign = payment.type == 'payment' and -1 or 1
-            for l in payment.line_dr_ids:
+            for l in payment.debt_line_ids:
                 debit += l.amount
-            for l in payment.line_cr_ids:
+            for l in payment.income_line_ids:
                 credit += l.amount
             currency = payment.currency_id or payment.company_id.currency_id
             amount = payment.amount - sign * (credit - debit)
@@ -180,12 +180,12 @@ class AccountPaymentOrder(models.Model):
         comodel_name='account.payment.mode.line',
         inverse_name='payment_order_id',
         string='Payments Lines')
-    line_cr_ids = fields.One2many(comodel_name='account.payment.order.line',
+    income_line_ids = fields.One2many(comodel_name='account.payment.order.line',
                                   inverse_name='payment_order_id',
                                   string='Credits',
                                   domain=[('type', '=', 'cr')],
                                   context={'default_type': 'cr'})
-    line_dr_ids = fields.One2many(comodel_name='account.payment.order.line',
+    debt_line_ids = fields.One2many(comodel_name='account.payment.order.line',
                                   inverse_name='payment_order_id',
                                   string='Debits',
                                   domain=[('type', '=', 'dr')],
@@ -229,7 +229,7 @@ class AccountPaymentOrder(models.Model):
                 self.journal_id.default_debit_account_id.id
         return account_id
 
-    @api.onchange('partner_id')
+    # @api.onchange('partner_id')
     def onchange_partner_id(self):
         if not self.journal_id:
             return False
@@ -255,7 +255,7 @@ class AccountPaymentOrder(models.Model):
 
         # set default values
         default = {
-            'value': {'line_dr_ids': [], 'line_cr_ids': [], 'pre_line': False},
+            'value': {'debt_line_ids': [], 'income_line_ids': [], 'pre_line': False},
         }
 
         line_ids = line_obj.search([('payment_order_id', '=', self.id)])
@@ -368,8 +368,8 @@ class AccountPaymentOrderLine(models.Model):
     amount = fields.Float(string='Amount', digits=dp.get_precision('Account'))
     reconcile = fields.Boolean(string='Full Reconcile')
     type = fields.Selection(string='Dr/Cr',
-                            selection=[('dr', 'Debit'),
-                                       ('cr', 'Credit')])
+                            selection=[('debt', 'Debt'),
+                                       ('income', 'Income')])
     # account_analytic_id
     move_line_id = fields.Many2one(comodel_name='account.move.line',
                                    string='Journal Item', copy=False)
@@ -407,6 +407,190 @@ class AccountPaymentOrderLine(models.Model):
             round_amount = round(self.amount, 2)
             round_unreconciled = round(self.amount_unreconciled, 2)
             self.reconcile = (round_amount == round_unreconciled)
+
+    @api.onchange('invoice_id')
+    def onchange_invoice_id(self):
+        """
+        Returns a dict that contains new values and context
+
+        @param partner_id: latest value from user input for field partner_id
+        @param args: other arguments
+        @param context: context arguments, like lang, time zone
+
+        @return: Returns a dict which contains new values, and context
+        """
+        def _remove_noise_in_o2m():
+            """if the line is partially reconciled, then we
+               must pay attention to display it only once and
+                in the good o2m.
+                This function returns True if the line is
+                considered as noise and should not be displayed
+            """
+            if line.reconciled:
+                if self.currency_id.id == line.currency_id.id:
+                    if line.amount_residual_currency <= 0:
+                        return True
+                else:
+                    if line.amount_residual <= 0:
+                        return True
+            return False
+        __import__('ipdb').set_trace()
+        account_account_obj = self.env['account.account']
+        move_line_obj = self.env['account.move.line']
+        currency_obj = self.env['res.currency']
+
+        ttype = self.env.context.get('type', 'bank')
+        total_credit = total_debit = 0.0
+        account_type = account_account_obj.browse(
+            self.env.context.get('account_id')).id
+        if not account_type:
+            account_type = None
+        if ttype == 'payment':
+            if not account_type:
+                account_type = 'payable'
+            total_debit = self.amount or 0.0
+        else:
+            total_credit = self.amount or 0.0
+            if not account_type:
+                account_type = 'receivable'
+
+        if not self.env.context.get('move_line_ids', False):
+            ids = move_line_obj.search([
+                ('state', '=', 'valid'),
+                ('account_id.internal_type', '=', account_type),
+                ('reconciled', '=', False),
+                ('partner_id', '=', self.partner_id.id),
+                ('invoice_id', '=', self.invoice_id.id)])
+        else:
+            ids = self.env.context.get('move_line_ids')
+
+        company_currency = self.payment_order_id.\
+            journal_id.company_id.currency_id.id
+        account_move_lines = ids.reverse()
+        move_lines_found = []
+
+        for line in account_move_lines:
+            if _remove_noise_in_o2m():
+                continue
+
+            if invoice_id:
+                if line.invoice_id.id == self.invoice_id.id:
+                    # if the invoice linked to the voucher
+                    # line is equal to the invoice_id in context
+                    # then we assign the amount on that line,
+                    # whatever the other voucher lines
+                    move_line_found.append(line.id)
+            elif self.currency_id.id == company_currency:
+                # otherwise treatments is the same but with other field names
+                if line.amount_residual == self.amount:
+                    # if the amount residual is equal the amount
+                    # voucher, we assign it to that voucher line,
+                    # whatever the other voucher lines
+                    move_lines_found.append(line.id)
+                    break
+                # otherwise we will split the voucher amount
+                # on each line (by most old first)
+                total_credit += line.credit and line.amount_residual or 0.0
+                total_debit += line.debit and line.amount_residual or 0.0
+            elif self.currency_id.id == line.currency_id.id:
+                if line.amount_residual_currency == self.amount:
+                    move_lines_found.append(line.id)
+                    break
+                line_residual = currency_obj.compute(
+                    company_currency, self.currency_id,
+                    abs(line.amount_residual))
+
+                total_credit += line.credit and line_residual or 0.0
+                total_debit += line.debit and line_residual or 0.0
+
+        remaining_amount = self.amount
+        # voucher line creation
+        income_line_ids = []
+        debt_line_ids = []
+        for line in account_move_lines:
+
+            if _remove_noise_in_o2m():
+                continue
+
+            if line.currency_id and self.currency_id == line.currency_id.id:
+                amount_original = abs(line.amount_currency)
+                amount_unreconciled = abs(line.amount_residual_currency)
+            else:
+                # always use the amount booked in the company currency
+                # as the basis of the conversion into the voucher currency
+                amount_original = currency_obj.compute(
+                    company_currency, self.currency_id,
+                    line.credit or line.debit or 0.0)
+                amount_unreconciled = currency_obj.compute(
+                    company_currency, self.currency_id,
+                    abs(line.amount_residual))
+
+            line_currency_id = line.currency_id and line.currency_id.id or company_currency
+            rs = {
+                'name':line.move_id.name,
+                'type': line.credit and 'debt' or 'income',
+                'move_line_id':line.id,
+                'account_id':line.account_id.id,
+                'amount_original': amount_original,
+                'amount': (line.id in move_lines_found) and min(abs(remaining_amount), amount_unreconciled) or 0.0,
+                'date_original':line.date,
+                'date_due':line.date_maturity,
+                'amount_unreconciled': amount_unreconciled,
+                'currency_id': line_currency_id,
+            }
+            remaining_amount -= rs['amount']
+            # in case a corresponding move_line hasn't been
+            # found, we now try to assign the voucher amount
+            # on existing invoices: we split voucher amount by most
+            # old first, but only for lines in the same currency
+            if not move_lines_found:
+                if self.currency_id == line_currency_id:
+                    if line.credit:
+                        amount = min(amount_unreconciled, abs(total_debit))
+                        rs['amount'] = amount
+                        total_debit -= amount
+                    else:
+                        amount = min(amount_unreconciled, abs(total_credit))
+                        rs['amount'] = amount
+                        total_credit -= amount
+
+            if rs['amount_unreconciled'] == rs['amount']:
+                rs['reconcile'] = True
+
+            if rs['type'] == 'income':
+                income_line_ids.append(rs)
+            else:
+                debt_line_ids.append(rs)
+
+        for income_line in income_line_ids:
+            self.payment_order_id.write({
+                'income_line_ids': (0, 0, income_line_ids),
+                'debt_line_ids': (0, 0, debt_line_ids)
+            })
+
+        if len(income_line__ids) > 0:
+            self.payment_order_id.pre_line = 1
+        if len(debt_line_ids) > 0:
+            self.payment_order_id.pre_line = 1
+        self.payment_order_id.writeoff_amount = slef._compute_writeoff_amount(
+            debt_line_ids, income_line_ids, self.amount, ttype,
+            self.payment_order_id.writeoff_amount)
+
+
+
+
+    def _compute_writeoff_amount(
+        self, debt_line_ids, income_line__ids,
+        amount, type, old_writeoff):
+        debit = credit = 0.0
+        sign = type == 'payment' and -1 or 1
+        for l in line_dr_ids:
+            if isinstance(l, dict):
+                debit += l['amount']
+        for l in line_cr_ids:
+            if isinstance(l, dict):
+                credit += l['amount']
+        return (amount - sign * (credit - debit)) + old_writeoff
 
 
 class AccountPaymentModeLine(models.Model):

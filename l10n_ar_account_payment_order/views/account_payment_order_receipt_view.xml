@@ -13,7 +13,7 @@
                     <filter icon="terp-document-new" string="Draft" domain="[('state','=','draft')]" help="Draft Vouchers"/>
                     <filter icon="terp-camera_test" string="Posted" domain="[('state','=','posted')]" help="Posted Vouchers"/>
                     <field name="partner_id" string="Customer" filter_domain="[('partner_id','child_of',self)]"/>
-                    <field name="journal_id" widget="selection" context="{'journal_id': self, 'set_visible':False}" domain="[('type','in',('bank','cash'))]"/> <!-- Keep widget=selection on this field to pass numeric `self` value, which is not the case for regular m2o widgets! -->
+                    <field name="journal_id" widget="selection" context="{'journal_id': self, 'set_visible':False}" domain="[('type','=','receipt')]"/> <!-- Keep widget=selection on this field to pass numeric `self` value, which is not the case for regular m2o widgets! -->
                     <!-- TODO: Este campo debe añadirlo base_period -->
                     <!-- <field name="period_id"/> -->
                     <group expand="0" string="Group By">
@@ -86,43 +86,44 @@
                                         <field name="amount" sum="Total"/>
                                     </tree>
                                  </field>
-                                <label for="line_cr_ids" invisible="context.get('line_type', False)" string="Invoices and outstanding transactions"/>
-                                <field name="line_cr_ids" context="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
+                                <label for="income_line_ids" invisible="context.get('line_type', False)" string="Invoices and outstanding transactions"/>
+                                <field name="income_line_ids" context="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
                                     <tree string="Invoices and outstanding transactions" editable="bottom" colors="gray:amount==0">
                                         <field name="state" invisible="1"/>
                                         <field name="invoice_id"/>
                                         <field name="ref"/>
                                         <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
-                                            on_change="onchange_move_line_id(move_line_id)"
-                                            domain="[('account_id.type','in',('receivable','payable')), ('reconcile_id','=', False), ('partner_id','=',parent.partner_id)]"
+                                            domain="[('account_id.internal_type','in',('receivable','payable')), ('reconciled','=', False), ('partner_id','=',parent.partner_id)]"
                                             attrs="{'required': [('state', 'in', [False, 'draft'])]}"
                                             groups="account.group_account_user"/>
-                                        <field name="account_id"  groups="base.group_no_one" domain="[('type','=','receivable')]"/>
+                                        <field name="account_id"  
+                                            groups="base.group_no_one" 
+                                            domain="[('internal_type','=','receivable')]"
+                                            attrs="{'readonly': [('invoice_id', '=', False)]}"/>
                                         <field name="date_original" readonly="1"/>
                                         <field name="date_due" readonly="1"/>
                                         <field name="amount_original" readonly="1"/>
                                         <field name="amount_unreconciled" readonly="1" groups="account.group_account_user" sum="Total Unreconciled"/>
-                                        <field name="reconcile" on_change="onchange_reconcile(reconcile, amount, amount_unreconciled, context)" groups="account.group_account_user"/>
-                                        <field name="amount" sum="Total Allocation" on_change="onchange_amount(amount, amount_unreconciled, context)" string="Allocation"/>
+                                        <field name="reconcile" groups="account.group_account_user"/>
+                                        <field name="amount" sum="Total Allocation" string="Allocation"/>
                                     </tree>
                                 </field>
-                                <label for="line_dr_ids" attrs="{'invisible': [('pre_line','=',False)]}" string="Credits"/>
-                                <field name="line_dr_ids" attrs="{'invisible': [('pre_line','=',False)], 'readonly': [('state', 'not in', ('draft'))]}" context="{'journal_id':journal_id, 'partner_id':partner_id}" on_change="onchange_line_ids(line_dr_ids, line_cr_ids, amount, currency_id, type, context)">
+                                <label for="debt_line_ids" attrs="{'invisible': [('pre_line','=',False)]}" string="Credits"/>
+                                <field name="debt_line_ids" attrs="{'invisible': [('pre_line','=',False)], 'readonly': [('state', 'not in', ('draft'))]}" context="{'journal_id':journal_id, 'partner_id':partner_id}">
                                     <tree string="Credits" editable="bottom" colors="gray:amount==0">
                                         <field name="state" invisible="1"/>
                                         <field name="invoice_id"/>
                                         <field name="ref"/>
                                         <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
-                                            on_change="onchange_move_line_id(move_line_id)"
-                                            domain="[('account_id.type','in',('receivable','payable')), ('reconcile_id','=', False), ('partner_id','=',parent.partner_id)]"
+                                            domain="[('account_id.internal_type','in',('receivable','payable')), ('reconciled','=', False), ('partner_id','=',parent.partner_id)]"
                                             attrs="{'required': [('state', 'in', [False, 'draft'])]}"/>
-                                        <field name="account_id"  groups="base.group_no_one" domain="[('type','=','receivable')]"/>
+                                        <field name="account_id"  groups="base.group_no_one" domain="[('internal_type','=','receivable')]"/>
                                         <field name="date_original" readonly="1"/>
                                         <field name="date_due" readonly="1"/>
                                         <field name="amount_original" readonly="1"/>
                                         <field name="amount_unreconciled" readonly="1" sum="Total Unreconciled"/>
-                                        <field name="reconcile" on_change="onchange_reconcile(reconcile, amount, amount_unreconciled, context)"/>
-                                        <field name="amount" sum="Total Allocation" on_change="onchange_amount(amount, amount_unreconciled, context)" string="Allocation"/>
+                                        <field name="reconcile"/>
+                                        <field name="amount" sum="Total Allocation" string="Allocation"/>
                                     </tree>
                                 </field>
                                 <group col="3">
