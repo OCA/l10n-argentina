@@ -26,4 +26,5 @@ class AccountPaymentOrder(models.Model):
                 rec.period_id = period.id
 
     period_id = fields.Many2one(string="Period", comodel_name="date.period",
-                                compute='_compute_period', store=True, required=True)
+                                compute='_compute_period',
+                                store=True, required=False)

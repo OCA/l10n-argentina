@@ -21,8 +21,7 @@ class AccountPaymentOrder(models.Model):
     @api.depends('journal_id', 'company_id')
     def _get_journal_currency(self):
         for payment in self:
-            payment.currency_id = payment.journal_id.currency_id and \
-                payment.journal_id.currency_id.id or \
+            payment.currency_id = payment.journal_id.currency_id.id or \
                 payment.company_id.currency_id.id
 
     # TODO: Context=Receipt por vista, chequear que utilidad tiene esto
@@ -93,7 +92,7 @@ class AccountPaymentOrder(models.Model):
         return self.env.user.company_id.currency_id.id
 
     def _paid_amount_in_company_currency(self):
-        __import__('ipdb').set_trace()
+        pass
 
     name = fields.Char(string='Memo', default='')
     number = fields.Char(string='Number', copy=False)
@@ -129,9 +128,9 @@ class AccountPaymentOrder(models.Model):
                              default='draft',
                              readonly=True)
     currency_id = fields.Many2one(comodel_name='res.currency',
-                                  string='Currency',
-                                  readonly=True,
-                                  required=True,
+                                  string='Currencyc',
+                                  # readonly=True,
+                                  # required=True,
                                   compute='_get_journal_currency')
     amount = fields.Float(strin='Tax Amount',
                           digits=dp.get_precision('Account'),
@@ -169,46 +168,52 @@ class AccountPaymentOrder(models.Model):
         amount and the sum of allocated amounts. You can either \
         choose to keep open this difference on the partner's \
         account, or reconcile it with the payment(s)")
-    company_id = fields.Many2one(comodel_name='res.company',
-                                 string='Company',
-                                 default=lambda self: self.
-                                 env['res.company'].
-                                 _company_default_get('sale.order'),
-                                 required=True)
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.
+        env['res.company'].
+        _company_default_get('sale.order'),
+        required=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
     payment_mode_line_ids = fields.One2many(
         comodel_name='account.payment.mode.line',
         inverse_name='payment_order_id',
         string='Payments Lines')
-    income_line_ids = fields.One2many(comodel_name='account.payment.order.line',
-                                  inverse_name='payment_order_id',
-                                  string='Credits',
-                                  domain=[('type', '=', 'cr')],
-                                  context={'default_type': 'cr'})
-    debt_line_ids = fields.One2many(comodel_name='account.payment.order.line',
-                                  inverse_name='payment_order_id',
-                                  string='Debits',
-                                  domain=[('type', '=', 'dr')],
-                                  context={'default_type': 'dr'})
+    income_line_ids = fields.One2many(
+        comodel_name='account.payment.order.line',
+        inverse_name='payment_order_id',
+        string='Credits',
+        domain=[('type', '=', 'income')],
+        context={'default_type': 'income'})
+    debt_line_ids = fields.One2many(
+        comodel_name='account.payment.order.line',
+        inverse_name='payment_order_id',
+        string='Debits',
+        domain=[('type', '=', 'debt')],
+        context={'default_type': 'debt'})
     payment_rate_currency_id = fields.Many2one(
         comodel_name='res.currency',
         string='Payment Rate Currency',
         default=_get_payment_rate_currency,
         required=True)
-    payment_rate = fields.Float(string='Exchange Rate',
-                                digits=(12, 6), required=True,
-                                default=1.0,
-                                help='The specific rate that will be used, in \
-                                this voucher, between the selected currency \
-                                (in \'Payment Rate Currency\' field)  and the \
-                                voucher currency.')
-    paid_amount_in_company_currency = fields.Float(string='Paid Amount in Company Currency',
-                                                   compute='_paid_amount_in_company_currency',
-                                                   readonly=True)
-    is_multi_currency = fields.Boolean(string='Multi Currency Voucher',
-                                       help='Fields with internal purpose \
-                                       only that depicts if the voucher is \
-                                       a multi currency one or not')
+    payment_rate = fields.Float(
+        string='Exchange Rate',
+        digits=(12, 6), required=True,
+        default=1.0,
+        help='The specific rate that will be used, in \
+        this voucher, between the selected currency \
+        (in \'Payment Rate Currency\' field)  and the \
+        voucher currency.')
+    paid_amount_in_company_currency = fields.Float(
+        string='Paid Amount in Company Currency',
+        compute='_paid_amount_in_company_currency',
+        readonly=True)
+    is_multi_currency = fields.Boolean(
+        string='Multi Currency Voucher',
+        help='Fields with internal purpose \
+        only that depicts if the voucher is \
+        a multi currency one or not')
     # currency_help_label = fields.Text(strig='Helping Sentence',
     #                                   compute='_fnct_currency_help_label',
     #                                   help="This sentence helps you to know \
@@ -229,41 +234,6 @@ class AccountPaymentOrder(models.Model):
                 self.journal_id.default_debit_account_id.id
         return account_id
 
-    # @api.onchange('partner_id')
-    def onchange_partner_id(self):
-        if not self.journal_id:
-            return False
-        res = self.basic_onchange_partner()
-        vals = self.recompute_voucher_lines()
-        vals2 = self.recompute_payment_rate()
-
-    def recompute_voucher_lines(self):
-        """
-        Returns a dict that contains new values and context
-
-        @param partner_id: latest value from user input for field partner_id
-        @param args: other arguments
-        @param context: context arguments, like lang, time zone
-
-        @return: Returns a dict which contains new values, and context
-        """
-        currency_obj = self.env['res.currency']
-        move_line_obj = self.env['account.move.line']
-        partner_obj = self.env['res.partner']
-        journal_obj = self.env['account.journal']
-        line_obj = self.env['account.payment.order.line']
-
-        # set default values
-        default = {
-            'value': {'debt_line_ids': [], 'income_line_ids': [], 'pre_line': False},
-        }
-
-        line_ids = line_obj.search([('payment_order_id', '=', self.id)])
-        for line in line_ids:
-            if line.type == 'cr':
-                default['value']
-
-
     def _get_payment_lines_amount(self):
         amount = 0.0
         for payment_line in self.payment_mode_line_ids:
@@ -274,6 +244,13 @@ class AccountPaymentOrder(models.Model):
     def onchange_payment_line(self):
         amount = self._get_payment_lines_amount()
         self.amount = amount
+
+    @api.onchange('income_line_ids')
+    def onchange_income_lines(self):
+        __import__('ipdb').set_trace()
+        res = {}
+        return res
+
 
     # TODO: onchange_partner_id()  -  _get_payment_lines_default()
 
@@ -301,7 +278,8 @@ class AccountPaymentOrder(models.Model):
         '''
         Get the currency of the actual company.
 
-        :param voucher_id: Id of the voucher what i want to obtain company currency.
+        :param voucher_id: Id of the voucher what
+          i want to obtain company currency.
         :return: currency id of the company of the voucher
         :rtype: int
         '''
@@ -311,7 +289,8 @@ class AccountPaymentOrder(models.Model):
         '''
         Get the currency of the voucher.
 
-        :param voucher_id: Id of the voucher what i want to obtain current currency.
+        :param voucher_id: Id of the voucher what
+          i want to obtain current currency.
         :return: currency id of the voucher
         :rtype: int
         '''
@@ -329,7 +308,37 @@ class AccountPaymentOrder(models.Model):
                 continue
             company_currency = payment._get_company_currency()
             current_currency = payment._get_current_currency()
-            __import__('ipdb').set_trace()
+
+    # @api.onchange('income_line_ids')
+    # def asd(self):
+    #     payment_line_model = self.env['account.payment.order.line']
+    #     __import__('ipdb').set_trace()
+    #     asd = {
+    #         'account_id': 1,
+    #         'amount': 123.0,
+    #         'amount_original': 20.0,
+    #         'amount_unreconciled': 20.0,
+    #         'currency_id': 20,
+    #         'date_due': '2018-07-04',
+    #         'date_original': '2018-07-04',
+    #         'move_line_id': 70,
+    #         'name': 'C/2018/0019',
+    #         # 'type': 'income',
+    #     }
+    #     asd2 = {
+    #         'account_id': 2,
+    #         'amount': 223.0,
+    #         'amount_original': 30.0,
+    #         'amount_unreconciled': 30.0,
+    #         'currency_id': 20,
+    #         'date_due': '2018-07-04',
+    #         'date_original': '2018-07-04',
+    #         'move_line_id': 70,
+    #         'name': 'C/2019/0020',
+    #         # 'type': 'income',
+    #     }
+    #     __import__('ipdb').set_trace()
+    #     self.income_line_ids = [(0, 0, asd), (0, 0, asd2)]
 
 
 class AccountPaymentOrderLine(models.Model):
@@ -337,13 +346,50 @@ class AccountPaymentOrderLine(models.Model):
     _description = 'Voucher Lines'
     _order = "move_line_id"
 
-    # def _compute_balance(self):
-    #     currency_obj = self.env['res.currency']
+    def _compute_balance(self):
+        currency_obj = self.env['res.currency']
+        for line in self:
+            # payment_rate = line.payment_order_id.currency_id.read(
+            #     ['rate'])[0]['rate']
+            # voucher_special_currency = \
+            #     line.payment_order_id.payment_rate_currency_id.id
+            # voucher_special_currency_rate = \
+            #     line.payment_order_id.payment_rate * payment_rate
+            # TODO: currency rate
+            # self.env.context.update({
+            #     'voucher_special_currency': voucher_special_currency,
+            #     'voucher_special_currency_rate': voucher_special_currency_rate
+            # })
+            company_currency = \
+                line.payment_order_id.journal_id.company_id.currency_id.id
+            payment_currency = line.payment_order_id.currency_id.id or \
+                company_currency
+            move_line = line.move_line_id
+
+            if not move_line:
+                line.amount_original = 0.0
+                line.amount_unreconciled = 0.0
+            elif move_line.currency_id and payment_currency == \
+                    move_line.currency_id.id:
+                line.amount_original = abs(move_line.amount_currency)
+                line.amount_unreconciled = \
+                    abs(move_line.amount_residual_currency)
+            else:
+                # always use the amount booked in the company currency as
+                # the basis of the conversion into the voucher currency
+                line.amount_original = currency_obj.compute(
+                    company_currency, payment_currency,
+                    move_line.credit or move_line.debit or 0.0)
+                line.amount_unreconciled = currency_obj.compute(
+                    company_currency, payment_currency,
+                    abs(move_line.amount_residual))
 
     def _currency_id(self):
         '''
-        This function returns the currency id of a voucher line. It's either the currency of the
-        associated move line (if any) or the currency of the voucher or the company currency.
+        This function returns the currency id of a
+        voucher line. It's either the currency of the
+        associated move line (if any) or the currency
+        of the voucher or the company currency.
         '''
         for line in self:
             move_line = line.move_line_id
@@ -357,11 +403,11 @@ class AccountPaymentOrderLine(models.Model):
                     line.payment_order_id.company_id.currency_id.id
 
     payment_order_id = fields.Many2one(comodel_name='account.payment.order',
-                                       string='Payment Order', required=True,
+                                       string='Payment Order',
                                        ondelete='cascade')
     name = fields.Char(string='Description', default='')
     account_id = fields.Many2one(comodel_name='account.account',
-                                 string='Account', required=True)
+                                 string='Account')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner',
                                  related='payment_order_id.partner_id')
     untax_amount = fields.Float(string='Untax Amount')
@@ -390,10 +436,13 @@ class AccountPaymentOrderLine(models.Model):
                                  store=True,
                                  readonly=True)
     currency_id = fields.Many2one(comodel_name='res.currency',
-                                  string='Currency',
+                                  string='Currencya',
                                   compute='_currency_id',
                                   readonly=True)
-    invoice_id = fields.Many2one(comodel_name='account.invoice', string='Invoice')
+    invoice_id = fields.Many2one(comodel_name='account.invoice',
+                                 string='Invoice',
+                                 required=True,
+                                 domain=[('state', '=', 'open')])
     ref = fields.Char(string='Reference', size=64)
     # TODO: Este state sigue siendo util?,
     # requiere en move_line_id(draft) en vista
@@ -434,7 +483,6 @@ class AccountPaymentOrderLine(models.Model):
                     if line.amount_residual <= 0:
                         return True
             return False
-        __import__('ipdb').set_trace()
         account_account_obj = self.env['account.account']
         move_line_obj = self.env['account.move.line']
         currency_obj = self.env['res.currency']
@@ -456,7 +504,6 @@ class AccountPaymentOrderLine(models.Model):
 
         if not self.env.context.get('move_line_ids', False):
             ids = move_line_obj.search([
-                ('state', '=', 'valid'),
                 ('account_id.internal_type', '=', account_type),
                 ('reconciled', '=', False),
                 ('partner_id', '=', self.partner_id.id),
@@ -466,7 +513,8 @@ class AccountPaymentOrderLine(models.Model):
 
         company_currency = self.payment_order_id.\
             journal_id.company_id.currency_id.id
-        account_move_lines = ids.reverse()
+        invoice_id = self.env.context.get('invoice_id', False)
+        account_move_lines = ids.sorted(key=lambda x: -1 * x.id)
         move_lines_found = []
 
         for line in account_move_lines:
@@ -479,7 +527,7 @@ class AccountPaymentOrderLine(models.Model):
                     # line is equal to the invoice_id in context
                     # then we assign the amount on that line,
                     # whatever the other voucher lines
-                    move_line_found.append(line.id)
+                    move_lines_found.append(line.id)
             elif self.currency_id.id == company_currency:
                 # otherwise treatments is the same but with other field names
                 if line.amount_residual == self.amount:
@@ -525,16 +573,19 @@ class AccountPaymentOrderLine(models.Model):
                     company_currency, self.currency_id,
                     abs(line.amount_residual))
 
-            line_currency_id = line.currency_id and line.currency_id.id or company_currency
+            line_currency_id = line.currency_id and \
+                line.currency_id.id or company_currency
+            rs_amount = (line.id in move_lines_found) and \
+                min(abs(remaining_amount), amount_unreconciled) or 0.0
             rs = {
-                'name':line.move_id.name,
+                'name': line.move_id.name,
                 'type': line.credit and 'debt' or 'income',
-                'move_line_id':line.id,
-                'account_id':line.account_id.id,
+                'move_line_id': line.id,
+                'account_id': line.account_id.id,
                 'amount_original': amount_original,
-                'amount': (line.id in move_lines_found) and min(abs(remaining_amount), amount_unreconciled) or 0.0,
-                'date_original':line.date,
-                'date_due':line.date_maturity,
+                'amount': rs_amount,
+                'date_original': line.date,
+                'date_due': line.date_maturity,
                 'amount_unreconciled': amount_unreconciled,
                 'currency_id': line_currency_id,
             }
@@ -544,7 +595,7 @@ class AccountPaymentOrderLine(models.Model):
             # on existing invoices: we split voucher amount by most
             # old first, but only for lines in the same currency
             if not move_lines_found:
-                if self.currency_id == line_currency_id:
+                if self.currency_id.id == line_currency_id:
                     if line.credit:
                         amount = min(amount_unreconciled, abs(total_debit))
                         rs['amount'] = amount
@@ -557,37 +608,42 @@ class AccountPaymentOrderLine(models.Model):
             if rs['amount_unreconciled'] == rs['amount']:
                 rs['reconcile'] = True
 
+            # self.create(rs)
             if rs['type'] == 'income':
                 income_line_ids.append(rs)
             else:
                 debt_line_ids.append(rs)
+        for il in income_line_ids:
+            self.payment_order_id.income_line_ids += self.create(il)
+        self.payment_order_id.debt_line_ids = [(0, 0, x) for x in debt_line_ids]
 
-        for income_line in income_line_ids:
-            self.payment_order_id.write({
-                'income_line_ids': (0, 0, income_line_ids),
-                'debt_line_ids': (0, 0, debt_line_ids)
-            })
+        # for income_line in income_line_ids:
+        #     __import__('ipdb').set_trace()
+        #     self.payment_order_id.write({
+        #         'income_line_ids': (0, 0, income_line),
+        #     })
+        # for debt_line in debt_line_ids:
+        #     self.payment_order_id.write({
+        #         'debt_line_ids': (0, 0, debt_line),
+        #     })
 
-        if len(income_line__ids) > 0:
+        if len(income_line_ids) > 0:
             self.payment_order_id.pre_line = 1
         if len(debt_line_ids) > 0:
             self.payment_order_id.pre_line = 1
-        self.payment_order_id.writeoff_amount = slef._compute_writeoff_amount(
+        self.payment_order_id.writeoff_amount = self._compute_writeoff_amount(
             debt_line_ids, income_line_ids, self.amount, ttype,
             self.payment_order_id.writeoff_amount)
 
-
-
-
     def _compute_writeoff_amount(
-        self, debt_line_ids, income_line__ids,
-        amount, type, old_writeoff):
+        self, debt_line_ids, income_line_ids,
+            amount, type, old_writeoff):
         debit = credit = 0.0
         sign = type == 'payment' and -1 or 1
-        for l in line_dr_ids:
+        for l in debt_line_ids:
             if isinstance(l, dict):
                 debit += l['amount']
-        for l in line_cr_ids:
+        for l in income_line_ids:
             if isinstance(l, dict):
                 credit += l['amount']
         return (amount - sign * (credit - debit)) + old_writeoff
@@ -630,7 +686,7 @@ class AccountPaymentModeLine(models.Model):
         help='Payment amount in the partner currency')
     currency_id = fields.Many2one(comodel_name='res.currency',
                                   compute='_compute_currency',
-                                  string='Currency',
+                                  string='Currencyb',
                                   store=True)
     company_currency = fields.Many2one(comodel_name='res.currency',
                                        string='Company Currency',
