@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+        <record id="certificate_renewal_wizard" model="ir.ui.view">
+            <field name="name">certificate.renewal.wizard</field>
+            <field name="model">wsaa.load.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <p class="oe_grey">
+                        Choose your WSAA Certificate
+                    </p>
+                    <group col="8" colspan="2">
+                        <field name="cert_name" invisible="True"/>
+                        <field name="certificate" widget="binary" required="True"
+                            filename="cert_name"/>
+                    </group>
+                    <footer>
+                        <button name="load_cert" string="Save Certificate" type="object"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="key_renewal_wizard" model="ir.ui.view">
+            <field name="name">key.renewal.wizard</field>
+            <field name="model">wsaa.load.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <p class="oe_grey">
+                        Choose your WSAA Key
+                    </p>
+                    <group col="8" colspan="2">
+                        <field name="key_name" invisible="True"/>
+                        <field name="key" widget="binary" required="True"
+                            filename="key_name"/>
+                    </group>
+                    <footer>
+                        <button name="load_key" string="Save Key" type="object"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="certificate_renewal_wizard_action" model="ir.actions.act_window">
+            <field name="name">Certificate Renewal</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wsaa.load.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="certificate_renewal_wizard"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="key_renewal_wizard_action" model="ir.actions.act_window">
+            <field name="name">Key Renewal</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wsaa.load.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="key_renewal_wizard"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="afipws_service_wsaa_test" model="afipws.service">
+            <field name="name">wsaa_test</field>
+            <field name="description">Web Service de Testing</field>
+        </record>
+
+        <record id="wsaa_config_demo" model="wsaa.config">
+            <field name="name">WSAA Config Demo</field>
+            <field name="certificate">-----BEGIN CERTIFICATE-----
+MIIDqjCCApKgAwIBAgIILSDkRGLWjSwwDQYJKoZIhvcNAQEFBQAwQzElMCMGA1UE
+AwwcQUZJUCBUZXN0aW5nIENvbXB1dGFkb3JlcyBDQTENMAsGA1UECgwEQUZJUDEL
+MAkGA1UEBhMCQVIwHhcNMTUwMjI0MTg0NDQ0WhcNMTcxMTIwMTg0NDQ0WjBIMQ4w
+DAYDVQQDDAVlbWlwczEZMBcGA1UEBRMQQ1VJVCAzMDcxMDk4MTI5NTEOMAwGA1UE
+CgwFRU1JUFMxCzAJBgNVBAYTAkFSMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
+gQDJS/w3oDxMUN+TBHx9w5vkxjeIw+7fM8Gbpm4gFCIwNFaf8aAB79lgjHs1AeRA
+wWxIWMAxGVU6X2HzOhRBXufTZ0kC0NzN0AE27cTOqR2y4rSwAdD829B5t11KA+hN
+lq7YABM5C9oEXZHhfuyIp9LEMCDEMJmryl4/MDzgZc/FiQIDAQABo4IBHzCCARsw
+DAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0OBBYEFB6X3/hrDICQ
+unmKXUCEQ76MCpTMMB8GA1UdIwQYMBaAFER07rScJt9W4cEN61cLkBk2PZYBMIG6
+BgNVHSAEgbIwga8wgawGDisGAQQBgbtjAQIBAgEBMIGZMIGWBggrBgEFBQcCAjCB
+iR6BhgBDAGUAcgB0AGkAZgBpAGMAYQBkAG8AIABwAGEAcgBhACAAYwBvAG0AcAB1
+AHQAYQBkAG8AcgBlAHMAIABzAG8AbABvACAAdgBhAGwAaQBkAG8AIABlAG4AIABl
+AG4AdABvAHIAbgBvAHMAIABkAGUAIABkAGUAcwBhAHIAcgBvAGwAbABvMA0GCSqG
+SIb3DQEBBQUAA4IBAQAey7NdeoZaq2cNsq4fiFoCzouIrcH5O0j74O8FlcepwmeN
+n6N0EainXbKunU7C6+5IXD+v7stMSp2F9rJ1QM5ZYiLo7WRXbcNuDZm8ae8ksLvq
+W6snnbOn9NaKOqoZ/e9Jmog1GFJqJ1vbisQtYPxLlCpLxp2e1slnod2y6vtLJlg2
+Be93xZINeqC2EfnlEEjrZdrVHnGWw6aMO6wvtsrrSs2ukfQuAKkGQYuTmDGJN12q
+j39AAjQURe8EI6NpAzdGkMg353x4Y7qdZo/peImJEkzqjEYvp+UiYTkaHBo6uRH8
+cXtFlNutA8jdqDbXmJAb+kH0rRLUwTJjOv9j8Nwj
+-----END CERTIFICATE-----</field>
+
+            <field name="key">-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDJS/w3oDxMUN+TBHx9w5vkxjeIw+7fM8Gbpm4gFCIwNFaf8aAB
+79lgjHs1AeRAwWxIWMAxGVU6X2HzOhRBXufTZ0kC0NzN0AE27cTOqR2y4rSwAdD8
+29B5t11KA+hNlq7YABM5C9oEXZHhfuyIp9LEMCDEMJmryl4/MDzgZc/FiQIDAQAB
+AoGAKcs7/7SmMFYuRVEOI/KEIJjDGQNNSkxtq0p/3OsxOf7z6Vt6lExfPruMLTJK
+WOOP/ulmZgtTdb4uERkC8Zup2A01DybrFgVcLWOuznCIps1/ZJXjCSuOQhkhqHzx
+4i+OXx1M9MgLUWnn3bRkAdE+mdfiN8L6a6OQqSL+Sec3/50CQQD0854Rz+hYVc3z
+CeYKYI9GaaMPMOgv+/KTSRD1kIM+uyA0iYyqHSbWor9O41XNMZDdqtHks3FntrVN
+CrilaOJjAkEA0mBMfuQD1+rft1qiy6VQf19jBA3W818F64xH+5284iXmkoygJxyo
+JeMUyY/1U/ibosHPgYi/0D1NbSGLavOGIwJBAJm8PL0ZK84lLDkZQVPJ/qJGspxa
+KZ/UFQ7zkL1OkdDRSQkwOySZX0LeqgstCzDZpv44s7tCFC7vsSJFVFYcWdkCQEFr
+qN4c0gUnCQLfsJhbhDjX1NbB5wIvnoutSAU6/C3nU1hnWrZO9wsxHpm/pq7CNMPc
+OUcy21NKfPVe5RgROrkCQQDPYaChm93Y777A7ObA15kVhJCDJkoaI5j2KrySdTiE
+c8Pc24OAwh6T7dqUN4Al2aXjR2WcYKOEYXVEtVbhkpI5
+-----END RSA PRIVATE KEY-----</field>
+            <field name="url">https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl</field>
+        </record>
+
+    </data>
+</openerp>
