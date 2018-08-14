@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="afipws_service_wsfe" model="afipws.service">
+            <field name="name">wsfe</field>
+            <field name="description">Web Service de Factura Electrónica</field>
+        </record>
+
+        <record id="afipws_service_wsfex" model="afipws.service">
+            <field name="name">wsfex</field>
+            <field name="code">Web Service de Factura Electrónica de Exportación</field>
+        </record>
+
+        <record id="voucher_invoice_A" model="wsfe.voucher_type">
+            <field name="name">Factura A</field>
+            <field name="code">1</field>
+            <field name="voucher_model">invoice</field>
+            <field name="document_type">out_invoice</field>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record id="voucher_debit_note_A" model="wsfe.voucher_type">
+            <field name="name">ND A</field>
+            <field name="code">2</field>
+            <field name="voucher_model">invoice</field>
+            <field name="document_type">out_debit</field>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record id="voucher_credit_note_A" model="wsfe.voucher_type">
+            <field name="name">NC A</field>
+            <field name="code">3</field>
+            <field name="voucher_model">invoice</field>
+            <field name="document_type">out_refund</field>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record id="voucher_invoice_B" model="wsfe.voucher_type">
+            <field name="name">Factura B</field>
+            <field name="code">6</field>
+            <field name="voucher_model">invoice</field>
+            <field name="document_type">out_invoice</field>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
+        </record>
+
+        <record id="voucher_debit_note_B" model="wsfe.voucher_type">
+            <field name="name">ND B</field>
+            <field name="code">7</field>
+            <field name="voucher_model">invoice</field>
+            <field name="document_type">out_debit</field>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
+        </record>
+
+        <record id="voucher_credit_note_B" model="wsfe.voucher_type">
+            <field name="name">NC B</field>
+            <field name="code">8</field>
+            <field name="voucher_model">invoice</field>
+            <field name="document_type">out_refund</field>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
+        </record>
+
+    </data>
+</openerp>

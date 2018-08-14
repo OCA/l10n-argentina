@@ -11,7 +11,7 @@
                     <p class="oe_grey">
                         Choose your WSAA Certificate
                     </p>
-                    <group col="8" colspan="2">
+                    <group>
                         <field name="cert_name" invisible="True"/>
                         <field name="certificate" widget="binary" required="True"
                             filename="cert_name"/>
@@ -34,7 +34,7 @@
                     <p class="oe_grey">
                         Choose your WSAA Key
                     </p>
-                    <group col="8" colspan="2">
+                    <group>
                         <field name="key_name" invisible="True"/>
                         <field name="key" widget="binary" required="True"
                             filename="key_name"/>

@@ -2,8 +2,7 @@ from lxml import etree
 from datetime import datetime
 import time
 import email
-import urllib2
-from suds.client import Client
+import urllib.error as Urllib
 from xml.sax import SAXParseException
 import logging
 from openerp.tools.misc import ustr
@@ -16,11 +15,14 @@ logger.setLevel(logging.DEBUG)
 # streamH.setLevel(logging.DEBUG)
 # streamH.setFormatter(formatter)
 # logger.addHandler(streamH)
-
+try:
+    from suds.client import Client
+except (ImportError, IOError) as e:
+    logger.debug("Cannot import Client from Suds-py3:\n%s" % e)
 try:
     from M2Crypto import BIO, SMIME
-except ImportError as e:
-    logger.warning("Cannot import BIO & SMIME from M2Crypto: %s" % e)
+except (ImportError, IOError) as e:
+    logger.debug("Cannot import BIO & SMIME from M2Crypto: \n%s" % e)
 
 
 class WSAA:
@@ -37,13 +39,13 @@ class WSAA:
 
         try:
             self._create_client()
-        except urllib2.URLError, e:
+        except Urllib.URLError as e:
             logger.error("No hay conexion disponible")
             self.connected = False
             raise Exception('No se puede conectar con AFIP: %s' % str(e))
-        except SAXParseException, e:
+        except SAXParseException as e:
             raise Exception('WSAA URL malformada: %s' % e.getMessage())
-        except Exception, e:
+        except Exception as e:
             raise Exception('Unknown Error: %s' % e)
 
     def _create_client(self):
@@ -109,7 +111,7 @@ class WSAA:
         s.write(out, p7)
 
         # Extraemos la parte que nos interesa
-        msg = email.message_from_string(out.read())
+        msg = email.message_from_string(out.read().decode('utf-8'))
         for part in msg.walk():
             filename = part.get_filename()
             if filename == "smime.p7m":
@@ -123,7 +125,7 @@ class WSAA:
         if not self.connected:
             try:
                 self._create_client()
-            except urllib2.URLError, e:
+            except Urllib.URLError as e:
                 logger.warning("No hay conexion disponible")
                 self.connected = False
                 raise Exception('No hay conexion: %s' % e)
@@ -132,7 +134,7 @@ class WSAA:
         logger.debug("Llamando a loginCms:\n%s", cms)
         try:
             result = self.client.service.loginCms(cms)
-        except Exception, e:
+        except Exception as e:
             logger.exception("Excepcion al llamar a loginCms")
             raise Exception('Exception al autenticar: %s' % ustr(e))
 
@@ -181,7 +183,7 @@ class WSAA:
         cms = self._sign_tra(tra, cert, key)
         try:
             self._call_wsaa(cms)
-        except Exception, e:
+        except Exception as e:
             raise e
 
         self.parse_ta(self.ta)
@@ -189,12 +191,15 @@ class WSAA:
 
 
 # El certificado X.509 obtenido de Seg. Inf.
-CERT = "/home/skennedy/proyectos/afipws/certs2012/eynes/cert_eynes.crt"
+# CERT = "/home/skennedy/proyectos/afipws/certs2012/eynes/cert_eynes.crt"
+CERT = ""
 # La clave privada del certificado CERT
-PRIVATEKEY = "/home/skennedy/proyectos/afipws/certs2012/eynes/ \
-    privada_eynes.key"
+# PRIVATEKEY = "/home/skennedy/proyectos/afipws/certs2012/eynes/ \
+#     privada_eynes.key"
+PRIVATEKEY = ""
 # homologacion (pruebas)
-WSAAURL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl"
+# WSAAURL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl"
+WSAAURL = ""
 # WSAAURL="https://wsaa.afip.gov.ar/ws/services/LoginCms?wsdl"
 
 if __name__ == '__main__':
@@ -209,13 +214,13 @@ if __name__ == '__main__':
         token = wsaa.token
         expiration_time = wsaa.expiration_time
         sign = wsaa.sign
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)
 
     # Vemos si ya expiro
     if datetime.now() > expiration_time:
-        print "Certificado expirado"
+        print("Certificado expirado")
 
-    print 'Token: ', token
-    print 'Sign: ', sign
-    print 'Expiration Time: ', expiration_time.strftime("%d/%m/%Y %H:%M:%S")
+    print('Token: ', token)
+    print('Sign: ', sign)
+    print('Expiration Time: ', expiration_time.strftime("%d/%m/%Y %H:%M:%S"))

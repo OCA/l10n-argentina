@@ -20,4 +20,8 @@
 #
 ##############################################################################
 
-from . import wsaa_suds # noqa
+from . import models  # noqa
+from . import wizard  # noqa
+# TODO: from . import report  # noqa
+from . import wsfetools  # noqa
+# import tests  # noqa

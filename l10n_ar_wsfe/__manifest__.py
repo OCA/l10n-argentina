@@ -20,4 +20,37 @@
 #
 ##############################################################################
 
-from . import wsaa_suds # noqa
+{
+    "name": "WSFE (Factura Electronica)",
+    "version": "8.0.2.0.1",
+    "depends": [
+        "base",
+        "account",
+        "base_vat_ar",
+        "l10n_ar_point_of_sale",
+        "l10n_ar_wsaa",
+    ],
+    "author": "E-MIPS",
+    "website": "http://e-mips.com.ar",
+    "license": "GPL-3",
+    "category": "Argentina Localization",
+    "description": """
+        WSFE (Web Service de Factura Electronica).
+        Este módulo nos permite facturar de forma electrónica
+        a través del Servicio Web que publica la AFIP.
+    """,
+    'data': [
+        'data/wsfe_data.xml',
+        'views/wsfe_view.xml',
+        'views/account_invoice_view.xml',
+        # 'workflow/account_invoice_workflow.xml',
+        'wizard/wsfe_sinchronize_voucher_view.xml',
+        'wizard/wsfe_massive_sinchronize_view.xml',
+        'security/ir.model.access.csv',
+    ],
+    'demo': [
+        # 'wsfe_demo.xml',
+    ],
+    'installable': True,
+    'active': False,
+}

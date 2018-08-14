@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
+#    Copyright (c) 2015 E-MIPS (http://www.e-mips.com.ar)
+#    Copyright (c) 2015 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General
-#    Public License as published by
+#    it under the terms of the GNU Affero General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -20,4 +21,7 @@
 #
 ##############################################################################
 
-from . import wsaa_suds # noqa
+from . import test_wsfe_basic
+from . import test_sinchronize
+from . import setup_tests
+from . import test_connector_invoice

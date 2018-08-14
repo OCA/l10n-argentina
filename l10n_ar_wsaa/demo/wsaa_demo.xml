@@ -47,7 +47,8 @@ qN4c0gUnCQLfsJhbhDjX1NbB5wIvnoutSAU6/C3nU1hnWrZO9wsxHpm/pq7CNMPc
 OUcy21NKfPVe5RgROrkCQQDPYaChm93Y777A7ObA15kVhJCDJkoaI5j2KrySdTiE
 c8Pc24OAwh6T7dqUN4Al2aXjR2WcYKOEYXVEtVbhkpI5
 -----END RSA PRIVATE KEY-----</field>
-            <field name="url">https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl</field>
+            <!-- <field name="url">https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl</field> -->
+            <field name="url">asd</field>
         </record>
 
     </data>

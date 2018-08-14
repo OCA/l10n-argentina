@@ -41,7 +41,7 @@ class wsaa_load_config(models.TransientModel):
             raise ValidationError(
                 _('Error ! The Filename should end in ".%s"', ext))
         fileobj = TemporaryFile('w+')
-        fileobj.write(base64.decodestring(filedata))
+        fileobj.write(base64.b64decode(filedata).decode('utf-8'))
         fileobj.seek(0)
         lines = fileobj.read()
         fileobj.close()
