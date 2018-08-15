@@ -34,7 +34,7 @@
                         <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                     </field>
                    <field name="partner_id" position="before">
-                       <field name="pos_ar_id" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                       <field name="pos_ar_id" attrs="{'readonly': True}" force_save="True"/>
                        <field name="is_debit_note" invisible="1"/>
                    </field>
                    <field name="amount_untaxed" position="replace">

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="base.main_partner" model="res.partner">
+            <field name="vat">30710981295</field>
+        </record>
+
+        <record id="wsfe_pos_A0001_demo" model="pos.ar">
+            <field name="name">0002</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record id="wsfe_pos_B0001_demo" model="pos.ar">
+            <field name="name">0002</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_B"/>
+        </record>
+
+        <record id="wsfe_pos_A0002_not_electronic_demo" model="pos.ar">
+            <field name="name">0003</field>
+            <field name="priority">1</field>
+            <field name="shop_id" ref="stock.stock_warehouse_shop0"/>
+            <field name="denomination_id" ref="l10n_ar_point_of_sale.denomination_A"/>
+        </record>
+
+        <record forcecreate="0" id="wsfe_config_demo" model="wsfe.config">
+            <field name="name">Configuracion WSFE Demo</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="homologation">1</field>
+            <field name="url">https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl</field>
+            <field name="point_of_sale_ids" eval="[(6,0,[ref('wsfe_pos_A0001_demo'),ref('wsfe_pos_B0001_demo')])]"/>
+        </record>
+
+        <record id="wsfex_config_demo" model="wsfex.config">
+            <field name="name">Configuracion WSFEX Demo</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="homologation">1</field>
+            <field name="url">https://wswhomo.afip.gov.ar/wsfex/service.asmx?wsdl</field>
+        </record>
+
+    </data>
+</openerp>

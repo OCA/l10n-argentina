@@ -1,0 +1,1 @@
+* Pensar en borrar el archivo perception_data.xml o a lo sumo convertirlo en un demo. La carga de estos datos debería ser hecha por `account_base_config`

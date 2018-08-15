@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="act_pre_open" model="workflow.activity">
+            <field name="wkf_id" ref="account.wkf"/>
+            <field name="name">preopen</field>
+            <field name="action">action_date_assign()
+action_move_create()
+action_number()
+action_aut_cae()</field>
+            <field name="kind">function</field>
+        </record>
+
+        <record id="account.act_open" model="workflow.activity">
+            <field name="wkf_id" ref="account.wkf"/>
+            <field name="name">open</field>
+            <field name="action">invoice_validate()</field>
+            <field name="kind">function</field>
+        </record>
+
+        <record id="t4_1" model="workflow.transition">
+            <field name="act_from" ref="account.act_draft"/>
+            <field name="act_to" ref="act_pre_open"/>
+            <field name="signal">invoice_open</field>
+        </record>
+
+        <record id="account.t4" model="workflow.transition">
+            <field name="act_from" ref="account.act_draft"/>
+            <field name="act_to" ref="account.act_open"/>
+            <field name="signal">invoice_massive_open</field>
+        </record>
+
+       <record id="pro2_to_pre_open" model="workflow.transition">
+            <field name="act_from" ref="account.act_proforma2"/>
+            <field name="act_to" ref="act_pre_open"/>
+            <field name="signal">invoice_open</field>
+        </record>
+
+        <record id="account.pro2_to_open" model="workflow.transition">
+            <field name="act_from" ref="account.act_proforma2"/>
+            <field name="act_to" ref="account.act_open"/>
+            <field name="signal">invoice_massive_open</field>
+        </record>
+
+        <record id="trans_pre_to_open" model="workflow.transition">
+            <field name="act_from" ref="act_pre_open"/>
+            <field name="act_to" ref="account.act_open"/>
+        </record>
+
+    </data>
+</openerp>
