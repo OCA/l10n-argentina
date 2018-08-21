@@ -57,7 +57,7 @@ class TestSetUp(TransactionCase):
         inv_vals = {
             'account_id': self.account.id,
             'partner_id': self.partner1.id,
-            'invoice_line': [(0, 0, inv_line_vals)],
+            'invoice_line_ids': [(0, 0, inv_line_vals)],
         }
         inv = self.invoice_model.create(inv_vals)
         return inv

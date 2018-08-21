@@ -91,7 +91,7 @@ class WSFE(WebService):
         # Chequeamos si el concepto es producto,
         # servicios o productos y servicios
         product_service = [l.product_id and l.product_id.type or
-                           'consu' for l in invoice.invoice_line]
+                           'consu' for l in invoice.invoice_line_ids]
 
         service = all([ps == 'service' for ps in product_service])
         products = all([ps == 'consu' or ps == 'product' for
@@ -167,10 +167,10 @@ class WSFE(WebService):
         importe_neto_no_gravado = invoice.amount_no_taxed
 
         # Procesamos las taxes
-        for tax in invoice.tax_line:
+        for tax in invoice.tax_line_ids:
             found = False
             for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
-                if eitax.tax_code_id.id == tax.tax_code_id.id:
+                if eitax.tax_id.id == tax.tax_id.id:
                     found = True
                     if eitax.exempt_operations:
                         pass
@@ -195,7 +195,8 @@ class WSFE(WebService):
         except UserError:
             if retry:
                 raise
-            invoice.button_reset_taxes()
+            # TODO
+            # invoice.button_reset_taxes()
             return self.get_iva_array(invoice, retry=True)
 
         vals = {
@@ -296,11 +297,15 @@ class WSFE(WebService):
             if res['Errores']:
                 msg = 'Errores: ' + '\n'.join(res['Errores']) + '\n'
                 msg = msg.encode('latin1').decode('utf8')
+            if res['Comprobantes'][0]['Observaciones']:
+                msg += '\nObservaciones: ' + '\n'.join(
+                    res['Comprobantes'][0]['Observaciones'])
+                msg = msg.encode('latin1').decode('utf8')
 
             if invoice._context.get('raise-exception', True):
-                raise UserError(_('AFIP Web Service Error'),
-                                 _('La factura no fue aprobada. \n' +
-                                   '%s') % msg)
+                raise UserError(_('AFIP Web Service Error\n' +
+                                  'La factura no fue aprobada. \n' +
+                                  '%s') % msg)
 
         elif res['Resultado'] == 'A' or res['Resultado'] == 'P':
             for comp in res['Comprobantes']:
@@ -381,7 +386,8 @@ class WSFE(WebService):
                 'result': comp['Resultado'],
                 'currency': comp['MonId'],
                 'currency_rate': comp['MonCotiz'],
-                'observations': '\n'.join(comp['Observaciones']),
+                'observations': '\n'.join(comp['Observaciones']).encode(
+                'latin1').decode('utf8'),
             }
 
             req_details.append((0, 0, det))
@@ -560,7 +566,7 @@ class WSFE(WebService):
 
     @wsapi.check(STRINGS)
     def validate_strings(val):
-        if isinstance(val, (str, unicode)):
+        if isinstance(val, str):
             return True
         return False
 

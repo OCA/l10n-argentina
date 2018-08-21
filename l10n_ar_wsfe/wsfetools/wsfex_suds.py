@@ -187,7 +187,7 @@ class WSFEX:
             self._create_client()
 
         fexrequest = self.client.factory.create('ns0:ClsFEXRequest')
-        for k, v in Cmp.iteritems():
+        for k, v in Cmp.items():
             if k == 'Items':
                 continue
             if k in fexrequest:
@@ -197,7 +197,7 @@ class WSFEX:
 
         for item in Cmp['Items']:
             feitem = self.client.factory.create('ns0:Item')
-            for k, v in item.iteritems():
+            for k, v in item.items():
                 if k in feitem:
                     feitem[k] = v
                 else:

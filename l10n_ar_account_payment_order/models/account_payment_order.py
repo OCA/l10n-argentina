@@ -7,6 +7,7 @@ import logging
 from odoo.addons import decimal_precision as dp
 from odoo import models, fields, api, _  # , api, fields, _, exceptions
 from odoo.exceptions import RedirectWarning, ValidationError
+from odoo.tools import float_compare
 # from odoo.addons.decimal_precision import decimal_precision as dp
 # from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, \
 #         DEFAULT_SERVER_DATETIME_FORMAT, float_compare
@@ -491,19 +492,285 @@ class AccountPaymentOrder(models.Model):
         '''
         return self.currency_id.id or self._get_company_currency()
 
+    def account_move_get(self):
+        '''
+        This method prepare the creation of the
+        account move related to the given voucher.
+
+        :param voucher_id: Id of voucher for which
+         we are creating account_move.
+        :return: mapping between fieldname and value of account move to create
+        :rtype: dict
+        '''
+        if self.number:
+            name = self.number
+        elif self.journal_id.sequence_id:
+            if not self.journal_id.sequence_id.active:
+                raise UserError(_('Configuration Error !\n\
+                    Please activate the sequence of selected journal !'))
+        else:
+            raise UserError(_('Error!\n\
+                Please define a sequence on the journal.'))
+        if not self.reference:
+            ref = name.replace('/','')
+        else:
+            ref = self.reference
+
+        move = {
+            'name': name,
+            'journal_id': self.journal_id.id,
+            'narration': self.narration,
+            'date': self.date,
+            'ref': ref,
+            'period_id': self.period_id.id
+        }
+        return move
+
+    @api.multi
+    def create_move_line_hook(self, move_id, move_lines):
+        return move_lines
+
+    @api.multi
+    def _create_move_line_payment(self, move_id, name, journal_id, amount,
+                                  company_currency, current_currency, sign):
+
+        amount_in_company_currency = self.\
+            _convert_paid_amount_in_company_currency(amount)
+
+        debit = credit = 0.0
+        if self.type in ('purchase', 'payment'):
+            credit = amount_in_company_currency
+            pl_account_id = journal_id.default_credit_account_id.id
+        elif self.type in ('sale', 'receipt'):
+            debit = amount_in_company_currency
+            pl_account_id = journal_id.default_debit_account_id.id
+        if debit < 0:
+            credit = -debit
+            debit = 0.0
+        if credit < 0:
+            debit = -credit
+            credit = 0.0
+        sign = debit - credit < 0 and -1 or 1
+
+        move_line = {
+            'name': name or '/',
+            'debit': debit,
+            'credit': credit,
+            'account_id': pl_account_id,
+            'move_id': move_id,
+            'journal_id': self.journal_id.id,
+            'period_id': self.period_id.id,
+            'partner_id': self.partner_id.id,
+            'currency_id': company_currency != current_currency and current_currency or False,
+            'amount_currency': company_currency != current_currency and sign * amount or 0.0,
+            'date': self.date,
+            'date_maturity': self.date_due
+        }
+
+        return move_line
+
+    @api.multi
+    def create_move_lines(self, move_id, company_currency, current_currency):
+        '''
+        Return a dict to be use to create account move lines of given voucher.
+
+        :param voucher_id: Id of voucher what we are creating account_move.
+        :param move_id: Id of account move where this line will be added.
+        :param company_currency: id of currency of the company to which the voucher belong
+        :param current_currency: id of currency of the voucher
+        :return: mapping between fieldname and value of account move line to create
+        :rtype: dict
+        '''
+        total_debit = total_credit = 0.0
+        # TODO: is there any other alternative then the voucher type ??
+        # ANSWER: We can have payment and receipt "In Advance".
+        # TODO: Make this logic available.
+        # -for sale, purchase we have but for the payment and receipt we do not have as based on the bank/cash journal we can not know its payment or receipt
+        if self.type in ('purchase', 'payment'):                           
+            total_credit = self.paid_amount_in_company_currency            
+        elif self.type in ('sale', 'receipt'):                             
+            total_debit = self.paid_amount_in_company_currency             
+        if total_debit < 0:          
+            total_credit = - total_debit                                   
+            total_debit = 0.0        
+        if total_credit < 0:         
+            total_debit = -total_credit                                    
+            total_credit = 0.0       
+        sign = total_debit - total_credit < 0 and -1 or 1                  
+
+        # Creamos una move_line por payment_line                           
+        move_lines = []              
+        for pl in self.payment_line_ids:
+            if pl.amount == 0.0:
+                continue
+
+            move_line = self._create_move_line_payment(move_id, pl.name,                                                                              
+                            pl.payment_mode_id, pl.amount,
+                            company_currency, current_currency, sign)
+
+            move_lines.append(move_line)
+
+        # Si es pago contado                                                                                                                          
+        if self.journal_id.type not in ('receipt', 'payment'):
+            move_line = self._create_move_line_payment(move_id, _('Immediate'),
+                            self.journal_id, self.amount,
+                            company_currency, current_currency, sign)
+
+            move_lines.append(move_line)
+
+
+        # Creamos un hook para agregar los demas asientos contables de otros modulos
+        self.create_move_line_hook(move_id, move_lines)
+
+        # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
+        amount_credit = 0.0
+        amount_debit = 0.0
+        for line in move_lines:
+            amount_credit += line['credit']
+            amount_debit += line['debit']
+
+        if round(amount_credit, 3) != round(total_credit, 3) or round(amount_debit, 3) != round(total_debit, 3):
+            if self.type in ('purchase', 'payment'):
+                amount_credit -= amount_debit
+                amount_debit -= amount_debit
+            else:
+                amount_debit -= amount_credit
+                amount_credit -= amount_credit
+
+            if round(amount_credit, 3) != round(total_credit, 3) or round(amount_debit, 3) != round(total_debit, 3):
+                raise UserError(_('Voucher Error!\n\
+                    Voucher Paid Amount and sum of different payment \
+                        mode must be equal'))
+
+        return move_lines
+
+    def first_move_line_get(self, move_id, company_currency, current_currency):
+        '''
+        Return a dict to be use to create the
+        first account move line of given voucher.
+
+        :param voucher_id: Id of voucher what we are creating account_move.
+        :param move_id: Id of account move where this line will be added.
+        :param company_currency: id of currency of the
+         company to which the voucher belong
+        :param current_currency: id of currency of the voucher
+        :return: mapping between fieldname and
+         value of account move line to create
+        :rtype: dict
+        '''
+        debit = credit = 0.0
+        # TODO: is there any other alternative then the voucher type ??
+        # ANSWER: We can have payment and receipt "In Advance".
+        # TODO: Make this logic available.
+        # -for sale, purchase we have but for the payment and
+        # receipt we do not have as based on the bank/cash
+        # journal we can not know its payment or receipt
+        if self.type in ('purchase', 'payment'):
+            credit = self.paid_amount_in_company_currency
+        elif self.type in ('sale', 'receipt'):
+            debit = self.paid_amount_in_company_currency
+        if debit < 0: credit = -debit; debit = 0.0
+        if credit < 0: debit = -credit; credit = 0.0
+        sign = debit - credit < 0 and -1 or 1 
+        # set the first line of the voucher
+        move_line = {
+                'name': self.name or '/', 
+                'debit': debit,
+                'credit': credit,
+                'account_id': self.account_id.id,
+                'move_id': move_id,
+                'journal_id': self.journal_id.id,
+                'period_id': self.period_id.id,
+                'partner_id': self.partner_id.id,
+                'currency_id': company_currency != current_currency and  current_currency or False,
+                'amount_currency': (sign * abs(self.amount) # amount < 0 for refunds
+                                    if company_currency !=\
+                                     current_currency else 0.0),
+                'date': self.date,
+                'date_maturity': self.date_due
+            }
+        return move_line
+
+    def _convert_amount(self, amount):
+        '''
+        This function convert the amount given in company currency. It takes either the rate in the voucher (if the                                   
+        payment_rate_currency_id is relevant) either the rate encoded in the system.                                                                  
+
+        :param amount: float. The amount to convert                        
+        :param voucher: id of the voucher on which we want the conversion  
+        :param context: to context to use for the conversion. It may contain the key 'date' set to the voucher date                                   
+            field in order to select the good rate to use.                 
+        :return: the amount in the currency of the voucher's company       
+        :rtype: float                
+        '''
+        return self.currency_id.compute(amount, self.company_id.currency_id)
+
+    def voucher_move_line_create(self, line_total, move_id, company_currency, current_currency):
+        '''
+        Create one account move line, on the given account move, per voucher line where amount is not 0.0.
+        It returns Tuple with tot_line what is total of difference between debit and credit and
+        a list of lists with ids to be reconciled with this format (total_deb_cred,list_of_lists).
+
+        :param voucher_id: Voucher id what we are working with
+        :param line_total: Amount of the first line, which correspond to the amount we should totally split among all voucher lines.
+        :param move_id: Account move wher those lines will be joined.
+        :param company_currency: id of currency of the company to which the voucher belong
+        :param current_currency: id of currency of the voucher
+        :return: Tuple build as (remaining amount not allocated on voucher lines, list of account_move_line created in this method)
+        :rtype: tuple(float, list of int)
+        '''
+
+        date = self.read(['date'])[0]['date']
+        voucher_currency = self.journal_id.currency_id or self.company_id.currency_id
+        prec = self.env['decimal.precision'].precision_get('account')
+        for line in self.line_ids:
+            #create one move line per voucher line where amount is not 0.0 
+            # AND (second part of the clause) only if the original move line was not having debit = credit = 0 (which is a legal value)
+            if not line.amount and not (line.move_line_id and or float_compare(line.move_line_id.debit,
+                              line.move_line_id.credit,
+                              precision_digits=prec) and not \
+                float_compare(line.move_line_id.debit, 0.0,
+                    precision_digits=prec)):
+                continue
+
     @api.multi
     def action_move_line_create(self):
         '''
         Confirm the vouchers given in ids and create
         the journal entries for each of them
         '''
-        move_pool = self.env['account.move']
-        move_line_pool = self.env['account.move.line']
+        move_obj = self.env['account.move']
+        move_line_obj = self.env['account.move.line']
         for payment in self:
             if payment.move_id:
                 continue
             company_currency = payment._get_company_currency()
             current_currency = payment._get_current_currency()
+            # But for the operations made by _convert_amount, we always need to give the date in the context
+            ctx = {'date': voucher.date}
+            # Create the account move record.
+            move_recordset = move_obj.with_context(ctx).create(payment.account_move_get())
+            # Get the name of the account_move just created
+            name = move_recordset.name
+            move_id = move_recordset.id
+
+            if payment.type in ('payment', 'receipt'):
+                # Creamos las lineas contables de todas las formas de pago, etc
+                move_line_vals = self.create_move_lines(move_id, company_currency, current_currency)
+                line_total = 0.0
+                for vals in move_line_vals:
+                    line_total += vals['debit'] - vals['credit']
+                    move_line_obj.create(vals)
+            else:
+                # Create the first line of the voucher
+                move_line_brw = move_line_pool.with_context(ctx).create(
+                    self.first_move_line_get(
+                        voucher.id, move_id,
+                        company_currency,
+                        current_currency))
+                line_total = move_line_brw.debit - move_line_brw.credit
+
+
 
 
 class AccountPaymentOrderLine(models.Model):

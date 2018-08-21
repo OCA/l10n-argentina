@@ -44,7 +44,7 @@ class TestWSFE(TransactionCase):
             type='out_invoice',
             date_invoice=time.strftime('%Y-%m-%d')))
 
-        self.invoice_line_model.create(dict(
+        self.invoice_line_ids_model.create(dict(
             product_id=self.product.id,
             quantity=1,
             price_unit=price_unit,
@@ -61,7 +61,7 @@ class TestWSFE(TransactionCase):
         super(TestWSFE, self).setUp()
         self.wsfe_config = self.env['wsfe.config']
         self.invoice_model = self.env['account.invoice']
-        self.invoice_line_model = self.env['account.invoice.line']
+        self.invoice_line_ids_model = self.env['account.invoice.line']
         self.wizard_sinchro = self.env['wsfe.sinchronize.voucher']
         self.wizard_massive_sinchro = self.env['wsfe.massive.sinchronize']
         self.voucher_invoice_A = self.browse_ref("l10n_ar_wsfe.voucher_invoice_A")

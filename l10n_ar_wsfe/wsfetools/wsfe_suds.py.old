@@ -347,12 +347,12 @@ class WSFEv1:
 
             argdetreq = self.client.factory.create('ns0:FECAEDetRequest')
 
-            for k, v in detalle.iteritems():
+            for k, v in detalle.items():
                 if isinstance(v, list):
                     if k == 'Iva':
                         for iva in v:
                             argiva = self.client.factory.create('ns0:AlicIva')
-                            for k, v in iva.iteritems():
+                            for k, v in iva.items():
                                 if k in argiva:
                                     argiva[k] = v
                                 else:
@@ -363,7 +363,7 @@ class WSFEv1:
                     elif k == 'Tributos':
                         for trib in v:
                             argtrib = self.client.factory.create('ns0:Tributo')
-                            for k, v in trib.iteritems():
+                            for k, v in trib.items():
                                 if k in argtrib:
                                     argtrib[k] = v
                                 else:
