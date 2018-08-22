@@ -134,7 +134,7 @@ class AccountPaymentOrder(models.Model):
 
         self.amount = amount
 
-    @api.onchange('payment_line_ids')
+    @api.onchange('payment_mode_line_ids')
     def onchange_payment_line(self):
         amount = self._get_payment_lines_amount()
         amount += self._get_issued_checks_amount()
