@@ -34,10 +34,10 @@
                 <form string="Receipt">
                     <header invisible="context.get('line_type', False)">
                         <button name="proforma_voucher" string="Validate" class="oe_highlight" type="object"/>
-                        <button name="cancel_voucher" string="Cancel Receipt"/>
+                        <button name="cancel_voucher" string="Cancel Receipt" type="object"/>
                         <button name="cancel_voucher" string="Unreconcile" type="object" confirm="Are you sure to unreconcile and cancel this record ?"/>
                         <button name="action_cancel_draft" type="object" string="Set to Draft"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,posted" statusbar_colors='{"proforma":"blue"}'/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted" type="object" statusbar_colors='{"proforma":"blue"}'/>
                     </header>
                     <sheet>
                         <h1 attrs="{'invisible': [('number','=',False)]}"><field name="number" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/></h1>
@@ -274,7 +274,7 @@
                 <form string="Payment Order">
                 <header>
                     <button name="proforma_voucher" string="Validate" states="draft" invisible="context.get('line_type', False)" class="oe_highlight" type="object"/>
-                    <button name="cancel_voucher" string="Cancel Voucher" states="draft,proforma"  invisible="context.get('line_type', False)"/>
+                    <button name="cancel_voucher" string="Cancel Voucher" states="draft,proforma" type="object" invisible="context.get('line_type', False)"/>
                     <button name="cancel_voucher" string="Unreconcile" type="object" states="posted" invisible="context.get('line_type', False)" confirm="Are you sure to unreconcile and cancel this record ?"/>
                     <button name="action_cancel_draft" type="object" states="cancel" string="Set to Draft" invisible="context.get('line_type', False)"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,posted" statusbar_colors='{"proforma":"blue"}'/>

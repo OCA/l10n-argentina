@@ -86,8 +86,10 @@ class AccountIssuedCheck(models.Model):
                                  ('48', '48 hs'),
                                  ('72', '72 hs')],
                                 string='Clearing', default='24')
+    # TODO: check domain
     account_bank_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Bank Account')
+                                      string='Bank Account',
+                                      domain=[('bank', '=', bank_id)])
     payment_order_id = fields.Many2one(comodel_name='account.payment.order',
                                        string='Voucher')
     payment_move_id = fields.Many2one(comodel_name='account.move',

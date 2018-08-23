@@ -109,7 +109,7 @@
                                 <field name="issue_date"/>
                                 <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
                                 <field name="reject_date" attrs="{'invisible': [('state', '!=', 'rejected')]}"/>
-                                <field name="account_bank_id" domain="[('bank', '=', bank_id)]" required="1"/>
+                                <field name="account_bank_id" required="1"/>
                                 <field name="crossed"/>
                                 <field name="not_order"/>
                             </group>
