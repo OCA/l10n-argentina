@@ -53,7 +53,7 @@ class AccountInvoiceConfirm(models.TransientModel):
         # Si estamos en este punto es porque alguna o todas es electronica
         if not all(inv_electronic_pos):
             raise UserError(
-                _('WSFE Error!'),
+                _('WSFE Error!\n') +
                 _('You are trying to validate several invoices but not all ' +
                   'of them belongs to an electronic point of sale'))
 
@@ -66,7 +66,7 @@ class AccountInvoiceConfirm(models.TransientModel):
         # Son todas del mismo Punto de Venta?
         if not same_pos:
             raise UserError(
-                _('WSFE Error!'),
+                _('WSFE Error!\n') +
                 _('You are trying to validate several invoices but not all ' +
                   'of them belongs to the same point of sale'))
 
@@ -75,7 +75,7 @@ class AccountInvoiceConfirm(models.TransientModel):
         # Estan todas en estado 'Draft'?
         if not all(draft_state):
             raise UserError(
-                _('WSFE Error!'),
+                _('WSFE Error!\n') +
                 _("You are trying to validate several invoices but not " +
                   "all of them are in 'draft' state"))
 
@@ -89,7 +89,7 @@ class AccountInvoiceConfirm(models.TransientModel):
         # Son todas el mismo Tipo de Comprobante?
         if not same_type:
             raise UserError(
-                _('WSFE Error!'),
+                _('WSFE Error!\n') +
                 _("You are trying to validate several invoices but not all " +
                   "of them are the same type. For example, all Customer " +
                   "Invoices or all Customer Refund"))
@@ -137,7 +137,7 @@ class AccountInvoiceConfirm(models.TransientModel):
         except Exception as e:
             err = _('Error received was: \n %s') % e
             raise UserError(
-                _('WSFE Validation Error'), err)
+                _('WSFE Validation Error\n') + err)
         finally:
             # Creamos el wsfe.request con otro cursor,
             # porque puede pasar que

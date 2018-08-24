@@ -115,7 +115,7 @@ class wsfe_massive_sinchronize(models.TransientModel):
             # No se encontro la factura
             if not invoice:
                 raise UserError(
-                    _('Voucher Not Found!'),
+                    _('Voucher Not Found!\n') +
                     _('Voucher %d of pos %s has not been found.') %
                     (number, self.pos_id.name))
 

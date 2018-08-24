@@ -43,14 +43,15 @@
         'data/wsfe_data.xml',
         'views/wsfe_view.xml',
         'views/account_invoice_view.xml',
-        # 'workflow/account_invoice_workflow.xml',
         'wizard/wsfe_sinchronize_voucher_view.xml',
         'wizard/wsfe_massive_sinchronize_view.xml',
         'security/ir.model.access.csv',
     ],
-    'demo': [
-        # 'wsfe_demo.xml',
-    ],
+    "external_dependencies": {
+        "python": [
+            "easywsy",
+        ],
+    },
     'installable': True,
     'active': False,
 }

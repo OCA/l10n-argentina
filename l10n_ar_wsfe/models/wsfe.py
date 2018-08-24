@@ -122,13 +122,13 @@ class WsfeConfig(models.Model):
         company_id = self.env.user.company_id.id
         if not company_id:
             raise UserError(
-                _('Company Error!'),
+                _('Company Error!\n') +
                 _('There is no company being used by this user'))
 
         ids = self.search([('company_id', '=', company_id)])
         if not ids:
             raise UserError(
-                _('WSFE Config Error!'),
+                _('WSFE Config Error!\n') +
                 _('There is no WSFE configuration set to this company'))
 
         return ids
@@ -143,7 +143,7 @@ class WsfeConfig(models.Model):
             msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
 
             if msg != '' and raise_exception:
-                raise UserError(_('WSFE Error!'), msg)
+                raise UserError(_('WSFE Error!\n') + msg)
 
         return msg
 
@@ -285,7 +285,7 @@ class WsfeConfig(models.Model):
         response = ws.request('FEParamGetTiposIva')
         err = self.check_errors(response, raise_exception=False)
         if err:
-            raise UserError(_("Error reading Taxes!"), err)
+            raise UserError(_("Error reading Taxes!\n") + err)
         for tax in response[0][0]:
             fd = datetime.strptime(tax.FchDesde, '%Y%m%d')
             try:
@@ -351,7 +351,7 @@ class WsfeConfig(models.Model):
 
             if not fiscal_position_id:
                 raise UserError(
-                    _('Customer Configuration Error'),
+                    _('Customer Configuration Error\n') +
                     _('There is no fiscal position configured for ' +
                       'the customer %s') % inv.partner_id.name)
 
@@ -360,7 +360,7 @@ class WsfeConfig(models.Model):
             if not inv.internal_number:
                 if not first_num:
                     raise UserError(
-                        _("WSFE Error!"),
+                        _("WSFE Error!\n") +
                         _("There is no first invoice number declared!"))
                 inv_number = first_num
             else:
@@ -407,7 +407,7 @@ class WsfeConfig(models.Model):
 
             if not currency_code_ids:
                 raise UserError(
-                    _("WSFE Error!"),
+                    _("WSFE Error!\n") +
                     _("Currency has to be configured correctly " +
                       "in WSFEX Configuration."))
 
@@ -469,7 +469,7 @@ class WsfeConfig(models.Model):
             prec = obj_precision.precision_get('Account')
             if round(importe_total, prec) != round(inv.amount_total, prec):
                 raise UserError(
-                    _('Error in amount_total!'),
+                    _('Error in amount_total!\n') +
                     _("The total amount of the invoice does not " +
                       "corresponds to the total calculated.\n" +
                       "Maybe there is an rounding error!. " +
@@ -527,12 +527,12 @@ class WsfeVoucherType(models.Model):
         help='Internal Code assigned by AFIP for voucher type')
     voucher_model = fields.Selection([
         ('invoice', 'Factura/NC/ND'),
-        ('voucher', 'Recibo'), ], 'Voucher Model', select=True, required=True)
+        ('voucher', 'Recibo'), ], 'Voucher Model', index=True, required=True)
     document_type = fields.Selection([
         ('out_invoice', 'Factura'),
         ('out_refund', 'Nota de Credito'),
         ('out_debit', 'Nota de Debito'),
-    ], 'Document Type', select=True, required=True, readonly=False)
+    ], 'Document Type', index=True, required=True, readonly=False)
     denomination_id = fields.Many2one('invoice.denomination',
                                       'Denomination', required=False)
 
@@ -560,13 +560,13 @@ class WsfeVoucherType(models.Model):
 
             if not len(res):
                 raise UserError(
-                    _("Voucher type error!"),
+                    _("Voucher type error!\n") +
                     _("There is no voucher type that corresponds " +
                       "to this object"))
 
             if len(res) > 1:
                 raise UserError(
-                    _("Voucher type error!"),
+                    _("Voucher type error!\n") +
                     _("There is more than one voucher type that " +
                       "corresponds to this object"))
 

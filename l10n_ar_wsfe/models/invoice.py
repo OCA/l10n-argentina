@@ -83,23 +83,24 @@ class AccountInvoice(models.Model):
     # Esto lo hacemos porque al hacer una nota de credito,
     # no le setea la fiscal_position_id.
     # Ademas, seteamos el comprobante asociado
-    def refund(self, cr, uid, ids, date=None, period_id=None,
-               description=None, journal_id=None, context=None):
-        new_ids = super(AccountInvoice, self).refund(
-            cr, uid, ids, date, period_id,
-            description, journal_id, context=context)
+    @api.multi
+    @api.returns('self')
+    def refund(self, date_invoice=None, date=None,
+               description=None, journal_id=None):
+        refunds = super(AccountInvoice, self).refund(
+            date_invoice, date, description, journal_id)
 
-        for refund_id in new_ids:
+        for refund in refunds:
             vals = {}
-            refund = self.browse(cr, uid, refund_id)
-            invoice = self.browse(cr, uid, ids[0])
             if not refund.fiscal_position_id:
-                fiscal_position_id = refund.partner_id.property_account_position_id
-                vals = {'fiscal_position_id': fiscal_position_id.id}
+                fiscal_position_id = refund.partner_id.\
+                    property_account_position
+                vals['fiscal_position_id'] = fiscal_position_id.id
 
             # Agregamos el comprobante asociado y otros campos necesarios
             # si es de exportacion
-            if not invoice.local:
+            invoice = refund.refund_invoice_id
+            if not self.local:
                 vals['export_type_id'] = invoice.export_type_id.id
                 vals['dst_country_id'] = invoice.dst_country_id.id
                 vals['dst_cuit_id'] = invoice.dst_cuit_id.id
@@ -107,8 +108,8 @@ class AccountInvoice(models.Model):
             vals['associated_inv_ids'] = [(4, invoice.id)]
 
             if vals:
-                self.write(cr, uid, refund_id, vals)
-        return new_ids
+                refund.write(vals)
+        return refunds
 
     @api.model
     def _check_fiscal_values(self):
@@ -119,8 +120,8 @@ class AccountInvoice(models.Model):
             inv.denomination_id.id or False
         if inv.type in ('out_invoice', 'out_refund'):
             if not denomination_id:
-                raise UserError(_('Error!\n' +
-                                  'Denomination not set in invoice'))
+                raise UserError(_('Error!\n') +
+                                _('Denomination not set in invoice'))
 
             if denomination_id not in inv.pos_ar_id.denomination_ids.ids:
                 err = _('Point of sale has not the same ' +
@@ -173,7 +174,7 @@ class AccountInvoice(models.Model):
             if not self.pos_ar_id:
                 err = _("Pos not found for invoice `%s` (id: %s)") % \
                     (self.internal_number, self.id)
-                raise UserError(_("Error!"), err)
+                raise UserError(_("Error!\n") + err)
             pos = int(self.pos_ar_id.name)
         return pos
 
@@ -188,7 +189,7 @@ class AccountInvoice(models.Model):
             pto_vta = int(inv.pos_ar_id.name)
         except ValueError:
             err = _('El nombre del punto de venta tiene que ser numerico')
-            raise UserError(_('Error'), err)
+            raise UserError(_('Error\n') + err)
 
         last = conf.get_last_voucher(pto_vta, tipo_cbte)
 
@@ -261,12 +262,19 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_invoice_open_cae(self):
-        # lots of duplicate calls to action_invoice_open, so we remove those already open
+        # lots of duplicate calls to action_invoice_open,
+        # so we remove those already open
         to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
         if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
-            raise UserError(_("Invoice must be in draft state in order to validate it."))
-        if to_open_invoices.filtered(lambda inv: float_compare(inv.amount_total, 0.0, precision_rounding=inv.currency_id.rounding) == -1):
-            raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
+            raise UserError(_("Invoice must be in draft state " +
+                              "in order to validate it."))
+        if to_open_invoices.filtered(
+                lambda inv: float_compare(
+                    inv.amount_total, 0.0,
+                    precision_rounding=inv.currency_id.rounding) == -1):
+            raise UserError(_("You cannot validate an invoice with " +
+                              "a negative total amount.\n" +
+                              "You should create a credit note instead."))
         to_open_invoices.action_date_assign()
         to_open_invoices.action_move_create()
         self.action_number()
@@ -336,7 +344,7 @@ class AccountInvoice(models.Model):
                 if not m:
                     err = _('The Invoice Number should be the ' +
                             'format XXXX-XXXXXXXX')
-                    raise UserError(_('Error'), err)
+                    raise UserError(_('Error\n') + err)
 
                 # Escribimos el internal number
                 invoice_vals['internal_number'] = internal_number
@@ -345,7 +353,7 @@ class AccountInvoice(models.Model):
             else:
                 if not obj_inv.internal_number:
                     err = _('The Invoice Number should be filled')
-                    raise UserError(_('Error'), err)
+                    raise UserError(_('Error\n') + err)
 
                 if local:
                     m = re.match('^[0-9]{4}-[0-9]{8}$',
@@ -353,7 +361,7 @@ class AccountInvoice(models.Model):
                     if not m:
                         err = _('The Invoice Number should be ' +
                                 'the format XXXX-XXXXXXXX')
-                        raise UserError(_('Error'), err)
+                        raise UserError(_('Error\n') + err)
 
             # Escribimos los campos necesarios de la factura
             obj_inv.write(invoice_vals)
@@ -542,7 +550,7 @@ class AccountInvoice(models.Model):
         if len(list(set(local_list))) != 1:
             err = _("Trying to get the WSFE config for invoices mixed " +
                     "between local and not local")
-            raise UserError(_("WSFE Error"), err)
+            raise UserError(_("WSFE Error\n") + err)
         local = local_list[0]
         ctx = self.env.context.copy()
         if local:
@@ -555,7 +563,7 @@ class AccountInvoice(models.Model):
         if len(list(set(local_list))) != 1:
             err = _("Trying to get the WSFE config for invoices that " +
                     "belong to different points of sale")
-            raise UserError(_("WSFE Error"), err)
+            raise UserError(_("WSFE Error\n") + err)
         pos_ar = pos_ar_list[0]
         # Chequeamos si corresponde Factura Electronica
         # Aca nos fijamos si el pos_ar_id tiene
@@ -565,19 +573,20 @@ class AccountInvoice(models.Model):
             conf = c.point_of_sale_ids
             if pos_ar in conf:
                 confs_list.append(c)
-        # confs = filter(lambda c: pos_ar in c.point_of_sale_ids, [wsfe_conf, wsfex_conf])
+        # confs = filter(lambda c: pos_ar in c.point_of_sale_ids,
+        #                [wsfe_conf, wsfex_conf])
 
         if len(confs_list) > 1:
             err = _("There is more than one configuration " +
                     "with this POS %s") % pos_ar.name
-            raise UserError(_("WSFE Error"), err)
+            raise UserError(_("WSFE Error\n") + err)
 
         if confs_list:
             confs_obj = confs_list[0]
         elif not ctx['without_raise']:
             err = _("There is no configuration for this " +
                     "POS %s") % pos_ar.name
-            raise UserError(_("WSFE Error"), err)
+            raise UserError(_("WSFE Error\n") + err)
         else:
             confs_obj = False
         return confs_obj
@@ -588,27 +597,27 @@ class AccountInvoice(models.Model):
             pos, numb = self.internal_number.split('-')
         except (ValueError, AttributeError):
             raise UserError(
-                _("Error!"),
+                _("Error!\n") +
                 _("Wrong Number format for invoice id: `%s`" % self.id))
         if not pos:
             raise UserError(
-                _("Error!"),
+                _("Error!\n") +
                 _("Wrong POS for invoice id: `%s`" % self.id))
         if not numb:
             raise UserError(
-                _("Error!"),
+                _("Error!\n") +
                 _("Wrong Number Sequence for invoice id: `%s`" % self.id))
         try:
             pos = int(pos)
         except ValueError:
             raise UserError(
-                _("Error!"),
+                _("Error!\n") +
                 _("Wrong POS `%s` for invoice id: `%s`" % (pos, self.id)))
         try:
             numb = int(numb)
         except ValueError:
             raise UserError(
-                _("Error!"),
+                _("Error!\n") +
                 _("Wrong Number Sequence `%s` for invoice id: `%s`" %
                   (numb, self.id)))
         return pos, numb
@@ -625,7 +634,7 @@ class AccountInvoice(models.Model):
 
         if not currency_code_ids:
             raise UserError(
-                _("WSFE Error!"),
+                _("WSFE Error!\n") +
                 _("Currency has to be configured correctly " +
                   "in WSFEX Configuration."))
         currency_code = currency_code_ids[0].code
