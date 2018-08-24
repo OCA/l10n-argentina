@@ -33,7 +33,6 @@
 
     <record id="action_wizard_install_argentinean_cities_todo" model="ir.actions.todo">
         <field name="action_id" ref="action_wizard_install_argentinean_cities_view"/>
-        <field name="type">automatic</field>
         <field name="sequence" eval="500"/>
     </record>
 
