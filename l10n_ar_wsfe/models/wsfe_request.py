@@ -19,35 +19,47 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api
-from odoo.addons import decimal_precision as dp
+from odoo import fields, models
 
 
-class wsfe_request(models.Model):
+class WsfeRequest(models.Model):
     _name = "wsfe.request"
     _description = "WSFE Request"
     _order = "date_request desc"
 
-    nregs = fields.Integer('Number of Records', required=True, readonly=True)
-    pos_ar = fields.Char('POS', required=True, readonly=True, size=16)
-    voucher_type = fields.Char('Voucher Type', required=True, readonly=True, size=64)
-    date_request = fields.Datetime('Request Date', required=True)
-    name = fields.Char('Desc', required=False, size=64)
-    detail_ids = fields.One2many('wsfe.request.detail', 'request_id', 'Details', readonly=True)
-    result = fields.Selection([('A', 'Approved'), ('R', 'Rejected'), ('P', 'Partial')], 'Result', readonly=True)
+    nregs = fields.Integer(string='Number of Records',
+                           required=True, readonly=True)
+    pos_ar = fields.Char(string='POS', required=True,
+                         readonly=True, size=16)
+    voucher_type = fields.Char(string='Voucher Type',
+                               required=True,
+                               readonly=True, size=64)
+    date_request = fields.Datetime(string='Request Date', required=True)
+    name = fields.Char(string='Desc', required=False, size=64)
+    detail_ids = fields.One2many(comodel_name='wsfe.request.detail',
+                                 inverse_name='request_id',
+                                 string='Details', readonly=True)
+    result = fields.Selection([('A', 'Approved'),
+                               ('R', 'Rejected'),
+                               ('P', 'Partial')],
+                              string='Result', readonly=True)
     reprocess = fields.Boolean('Reprocess', readonly=True, default=False)
     errors = fields.Text('Errors', readonly=True)
 
-wsfe_request()
 
-
-class wsfe_request_detail(models.Model):
+class WsfeRequestDetail(models.Model):
     _name = "wsfe.request.detail"
     _description = "WSFE Request Detail"
 
-    name = fields.Many2one('account.invoice', 'Voucher', required=False, readonly=True)
-    request_id = fields.Many2one('wsfe.request', 'Request', required=True)
-    concept = fields.Selection([('1', 'Products'), ('2', 'Services'), ('3', 'Products&Services')], 'Concept', readonly=True)
+    name = fields.Many2one(comodel_name='account.invoice',
+                           string='Voucher', required=False,
+                           readonly=True)
+    request_id = fields.Many2one(comodel_name='wsfe.request',
+                                 string='Request', required=True)
+    concept = fields.Selection([('1', 'Products'),
+                                ('2', 'Services'),
+                                ('3', 'Products&Services')],
+                               string='Concept', readonly=True)
     doctype = fields.Integer('Document Type', readonly=True)
     docnum = fields.Char('Document Number', size=32, readonly=True)
     voucher_number = fields.Integer('Voucher Number', readonly=True)
@@ -62,9 +74,8 @@ class wsfe_request_detail(models.Model):
     currency = fields.Char('Currency', required=False, readonly=True)
     currency_rate = fields.Float('Currency Rate', required=False, readonly=True)
 
-wsfe_request_detail()
 
-class wsfex_request_detail(models.Model):
+class WsfexRequestDetail(models.Model):
     _name = "wsfex.request.detail"
     _description = "WSFEX Request Detail"
 
@@ -82,5 +93,3 @@ class wsfex_request_detail(models.Model):
     error = fields.Char('Error', size=255, readonly=True)
     detail = fields.Text('Detail', readonly=True)
     # errors = fields.Text('Errors', related='request_id.errors')
-
-wsfex_request_detail()

@@ -9,7 +9,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_expense
         name: '[PC1] Basic PC'
         price_unit: 300.0
@@ -35,7 +35,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_expense
         name: '[PC1] Basic PC'
         price_unit: 300.0

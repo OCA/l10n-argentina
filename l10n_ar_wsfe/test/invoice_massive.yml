@@ -8,7 +8,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 900.0
@@ -32,7 +32,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC1] Basic PC'
         price_unit: 900.0
@@ -56,7 +56,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 900.0
@@ -100,7 +100,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 900.0
@@ -124,7 +124,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC1] Basic PC'
         price_unit: 900.0
@@ -148,7 +148,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 900.0
@@ -190,7 +190,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 900.0
@@ -236,7 +236,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC1] Basic PC'
         price_unit: 500.0
@@ -260,7 +260,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 900.0
@@ -284,7 +284,7 @@
     company_id: base.main_company
     currency_id: base.EUR
     date_invoice: !eval time.strftime('%Y-%m-%d')
-    invoice_line:
+    invoice_line_ids:
       - account_id: account.a_sale
         name: '[PC3] Medium PC'
         price_unit: 700.0

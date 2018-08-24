@@ -134,7 +134,7 @@ class Parser(report_sxw.rml_parse):
             discount2 = ((line.product_id.list_price - line.price_unit) * 100) / line.product_id.list_price
             discount2 = round(discount2, 2)
 
-            taxes = line.invoice_line_tax_id
+            taxes = line.invoice_line_ids_tax_id
             for tax in taxes:
                 # if tax.price_include and tax.type == 'percent':
                 if not vat_disc:

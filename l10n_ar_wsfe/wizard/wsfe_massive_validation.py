@@ -117,7 +117,7 @@ class AccountInvoiceConfirm(models.TransientModel):
 
             # Para las facturas aprobadas creo los asientos,
             # y seguimos adelante con el workflow
-            for invoice_id, invoice_vals in invoices_approved.iteritems():
+            for invoice_id, invoice_vals in invoices_approved.items():
                 invoice = inv_obj.browse(invoice_id)
 
                 invoice.write(invoice_vals)
@@ -130,7 +130,9 @@ class AccountInvoiceConfirm(models.TransientModel):
                     invoice._update_reference(ref)
 
                 # Llamamos al workflow para que siga su curso
-                invoice.signal_workflow('invoice_massive_open')
+                # TODO: Esta bien pensado?
+                self.action_invoice_open()
+                # invoice.signal_workflow('invoice_massive_open')
             self.env.cr.commit()
         except Exception as e:
             err = _('Error received was: \n %s') % e

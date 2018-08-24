@@ -41,7 +41,6 @@
 									  <field name="from_date" readonly="True"/>
 									  <field name="to_date" readonly="True"/>
 									  <field name="tax_id"/>
-									  <field name="tax_code_id"/>
 									  <field name="from_afip" readonly="True"/>
 									</tree>
 									<form string="Vat Taxes Mapping">
@@ -50,7 +49,6 @@
 									  <field name="to_date"/>
 									  <field name="from_date"/>
 									  <field name="tax_id"/>
-									  <field name="tax_code_id"/>
 									  <field name="from_afip" readonly="True"/>
 									  <field name="exempt_operations" attrs="{'readonly': [('from_afip', '=', True)]}"/>
 									</form>
@@ -63,13 +61,12 @@
 									<tree string="Exempt Operations Taxes Mapping" editable="bottom">
 										<field name="name"/>
 										<field name="tax_id"/>
-										<field name="tax_code_id"/>
 										<field name="exempt_operations" invisible="1"/>
 									</tree>
 									<form string="Exempt Operations Taxes Mapping">
 										<field name="name"/>
 										<field name="tax_id"/>
-										<field name="tax_code_id"/>
+										<!-- <field name="tax_code_id"/> -->
                                         <field name="from_afip" invisible="1"/>
 										<field name="exempt_operations" attrs="{'readonly': [('from_afip', '=', True)]}"/>
 									</form>
@@ -139,7 +136,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_currencies" type="object" string="Get Currencies" groups="account.group_account_user"/>
+                                <button name="get_wsfex_currencies"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Currencies"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
 							<page string="Units of Measure">
@@ -151,7 +152,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_uoms" type="object" string="Get Units of Measure" groups="account.group_account_user"/>
+                                <button name="get_wsfex_uoms"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Units of Measure"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
 							<page string="Countries">
@@ -163,7 +168,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_countries" type="object" string="Get Countries" groups="account.group_account_user"/>
+                                <button name="get_wsfex_countries"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Countries"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
 							<page string="Languages">
@@ -175,7 +184,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_langs" type="object" string="Get Languages" groups="account.group_account_user"/>
+                                <button name="get_wsfex_langs"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Languages"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
                             <page string="Export Type">
@@ -186,7 +199,11 @@
                                  </tree>
                              </field>
                              <div class="oe_right oe_button_box" name="import_buttons">
-                                 <button name="get_wsfex_export_types" type="object" string="Get Export Types" groups="account.group_account_user"/>
+                                 <button name="get_wsfex_export_types"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Export Types"
+                                    groups="account.group_account_user"/>
                              </div>
                             </page>
 							<page string="Incoterms">
@@ -198,7 +215,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_incoterms" type="object" string="Get Incoterms" groups="account.group_account_user"/>
+                                <button name="get_wsfex_incoterms"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Incoterms"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
 
@@ -210,7 +231,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_dst_cuits" type="object" string="Get DST CUIT" groups="account.group_account_user"/>
+                                <button name="get_wsfex_dst_cuits"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get DST CUIT"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
 
@@ -223,7 +248,11 @@
                                 </tree>
                             </field>
                             <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_voucher_types" type="object" string="Get Voucher Type" groups="account.group_account_user"/>
+                                <button name="get_wsfex_voucher_types"
+                                    class="oe_highlight"
+                                    type="object"
+                                    string="Get Voucher Type"
+                                    groups="account.group_account_user"/>
                             </div>
 							</page>
 

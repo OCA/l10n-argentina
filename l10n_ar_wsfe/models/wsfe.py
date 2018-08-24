@@ -27,7 +27,7 @@ from datetime import datetime
 import time
 
 
-class wsfe_tax_codes(models.Model):
+class WsfeTaxCodes(models.Model):
     _name = "wsfe.tax.codes"
     _description = "Tax Codes"
 
@@ -36,7 +36,8 @@ class wsfe_tax_codes(models.Model):
     to_date = fields.Date('Effect Until')
     from_date = fields.Date('Effective From')
     tax_id = fields.Many2one('account.tax', 'Account Tax')
-    tax_code_id = fields.Many2one('account.tax.code', 'Account Tax Code')
+    # TODO
+    # tax_code_id = fields.Many2one('account.tax.code', 'Account Tax Code')
     wsfe_config_id = fields.Many2one('wsfe.config', 'WSFE Configuration')
     from_afip = fields.Boolean('From AFIP')
     exempt_operations = fields.Boolean(
@@ -47,7 +48,7 @@ class wsfe_tax_codes(models.Model):
         '(base amount) without VAT applied on this')
 
 
-class wsfe_config(models.Model):
+class WsfeConfig(models.Model):
     _name = "wsfe.config"
     _description = "Configuration for WSFE"
 
@@ -105,13 +106,13 @@ class wsfe_config(models.Model):
             ta = ta_obj.create(ta_vals)
             vals['wsaa_ticket_id'] = ta.id
 
-        return super(wsfe_config, self).create(vals)
+        return super(WsfeConfig, self).create(vals)
 
     @api.multi
     def unlink(self):
         for wsfe_conf in self:
             wsfe_conf.wsaa_ticket_id.unlink()
-        res = super(wsfe_config, self).unlink()
+        res = super(WsfeConfig, self).unlink()
         return res
 
     @api.model
@@ -332,7 +333,7 @@ class wsfe_config(models.Model):
             # Chequeamos si el concepto es producto,
             # servicios o productos y servicios
             product_service = [l.product_id and l.product_id.type or
-                               'consu' for l in inv.invoice_line]
+                               'consu' for l in inv.invoice_line_ids]
 
             service = all([ps == 'service' for ps in product_service])
             products = all([ps == 'consu' or ps == 'product' for
@@ -432,11 +433,11 @@ class wsfe_config(models.Model):
             importe_neto_no_gravado = inv.amount_no_taxed
 
             # Procesamos las taxes
-            taxes = inv.tax_line
+            taxes = inv.tax_line_ids
             for tax in taxes:
                 found = False
                 for eitax in self.vat_tax_ids + self.exempt_operations_tax_ids:
-                    if eitax.tax_code_id.id == tax.tax_code_id.id:
+                    if eitax.tax_id.id == tax.id:
                         found = True
                         if eitax.exempt_operations:
                             pass
@@ -497,7 +498,7 @@ class wsfe_config(models.Model):
         return details
 
 
-class wsfe_voucher_type(models.Model):
+class WsfeVoucherType(models.Model):
     """
     Es un comprobante que una empresa envía a su cliente, en la que se
     le notifica haber cargado o debitado en su cuenta una determinada suma
