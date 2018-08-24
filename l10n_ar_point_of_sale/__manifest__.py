@@ -44,7 +44,7 @@
         'views/account_invoice_view.xml',
         'views/partner_view.xml',
         'views/account_view.xml',
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
     ],
     'test': [
         # 'test/denomination_invoice.yml',
