@@ -53,3 +53,4 @@ access_wsfex_uom_user,wsfex.uom user,model_wsfex_uom_codes,base.group_user,1,0,0
 access_wsfex_uom_user_accountant,wsfex.uom accountant,model_wsfex_uom_codes,account.group_account_user,1,1,1,0
 access_wsfex_uom_payments,wsfex.uom payments,model_wsfex_uom_codes,account.group_account_invoice,1,1,0,0
 access_wsfex_uom_manager,wsfex.uom manager,model_wsfex_uom_codes,account.group_account_manager,1,1,1,1
+access_wsfex_voucher_type_codes,wsfex.voucher_types.codes accountant,model_wsfex_voucher_type_codes,account.group_account_user,1,1,1,1
