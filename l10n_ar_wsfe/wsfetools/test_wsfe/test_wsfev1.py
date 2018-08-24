@@ -113,8 +113,6 @@ def test_get_tipos_cbtes(wsfev1):
 
 def test_get_ultimo_comp(wsfev1):
     """Funcion para testear el servicio de obtencion de ultimo comprobante."""
-    import pdb
-    pdb.set_trace()
     pto_venta = 4
 
     # Obtenemos un tipo cbte al azar

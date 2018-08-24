@@ -141,7 +141,6 @@ class AccountCheckDeposit(models.Model):
             else:
                 move_ref = _('Deposit Check %s') % (check.number)
 
-            __import__('ipdb').set_trace()
             move_id = self.env['account.move'].create({
                 'name': '/',
                 'journal_id': self.journal_id.id,

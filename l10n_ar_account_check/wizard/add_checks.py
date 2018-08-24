@@ -58,7 +58,6 @@ class AccountAddIssuedCheck(models.Model):
     def add_issued_checks(self):
 
         issued_check_obj = self.env['account.issued.check']
-        __import__('ipdb').set_trace()
         # payment_order_id = context['active_ids'][0]
         wiz_check_obj = self.pool.get('account.add.issued.check')
         wiz_check = wiz_check_obj.browse(cr, uid, ids[0], context)

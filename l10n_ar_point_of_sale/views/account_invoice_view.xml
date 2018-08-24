@@ -49,11 +49,11 @@
                       <page string="Taxes" name="taxes">
                         <separator string="Applied Taxes"/>
                         <field name="tax_line_ids">
-                            <tree editable="bottom" string="Taxes">
+                            <tree editable="bottom" string="Taxes" name="tax_line_ids">
                                 <field name="name"/>
                                 <field name="tax_id" domain="[('tax_group','in',['other','vat']), ('type_tax_use','in',['sale','all'])]" />
                                 <!--Need invisible fields for on_change to create all necessary info -->
-                                <field name="tax_id" invisible="1"/>
+                                <!-- <field name="tax_id" invisible="1"/> -->
                                 <field name="sequence" invisible="1"/>
                                 <field name="manual" invisible="1"/>
                                 <field name="account_id" groups="account.group_account_user"/>
@@ -146,21 +146,19 @@
                       <page string="Taxes" name="taxes">
                         <separator string="Supported Taxes"/>
                         <field name="tax_line_ids">
-                            <tree editable="bottom" string="Taxes">
-                                <tree editable="bottom" string="Taxes">
-                                    <field name="name"/>
-                                    <field name="tax_id" domain="[('tax_group','in',['other','vat']), ('type_tax_use','in',['purchase','all'])]" />
-                                    <!--Need invisible fields for on_change to create all necessary info -->
-                                    <field name="tax_id" invisible="1"/>
-                                    <field name="sequence" invisible="1"/>
-                                    <field name="manual" invisible="1"/>
-                                    <field name="account_id" groups="account.group_account_user"/>
-                                    <field name="account_analytic_id" domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting"/>
-                                    <field name="amount"/>
-                                    <field name="amount_rounding" invisible="1"/>
-                                    <field name="amount_total" invisible="1"/>
-                                    <field name="currency_id" invisible="1" force_save="1"/>
-                                </tree>
+                            <tree editable="bottom" string="Taxes" name="tax_line_ids">
+                                <field name="name"/>
+                                <field name="tax_id" domain="[('tax_group','in',['other','vat']), ('type_tax_use','in',['purchase','all'])]" />
+                                <!--Need invisible fields for on_change to create all necessary info -->
+                                <!-- <field name="tax_id" invisible="1"/> -->
+                                <field name="sequence" invisible="1"/>
+                                <field name="manual" invisible="1"/>
+                                <field name="account_id" groups="account.group_account_user"/>
+                                <field name="account_analytic_id" domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting"/>
+                                <field name="amount"/>
+                                <field name="amount_rounding" invisible="1"/>
+                                <field name="amount_total" invisible="1"/>
+                                <field name="currency_id" invisible="1" force_save="1"/>
                             </tree>
                         </field>
                       </page>

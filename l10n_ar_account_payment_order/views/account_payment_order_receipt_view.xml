@@ -245,8 +245,8 @@
                sequence="10"/>
 
        <record id="view_payment_order_filter_vendor_pay" model="ir.ui.view">
-            <field name="name">account.voucher.purchase.pay.select</field>
-            <field name="model">account.voucher</field>
+            <field name="name">account.payment.order.purchase.pay.select</field>
+            <field name="model">account.payment.order</field>
             <field name="arch" type="xml">
                 <search string="Search Vouchers">
                     <field name="number" string="Voucher"/>

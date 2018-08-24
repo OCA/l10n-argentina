@@ -644,7 +644,6 @@ class AccountPaymentOrder(models.Model):
             move_lines.append(move_line)
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
-        __import__('ipdb').set_trace()
         move_lines = self.create_move_line_hook(move_id, move_lines)
         # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
         amount_credit = 0.0
@@ -911,7 +910,6 @@ class AccountPaymentOrder(models.Model):
 
             if not self.company_id.currency_id.is_zero(currency_rate_difference):
                 # Change difference entry in company currency
-                __import__('ipdb').set_trace()
                 exch_lines = self._get_exchange_lines(line, move_id, currency_rate_difference, company_currency, current_currency)
                 new_id = move_line_obj.create(exch_lines[0])
                 move_line_obj.create(exch_lines[1])
@@ -933,10 +931,8 @@ class AccountPaymentOrder(models.Model):
                     'debit': 0.0,
                     'date': line.voucher_id.date,
                 }
-                __import__('ipdb').set_trace()
                 new_id = move_line_obj.create(move_line_foreign_currency)
                 rec_ids.append(new_id)
-            __import__('ipdb').set_trace()
             if line.move_line_id.id:
                 rec_lst_ids.append(rec_ids)
         return (tot_line, rec_lst_ids)

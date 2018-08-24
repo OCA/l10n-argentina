@@ -228,7 +228,6 @@ class AccountInvoice(models.Model):
             tax_grouped = invoice.get_taxes_values()
             for key, tax_val in tax_grouped.items():
                 tax_val.pop('invoice_id')
-                __import__('ipdb').set_trace()
                 tax_ids.append(tax_line_model.create(tax_val).id)
             invoice.tax_line_ids = [(6, 0, tax_ids)]
 

@@ -211,7 +211,6 @@ class AccountIssuedCheck(models.Model):
 
     @api.multi
     def accredit_checks(self):
-        __import__('ipdb').set_trace()
         #TODO: create the corresponding moves
         for check in self:
             if check.state != "waiting":

@@ -68,4 +68,3 @@ class DatePeriod(models.Model):
 
     # @api.multi
     # def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
-    #     __import__('ipdb').set_trace()
