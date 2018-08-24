@@ -21,7 +21,8 @@ except (ImportError, IOError) as e:
             return func
 
     WebService = object
-    _logger.debug("Cannot import WebService, wsapi from easywsy: \n%s" % e)
+    _logger.debug("Cannot import WebService, wsapi from easywsy: \n%s" %
+                  repr(e))
 
 
 class Error:
@@ -334,7 +335,7 @@ class WSFE(WebService):
 
                 if not all([doc_tipo, doc_num, cbte]):
                     raise UserError(
-                        _("WSFE Error!"),
+                        _("WSFE Error!\n") +
                         _("Validated invoice that not corresponds!"))
 
                 if comp['Resultado'] == 'A':
@@ -476,7 +477,7 @@ class WSFE(WebService):
             msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
 
             if msg != '' and raise_exception:
-                raise UserError(_('WSFE Error!'), msg)
+                raise UserError(_('WSFE Error!\n') + msg)
         return msg
 
     def check_observations(self, res):
@@ -545,7 +546,7 @@ class WSFE(WebService):
             if not conf.homologation:
                 if int(fe_next_number) != int(val):
                     raise UserError(
-                        _("WSFE Error!"),
+                        _("WSFE Error!\n") +
                         _("The next number in the system [%d] does not " +
                           "match the one obtained from AFIP WSFE [%d]") %
                         (int(val), int(fe_next_number)))
@@ -611,7 +612,7 @@ class WSFE(WebService):
         last_invoiced_date = invoice.get_last_date_invoice()
         if last_invoiced_date and val_odoo_format < last_invoiced_date:
             raise UserError(
-                _('WSFE Error!'),
+                _('WSFE Error!\n') +
                 _('There is another Invoice with a most recent date [%s] ' +
                   'for the same Point of Sale and Denomination.') %
                 last_invoiced_date)
@@ -621,13 +622,13 @@ class WSFE(WebService):
         if Concepto in [2, 3]:
             if abs(offset.days) > 10:
                 raise UserError(
-                    _('WSFE Error!'),
+                    _('WSFE Error!\n') +
                     _('Invoice Date difference with today should be less ' +
                       'than 5 days for product sales.'))
         else:
             if abs(offset.days) > 5:
                 raise UserError(
-                    _('WSFE Error!'),
+                    _('WSFE Error!\n') +
                     _('Invoice Date difference with today should be less ' +
                       'than 5 days for product sales.'))
         return True

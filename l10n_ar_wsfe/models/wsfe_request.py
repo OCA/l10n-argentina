@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
+#    Copyright (c) 2018 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
+#    it under the terms of the GNU Affero General
+#    Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -67,28 +67,39 @@ class WsfeRequestDetail(models.Model):
     amount_total = fields.Char('Amount Total', size=64, readonly=True)
     cae = fields.Char('CAE', required=False, readonly=True, size=64)
     cae_duedate = fields.Date('CAE Due Date', required=False, readonly=True)
-    result = fields.Selection([('A', 'Approved'), ('R', 'Rejected')], 'Result', readonly=True)
+    result = fields.Selection([
+        ('A', 'Approved'),
+        ('R', 'Rejected')], 'Result', readonly=True)
     observations = fields.Text('Observations', readonly=True)
     errors = fields.Text('Errors', related='request_id.errors')
 
     currency = fields.Char('Currency', required=False, readonly=True)
-    currency_rate = fields.Float('Currency Rate', required=False, readonly=True)
+    currency_rate = fields.Float('Currency Rate',
+                                 required=False, readonly=True)
 
 
 class WsfexRequestDetail(models.Model):
     _name = "wsfex.request.detail"
     _description = "WSFEX Request Detail"
 
-    name = fields.Char('Additional Notes', size=128, readonly=True, help="If you want to write down some detail about this request")
-    invoice_id = fields.Many2one('account.invoice', 'Voucher', required=False, readonly=True)
+    name = fields.Char(
+        'Additional Notes', readonly=True,
+        help="If you want to write down some detail about this request")
+    invoice_id = fields.Many2one('account.invoice', 'Voucher',
+                                 required=False, readonly=True)
     request_id = fields.Float('Request ID', readonly=True)
     voucher_number = fields.Char('Number', size=14, readonly=True)
-    voucher_type_id = fields.Many2one('wsfe.voucher_type', string="OpenERP Voucher Type")
+    voucher_type_id = fields.Many2one('wsfe.voucher_type',
+                                      string="OpenERP Voucher Type")
     date = fields.Date('Request Date', readonly=True)
     cae = fields.Char('CAE', required=False, readonly=True, size=64)
     cae_duedate = fields.Date('CAE Due Date', required=False, readonly=True)
-    result = fields.Selection([('A', 'Approved'),('R', 'Rejected')], 'Result', readonly=True)
-    reprocess = fields.Selection([('S', 'Si'),('N', 'No')], 'Reprocess', readonly=True)
+    result = fields.Selection([
+        ('A', 'Approved'),
+        ('R', 'Rejected')], 'Result', readonly=True)
+    reprocess = fields.Selection([
+        ('S', 'Si'),
+        ('N', 'No')], 'Reprocess', readonly=True)
     event = fields.Char('Event', size=255, readonly=True)
     error = fields.Char('Error', size=255, readonly=True)
     detail = fields.Text('Detail', readonly=True)

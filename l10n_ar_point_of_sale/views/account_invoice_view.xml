@@ -26,7 +26,7 @@
                     <field name="partner_id" position="attributes">
                         <attribute name="default_focus">1</attribute>
                     </field>
-                    <xpath expr="//sheet/h1[@class='mt0']/div[2]" position="attributes">
+                    <xpath expr="//sheet/h1[hasclass('mt0')]/div[2]" position="attributes">
                         <attribute name="attrs">{}</attribute>
                     </xpath>
                     <field name="sequence_number_next_prefix" position="before">
@@ -132,7 +132,7 @@
                     <field name="partner_id" position="attributes">
                         <attribute name="default_focus">1</attribute>
                     </field>
-                    <xpath expr="//sheet/div/h1[@class='mt0']/div" position="attributes">
+                    <xpath expr="//sheet/div/h1[hasclass('mt0')]/div" position="attributes">
                         <attribute name="attrs">{}</attribute>
                     </xpath>
                     <field name="sequence_number_next_prefix" position="before">

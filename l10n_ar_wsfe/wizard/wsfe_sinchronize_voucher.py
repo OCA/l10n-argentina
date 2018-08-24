@@ -158,7 +158,7 @@ class wsfe_sinchronize_voucher(models.TransientModel):
 
         if not self.infook:
             raise UserError(
-                _("WSFE Error"),
+                _("WSFE Error!\n") +
                 _("Sinchronize process is not correct!"))
 
         pos = int(self.pos_id.name)
