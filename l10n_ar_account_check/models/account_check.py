@@ -88,8 +88,7 @@ class AccountIssuedCheck(models.Model):
                                 string='Clearing', default='24')
     # TODO: check domain
     account_bank_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Bank Account',
-                                      domain=[('bank', '=', bank_id)])
+                                      string='Bank Account')
     payment_order_id = fields.Many2one(comodel_name='account.payment.order',
                                        string='Voucher')
     payment_move_id = fields.Many2one(comodel_name='account.move',
@@ -115,16 +114,13 @@ class AccountIssuedCheck(models.Model):
         readonly=True,
         default=lambda self: self.env.user.company_id.id)
     state = fields.Selection(
-        [
-            ('draft', 'Draft'),
-            ('waiting', 'Waiting Accreditation'),
-            ('issued', 'Issued'),
-            ('cancel', 'Cancelled'),
-            ('rejected', 'Rejected')
-        ],
+        [('draft', 'Draft'),
+         ('waiting', 'Waiting Accreditation'),
+         ('issued', 'Issued'),
+         ('cancel', 'Cancelled'),
+         ('rejected', 'Rejected')],
         string='State',
-        default='draft',
-    )
+        default='draft')
 
     @api.depends('clearance_move_id')
     def _compute_accredit_state(self):
@@ -215,6 +211,7 @@ class AccountIssuedCheck(models.Model):
 
     @api.multi
     def accredit_checks(self):
+        __import__('ipdb').set_trace()
         #TODO: create the corresponding moves
         for check in self:
             if check.state != "waiting":
@@ -330,7 +327,6 @@ class AccountIssuedCheck(models.Model):
             'state': 'rejected',
         })
         return True
-
 
 
 class AccountThirdCheck(models.Model):

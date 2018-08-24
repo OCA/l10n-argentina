@@ -184,9 +184,7 @@ class AccountPaymentOrder(models.Model):
     company_id = fields.Many2one(
         comodel_name='res.company',
         string='Company',
-        default=lambda self: self.
-        env['res.company'].
-        _company_default_get('sale.order'),
+        default=lambda self: self.env.user.company_id.id,
         required=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
     payment_mode_line_ids = fields.One2many(
@@ -646,7 +644,8 @@ class AccountPaymentOrder(models.Model):
             move_lines.append(move_line)
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
-        self.create_move_line_hook(move_id, move_lines)
+        __import__('ipdb').set_trace()
+        move_lines = self.create_move_line_hook(move_id, move_lines)
         # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
         amount_credit = 0.0
         amount_debit = 0.0

@@ -59,9 +59,9 @@
                     </group>
                     <footer>
                         <button type="special" special="cancel"
-                            string="Cancel" icon="gtk-cancel"/>
+                            string="Cancel" class="btn-default"/>
                         <button type="object" name="action_reject"
-                            string="Reject" icon="gtk-ok"/>
+                            string="Reject" class="btn-default oe_highlight"/>
                     </footer>
                 </form>
             </field>

@@ -7,11 +7,11 @@
             <field name="model">account.check.deposit</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Check Deposit" version="7.0">
+                <form string="Check Deposit">
                     <group>
                         <group>
                             <field name="company_id" invisible="1"/>
-                            <field name="bank_account_id" on_change="onchange_bank_account(bank_account_id, context)" domain="[('company_id','=',company_id)]"/>
+                            <field name="bank_account_id" domain="[('company_id','=',company_id)]"/>
                             <field name="journal_id" domain="[('type','=','bank')]"/>
                         </group>
                         <group>

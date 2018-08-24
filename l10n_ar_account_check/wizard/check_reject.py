@@ -202,18 +202,13 @@ class CheckRejectIssuedCheck(models.Model):
     reject_date = fields.Date(string='Reject Date', required=True)
     note = fields.Text(string='Note')
 
-    def action_reject(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
+    def action_reject(self):
+        issued_check_obj = self.env['account.issued.check']
+        record_ids = self.env.context.get('active_ids', [])
 
-        issued_check_obj = self.pool.get('account.issued.check')
-
-        record_ids = context.get('active_ids', [])
-        check_objs = issued_check_obj.browse(cr, uid, record_ids, context=context)
-        wizard = self.browse(cr, uid, ids[0], context=context)
-
+        check_objs = issued_check_obj.browse(record_ids)
         for check in check_objs:
-            check.write({'reject_date': wizard.reject_date, 'note': wizard.note})
-            issued_check_obj.reject_check(cr, uid, [check.id], context=context)
+            check.write({'reject_date': self.reject_date, 'note': self.note})
+            check.reject_check()
 
         return {'type': 'ir.actions.act_window_close'}

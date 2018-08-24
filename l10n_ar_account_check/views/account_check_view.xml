@@ -86,7 +86,7 @@
             <field name="arch" type="xml">
                 <form string="Issued Checks" version="7.0">
                     <header>
-                        <button name="accredit_checks" string="Accredit Check" type="object" states="waiting" class="oe_highlight"/>
+                        <button name="accredit_checks" string="Accredit Check" type="object" attrs="{'invisible': [('state', 'not in', ['waiting'])]}" class="oe_highlight"/>
                         <button name="break_conciliation" string="Break Conciliation" type="object" class="oe_highlight"
                             attrs="{'invisible': ['|', ('state', 'not in', ['issued']), ('accredited', '=', 'False')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="rejected,draft,issued" statusbar_colors='{"cancel":"red"}'/>
@@ -109,7 +109,7 @@
                                 <field name="issue_date"/>
                                 <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
                                 <field name="reject_date" attrs="{'invisible': [('state', '!=', 'rejected')]}"/>
-                                <field name="account_bank_id" required="1"/>
+                                <field name="account_bank_id" domain="[('bank_id', '=', bank_id)]" required="1"/>
                                 <field name="crossed"/>
                                 <field name="not_order"/>
                             </group>
@@ -270,7 +270,7 @@
             <field name="type">form</field>
             <field name="priority">10</field>
             <field name="arch" type="xml">
-               <form string="Third Checks" version="7.0">
+               <form string="Third Checks">
                     <header>
                         <button name="%(action_check_deposit)d" type='action' string='Deposit Check' states='wallet' class="oe_highlight" groups="account.group_account_invoice,account.group_account_manager"/>
                         <field name="state" widget="statusbar" statusbar_visible="wallet,deposited,delivered" statusbar_colors='{"wallet":"blue","rejected":"red","cancel":"red"}'/>
