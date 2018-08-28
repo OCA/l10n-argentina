@@ -120,13 +120,14 @@ class WsfeConfig(models.Model):
         # Obtenemos la compania que esta utilizando
         # en este momento este usuario
         company_id = self.env.user.company_id.id
-        if not company_id:
+        no_raise = self.env.context.get('without_raise', False)
+        if not company_id and not no_raise:
             raise UserError(
                 _('Company Error!\n') +
                 _('There is no company being used by this user'))
 
         ids = self.search([('company_id', '=', company_id)])
-        if not ids:
+        if not ids and not no_raise:
             raise UserError(
                 _('WSFE Config Error!\n') +
                 _('There is no WSFE configuration set to this company'))

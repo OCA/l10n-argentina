@@ -26,6 +26,23 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_payment_order_receipt_tree">
+            <field name="name">account.payment.order.receipt.tree</field>
+            <field name="model">account.payment.order</field>
+            <field name="arch" type="xml">
+                <tree string="Payment Order" name="payment_order_tree"
+                        decoration-info="state == 'draft'" decoration-muted="state  == 'cancel'">
+                    <field name="date"/>
+                    <field name="number"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="currency_id"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
 
         <record model="ir.ui.view" id="view_payment_order_receipt_form">
             <field name="name">account.payment.order.receipt.form</field>
@@ -58,7 +75,8 @@
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
                                     widget="monetary" options="{'currency_field': 'currency_id'}"
-                                    attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                    force_save="True"
+                                    attrs="{'readonly': True}"/>
                             </group>
                             <group>
                                 <field name="date" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
@@ -72,13 +90,38 @@
                                 <field name="pre_line" invisible="1"/>
                                 <field name="type" invisible="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                             </group>
+                            <group col="4" attrs="{'invisible':[('is_multi_currency','=',False)]}">
+                                <field name="is_multi_currency" invisible="1"/>
+                                <label for="payment_rate" colspan="1"/>
+                                <div>
+                                    <field name="payment_rate" required="1" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                    <field name="payment_rate_currency_id" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft'))]}" groups="base.group_multi_currency"/>
+                                </div>
+                                <!-- <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey"/> -->
+                                <field name="paid_amount_in_company_currency" colspan="4" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="writeoff_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="payment_option"
+                                    required="1"
+                                    attrs="{'invisible':[('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
+                                <field name="writeoff_acc_id"
+                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft'))]}"
+                                       domain="[('type','=','other')]"/>
+                                <field name="comment"
+                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
+                                <field name="analytic_id"
+                                       groups="analytic.group_analytic_accounting"
+                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
+                            </group>
                         </group>
                         <notebook>
                             <page string="Payment Information" name="payment_information" groups="base.group_user">
                                 <label for="payment_mode_line_ids"/>
                                 <field name="payment_mode_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
-                                    <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
-                                        <field name="payment_mode_id" invisible="0" />
+                                    <tree string="Payment Methods" editable="bottom" decoration-muted="amount == 0">
+                                        <field name="payment_mode_id" invisible="0"
+                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
                                         <field name="name" invisible="1"/>
                                         <field name="currency_id" readonly="1"/>
                                         <field name="date"/>
@@ -88,7 +131,7 @@
                                  </field>
                                 <label for="income_line_ids" invisible="context.get('line_type', False)" string="Invoices and outstanding transactions"/>
                                 <field name="income_line_ids" context="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
-                                    <tree string="Invoices and outstanding transactions" editable="bottom" colors="gray:amount==0">
+                                    <tree string="Invoices and outstanding transactions" editable="bottom" decoration-muted="amount == 0">
                                         <field name="state" invisible="1"/>
                                         <field name="invoice_id"
                                             domain="[('state', '=', 'open'),
@@ -114,7 +157,7 @@
                                 </field>
                                 <label for="debt_line_ids" string="Credits"/>
                                 <field name="debt_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}" context="{'journal_id':journal_id, 'partner_id':partner_id}">
-                                    <tree string="Credits" editable="bottom" colors="gray:amount==0">
+                                    <tree string="Credits" editable="bottom" decoration-muted="amount == 0">
                                         <field name="state" invisible="1"/>
                                         <field name="invoice_id"
                                             domain="[('state', '=', 'open'),
@@ -140,30 +183,6 @@
                                 <group col="3">
                                     <group>
                                         <field name="narration" colspan="2" nolabel="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-                                    </group>
-                                    <group col="4" attrs="{'invisible':[('is_multi_currency','=',False)]}">
-                                        <field name="is_multi_currency" invisible="1"/>
-                                        <label for="payment_rate" colspan="1"/>
-                                        <div>
-                                            <field name="payment_rate" required="1" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-                                            <field name="payment_rate_currency_id" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft'))]}" groups="base.group_multi_currency"/>
-                                        </div>
-                                        <!-- <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey"/> -->
-                                        <field name="paid_amount_in_company_currency" colspan="4" invisible="1"/>
-                                    </group>
-                                    <group>
-                                        <field name="writeoff_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field name="payment_option"
-                                            required="1"
-                                            attrs="{'invisible':[('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
-                                        <field name="writeoff_acc_id"
-                                               attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft'))]}"
-                                               domain="[('type','=','other')]"/>
-                                        <field name="comment"
-                                               attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
-                                        <field name="analytic_id"
-                                               groups="analytic.group_analytic_accounting"
-                                               attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
                                     </group>
                                 </group>
                             </page>
@@ -303,14 +322,37 @@
                             <field name="name" colspan="2" invisible="context.get('line_type', False)" placeholder="e.g. Invoice SAJ/0042"/>
                             <field name="company_id" widget="selection" groups="base.group_multi_company"/>
                         </group>
+                        <group col="2" attrs="{'invisible':[('is_multi_currency','=',False)]}">
+                            <separator string="Currency Options" colspan="2"/>
+                            <field name="is_multi_currency" invisible="1"/>
+        <label for="payment_rate" colspan="1"/>
+        <div>
+                                <field name="payment_rate" required="1" class="oe_inline"/>
+                                <field name="payment_rate_currency_id" class="oe_inline" groups="base.group_multi_currency"/>
+                            </div>
+                            <!-- <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey"/> -->
+                            <field name="paid_amount_in_company_currency" colspan="2" invisible="1"/>
+                        </group>
+                        <group col="2">
+                            <separator string="Payment Options" colspan="2"/>
+                            <field name="writeoff_amount" widget='monetary' options='{"currency_field": "currency_id"}'/>
+                            <field name="payment_option" required="1"/>
+                            <field name="writeoff_acc_id"
+                                   attrs="{'invisible':[('payment_option','!=','with_writeoff')], 'required':[('payment_option','=','with_writeoff')]}"
+                                   domain="[('type','=','other')]"/>
+                            <field name="comment"
+                                   attrs="{'invisible':[('payment_option','!=','with_writeoff')]}"/>
+                            <field name="analytic_id"
+                                   groups="analytic.group_analytic_accounting"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Payment Information" name="payment_information">
                             <label for="payment_mode_line_ids"/>
                             <field name="payment_mode_line_ids">
                                 <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
-                                    <field name="payment_mode_id" invisible="1" />
-                                    <field name="name"/>
+                                    <field name="payment_mode_id" invisible="0"
+                                        attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
                                     <field name="currency_id" readonly="1"/>
                                     <field name="date"/>
                                     <field name="payment_order_id" invisible="1"/>
@@ -371,31 +413,6 @@
                             <group>
                                 <group string="Internal Notes">
                                     <field name="narration" colspan="2" nolabel="1"/>
-                                </group>
-                                <group>
-                                    <group col="2" attrs="{'invisible':[('is_multi_currency','=',False)]}">
-                                        <separator string="Currency Options" colspan="2"/>
-                                        <field name="is_multi_currency" invisible="1"/>
-                    <label for="payment_rate" colspan="1"/>
-                    <div>
-                                            <field name="payment_rate" required="1" class="oe_inline"/>
-                                            <field name="payment_rate_currency_id" class="oe_inline" groups="base.group_multi_currency"/>
-                                        </div>
-                                        <!-- <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey"/> -->
-                                        <field name="paid_amount_in_company_currency" colspan="2" invisible="1"/>
-                                    </group>
-                                    <group col="2">
-                                        <separator string="Payment Options" colspan="2"/>
-                                        <field name="writeoff_amount" widget='monetary' options='{"currency_field": "currency_id"}'/>
-                                        <field name="payment_option" required="1"/>
-                                        <field name="writeoff_acc_id"
-                                               attrs="{'invisible':[('payment_option','!=','with_writeoff')], 'required':[('payment_option','=','with_writeoff')]}"
-                                               domain="[('type','=','other')]"/>
-                                        <field name="comment"
-                                               attrs="{'invisible':[('payment_option','!=','with_writeoff')]}"/>
-                                        <field name="analytic_id"
-                                               groups="analytic.group_analytic_accounting"/>
-                                    </group>
                                 </group>
                             </group>
                         </page>

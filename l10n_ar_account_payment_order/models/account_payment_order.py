@@ -18,6 +18,8 @@ _logger = logging.getLogger(__name__)
 
 class AccountPaymentOrder(models.Model):
     _name = 'account.payment.order'
+    _rec_name = 'number'
+    _order = 'date DESC'
 
     @api.depends('journal_id', 'company_id')
     def _get_journal_currency(self):
