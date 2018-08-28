@@ -350,7 +350,7 @@
             <field name="model">wsfe.request</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="WSFE Request" version="7.0">
+                <form string="WSFE Request" create="false" edit="false" delete="false">
                     <sheet>
                         <h1>
                             <label string="WSFE Request"/>
@@ -422,7 +422,7 @@
 			<field name="model">wsfe.request</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="WSFE Request">
+				<tree string="WSFE Request" create="false" delete="false">
 					<field name="date_request" />
 					<field name="pos_ar" />
 					<field name="voucher_type" />

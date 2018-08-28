@@ -83,14 +83,14 @@ class perception_tax_line(models.Model):
                                     used for this perception tax, \
                                     where all the configuration resides. \
                                     Accounts, Tax Codes, etc.")
-    base_code_id = fields.Many2one(
-        'account.tax.code', 'Base Code',
-        help="The account basis of the tax declaration.")
+    # base_code_id = fields.Many2one(
+    #     'account.tax.code', 'Base Code',
+    #     help="The account basis of the tax declaration.")
     base_amount = fields.Float('Base Code Amount',
                                digits=dp.get_precision('Account'))
-    tax_code_id = fields.Many2one('account.tax.code',
-                                  string='Tax Code',
-                                  help="The tax basis of the tax declaration.")
+    # tax_code_id = fields.Many2one('account.tax.code',
+    #                               string='Tax Code',
+    #                               help="The tax basis of the tax declaration.")  # noqa
     tax_amount = fields.Float('Tax Code Amount',
                               digits=dp.get_precision('Account'))
     company_id = fields.Many2one(related='account_id.company_id',

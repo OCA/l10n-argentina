@@ -20,7 +20,7 @@
 ##############################################################################
 {
     "name": "Retentions for ARGENTINA (Retenciones)",
-    "version": "8.0.1.0.0",
+    "version": "11.0.1.0.0",
     "depends": [
         "base",
         "account",
@@ -34,19 +34,14 @@
     "license": "GPL-3",
     "category": "Localisation Modules",
     "description": """
-    This module provide :
-    1) Implementation of Retentions Taxes for Argentina
-       based on tax objects of OpenERP like account.tax and account.tax.code.
+    This module provides:
+    Implementation of Retentions Taxes for Argentina
+    based on tax objects of OpenERP like account.tax and account.tax.code.
     """,
-    "init_xml": [
-        'retention_data.xml',
-    ],
-    'update_xml': [
+    'data': [
         'security/ir.model.access.csv',
         'views/retention_view.xml',
         'views/voucher_payment_receipt_view.xml',
     ],
-    'demo_xml': [],
     'installable': True,
-    'active': False,
 }

@@ -164,9 +164,5 @@
         </field>
   </record>
 
-  <menuitem id="perception_perception_menu" name="Perceptions" parent="account.account_account_menu" sequence="20" action="action_perception_perception_tree"/>
-  <menuitem id="perception_tax_line_applied_menu" name="Perception Applied" parent="account.menu_finance_receivables" sequence="30" action="action_perception_tax_tree"/>
-  <menuitem id="perception_tax_line_supported_menu" name="Perception Supported" parent="account.menu_finance_payables" sequence="30" action="action_perception_tax_supported_tree"/>
-
   </data>
 </odoo>

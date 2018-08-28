@@ -22,27 +22,27 @@
 
 {
     "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
-    "version": "8.0.1.0.1",
-    "depends": ["l10n_ar_point_of_sale"],
+    "version": "11.0.1.0.1",
+    "depends": [
+        "l10n_ar_point_of_sale",
+    ],
     "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",
     "license": "GPL-3",
     "category": "Localisation Modules",
     "description": """
-    This module provide :
-    1) Implementation of Perceptions Taxes for Argentina
-       based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
+    This module provide:
+    Implementation of Perceptions Taxes for Argentina
+    based on tax objects of OpenERP like
+    account.invoice, account.tax and account.tax.code.
     """,
-    "init_xml": [
-        # "perception_data.xml",
-    ],
     'data': [
-        # 'security/ir.model.access.csv',
         'data/account_data.xml',
         'views/perception_view.xml',
         'views/account_invoice_view.xml',
+        'views/menuitems.xml',
+        'security/ir.model.access.csv',
     ],
-    'demo_xml': [],
     'installable': True,
     'active': False,
 }

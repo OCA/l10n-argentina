@@ -8,7 +8,8 @@
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
+#    it under the terms of the GNU Affero General
+#    Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -23,25 +24,30 @@
 ##############################################################################
 
 from odoo import api, models, fields, _
-from datetime import date, datetime
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 import time
+from datetime import datetime
 
 
 class AccountCheckDeposit(models.Model):
     _name = 'account.check.deposit'
 
+    @api.model
     def _get_journal(self):
         journal_id = False
         voucher_obj = self.env['account.payment.order']
         model = self.env.context.get('active_model', False)
         if model and model == 'account.third.check':
             ids = self.env.context.get('active_ids', [])
-            vouchers = self.env[model].browse(ids).read(['source_payment_order_id'])
-            if vouchers and vouchers[0] and 'source_payment_order_id' in vouchers[0]:
+            vouchers = self.env[model].browse(ids).read(
+                ['source_payment_order_id'])
+            if vouchers and vouchers[0] and \
+                    'source_payment_order_id' in vouchers[0]:
                 if vouchers[0]['source_payment_order_id']:
-                    payment_order_id = vouchers[0]['source_payment_order_id'][0]
-                    journal_id = voucher_obj.browse(payment_order_id).read(['journal_id'])[0]['journal_id'][0]
+                    payment_order_id = vouchers[0][
+                        'source_payment_order_id'][0]
+                    journal_id = voucher_obj.browse(payment_order_id).read(
+                        ['journal_id'])[0]['journal_id'][0]
         return journal_id
 
     journal_id = fields.Many2one(comodel_name='account.journal',
@@ -137,7 +143,8 @@ class AccountCheckDeposit(models.Model):
             # check.payment_order_id.journal_id.id)
 
             if self.voucher_number:
-                move_ref = _('Deposit Check %s [%s]') % (check.number, self.voucher_number)
+                move_ref = _('Deposit Check %s [%s]') % (check.number,
+                                                         self.voucher_number)
             else:
                 move_ref = _('Deposit Check %s') % (check.number)
 
@@ -147,12 +154,12 @@ class AccountCheckDeposit(models.Model):
                 'state': 'draft',
                 'period_id': period_id,
                 'date': deposit_date,
-                #'to_check': True,
+                # 'to_check': True,
                 'ref': move_ref,
             })
             move_line_obj.create({
                 'name': _('Check Deposit'),
-                #'centralisation': 'normal',
+                # 'centralisation': 'normal',
                 'account_id': self.bank_account_id.account_id.id,
                 'move_id': move_id.id,
                 'journal_id': self.journal_id.id,
@@ -160,7 +167,8 @@ class AccountCheckDeposit(models.Model):
                 'date': deposit_date,
                 'debit': check.amount,
                 'credit': 0.0,
-                'ref': _('Deposit Check %s on %s') % (check.number, self.bank_account_id.acc_number),
+                'ref': _('Deposit Check %s on %s') %
+                (check.number, self.bank_account_id.acc_number),
             })
 
             move_line_obj.create({
@@ -186,8 +194,8 @@ class AccountCheckDeposit(models.Model):
             check.deposit_check()
 
             # Se postea el asiento llamando a la funcion post de account_move.
-            # TODO: Se podria poner un check en el wizard para que elijan si postear
-            # el asiento o no.
+            # TODO: Se podria poner un check en el wizard
+            # para que elijan si postear el asiento o no.
             move_id.post()
 
         return {'type': 'ir.actions.act_window_close'}

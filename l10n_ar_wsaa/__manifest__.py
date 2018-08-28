@@ -22,8 +22,11 @@
 ##############################################################################
 {
     "name": "WSAA",
-    "version": "8.0.1.0.0",
-    "depends": ["base", "account"],
+    "version": "11.0.1.0.0",
+    "depends": [
+        "base",
+        "account"
+    ],
     "author": "Proyecto Aconcagua",
     "website": "http://proyectoaconcagua.com.ar",
     "license": "GPL-3",
@@ -49,5 +52,4 @@ python-m2crypto
         'demo/wsaa_demo.xml',
         ],
     'installable': True,
-    'active': False,
 }

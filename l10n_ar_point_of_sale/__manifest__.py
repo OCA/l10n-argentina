@@ -34,7 +34,6 @@
     "author": "Eynes, E-MIPS, Proyecto Aconcagua, \
         Odoo Community Association (OCA)",
     "license": "GPL-3",
-    "category": "Aconcagua",
     "description": """
     Modulo base para normativas de facturacion Argentina
     """,
@@ -47,9 +46,5 @@
         'views/menuitems.xml',
         'security/ir.model.access.csv',
     ],
-    'test': [
-        # 'test/denomination_invoice.yml',
-    ],
     'installable': True,
-    'active': False,
 }

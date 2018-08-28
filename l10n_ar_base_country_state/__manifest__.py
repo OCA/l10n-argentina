@@ -21,7 +21,7 @@
 
 {
     "name": "Base Argentina's States (aka Provinces)",
-    "version": "8.0.1.0.3",
+    "version": "11.0.1.0.0",
     "depends": [
         "account",
         "sale",
@@ -32,15 +32,13 @@
     This module provides:
         * States (aka provinces) for Argentina.
     """,
-    "init_xml": [],
     'data': [
         'data/country_state_data.xml',
         'views/partner_view.xml',
         'views/res_city_view.xml',
         'wizard/wizard_install_argentinean_cities_view.xml',
+        'security/ir.model.access.csv',
     ],
-    'demo_xml': [],
     'installable': True,
     'application': True,
-    'active': False,
 }

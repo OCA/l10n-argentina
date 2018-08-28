@@ -8,7 +8,8 @@
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
+#    it under the terms of the GNU Affero General
+#    Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -22,28 +23,27 @@
 #
 ##############################################################################
 
-from odoo import models, fields, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import models, fields, _, api
+from odoo.exceptions import UserError
 import odoo.addons.decimal_precision as dp
 
 
 # TODO: Que pasa si no se valida la Nota de Debito???
 
+# TODO !!!! This class is not properly migrated at all
 class AccountCheckReject(models.Model):
     _name = 'account.check.reject'
 
-    def _get_journal(self, cr, uid, context=None):
-        if context is None:
-            context = {}
-
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-        company_id = context.get('company_id', user.company_id.id)
-        journal_obj = self.pool.get('account.journal')
+    @api.model
+    def _get_journal(self):
+        user = self.env.user
+        company_id = self.env.context.get('company_id', user.company_id.id)
+        journal_obj = self.env['account.journal']
         domain = [('company_id', '=', company_id)]
 
         domain.append(('type', '=', 'sale'))
-        res = journal_obj.search(cr, uid, domain, limit=1)
-        return res and res[0] or False
+        res = journal_obj.search(domain, limit=1)
+        return res and res.id or False
 
     reject_date = fields.Date(string='Reject Date', required=True)
     journal_id = fields.Many2one(comodel_name='account.journal',
@@ -63,21 +63,18 @@ class AccountCheckReject(models.Model):
 #        return partner_obj.address_get(cr, uid, [partner],
 #                ['contact', 'invoice'])
 
-    def action_reject(self, cr, uid, ids, context=None):
-        check_config_obj = self.pool.get('account.check.config')
+    @api.multi
+    def action_reject(self):
+        check_config_obj = self.env['account.check.config']
+        third_check_obj = self.env['account.third.check']
+        invoice_obj = self.env['account.invoice']
+        invoice_line_obj = self.env['account.invoice.line']
 
-        if context is None:
-            context = {}
+        wizard = self
+        record_ids = self.env.context.get('active_ids', [])
+        check_objs = third_check_obj.browse(record_ids)
 
-        third_check_obj = self.pool.get('account.third.check')
-        invoice_obj = self.pool.get('account.invoice')
-        invoice_line_obj = self.pool.get('account.invoice.line')
-
-        wizard = self.browse(cr, uid, ids[0], context=context)
-        record_ids = context.get('active_ids', [])
-        check_objs = third_check_obj.browse(cr, uid, record_ids, context=context)
-
-        period_id = self.pool.get('account.period').find(cr, uid, wizard.reject_date)[0]
+        period_id = self.env['account.period'].find(wizard.reject_date)[0]
 
         for check in check_objs:
             if check.state not in ('deposited', 'delivered'):
@@ -88,7 +85,8 @@ class AccountCheckReject(models.Model):
 
             invoice_vals = {
                 'origin': 'Check : %s' % check.number,
-                'name': 'Debit Note due to rejected check %s [%s]' % (check.number or '', check.source_payment_order_id.number),
+                'name': 'Debit Note due to rejected check %s [%s]' %
+                (check.number or '', check.source_payment_order_id.number),
                 'type': 'out_invoice',
                 'is_debit_note': True,
                 'account_id': partner.property_account_receivable.id,
@@ -100,18 +98,20 @@ class AccountCheckReject(models.Model):
                 'company_id': wizard.company_id.id,
             }
 
-            vals = invoice_obj.onchange_partner_id(cr, uid, ids, 'out_invoice', partner.id, date_invoice=wizard.reject_date, payment_term=partner.property_payment_term, partner_bank_id=False, company_id=wizard.company_id.id, context=context)
+            vals = invoice_obj.onchange_partner_id(
+                'out_invoice', partner.id, date_invoice=wizard.reject_date,
+                payment_term=partner.property_payment_term,
+                partner_bank_id=False, company_id=wizard.company_id.id)
 
             invoice_vals.update(vals['value'])
             lines = []
             # Linea del cheque rechazado
 
-            res = check_config_obj.search(cr, uid, [('company_id', '=', check.company_id.id)])
-            if not len(res):
+            config = check_config_obj.search(
+                [('company_id', '=', check.company_id.id)])
+            if not config:
                 raise UserError(_(' ERROR! There is no check \
                     configuration for this Company!'))
-
-            config = check_config_obj.browse(cr, uid, res[0])
 
             account_id = False
             if check.state == 'delivered':
@@ -125,7 +125,11 @@ class AccountCheckReject(models.Model):
                 'quantity': 1,
             }
 
-            vals = invoice_line_obj.product_id_change(cr, uid, [], product=False, uom_id=False, qty=1, name=name, type='out_invoice', partner_id=partner.id, price_unit=check.amount, currency_id=False, context=context, company_id=check.company_id.id)
+            vals = invoice_line_obj.product_id_change(
+                product=False, uom_id=False, qty=1, name=name,
+                type='out_invoice', partner_id=partner.id,
+                price_unit=check.amount, currency_id=False,
+                company_id=check.company_id.id)
 
             invoice_line_vals.update(vals['value'])
             invoice_line_vals['price_unit'] = check.amount
@@ -139,7 +143,11 @@ class AccountCheckReject(models.Model):
                     'quantity': 1,
                 }
 
-                vals = invoice_line_obj.product_id_change(cr, uid, [], product=expense.product_id.id, uom_id=False, qty=1, name='', type='out_invoice', partner_id=partner.id, price_unit=expense.price, currency_id=False, context=context, company_id=wizard.company_id.id)
+                vals = invoice_line_obj.product_id_change(
+                    product=expense.product_id.id, uom_id=False, qty=1,
+                    name='', type='out_invoice', partner_id=partner.id,
+                    price_unit=expense.price, currency_id=False,
+                    company_id=wizard.company_id.id)
 
                 invoice_line_vals.update(vals['value'])
                 invoice_line_vals['price_unit'] = expense.price
@@ -152,24 +160,24 @@ class AccountCheckReject(models.Model):
             invoice_vals['pos_ar_id'] = invoice_vals['pos_ar_id']
 
             # Creamos la nota de debito
-            debit_note_id = invoice_obj.create(cr, uid, invoice_vals)
+            debit_note_id = invoice_obj.create(invoice_vals)
 
-            # TODO: Chequear que es lo mismo el estado en el que este, asi quitamos
-            # este if que parece no tener sentido
+            # TODO: Chequear que es lo mismo el estado en el que este,
+            # asi quitamos este if que parece no tener sentido
             if check.state == 'delivered':
-                third_check_obj.reject_check(cr, uid, [check.id], context=context)
+                third_check_obj.reject_check([check.id])
             elif check.state == 'deposited':
-                third_check_obj.reject_check(cr, uid, [check.id], context=context)
+                third_check_obj.reject_check([check.id])
 
             # Guardamos la referencia a la nota de debito del rechazo
             # TODO: Cambiar el write del state, tiene que ser por workflow.
-            third_check_obj.write(cr, uid, check.id, {'debit_note_id': debit_note_id, 'state': 'rejected'}, context=context)
+            check.write({'debit_note_id': debit_note_id, 'state': 'rejected'})
 
-        ir_model_data = self.pool.get('ir.model.data')
-        form_res = ir_model_data.get_object_reference(cr, uid, 'l10n_ar_point_of_sale', 'view_pos_invoice_form')
-        form_id = form_res and form_res[1] or False
-        tree_res = ir_model_data.get_object_reference(cr, uid, 'l10n_ar_point_of_sale', 'view_pos_invoice_filter')
-        tree_id = tree_res and tree_res[1] or False
+        form_res = self.env.ref('l10n_ar_point_of_sale.view_pos_invoice_form')
+        form_id = form_res and form_res.id or False
+        tree_res = self.env.ref(
+            'l10n_ar_point_of_sale.view_pos_invoice_filter')  # ????
+        tree_id = tree_res and tree_res.id or False
 
         return {
             'name': _('Invoice'),

@@ -8,7 +8,8 @@
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
+#    it under the terms of the GNU Affero General
+#    Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -22,7 +23,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import models, fields, api
 import time
 
 
@@ -55,12 +56,12 @@ class AccountAddIssuedCheck(models.Model):
                                        string='Voucher')
     issued = fields.Boolean(string='Issued')
 
+    @api.multi
     def add_issued_checks(self):
 
         issued_check_obj = self.env['account.issued.check']
-        # payment_order_id = context['active_ids'][0]
-        wiz_check_obj = self.pool.get('account.add.issued.check')
-        wiz_check = wiz_check_obj.browse(cr, uid, ids[0], context)
+        payment_order_id = self.env.context.get('active_ids')[0]
+        wiz_check = self
         rs = {
             'number': wiz_check.number,
             'date_out': wiz_check.date_out,
@@ -70,7 +71,7 @@ class AccountAddIssuedCheck(models.Model):
             'amount': wiz_check.amount,
             'payment_order_id': payment_order_id,
         }
-        check_id = issued_check_obj.create(cr, uid, rs)
+        issued_check_obj.create(rs)
 
         return {'type': 'ir.actions.act_window_close'}
 
@@ -121,12 +122,11 @@ class AccountAddThirdCheck(models.Model):
     reject_debit_note = fields.Many2one(comodel_name='account.invoice',
                                         string='Reject Debit Note')
 
-    def add_third_checks(self, cr, uid, ids, context=None):
-
-        third_check_obj = self.pool.get('account.third.check')
-        payment_order_id = context['active_ids'][0]
-        wiz_check_obj = self.pool.get('account.add.third.check')
-        wiz_check = wiz_check_obj.browse(cr, uid, ids[0], context)
+    @api.multi
+    def add_third_checks(self):
+        third_check_obj = self.env['account.third.check']
+        payment_order_id = self.env.context.get('active_ids')[0]
+        wiz_check = self
         rs = {
             'number': wiz_check.number,
             'amount': wiz_check.amount,
@@ -138,5 +138,5 @@ class AccountAddThirdCheck(models.Model):
             'account_bank_id': wiz_check.account_bank_id.id,
             'payment_order_id': payment_order_id,
         }
-        check_id = third_check_obj.create(cr, uid, rs)
+        third_check_obj.create(rs)
         return {'type': 'ir.actions.act_window_close'}

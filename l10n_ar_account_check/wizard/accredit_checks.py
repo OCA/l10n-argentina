@@ -6,7 +6,8 @@
 #    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
+#    it under the terms of the GNU Affero General
+#    Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -25,8 +26,9 @@ from odoo import models, api, fields
 
 class WizardAccreditChecks(models.TransientModel):
     _name = 'wizard.accredit.checks'
-    _description = 'Select several checks which are Waiting Accreditation so you can accredit them'
+    _description = 'Select several checks which are Waiting Accreditation so you can accredit them'  # noqa
 
+    @api.model
     def get_default_checks(self):
         check_ids = self.env.context.get("active_ids", [])
         return [(6, False, check_ids)]

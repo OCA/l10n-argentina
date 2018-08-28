@@ -22,7 +22,7 @@
 
 {
     "name": "WSFE (Factura Electronica)",
-    "version": "8.0.2.0.1",
+    "version": "11.0.1.0.0",
     "depends": [
         "base",
         "account",
@@ -53,5 +53,4 @@
         ],
     },
     'installable': True,
-    'active': False,
 }
