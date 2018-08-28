@@ -538,7 +538,7 @@ class AccountPaymentOrder(models.Model):
             'narration': self.narration,
             'date': self.date,
             'ref': ref,
-            'period_id': self.period_id.id
+            # 'period_id': self.period_id.id
         }
         return move
 
@@ -561,12 +561,11 @@ class AccountPaymentOrder(models.Model):
         amount_in_company_currency = self.\
             _convert_paid_amount_in_company_currency(amount)
         debit = credit = 0.0
+        pl_account_id = journal_id.default_debit_account_id.id
         if self.type in ('purchase', 'payment'):
             credit = amount_in_company_currency
-            pl_account_id = journal_id.default_credit_account_id.id
         elif self.type in ('sale', 'receipt'):
             debit = amount_in_company_currency
-            pl_account_id = journal_id.default_debit_account_id.id
         if debit < 0:
             credit = -debit
             debit = 0.0
@@ -581,7 +580,7 @@ class AccountPaymentOrder(models.Model):
             'account_id': pl_account_id,
             'move_id': move_id,
             'journal_id': self.journal_id.id,
-            'period_id': self.period_id.id,
+            # 'period_id': self.period_id.id,
             'partner_id': self.partner_id.id,
             'currency_id': company_currency != current_currency and current_currency or False,
             'amount_currency': company_currency != current_currency and sign * amount or 0.0,
@@ -627,21 +626,22 @@ class AccountPaymentOrder(models.Model):
                 continue
 
             move_line = self._create_move_line_payment(
-                move_id, pml.name, pml.payment_order_id.journal_id,
+                move_id, pml.name, pml.payment_mode_id,
                 pml.amount, company_currency,
                 current_currency, sign)
 
             move_lines.append(move_line)
 
         # Si es pago contado
-        if self.journal_id.type not in ('receipt', 'payment'):
-            move_line = self._create_move_line_payment(
-                move_id, _('Immediate'),
-                self.journal_id,
-                self.amount, company_currency,
-                current_currency, sign)
-
-            move_lines.append(move_line)
+        # TODO
+        # if self.journal_id.type not in ('receipt', 'payment'):
+        #     move_line = self._create_move_line_payment(
+        #         move_id, _('Immediate'),
+        #         self.account_id,
+        #         self.amount, company_currency,
+        #         current_currency, sign)
+        #
+        #     move_lines.append(move_line)
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
         move_lines = self.create_move_line_hook(move_id, move_lines)
@@ -706,7 +706,7 @@ class AccountPaymentOrder(models.Model):
                 'account_id': self.account_id.id,
                 'move_id': move_id,
                 'journal_id': self.journal_id.id,
-                'period_id': self.period_id.id,
+                # 'period_id': self.period_id.id,
                 'partner_id': self.partner_id.id,
                 'currency_id': company_currency != current_currency and  current_currency or False,
                 'amount_currency': (sign * abs(self.amount) # amount < 0 for refunds
@@ -766,7 +766,7 @@ class AccountPaymentOrder(models.Model):
             account_currency_id = company_currency != current_currency and current_currency or False
         move_line = {
             'journal_id': line.voucher_id.journal_id.id,
-            'period_id': line.voucher_id.period_id.id,
+            # 'period_id': line.voucher_id.period_id.id,
             'name': _('change')+': '+(line.name or '/'),
             'account_id': line.account_id.id,
             'move_id': move_id,
@@ -780,7 +780,7 @@ class AccountPaymentOrder(models.Model):
         }
         move_line_counterpart = {
             'journal_id': line.voucher_id.journal_id.id,
-            'period_id': line.voucher_id.period_id.id,
+            # 'period_id': line.voucher_id.period_id.id,
             'name': _('change')+': '+(line.name or '/'),
             'account_id': account_id.id,
             'move_id': move_id,
@@ -817,7 +817,7 @@ class AccountPaymentOrder(models.Model):
         voucher_currency = self.journal_id.currency_id or self.company_id.currency_id
         prec = self.env['decimal.precision'].precision_get('account')
         for line in self.line_ids:
-            #create one move line per voucher line where amount is not 0.0 
+            #create one move line per voucher line where amount is not 0.0
             # AND (second part of the clause) only if the original move line was not having debit = credit = 0 (which is a legal value)
             if not line.amount and not \
                     (line.move_line_id and not float_compare(
@@ -849,7 +849,7 @@ class AccountPaymentOrder(models.Model):
                 line.account_analytic_id.id or False
             move_line = {
                 'journal_id': self.journal_id.id,
-                'period_id': self.period_id.id,
+                # 'period_id': self.period_id.id,
                 'name': line.name or '/',
                 'account_id': line.account_id.id,
                 'move_id': move_id,
@@ -919,7 +919,7 @@ class AccountPaymentOrder(models.Model):
                 # Change difference entry in voucher currency
                 move_line_foreign_currency = {
                     'journal_id': line.voucher_id.journal_id.id,
-                    'period_id': line.voucher_id.period_id.id,
+                    # 'period_id': line.voucher_id.period_id.id,
                     'name': _('change')+': '+(line.name or '/'),
                     'account_id': line.account_id.id,
                     'move_id': move_id,
