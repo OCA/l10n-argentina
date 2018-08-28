@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Reordenamiento de Menues Account/Customer -->
+        <menuitem action="account.action_invoice_tree1" id="account.menu_action_invoice_tree1" sequence="5" parent="account.menu_finance_receivables_documents"/>
+        <menuitem action="account.action_invoice_out_refund" id="account.menu_action_invoice_tree3" sequence="6" parent="account.menu_finance_receivables_documents"/>
+        <menuitem action="action_customer_debit_note_tree" sequence="7" id="menu_customer_debit_note" parent="account.menu_finance_receivables_documents"/>
+
+        <!-- Reordenamiento de Menues Account/Supplier -->
+        <menuitem action="account.action_invoice_tree2" id="account.menu_action_invoice_tree2" sequence="5" parent="account.menu_finance_payables_documents"/>
+        <menuitem action="account.action_invoice_in_refund" id="account.menu_action_invoice_tree4" sequence="6" parent="account.menu_finance_payables_documents"/>
+        <menuitem action="action_supplier_debit_note_tree" sequence="7" id="menu_supplier_debit_note" parent="account.menu_finance_payables_documents"/>
+
+
+        <!--Menues POS-->
+        <menuitem name="Point of Sale AR" id="menu_pos_ar_root" parent="account.account_account_menu"
+            action="action_pos_ar_view_tree"
+            sequence="10"
+            icon="terp-partner"
+            web_icon="images/pos.png"
+            web_icon_hover="images/pos-hover.png"/>
+
+        <menuitem id="menu_invoice_denomination" action="action_pos_ar_denomination_view_tree"
+            name="Denominations" parent="account.account_account_menu" sequence="20"/>
+
+
+        <menuitem id="not_used_native_menues_finance_receivables"
+            name="Old Menues"
+            groups="base.group_no_one"
+            parent="account.menu_finance_receivables"
+            sequence="999"/>
+            <menuitem id="account_voucher.menu_action_sale_receipt"
+                parent="not_used_native_menues_finance_receivables"/>
+            <menuitem id="account.menu_action_account_payments_receivable"
+                parent="not_used_native_menues_finance_receivables"/>
+            <menuitem id="account.menu_action_invoice_out_refund"
+                parent="not_used_native_menues_finance_receivables"/>
+
+        <menuitem id="not_used_native_menues_finance_payables"
+            name="Old Menues"
+            groups="base.group_no_one"
+            parent="account.menu_finance_payables"
+            sequence="999"/>
+            <menuitem id="account_voucher.menu_action_purchase_receipt"
+                parent="not_used_native_menues_finance_payables"/>
+            <menuitem id="account.menu_action_account_payments_payable"
+                parent="not_used_native_menues_finance_payables"/>
+            <menuitem id="account.menu_action_invoice_in_refund"
+                parent="not_used_native_menues_finance_payables"/>
+    </data>
+</odoo>

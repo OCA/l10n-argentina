@@ -28,6 +28,7 @@
         "sale",
         "purchase",
         "account",
+        "account_voucher",
         "base_vat_ar"
     ],
     "author": "Eynes, E-MIPS, Proyecto Aconcagua, \
@@ -40,10 +41,10 @@
     "data": [
         'data/partner_data.xml',
         'views/pos_ar_view.xml',
-        # 'views/sale_view.xml',
         'views/account_invoice_view.xml',
         'views/partner_view.xml',
         'views/account_view.xml',
+        'views/menuitems.xml',
         'security/ir.model.access.csv',
     ],
     'test': [
