@@ -50,10 +50,10 @@
             <field name="arch" type="xml">
                 <form string="Receipt">
                     <header invisible="context.get('line_type', False)">
-                        <button name="proforma_voucher" string="Validate" class="oe_highlight" type="object"/>
-                        <button name="cancel_voucher" string="Cancel Receipt" type="object"/>
-                        <button name="cancel_voucher" string="Unreconcile" type="object" confirm="Are you sure to unreconcile and cancel this record ?"/>
-                        <button name="action_cancel_draft" type="object" string="Set to Draft"/>
+                        <button name="proforma_voucher" string="Validate" class="oe_highlight" type="object" states="draft"/>
+                        <button name="cancel_voucher" string="Cancel Receipt" type="object" states="draft,proforma"/>
+                        <button name="cancel_voucher" string="Unreconcile" type="object" states="posted" confirm="Are you sure to unreconcile and cancel this record ?"/>
+                        <button name="action_cancel_draft" type="object" states="cancel" string="Set to Draft"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted" type="object" statusbar_colors='{"proforma":"blue"}'/>
                     </header>
                     <sheet>
@@ -213,11 +213,10 @@
                             </page>
                         </notebook>
                     </sheet>
-                    <!-- TODO: Error: No existe el campo message_follower_ids -->
-                    <!-- <div class="oe_chatter" invisible="context.get('line_type', False)">
+                    <div class="oe_chatter" invisible="context.get('line_type', False)">
                         <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="message_ids" widget="mail_thread"/>
-                    </div> -->
+                    </div>
                 </form>
             </field>
         </record>
@@ -444,11 +443,10 @@
                         </page>
                     </notebook>
                     </sheet>
-                    <!-- TODO: Error: No existe el campo message_follower_ids -->
-                    <!-- <div class="oe_chatter" invisible="context.get('line_type', False)">
+                    <div class="oe_chatter" invisible="context.get('line_type', False)">
                         <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="message_ids" widget="mail_thread"/>
-                    </div> -->
+                    </div>
                 </form>
             </field>
         </record>

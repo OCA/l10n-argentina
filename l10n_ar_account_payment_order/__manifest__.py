@@ -32,6 +32,7 @@
     "data": [
         "views/account_payment_order_receipt_view.xml",
         "views/account_journal_view.xml",
+        "security/ir.model.access.csv",
     ],
     "qweb": ['static/src/xml/*.xml'],
     "installable": True,
