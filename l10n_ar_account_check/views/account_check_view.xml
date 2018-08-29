@@ -84,7 +84,7 @@
             <field name="model">account.issued.check</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Issued Checks" version="7.0">
+                <form string="Issued Checks">
                     <header>
                         <button name="accredit_checks" string="Accredit Check" type="object" attrs="{'invisible': [('state', 'not in', ['waiting'])]}" class="oe_highlight"/>
                         <button name="break_conciliation" string="Break Conciliation" type="object" class="oe_highlight"

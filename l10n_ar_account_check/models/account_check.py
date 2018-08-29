@@ -152,9 +152,10 @@ class AccountIssuedCheck(models.Model):
             date_maturity = voucher.date_due
 
         if not account_id:
-            raise UserError(_("Error! Bank Account has no account" +
-                              "configured. Please, configure an " +
-                              "account for the bank account used for checks!"))
+            raise UserError(
+                _("Error! Bank Account has no account" +
+                  "configured. Please, configure an " +
+                  "account for the bank account used for checks!"))
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
@@ -229,10 +230,10 @@ class AccountIssuedCheck(models.Model):
 
             current_date = time.strftime('%Y-%m-%d')
 
-            period_obj = self.env['account.period']
+            period_obj = self.env['date.period']
             current_period = period_obj.search([
-                ('date_start', '<=', current_date),
-                ('date_stop', '>=', current_date)])
+                ('date_from', '<=', current_date),
+                ('date_to', '>=', current_date)])
 
             move_line_obj = self.env['account.move.line']
             move_obj = self.env['account.move']
@@ -256,7 +257,7 @@ class AccountIssuedCheck(models.Model):
                 'move_id': move_id.id,
             }
 
-            clearance_move_line = move_line_obj.create(check_move_line_vals)
+            clearance_move_line = move_line_obj.with_context({'check_move_validity': False}).create(check_move_line_vals)
 
             # Creamos la línea contable que refiere a la acreditación por parte del banco
             bank_move_line_vals = {
@@ -269,7 +270,7 @@ class AccountIssuedCheck(models.Model):
                 'move_id': move_id.id,
             }
 
-            move_line_obj.create(bank_move_line_vals)
+            move_line_obj.with_context({'check_move_validity': False}).create(bank_move_line_vals)
 
             move_lines_to_reconcile = []
             payment_move_line = move_line_obj.search([
@@ -300,6 +301,7 @@ class AccountIssuedCheck(models.Model):
 
         return checks.accredit_checks()
 
+    # TODO
     @api.multi
     def break_conciliation(self):
         for check in self:
@@ -307,17 +309,11 @@ class AccountIssuedCheck(models.Model):
                 raise ValidationError(_("Can't break conciliation of a not issued check!"))
             if not check.accredited:
                 raise ValidationError(_("Can't break conciliation of a not accredited check!"))
-
         for check in self:
-            move_lines = check.clearance_move_id.line_id
-            for move_line in move_lines:
-                if move_line.reconcile_id:
-                    move_lines_rm = [move_line_rec.id for move_line_rec in move_line.reconcile_id.line_id]
-                    move_lines_rm.remove(move_line.id)
-                    move_line.reconcile_id.unlink()
-
-            check.clearance_move_id.button_cancel()
-            check.clearance_move_id.unlink()
+            move = check.clearance_move_id
+            move.line_ids.remove_move_reconcile()
+            move.button_cancel()
+            move.unlink()
             check.write({'state': 'waiting'})
 
     @api.multi

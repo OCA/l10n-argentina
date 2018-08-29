@@ -107,7 +107,10 @@ class AccountCheckDeposit(models.Model):
     # pero antes averiguar si se tiene que hacer un asiento por cada uno o
     # todo en un asiento por cuenta bancaria. Por ahora, esta hecho para
     # uno por asiento.
+    # TODO: action_deposit create a unbalanced journal entr now, the
+    # journal entryes be created with context 'check_move_validity': False
     def action_deposit(self):
+        __import__('ipdb').set_trace()
         period_obj = self.env['date.period']
         third_check_obj = self.env['account.third.check']
         move_line_obj = self.env['account.move.line']
@@ -115,7 +118,6 @@ class AccountCheckDeposit(models.Model):
         period_date = datetime.strptime(self.date, '%Y-%m-%d').date()
         period_id = period_obj._get_period(period_date).id
         deposit_date = self.date or time.strftime('%Y-%m-%d')
-
         if not self.bank_account_id.account_id:
             raise UserError(_("Error! You have to configure an account on \
                 Bank Account %s: %s") % (
@@ -157,7 +159,7 @@ class AccountCheckDeposit(models.Model):
                 # 'to_check': True,
                 'ref': move_ref,
             })
-            move_line_obj.create({
+            move_line_obj.with_context({'check_move_validity': False}).create({
                 'name': _('Check Deposit'),
                 # 'centralisation': 'normal',
                 'account_id': self.bank_account_id.account_id.id,
@@ -171,7 +173,7 @@ class AccountCheckDeposit(models.Model):
                 (check.number, self.bank_account_id.acc_number),
             })
 
-            move_line_obj.create({
+            move_line_obj.with_context({'check_move_validity': False}).create({
                 'name': _('Check Deposit'),
                 'centralisation': 'normal',
                 'account_id': account_check_id,

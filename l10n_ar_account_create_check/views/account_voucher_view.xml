@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="0">
+
+    <record model="ir.ui.view" id="view_vendor_payment_checkbook_form">
+        <field name="name">account.payment.order.checkbook.form</field>
+        <field name="model">account.payment.order</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="l10n_ar_account_check.view_voucher_check_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='issued_check_ids']/form/group/group/field[@name='number']" position="before">
+                    <field name="checkbook_id" required="1" domain="[('state', '=', 'open')]"/>
+                    <field name="check_id" attrs="{'readonly': [('state','in',['issued','cancel'])]}"
+                        domain="[('state', '=', 'draft'), ('checkbook_id', '=?', checkbook_id)]"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+</data>
+</odoo>

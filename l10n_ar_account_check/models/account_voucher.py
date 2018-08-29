@@ -206,7 +206,11 @@ class AccountPaymentOrder(models.Model):
                 else:
                     state = 'issued'
 
-                vals = {'state': state, 'payment_move_id': move_id, 'receiving_partner_id': self.partner_id.id}
+                vals = {
+                    'state': state,
+                    'payment_move_id': move_id,
+                    'receiving_partner_id': self.partner_id.id
+                }
 
                 if not check.origin:
                     vals['origin'] = self.reference
