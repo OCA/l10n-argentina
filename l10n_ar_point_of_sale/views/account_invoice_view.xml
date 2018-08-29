@@ -34,7 +34,7 @@
                         <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
                     </field>
                    <field name="partner_id" position="before">
-                       <field name="pos_ar_id" attrs="{'readonly': True}" force_save="True"/>
+                       <field name="pos_ar_id"/>
                        <field name="is_debit_note" invisible="1"/>
                    </field>
                    <field name="amount_untaxed" position="replace">
@@ -202,10 +202,25 @@
             </field>
         </record>
 
+        <record id="view_supplier_invoice_tree" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+            <field name="arch" type="xml">
+                <field name="number" position="after">
+                    <field name="denomination_id" string="Den"/>
+                    <field name="internal_number" width="100" string="Number"/>
+                </field>
+                <field name="number" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
 
-       <record id="account.action_invoice_tree1" model="ir.actions.act_window">
+        <record id="account.action_invoice_tree1" model="ir.actions.act_window">
             <field name="domain">[('type','=','out_invoice'), ('is_debit_note', '=', False)]</field>
-       </record>
+        </record>
 
        <record id="action_customer_debit_note_tree" model="ir.actions.act_window">
             <field name="name">Customer Debit Notes</field>
