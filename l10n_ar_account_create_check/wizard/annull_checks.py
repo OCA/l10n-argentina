@@ -12,12 +12,16 @@ class WizardAnnullChecks(models.TransientModel):
     _description = 'Wizard to annull checks related to one Checkbook'
 
     def get_default_checkbook(self):
-        return self.env.context.get("active_ids", [self.env.context.get("active_id", False)])[0]
+        return self.env.context.get(
+            "active_ids", [self.env.context.get("active_id", False)])[0]
 
-    checkbook_id = fields.Many2one('account.checkbook', string='Checkbook', required=True,
+    checkbook_id = fields.Many2one(comodel_name='account.checkbook',
+                                   string='Checkbook', required=True,
                                    default=get_default_checkbook)
-    checks = fields.Many2many('account.checkbook.check', 'wizard_annull_checks_rel', 'wiz_id',
-                              'check_id', string='Checks', required=True)
+    checks = fields.Many2many(comodel_name='account.checkbook.check',
+                              relation='wizard_annull_checks_rel',
+                              column1='wiz_id', column2='check_id',
+                              string='Checks', required=True)
 
     @api.multi
     def button_annull_checks(self):

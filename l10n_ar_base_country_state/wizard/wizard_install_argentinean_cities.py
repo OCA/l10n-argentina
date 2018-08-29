@@ -25,7 +25,10 @@ class WizardInstallArgentineanCities(models.TransientModel):
     noupdate = fields.Boolean(string='No update?', default=False)
 
     def run(self, module, filename, mode, noupdate=False):
-        return convert_xml_import(self.env.cr, module, filename, mode=mode, noupdate=noupdate)
+        return convert_xml_import(
+            self.env.cr, module,
+            filename, mode=mode,
+            noupdate=noupdate)
 
     @api.multi
     def button_run(self):
@@ -38,6 +41,7 @@ class WizardInstallArgentineanCities(models.TransientModel):
         # get XML data filename
         filename = os.path.join(module_path, "data/res_city_data.xml")
         if not os.path.exists(filename):
-            raise exceptions.Warning(_("Can't import Cities because the XML is missing"))
+            raise exceptions.Warning(
+                _("Can't import Cities because the XML is missing"))
 
         return self.run(module_name, filename, self.mode, self.noupdate)

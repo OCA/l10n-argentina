@@ -4,9 +4,8 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ###############################################################################
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 # sfrom openerp.osv import osv
-from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 from odoo.addons.l10n_ar_wsaa.utils.wsaa_suds import WSAA as wsaa
 from odoo import SUPERUSER_ID

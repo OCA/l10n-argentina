@@ -15,8 +15,10 @@ class ResPartner(models.Model):
 
     city_id = fields.Many2one('res.city', string='City')
     zip = fields.Char(related="city_id.zip_code", store=True, readonly=False)
-    state_id = fields.Many2one(related="city_id.state_id", store=True, readonly=False)
-    country_id = fields.Many2one(related="city_id.state_id.country_id", store=True, readonly=False)
+    state_id = fields.Many2one(related="city_id.state_id",
+                               store=True, readonly=False)
+    country_id = fields.Many2one(related="city_id.state_id.country_id",
+                                 store=True, readonly=False)
 
 
 class ResCompany(models.Model):
@@ -28,5 +30,7 @@ class ResCompany(models.Model):
 
     city_id = fields.Many2one('res.city', string='City')
     zip = fields.Char(related="city_id.zip_code", store=True, readonly=False)
-    state_id = fields.Many2one(related="city_id.state_id", store=True, readonly=False)
-    country_id = fields.Many2one(related="city_id.state_id.country_id", store=True, readonly=False)
+    state_id = fields.Many2one(related="city_id.state_id",
+                               store=True, readonly=False)
+    country_id = fields.Many2one(related="city_id.state_id.country_id",
+                                 store=True, readonly=False)

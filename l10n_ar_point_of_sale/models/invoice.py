@@ -144,17 +144,20 @@ class AccountInvoice(models.Model):
     def _update_reference(self, ref):
         # Ensure only one
         move_id = self.move_id.id
-        self.env.cr.execute('UPDATE account_move SET ref=%s '
-                            'WHERE id=%s',  # AND (ref is null OR ref = \'\')',
-                            (ref, move_id))
-        self.env.cr.execute('UPDATE account_move_line SET ref=%s '
-                            'WHERE move_id=%s',  # AND (ref is null OR ref = \'\')',
-                            (ref, move_id))
-        self.env.cr.execute('UPDATE account_analytic_line SET ref=%s '
-                            'FROM account_move_line '
-                            'WHERE account_move_line.move_id = %s '
-                            'AND account_analytic_line.move_id = account_move_line.id',
-                            (ref, move_id))
+        self.env.cr.execute(
+            'UPDATE account_move SET ref=%s '
+            'WHERE id=%s',  # AND (ref is null OR ref = \'\')',
+            (ref, move_id))
+        self.env.cr.execute(
+            'UPDATE account_move_line SET ref=%s '
+            'WHERE move_id=%s',  # AND (ref is null OR ref = \'\')',
+            (ref, move_id))
+        self.env.cr.execute(
+            'UPDATE account_analytic_line SET ref=%s '
+            'FROM account_move_line '
+            'WHERE account_move_line.move_id = %s '
+            'AND account_analytic_line.move_id = account_move_line.id',
+            (ref, move_id))
         return True
 
     # DONE

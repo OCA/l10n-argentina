@@ -14,9 +14,13 @@ class AccountCheckbook(models.Model):
 
     def calc_state(self):
         checkbook = self
-        done_qty = len(checkbook.check_ids.filtered(lambda c: c.state == 'done'))
-        annulled_qty = len(checkbook.check_ids.filtered(lambda c: c.state == 'annulled'))
-        if checkbook.check_ids and done_qty + annulled_qty == len(checkbook.check_ids):
+        done_qty = len(checkbook.check_ids.filtered(
+            lambda c: c.state == 'done'))
+        annulled_qty = len(checkbook.check_ids.filtered(
+            lambda c: c.state == 'annulled'))
+        if checkbook.check_ids and \
+                done_qty + annulled_qty == \
+                len(checkbook.check_ids):
             state = 'closed'
         else:
             state = 'open'
@@ -25,7 +29,7 @@ class AccountCheckbook(models.Model):
 
     @api.depends("check_ids", "check_ids.state", "state")
     def calc_anulled_checks(self):
-        if type(self.id) !=  int:
+        if type(self.id) != int:
             return False
         query = """
         SELECT id
@@ -44,26 +48,47 @@ class AccountCheckbook(models.Model):
             checkbook.annulled_checks = [(6, False, check_ids)]
         return True
 
-    name = fields.Char('Checkbook Number', size=32, required=True)
-    bank_id = fields.Many2one('res.bank', 'Bank', required=True)
-    bank_account_id = fields.Many2one('res.partner.bank', 'Bank Account', required=True)
-    account_check_id = fields.Many2one('account.account', 'Check Account', help="Account used for account moves with checks. If not set, account in treasury configuration is used.")
-    check_ids = fields.One2many('account.checkbook.check', 'checkbook_id', 'Available Checks',
-                                domain=[('state', '=', 'draft')], readonly=True)
-    annulled_checks = fields.One2many('account.checkbook.check', string="Annulled Checks", compute="calc_anulled_checks")
-    issued_check_ids = fields.One2many('account.issued.check', 'checkbook_id', 'Issued Checks', readonly=True)
-    # partner_id = fields.Related('company_id', 'partner_id', type="many2one", relation="res.partner", string="Partner", store=True)
-    partner_id = fields.Many2one(related='company_id.partner_id', string="Partner", store=True, default=lambda self: self.env.user.company_id.partner_id.id)
-    company_id = fields.Many2one('res.company', 'Company', required=True, default=lambda self: self.env.user.company_id.id)
-    type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date", default='common')
-    state = fields.Selection(
-        [
-            ('open', 'Open'),
-            ('closed', 'Closed'),
-        ],
-        'State',
-        default='open',
-    )
+    name = fields.Char(string='Checkbook Number', size=32, required=True)
+    bank_id = fields.Many2one(comodel_name='res.bank',
+                              string='Bank', required=True)
+    bank_account_id = fields.Many2one(comodel_name='res.partner.bank',
+                                      string='Bank Account', required=True)
+    account_check_id = fields.Many2one(comodel_name='account.account',
+                                       string='Check Account',
+                                       help="Account used for account moves \
+                                       with checks. If not set, account in \
+                                       treasury configuration is used.")
+    check_ids = fields.One2many(comodel_name='account.checkbook.check',
+                                inverse_name='checkbook_id',
+                                string='Available Checks',
+                                domain=[('state', '=', 'draft')],
+                                readonly=True)
+    annulled_checks = fields.One2many(comodel_name='account.checkbook.check',
+                                      string="Annulled Checks",
+                                      compute="calc_anulled_checks")
+    issued_check_ids = fields.One2many(comodel_name='account.issued.check',
+                                       inverse_name='checkbook_id',
+                                       string='Issued Checks', readonly=True)
+    partner_id = fields.Many2one(related='company_id.partner_id',
+                                 string="Partner", store=True,
+                                 default=lambda self: self.env.user.
+                                 company_id.partner_id.id)
+    company_id = fields.Many2one(comodel_name='res.company',
+                                 string='Company', required=True,
+                                 default=lambda self: self.env.
+                                 user.company_id.id)
+    type = fields.Selection([
+        ('common', 'Common'),
+        ('postdated', 'Post-dated')],
+        string='Checkbook Type',
+        help="If common, checks only have issued_date. \
+        If post-dated they also have payment date",
+        default='common')
+    state = fields.Selection([
+        ('open', 'Open'),
+        ('closed', 'Closed')],
+        string='State',
+        default='open')
 
     @api.onchange('bank_account_id')
     def onchange_bank_account(self):
@@ -73,14 +98,20 @@ class AccountCheckbook(models.Model):
     def unlink(self):
         for checkbook in self:
             if len(checkbook.issued_check_ids):
-                raise UserError(_('Error!\nYou cannot delete this checkbook because it has Issued Checks'))
+                raise UserError(
+                    _('Error!\nYou cannot delete this checkbook \
+                        because it has Issued Checks'))
             super(AccountCheckbook, checkbook).unlink()
         return True
 
     @api.model
     def _get_next_available_check(self, checkbook_id):
         check_obj = self.env["account.checkbook.check"]
-        check_ids = check_obj.search([('state', '=', 'draft'), ('checkbook_id', '=', checkbook_id)], order="id asc")
+        check_ids = check_obj.search([
+            ('state', '=', 'draft'),
+            ('checkbook_id', '=', checkbook_id)],
+            order="id asc")
+
         if check_ids:
             return check_ids[0]
         return False
@@ -97,24 +128,26 @@ class CheckbookCheck(models.Model):
     _description = "Checkbook Check"
 
     name = fields.Char('Check Number', size=20, required=True)
-    checkbook_id = fields.Many2one('account.checkbook', 'Checkbook number', ondelete='cascade', required=True)
+    checkbook_id = fields.Many2one(comodel_name='account.checkbook',
+                                   string='Checkbook number',
+                                   ondelete='cascade', required=True)
     # Para tener una referencia a que cheque se convirtio
-    #issued_checks = fields.One2many('account.issued.check', 'check_id', string='Issued Checks')
-    state = fields.Selection(
-        [
-            ('draft', 'Draft'),
-            ('done', 'Used'),
-            ('annulled', 'Annulled'),
-        ],
-        'State',
+    # issued_checks = fields.One2many(comodel_name='account.issued.check',
+    #                                 inverse_name='check_id',
+    #                                 string='Issued Checks')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('done', 'Used'),
+        ('annulled', 'Annulled')],
+        string='State',
         readonly=True,
-        default='draft',
-    )
+        default='draft')
 
     def annull_check(self):
         for check in self:
             if check.state == 'done':
-                raise exceptions.ValidationError(_("Can't annull done checks!"))
+                raise exceptions.ValidationError(
+                    _("Can't annull done checks!"))
 
         return self.write({'state': 'annulled'})
 
@@ -141,7 +174,8 @@ class AccountIssuedCheck(models.Model):
             # update check state when the field is changed
             new_check_id = vals['check_id']
             self.mapped("check_id").write({'state': 'draft'})
-            self.env['account.checkbook.check'].browse(new_check_id).write({'state': 'done'})
+            self.env['account.checkbook.check'].browse(
+                new_check_id).write({'state': 'done'})
 
         ret = super(AccountIssuedCheck, self).write(vals)
 

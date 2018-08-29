@@ -151,7 +151,8 @@ class AccountPaymentOrder(models.Model):
 
     @api.multi
     def create_move_line_hook(self, move_id, move_lines):
-        move_lines = super(AccountPaymentOrder, self).create_move_line_hook(move_id, move_lines)
+        move_lines = super(AccountPaymentOrder, self).\
+            create_move_line_hook(move_id, move_lines)
 
         if self.type in ('sale', 'receipt'):
             for check in self.third_check_receipt_ids:
@@ -234,7 +235,9 @@ class AccountPaymentOrder(models.Model):
             issued_checks = voucher.issued_check_ids
             for check in issued_checks:
                 if check.type == 'postdated' and check.accredited:
-                    err = _('Check number %s is postdated and has already been accredited!\nPlease break the conciliation of that check first.') % check.number
+                    err = _('Check number %s is postdated and has \
+                        already been accredited!\nPlease break the \
+                        conciliation of that check first.') % check.number
                     raise ValidationError(err)
 
             issued_checks.cancel_check()

@@ -22,7 +22,8 @@ class AccountCheckConfig(models.Model):
     def name_get(self):
         ret = []
         for config in self:
-            ret.append((config.id, "%s: %s" % (config.company_id.name, config.account_id.name)))
+            ret.append((config.id, "%s: %s" % (
+                config.company_id.name, config.account_id.name)))
 
         return ret
 
@@ -39,10 +40,11 @@ class AccountCheckConfig(models.Model):
                                           required=True)
     company_id = fields.Many2one(comodel_name='res.company',
                                  string='Company', required=True)
-
-    _sql_constraints = [
-        ('company_uniq', 'UNIQUE(company_id)', 'The configuration must be unique per company!'),
-    ]
+    # TODO
+    # _sql_constraints = [
+    #     ('company_uniq', 'UNIQUE(company_id)',
+    #         'The configuration must be unique per company!'),
+    # ]
 
 
 class AccountIssuedCheck(models.Model):
@@ -69,7 +71,6 @@ class AccountIssuedCheck(models.Model):
                                  ('48', '48 hs'),
                                  ('72', '72 hs')],
                                 string='Clearing', default='24')
-    # TODO: check domain
     account_bank_id = fields.Many2one(comodel_name='res.partner.bank',
                                       string='Bank Account')
     payment_order_id = fields.Many2one(comodel_name='account.payment.order',
@@ -123,7 +124,8 @@ class AccountIssuedCheck(models.Model):
         if self.type == 'postdated':
             # Buscamos la configuracion de cheques
             check_config_obj = self.env['account.check.config']
-            config = check_config_obj.search([('company_id', '=', voucher.company_id.id)])
+            config = check_config_obj.search(
+                [('company_id', '=', voucher.company_id.id)])
             if not len(config):
                 err = _('There is no check configuration for this Company!')
                 raise ValidationError(err)
@@ -140,10 +142,12 @@ class AccountIssuedCheck(models.Model):
                   "configured. Please, configure an " +
                   "account for the bank account used for checks!"))
 
-        # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
+        # TODO: Chequear que funcione bien en
+        # multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
-        amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(self.amount)
+        amount_in_company_currency = voucher.\
+            _convert_paid_amount_in_company_currency(self.amount)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -162,7 +166,8 @@ class AccountIssuedCheck(models.Model):
         if self.number:
             reference = _('Issued Check %s') % (self.number or '/')
         else:
-            reference = _('Checkbook Number %s') % (self.checkbook_id.name or '/')
+            reference = _('Checkbook Number %s') % \
+                (self.checkbook_id.name or '/')
 
         move_line = {
             'name': reference,
@@ -172,8 +177,10 @@ class AccountIssuedCheck(models.Model):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': company_currency != current_currency and current_currency or False,
-            'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
+            'currency_id': company_currency !=
+            current_currency and current_currency or False,
+            'amount_currency': company_currency !=
+            current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
             'date_maturity': date_maturity,
         }
@@ -190,7 +197,8 @@ class AccountIssuedCheck(models.Model):
             if check.state != 'draft':
                 raise UserError(_("Check Error! You cannot delete an " +
                                   "issued check that is not in Draft " +
-                                  "state [See %s].") % (check.payment_order_id))
+                                  "state [See %s].") % (
+                                  check.payment_order_id))
         return super(AccountIssuedCheck, self).unlink()
 
     @api.multi
@@ -198,7 +206,8 @@ class AccountIssuedCheck(models.Model):
         #TODO: create the corresponding moves
         for check in self:
             if check.state != "waiting":
-                raise ValidationError(_("Check %s can't be accredited!") % check.number)
+                raise ValidationError(
+                    _("Check %s can't be accredited!") % check.number)
 
         for check in self:
             company = self.env.user.company_id
@@ -240,9 +249,11 @@ class AccountIssuedCheck(models.Model):
                 'move_id': move_id.id,
             }
 
-            clearance_move_line = move_line_obj.with_context({'check_move_validity': False}).create(check_move_line_vals)
+            clearance_move_line = move_line_obj.with_context(
+                {'check_move_validity': False}).create(check_move_line_vals)
 
-            # Creamos la línea contable que refiere a la acreditación por parte del banco
+            # Creamos la línea contable que refiere
+            # a la acreditación por parte del banco
             bank_move_line_vals = {
                 'journal_id': def_check_journal.id,
                 'period_id': current_period.id,
@@ -253,7 +264,9 @@ class AccountIssuedCheck(models.Model):
                 'move_id': move_id.id,
             }
 
-            move_line_obj.with_context({'check_move_validity': False}).create(bank_move_line_vals)
+            move_line_obj.with_context(
+                {'check_move_validity': False}
+                ).create(bank_move_line_vals)
 
             move_lines_to_reconcile = []
             payment_move_line = move_line_obj.search([
@@ -266,12 +279,13 @@ class AccountIssuedCheck(models.Model):
         return self.write({"state": "issued"})
 
     def accredit_checks_cron_task(self):
-        """ Search postdated checks and accredit them. This method is meant to be used by a cron
-        task.
+        """ Search postdated checks and accredit them.
+        This method is meant to be used by a cron task.
         """
-        # on multicompany installations you must configure a cron task for each company or run it
-        # as a multicompany user.
-        company_ids = self.env.user.company_ids.ids or [self.env.user.company_id.id]
+        # on multicompany installations you must configure
+        # a cron task for each company or run it as a multicompany user.
+        company_ids = self.env.user.company_ids.ids or \
+            [self.env.user.company_id.id]
         checks = self.search(
             [
                 ("type", "=", "postdated"),
@@ -284,14 +298,15 @@ class AccountIssuedCheck(models.Model):
 
         return checks.accredit_checks()
 
-    # TODO
     @api.multi
     def break_conciliation(self):
         for check in self:
             if check.state != "issued":
-                raise ValidationError(_("Can't break conciliation of a not issued check!"))
+                raise ValidationError(
+                    _("Can't break conciliation of a not issued check!"))
             if not check.accredited:
-                raise ValidationError(_("Can't break conciliation of a not accredited check!"))
+                raise ValidationError(
+                    _("Can't break conciliation of a not accredited check!"))
         for check in self:
             move = check.clearance_move_id
             move.line_ids.remove_move_reconcile()
@@ -360,8 +375,6 @@ class AccountThirdCheck(models.Model):
     bank_id = fields.Many2one(comodel_name='res.bank', string='Bank',
                               required=True, readonly=True,
                               states={'draft': [('readonly', False)]})
-    #'vat': fields.Char('Vat', size=15, required=True),
-    #'on_order': fields.Char('On Order', size=64),
     signatory = fields.Char(string='Signatory', size=64)
     clearing = fields.Selection([('24', '24 hs'),
                                  ('48', '48 hs'),
@@ -411,11 +424,14 @@ class AccountThirdCheck(models.Model):
             raise UserError(
                 _(' ERROR! There is no check configuration for this Company!'))
 
-        # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
+        # TODO: Chequear que funcione bien en
+        # multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
         current_currency = voucher.currency_id.id
 
-        amount_in_company_currency = voucher._convert_paid_amount_in_company_currency(self.amount)
+        amount_in_company_currency = voucher.\
+            _convert_paid_amount_in_company_currency(
+                self.amount)
 
         debit = credit = 0.0
         if voucher.type in ('purchase', 'payment'):
@@ -439,8 +455,10 @@ class AccountThirdCheck(models.Model):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': company_currency != current_currency and current_currency or False,
-            'amount_currency': company_currency != current_currency and sign * self.amount or 0.0,
+            'currency_id': company_currency !=
+            current_currency and current_currency or False,
+            'amount_currency': company_currency !=
+            current_currency and sign * self.amount or 0.0,
             'date': voucher.date,
             'date_maturity': self.payment_date or self.issue_date,
         }
@@ -480,7 +498,13 @@ class AccountThirdCheck(models.Model):
             if check.state != 'delivered':
                 raise UserError(_("Third Check Error! You cannot return to \
                     wallet a check if it is not in Delivered state"))
-        vals = {'state': 'wallet', 'endorsement_date': False, 'destiny_partner_id': False, 'dest': ''}
+        vals = {
+            'state': 'wallet',
+            'endorsement_date': False,
+            'destiny_partner_id': False,
+            'dest': '',
+        }
+
         self.write(vals)
         return True
 
@@ -513,10 +537,10 @@ class AccountThirdCheck(models.Model):
             voucher = voucher_obj.search([
                 ('third_check_ids', '=', check.id),
                 ('state', '!=', 'cancel')])
-            # voucher = voucher_obj.browse(cr, uid, payment_order_ids[0], context=context)  # check.dest_payment_order_id
 
             if not check.endorsement_date:
-                vals['endorsement_date'] = voucher.date or time.strftime('%Y-%m-%d')
+                vals['endorsement_date'] = voucher.date or \
+                    time.strftime('%Y-%m-%d')
             vals['destiny_partner_id'] = voucher.partner_id.id
 
             if not check.dest:

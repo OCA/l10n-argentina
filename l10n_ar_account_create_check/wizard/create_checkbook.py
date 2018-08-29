@@ -12,14 +12,25 @@ class WizardCreateCheck(models.Model):
     _name = "wizard.create.check"
     _description = "wizard create check"
 
-    bank_account_id = fields.Many2one('res.partner.bank', 'Bank', required=True)
-    start_num = fields.Char('Start number of check', size=20, required=True)
-    end_num = fields.Char('End number of check', size=20, required=True)
-    checkbook_num = fields.Char('Checkbook number', size=20, required=True)
-    company_id = fields.Many2one('res.company', 'Company',
+    bank_account_id = fields.Many2one(comodel_name='res.partner.bank',
+                                      string='Bank', required=True)
+    start_num = fields.Char(string='Start number of check',
+                            size=20, required=True)
+    end_num = fields.Char(string='End number of check', size=20, required=True)
+    checkbook_num = fields.Char(string='Checkbook number',
+                                size=20, required=True)
+    company_id = fields.Many2one(comodel_name='res.company',
+                                 string='Company',
                                  required=True,
-                                 default=lambda self: self.env.user.company_id.id)
-    type = fields.Selection([('common', 'Common'), ('postdated', 'Post-dated')], 'Checkbook Type', help="If common, checks only have issued_date. If post-dated they also have payment date", required=True)
+                                 default=lambda self: self.env.
+                                 user.company_id.id)
+    type = fields.Selection([
+        ('common', 'Common'),
+        ('postdated', 'Post-dated')],
+        string='Checkbook Type',
+        help="If common, checks only have issued_date. \
+        If post-dated they also have payment date",
+        required=True)
 
     def create_checkbook(self):
         checkbook_obj = self.env['account.checkbook']
@@ -29,7 +40,9 @@ class WizardCreateCheck(models.Model):
             start_num = int(form.start_num)
             end_num = int(form.end_num)
             if start_num > end_num:
-                raise UserError(_('Error creating Checkbook!\nEnd number cannot be lower than Start number'))
+                raise UserError(
+                    _('Error creating Checkbook!\nEnd number \
+                        cannot be lower than Start number'))
 
             # Creamos los cheques numerados
             checks = []

@@ -126,8 +126,10 @@ class RetentionTaxLine(models.Model):
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
-            'currency_id': company_currency != current_currency and current_currency or False,
-            'amount_currency': company_currency != current_currency and sign * retention.amount or 0.0,
+            'currency_id': company_currency !=
+            current_currency and current_currency or False,
+            'amount_currency': company_currency !=
+            current_currency and sign * retention.amount or 0.0,
             'date': voucher.date,
             'date_maturity': voucher.date_due
         }
@@ -200,7 +202,8 @@ class AccountVoucher(models.Model):
     @api.multi
     def create_move_line_hook(self, move_id, move_lines):
         voucher = self
-        move_lines = super(AccountVoucher, self).create_move_line_hook(move_id, move_lines)
+        move_lines = super(AccountVoucher, self).\
+            create_move_line_hook(move_id, move_lines)
 
         for ret in voucher.retention_ids:
             res = ret.create_voucher_move_line()

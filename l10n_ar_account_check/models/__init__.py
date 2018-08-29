@@ -5,7 +5,7 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ###############################################################################
 
-from . import account
-from . import account_check
-from . import account_voucher
-from . import res_partner_bank
+from . import account # noqa
+from . import account_check # noqa
+from . import account_voucher # noqa
+from . import res_partner_bank # noqa
