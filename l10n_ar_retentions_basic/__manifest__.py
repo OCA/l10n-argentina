@@ -28,6 +28,7 @@
         "purchase",
         "l10n_ar_account_payment_order",
         "l10n_ar_account_check",
+        "l10n_ar_point_of_sale",
     ],
     "author": "E-MIPS,Odoo Community Association (OCA)",
     "website": "http://e-mips.com.ar",
@@ -42,6 +43,7 @@
         'security/ir.model.access.csv',
         'views/retention_view.xml',
         'views/voucher_payment_receipt_view.xml',
+        'views/menuitems.xml',
     ],
     'installable': True,
 }

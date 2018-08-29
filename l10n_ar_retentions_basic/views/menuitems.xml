@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+      <menuitem id="retention_retention_menu"
+          name="Retentions"
+          parent="account.account_account_menu"
+          sequence="20"
+          action="action_retention_retention_tree"/>
+
+      <menuitem id="retention_tax_line_applied_menu"
+          name="Retentions Applied"
+          parent="l10n_ar_point_of_sale.menu_taxes_payables"
+          sequence="30"
+          action="action_retention_tax_tree"/>
+
+      <menuitem id="retention_tax_line_supported_menu"
+          name="Retentions Supported"
+          parent="l10n_ar_point_of_sale.menu_taxes_receivables"
+          sequence="30"
+          action="action_retention_tax_supported_tree"/>
+
+  </data>
+</odoo>

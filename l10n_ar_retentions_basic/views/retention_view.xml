@@ -187,10 +187,5 @@
         </field>
   </record>
 
-  <menuitem id="retention_retention_menu" name="Retentions" parent="account.account_account_menu" sequence="20" action="action_retention_retention_tree"/>
-  <menuitem id="retention_tax_line_applied_menu" name="Retentions Applied" parent="account.menu_finance_payables" sequence="30" action="action_retention_tax_tree"/>
-  <menuitem id="retention_tax_line_supported_menu" name="Retentions Supported" parent="account.menu_finance_receivables" sequence="30" action="action_retention_tax_supported_tree"/>
-
   </data>
 </odoo>
-

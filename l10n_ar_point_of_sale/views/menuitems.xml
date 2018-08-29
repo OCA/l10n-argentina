@@ -3,14 +3,40 @@
     <data>
 
         <!-- Reordenamiento de Menues Account/Customer -->
-        <menuitem action="account.action_invoice_tree1" id="account.menu_action_invoice_tree1" sequence="5" parent="account.menu_finance_receivables_documents"/>
-        <menuitem action="account.action_invoice_out_refund" id="account.menu_action_invoice_tree3" sequence="6" parent="account.menu_finance_receivables_documents"/>
-        <menuitem action="action_customer_debit_note_tree" sequence="7" id="menu_customer_debit_note" parent="account.menu_finance_receivables_documents"/>
+        <menuitem action="account.action_invoice_tree1"
+            id="account.menu_action_invoice_tree1"
+            sequence="5"
+            parent="account.menu_finance_receivables_documents"/>
+        <menuitem action="account.action_invoice_out_refund"
+            id="account.menu_action_invoice_tree3"
+            sequence="6"
+            parent="account.menu_finance_receivables_documents"/>
+        <menuitem action="action_customer_debit_note_tree"
+            sequence="7"
+            id="menu_customer_debit_note"
+            parent="account.menu_finance_receivables_documents"/>
+        <menuitem id="menu_taxes_receivables"
+            name="Taxes"
+            sequence="20"
+            parent="account.menu_finance_receivables"/>
 
         <!-- Reordenamiento de Menues Account/Supplier -->
-        <menuitem action="account.action_invoice_tree2" id="account.menu_action_invoice_tree2" sequence="5" parent="account.menu_finance_payables_documents"/>
-        <menuitem action="account.action_invoice_in_refund" id="account.menu_action_invoice_tree4" sequence="6" parent="account.menu_finance_payables_documents"/>
-        <menuitem action="action_supplier_debit_note_tree" sequence="7" id="menu_supplier_debit_note" parent="account.menu_finance_payables_documents"/>
+        <menuitem action="account.action_invoice_tree2"
+            id="account.menu_action_invoice_tree2"
+            sequence="5"
+            parent="account.menu_finance_payables_documents"/>
+        <menuitem action="account.action_invoice_in_refund"
+            id="account.menu_action_invoice_tree4"
+            sequence="6"
+            parent="account.menu_finance_payables_documents"/>
+        <menuitem action="action_supplier_debit_note_tree"
+            sequence="7"
+            id="menu_supplier_debit_note"
+            parent="account.menu_finance_payables_documents"/>
+        <menuitem id="menu_taxes_payables"
+            name="Taxes"
+            sequence="20"
+            parent="account.menu_finance_payables"/>
 
 
         <!--Menues POS-->
