@@ -21,7 +21,7 @@
                     <field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
                     <field name="dst_cuit_id" widget="selection" attrs="{'invisible': [('local','=', True)]}"/>
                 </field>
-                <field name="pos_ar_id" position="after">
+                <field name="date_due" position="after">
                     <field name="cae" string="CAE" readonly="1"/>
                     <field name="cae_due_date" readonly="1"/>
                     <field name="incoterm_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
