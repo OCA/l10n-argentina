@@ -23,11 +23,18 @@ class DatePeriod(models.Model):
     code = fields.Char(string="Code", size=7, required=True)
     date_from = fields.Date(string="Start Date", required=True)
     date_to = fields.Date(string="End Date", required=True)
-    invoice_ids = fields.One2many(comodel_name="account.invoice", inverse_name="period_id", string="Invoice")
-    # payment_order_ids = fields.One2many(comodel_name="account.payment.order", inverse_name="period_id", string="Voucher")
-    move_ids = fields.One2many(comodel_name="account.move", inverse_name="period_id", string="Move")
-    move_line_ids = fields.One2many(comodel_name="account.move.line", inverse_name="period_id", string="Move Line")
-    inventory_ids = fields.One2many(comodel_name="stock.inventory", inverse_name="period_id", string="Stock Inventory")
+    invoice_ids = fields.One2many(comodel_name="account.invoice",
+                                  inverse_name="period_id",
+                                  string="Invoice")
+    move_ids = fields.One2many(comodel_name="account.move",
+                               inverse_name="period_id",
+                               string="Move")
+    move_line_ids = fields.One2many(comodel_name="account.move.line",
+                                    inverse_name="period_id",
+                                    string="Move Line")
+    inventory_ids = fields.One2many(comodel_name="stock.inventory",
+                                    inverse_name="period_id",
+                                    string="Stock Inventory")
 
     @api.multi
     def name_search(self, name, args=None, operator='ilike', limit=100):
@@ -47,7 +54,8 @@ class DatePeriod(models.Model):
             period_obj = self.search([('code', 'like', period)])
             if not period_obj:
                 first_day = new_p_date + relativedelta(day=1)
-                last_day = new_p_date + relativedelta(day=1, months=+1, days=-1)
+                last_day = new_p_date + relativedelta(
+                    day=1, months=+1, days=-1)
 
                 args = {
                     'name': period,
@@ -65,6 +73,3 @@ class DatePeriod(models.Model):
             self.create_period(period_date)
             period = self.search([('code', 'like', period)])
         return period_obj
-
-    # @api.multi
-    # def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):

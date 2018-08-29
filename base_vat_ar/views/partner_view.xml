@@ -1,75 +1,74 @@
 <?xml version="1.0"?>
-<openerp>
-<data>
-
-    <record id="view_partner_document_type_form" model="ir.ui.view">
-        <field name="name">res.partner.document.type.inherit</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base_vat.view_partner_form"/>
-        <field name="arch" type="xml">
-            <field name="vat" position="after">
-                <field name="document_type_id" placeholder="Document Type..."
-                    widget="selection"/>
+<odoo>
+    <data>
+        <record id="view_partner_document_type_form" model="ir.ui.view">
+            <field name="name">res.partner.document.type.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base_vat.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="vat" position="after">
+                    <field name="document_type_id" placeholder="Document Type..."
+                        widget="selection"/>
+                </field>
             </field>
-        </field>
-    </record>
+        </record>
 
-    <record id="view_partner_vat_filter" model="ir.ui.view">
-      <field name="name">res.partner.vat.filter</field>
-      <field name="model">res.partner</field>
-      <field name="inherit_id" ref="base.view_res_partner_filter"/>
-      <field name="arch" type="xml">
-          <field name="name" position="replace">
-               <field name="name"
-                   filter_domain="['|','|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self),('vat','ilike',self)]"/>
+        <record id="view_partner_vat_filter" model="ir.ui.view">
+          <field name="name">res.partner.vat.filter</field>
+          <field name="model">res.partner</field>
+          <field name="inherit_id" ref="base.view_res_partner_filter"/>
+          <field name="arch" type="xml">
+              <field name="name" position="replace">
+                   <field name="name"
+                       filter_domain="['|','|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self),('vat','ilike',self)]"/>
+              </field>
           </field>
-      </field>
-    </record>
+        </record>
 
-    <record model="ir.ui.view" id="view_res_document_type_form">
-        <field name="name">res.document.type.form</field>
-        <field name="model">res.document.type</field>
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-            <form string="Document type" version="7.0">
-                <sheet>
-                    <h1>
-                        <label string="Document type"/>
-                    </h1>
-                    <group>
-                        <field name="name" select="1"/>
-                        <field name="afip_code" select="1"/>
-                        <field name="verification_required"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+        <record model="ir.ui.view" id="view_res_document_type_form">
+            <field name="name">res.document.type.form</field>
+            <field name="model">res.document.type</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Document type" version="7.0">
+                    <sheet>
+                        <h1>
+                            <label string="Document type"/>
+                        </h1>
+                        <group>
+                            <field name="name" select="1"/>
+                            <field name="afip_code" select="1"/>
+                            <field name="verification_required"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-    <record model="ir.ui.view" id="view_res_document_type_tree">
-        <field name="name">res.document.type.tree</field>
-        <field name="model">res.document.type</field>
-        <field name="type">tree</field>
-        <field name="arch" type="xml">
-            <tree string="Document type">
-                <field name="name"/>
-                <field name="afip_code"/>
-                <field name="verification_required"/>
-            </tree>
-        </field>
-    </record>
+        <record model="ir.ui.view" id="view_res_document_type_tree">
+            <field name="name">res.document.type.tree</field>
+            <field name="model">res.document.type</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Document type">
+                    <field name="name"/>
+                    <field name="afip_code"/>
+                    <field name="verification_required"/>
+                </tree>
+            </field>
+        </record>
 
-    <record model="ir.actions.act_window" id="action_res_document_type">
-        <field name="name">Document type</field>
-        <field name="res_model">res.document.type</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+        <record model="ir.actions.act_window" id="action_res_document_type">
+            <field name="name">Document type</field>
+            <field name="res_model">res.document.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
-    <menuitem name="Document types"
-        id="menu_document_type"
-        action="action_res_document_type"
-        parent="account.account_account_menu"/>
+        <menuitem name="Document types"
+            id="menu_document_type"
+            action="action_res_document_type"
+            parent="account.account_account_menu"/>
 
-</data>
-</openerp>
+    </data>
+</odoo>

@@ -56,11 +56,6 @@ msgid "Province"
 msgstr "Provincia"
 
 #. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,base_code_id:0
-msgid "Base Code"
-msgstr "Código base"
-
-#. module: l10n_ar_retentions_basic
 #: selection:retention.retention,jurisdiccion:0
 msgid "Municipal"
 msgstr "Municipal"
@@ -430,10 +425,6 @@ msgstr "Retencion IIBB CABA Sufrida (Cobros)"
 msgid "onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
 msgstr "onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
 
-#. module: l10n_ar_retentions_basic
-#: help:retention.tax.line,base_code_id:0
-msgid "The account basis of the tax declaration."
-msgstr "Cuenta base de la declaración de impuestos"
 
 #. module: l10n_ar_retentions_basic
 #: view:account.voucher:0

@@ -93,7 +93,7 @@
           <sheet>
               <h1>
                 <label string="Perception Tax Line"/>
-                <field name="name" class="oe_inline" readonly="1"/>
+                <field name="name" class="oe_inline" readonly="0"/>
               </h1>
               <group>
                   <field name="date"/>

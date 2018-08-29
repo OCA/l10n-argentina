@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
         <!--vista Heredada de Sale_Shop-->
         <!--para agregar los shops_ids que contiene esa sucursal-->
@@ -24,4 +24,4 @@
             </field>
         </record>
     </data>
-</openerp>
+</odoo>

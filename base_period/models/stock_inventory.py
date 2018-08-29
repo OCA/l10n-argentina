@@ -20,7 +20,8 @@ class StockInventory(models.Model):
         for rec in self:
             if rec.date:
                 period_obj = rec.env['date.period']
-                period_date = datetime.strptime(rec.date, '%Y-%m-%d %H:%M:%S').date()
+                period_date = datetime.strptime(
+                    rec.date, '%Y-%m-%d %H:%M:%S').date()
                 period = period_obj._get_period(period_date)
                 rec.period_id = period.id
 

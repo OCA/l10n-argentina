@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <!-- Menuitems principales -->
@@ -87,4 +87,4 @@
 		<menuitem id="wsaa_config_menu" name="WSAA Configuration" parent="base_afipws" sequence="20" action="action_wsaa_config_tree"/>
 
     </data>
-</openerp>
+</odoo>

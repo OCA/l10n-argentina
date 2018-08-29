@@ -4,7 +4,7 @@
 ###############################################################################
 
 import logging
-from datetime import date, datetime
+from datetime import datetime
 from odoo import models, fields, api
 
 
@@ -20,9 +20,12 @@ class AccountInvoice(models.Model):
         for rec in self:
             if rec.date_invoice:
                 period_obj = rec.env['date.period']
-                period_date = datetime.strptime(rec.date_invoice, '%Y-%m-%d').date()
+                period_date = datetime.strptime(
+                    rec.date_invoice, '%Y-%m-%d').date()
                 period = period_obj._get_period(period_date)
                 rec.period_id = period.id
 
-    period_id = fields.Many2one(string="Period", comodel_name="date.period",
-                                compute='_compute_period', store=True)
+    period_id = fields.Many2one(string="Period",
+                                comodel_name="date.period",
+                                compute='_compute_period',
+                                store=True)

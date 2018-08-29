@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
         <!--Para los Supplier Payments-->
         <record model="ir.ui.view" id="add_issued_checks_form_view">
@@ -78,4 +78,4 @@
             <field name="target">new</field>
         </record>
     </data>
-</openerp>
+</odoo>

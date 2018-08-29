@@ -21,5 +21,5 @@
 #
 ##############################################################################
 
-from . import create_checkbook
-from . import annull_checks
+from . import create_checkbook # noqa
+from . import annull_checks # noqa

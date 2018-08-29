@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
 		<record id="view_wsfe_massive_sinchronize" model="ir.ui.view">
@@ -37,4 +37,4 @@
 		<menuitem id="wsfe_massive_sinchronize" name="Massive Sinchronize" parent="l10n_ar_wsaa.base_afipws" sequence="40" action="action_wsfe_massive_sinchronize"/>
 
     </data>
-</openerp>
+</odoo>

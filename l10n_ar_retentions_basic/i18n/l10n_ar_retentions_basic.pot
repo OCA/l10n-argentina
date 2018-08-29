@@ -116,11 +116,6 @@ msgid "Supported"
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: field:retention.tax.line,base_code_id:0
-msgid "Base Code"
-msgstr ""
-
-#. module: l10n_ar_retentions_basic
 #: field:retention.tax.line,voucher_number:0
 msgid "Voucher No."
 msgstr ""
@@ -304,11 +299,6 @@ msgstr ""
 #. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iibb_caba_sufrida
 msgid "Retencion IIBB CABA Sufrida (Cobros)"
-msgstr ""
-
-#. module: l10n_ar_retentions_basic
-#: help:retention.tax.line,base_code_id:0
-msgid "The account basis of the tax declaration."
 msgstr ""
 
 #. module: l10n_ar_retentions_basic

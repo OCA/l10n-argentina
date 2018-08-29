@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-<data>
+<odoo>
+    <data>
 
-    <record id="view_wizard_install_argentinean_cities_form" model="ir.ui.view">
-        <field name="name">wizard.install.argentinean.cities.form</field>
-        <field name="model">wizard.install.argentinean.cities</field>
-        <field name="type">form</field>
-        <field name="priority" eval="8"/>
-        <field name="arch" type="xml">
-        <form string="Install Argentinean Cities">
-            <group col="4" colspan="2">
-                <field name="mode" groups="base.group_system"/>
-                <field name="noupdate" groups="base.group_system"/>
-            </group>
-        </form>
-        <footer>
-            <button string="Run" type="object" name="button_run" class="oe_highlight"/>
-            <button string="Cancel" special="cancel"/>
-        </footer>
-        </field>
-    </record>
+        <record id="view_wizard_install_argentinean_cities_form" model="ir.ui.view">
+            <field name="name">wizard.install.argentinean.cities.form</field>
+            <field name="model">wizard.install.argentinean.cities</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <form string="Install Argentinean Cities">
+                <group col="4" colspan="2">
+                    <field name="mode" groups="base.group_system"/>
+                    <field name="noupdate" groups="base.group_system"/>
+                </group>
+            </form>
+            <footer>
+                <button string="Run" type="object" name="button_run" class="oe_highlight"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+            </field>
+        </record>
 
-    <record model="ir.actions.act_window" id="action_wizard_install_argentinean_cities_view">
-        <field name="name">Install Argentinean Cities</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">wizard.install.argentinean.cities</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="view_wizard_install_argentinean_cities_form"/>
-        <field name="target">new</field>
-    </record>
+        <record model="ir.actions.act_window" id="action_wizard_install_argentinean_cities_view">
+            <field name="name">Install Argentinean Cities</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.install.argentinean.cities</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wizard_install_argentinean_cities_form"/>
+            <field name="target">new</field>
+        </record>
 
-    <record id="action_wizard_install_argentinean_cities_todo" model="ir.actions.todo">
-        <field name="action_id" ref="action_wizard_install_argentinean_cities_view"/>
-        <field name="sequence" eval="500"/>
-    </record>
+        <record id="action_wizard_install_argentinean_cities_todo" model="ir.actions.todo">
+            <field name="action_id" ref="action_wizard_install_argentinean_cities_view"/>
+            <field name="sequence" eval="500"/>
+        </record>
 
-</data>
-</openerp>
+    </data>
+</odoo>

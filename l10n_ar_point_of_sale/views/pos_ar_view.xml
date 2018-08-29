@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<openerp>
+<odoo>
     <data>
 
         <record id="pos_ar_view_form" model="ir.ui.view">
@@ -110,4 +110,4 @@
         </record>
         
     </data>
-</openerp>
+</odoo>

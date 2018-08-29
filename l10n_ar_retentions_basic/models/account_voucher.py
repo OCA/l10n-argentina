@@ -1,23 +1,7 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2011
-#
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
-#
-##############################################################################
+###############################################################################
+#    Copyright (c) 2011-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+###############################################################################
 
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
@@ -31,8 +15,9 @@ class RetentionTaxLine(models.Model):
     # para manejar tambien propiedades segun estados
     name = fields.Char(string='Retention', size=64)
     date = fields.Date(string='Date', select=True)
-    voucher_id = fields.Many2one(comodel_name='account.voucher',
-                                 string='Voucher', ondelete='cascade')
+    payment_order_id = fields.Many2one(comodel_name='account.payment.order',
+                                       string='Payment Order',
+                                       ondelete='cascade')
     voucher_number = fields.Char(string='Reference', size=64)
     account_id = fields.Many2one(comodel_name='account.account',
                                  string='Tax Account',
@@ -48,15 +33,8 @@ class RetentionTaxLine(models.Model):
                                    help="Retention configuration used for this \
                                    retention tax, where all the configuration \
                                    resides. Accounts, Tax Codes, etc.")
-    base_code_id = fields.Many2one(
-        comodel_name='account.tax.code',
-        string='Base Code',
-        help="The account basis of the tax declaration.")
     base_amount = fields.Float(comodel_name='Base Code Amount',
                                digits=dp.get_precision('Account'))
-    tax_code_id = fields.Many2one(comodel_name='account.tax.code',
-                                  string='Tax Code',
-                                  help="The tax basis of the tax declaration.")
     tax_amount = fields.Float(string='Tax Code Amount',
                               digits=dp.get_precision('Account'))
     company_id = fields.Many2one(string='Company',
@@ -76,10 +54,11 @@ class RetentionTaxLine(models.Model):
     def onchange_retention(self):
         retention = self.retention_id
         if retention.id:
+            __import__('ipdb').set_trace()
             self.name = retention.name
-            self.account_id = retention.tax_id.account_collected_id.id
-            self.base_code_id = retention.tax_id.base_code_id.id
-            self.tax_code_id = retention.tax_id.tax_code_id.id
+            self.account_id = retention.tax_id.account_id.id
+            # self.base_code_id = retention.tax_id.base_code_id.id
+            # self.tax_code_id = retention.tax_id.tax_code_id.id
 
             if retention.state_id:
                 self.state_id = retention.state_id.id
@@ -92,8 +71,7 @@ class RetentionTaxLine(models.Model):
         Params
         self = retention.tax.line
         """
-        self.ensure_one()
-        voucher = self.voucher_id
+        voucher = self.payment_order_id
         retention = self
         move_lines = []
 
@@ -136,12 +114,13 @@ class RetentionTaxLine(models.Model):
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente a la retencion
+        __import__('ipdb').set_trace()
         move_line = {
             'name': retention.name or '/',
             'debit': debit,
             'credit': credit,
             'account_id': retention.account_id.id,
-            'tax_code_id': retention.tax_code_id.id,
+            'tax_line_id': retention.retention_id.tax_id.id,
             'tax_amount': tax_amount_in_company_currency,
             # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
@@ -159,13 +138,14 @@ class RetentionTaxLine(models.Model):
         # a la base imponible de la retencion
         # Notar que credit & debit son 0.0 ambas.
         # Lo que cuenta es el tax_code_id y el tax_amount
+        tax_ids = [(6, 0, [retention.retention_id.tax_id.id])]
         move_line = {
             'name': retention.name + '(Base Imp)',
             # 'ref': voucher.name,
             'debit': 0.0,
             'credit': 0.0,
             'account_id': retention.account_id.id,
-            'tax_code_id': retention.base_code_id.id,
+            'tax_ids': tax_ids,
             'tax_amount': base_amount_in_company_currency,
             # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
@@ -186,7 +166,7 @@ class AccountVoucher(models.Model):
     _inherit = 'account.payment.order'
 
     retention_ids = fields.One2many(comodel_name='retention.tax.line',
-                                    inverse_name='voucher_id',
+                                    inverse_name='payment_order_id',
                                     string='Retentions', readonly=True,
                                     states={'draft': [('readonly', False)]})
 
@@ -203,8 +183,11 @@ class AccountVoucher(models.Model):
     def _get_amount_hook(self):
         return 0
 
-    @api.onchange('payment_line_ids','third_check_receipt_ids',
-                  'issued_check_ids','third_check_ids','retention_ids')
+    @api.onchange('payment_line_ids',
+                  'third_check_receipt_ids',
+                  'issued_check_ids',
+                  'third_check_ids',
+                  'retention_ids')
     def onchange_amount_payment(self):
         amount = self._get_payment_lines_amount()
         amount += self._get_third_checks_receipt_amount()

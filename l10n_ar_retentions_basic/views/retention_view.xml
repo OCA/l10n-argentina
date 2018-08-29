@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
   <data>
 
   <!-- *************************** -->
@@ -12,15 +12,13 @@
     <field name="type">form</field>
     <field name="arch" type="xml">
       <form string="Retentions" version="7.0">
-        <group>
-          <group string="Configuration">
-            <field name="name" select="1"/>
-            <field name="tax_id" select="1"/>
-            <field name="jurisdiccion" select="1"/>
-            <field name="type_tax_use" select="1"/>
-            <field name="type" select="1"/>
-            <field name="state_id" select="1" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
-          </group>
+        <group string="Configuration">
+          <field name="name" select="1"/>
+          <field name="tax_id" select="1"/>
+          <field name="jurisdiccion" select="1"/>
+          <field name="type_tax_use" select="1"/>
+          <field name="type" select="1"/>
+          <field name="state_id" select="1" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
         </group>
       </form>
     </field>
@@ -164,7 +162,7 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_retention_tax_line_tree"/>
         <field name="context">{"search_default_applied":1}</field>
-        <field name="domain">[('voucher_id.state','in',['posted'])]</field>
+        <field name="domain">[('payment_order_id.state','in',['posted'])]</field>
         <field name="search_view_id" ref="view_retention_tax_line_search" />
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
@@ -180,7 +178,7 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_retention_tax_line_tree"/>
         <field name="context">{"search_default_supported":1}</field>
-        <field name="domain">[('voucher_id.state','in',['posted'])]</field>
+        <field name="domain">[('payment_order_id.state','in',['posted'])]</field>
         <field name="search_view_id" ref="view_retention_tax_line_search" />
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
@@ -189,10 +187,10 @@
         </field>
   </record>
 
-  <menuitem id="retention_retention_menu" name="Retentions" parent="account.next_id_27" sequence="20" action="action_retention_retention_tree"/>
+  <menuitem id="retention_retention_menu" name="Retentions" parent="account.account_account_menu" sequence="20" action="action_retention_retention_tree"/>
   <menuitem id="retention_tax_line_applied_menu" name="Retentions Applied" parent="account.menu_finance_payables" sequence="30" action="action_retention_tax_tree"/>
   <menuitem id="retention_tax_line_supported_menu" name="Retentions Supported" parent="account.menu_finance_receivables" sequence="30" action="action_retention_tax_supported_tree"/>
 
   </data>
-</openerp>
+</odoo>
 

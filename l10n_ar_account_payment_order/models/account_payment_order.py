@@ -174,7 +174,6 @@ class AccountPaymentOrder(models.Model):
                                 ('payment', 'Payment'),
                                 ('receipt', 'Receipt')],
                             default=_get_type)
-    # TODO: tax_id, account.move.line([tax_ids, tax_line_id]>>account.tax)
     tax_id = fields.Many2one(comodel_name='account.tax',
                              string='Tax', readonly=True,
                              domain=[('price_include', '=', False)],
@@ -464,7 +463,6 @@ class AccountPaymentOrder(models.Model):
             if isinstance(l, dict):
                 credit += l['amount']
         return (amount - sign * (credit - debit)) + old_writeoff
-    # TODO: onchange_partner_id()  -  _get_payment_lines_default()
 
     @api.multi
     def _clean_payment_lines(self):
