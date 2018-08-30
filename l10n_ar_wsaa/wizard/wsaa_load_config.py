@@ -23,7 +23,7 @@ class wsaa_load_config(models.TransientModel):
         pieces = filename.split('.')
         if len(pieces) < 2 or pieces[-1] != ext:
             raise ValidationError(
-                _('Error ! The Filename should end in ".%s"', ext))
+                _('Error!\nThe Filename should end in ".%s"' % ext))
         fileobj = TemporaryFile('w+')
         fileobj.write(base64.b64decode(filedata).decode('utf-8'))
         fileobj.seek(0)
