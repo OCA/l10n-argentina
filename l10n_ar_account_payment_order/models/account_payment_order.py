@@ -164,9 +164,9 @@ class AccountPaymentOrder(models.Model):
     writeoff_amount = fields.Float(string='Difference Amount',
                                    compute='_get_writeoff_amount',
                                    readonly=True,
-                                   help="Computed as the difference between \
-                                   the amount stated in the voucher and the \
-                                   sum of allocation on the voucher lines.")
+                                   help="""Computed as the difference between
+                                    the amount stated in the voucher and the
+                                    sum of allocation on the voucher lines.""")
     type = fields.Selection(string='Default Type',
                             selection=[
                                 ('sale', 'Sale'),
@@ -475,9 +475,10 @@ class AccountPaymentOrder(models.Model):
     def proforma_voucher(self):
         # Chequeamos si la writeoff_amount no es negativa
         if round(self.writeoff_amount, 2) < 0.0:
-            raise ValidationError(_('Error ! Cannot validate a \
-              voucher with negative amount. Please check \
-              that Writeoff Amount is not negative.'))
+            raise ValidationError(
+                _('Error ! Cannot validate a ' +
+                    'voucher with negative amount. Please check ' +
+                    'that Writeoff Amount is not negative.'))
 
         self._clean_payment_lines()
         self.action_move_line_create()
@@ -521,12 +522,15 @@ class AccountPaymentOrder(models.Model):
             name = self.number
         elif self.journal_id.sequence_id:
             if not self.journal_id.sequence_id.active:
-                raise UserError(_('Configuration Error !\n\
-                    Please activate the sequence of selected journal !'))
+                raise UserError(
+                    _('Configuration Error !\n' +
+                        'Please activate the sequence of selected journal !'))
+
             name = self.journal_id.sequence_id.next_by_id()
         else:
-            raise UserError(_('Error!\n\
-                Please define a sequence on the journal.'))
+            raise UserError(
+                _('Error!\n' +
+                    'Please define a sequence on the journal.'))
         if not self.reference:
             ref = name.replace('/', '')
         else:

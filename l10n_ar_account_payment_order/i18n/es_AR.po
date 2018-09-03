@@ -1,0 +1,762 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_account_payment_order
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-30 19:58+0000\n"
+"PO-Revision-Date: 2018-08-30 19:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_account_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_account_id
+msgid "Account"
+msgstr "Cuenta"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_move_id
+msgid "Account Entry"
+msgstr "Apuntes contables"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+msgid "Allocation"
+msgstr "Importe"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_amount
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_amount
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_amount
+msgid "Amount"
+msgstr "Importe"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_amount_currency
+msgid "Amount in Partner Currency"
+msgstr "Amount in Partner Currency"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_account_analytic_id
+msgid "Analytic Account"
+msgstr "Cuenta Analítica"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Are you sure to unreconcile and cancel this record ?"
+msgstr "Está seguro de desconciliar y cancelar este registro ?"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+msgid "Cancel Receipt"
+msgstr "Cancelar recibo"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Cancel Payment"
+msgstr "Cancelar Pago"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,state:0
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.actions.act_window,help:l10n_ar_account_payment_order.action_vendor_payment_order
+msgid "Click to create a new supplier payment."
+msgstr "Click para crear un nuevo pago a proveedores."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.actions.act_window,help:l10n_ar_account_payment_order.action_payment_order_receipt
+msgid "Click to register a new payment."
+msgstr "Click para registrar un nuevo pago."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_company_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_company_currency
+msgid "Company Currency"
+msgstr "Moneda de la Compañía"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_order_writeoff_amount
+msgid "Computed as the difference between the amount stated in the voucher and the sum of allocation on the voucher lines."
+msgstr "Calculado por la diferencia entre el monto inicial del pago y la suma del importe de las lineas del pago"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:524
+#, python-format
+msgid "Configuration Error !\nPlease activate the sequence of selected journal !"
+msgstr "Error de configuración !\nPor favor, active la secuencia del diario seleccionado !"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_writeoff_acc_id
+msgid "Counterpart Account"
+msgstr "Contrapartida"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_comment
+msgid "Counterpart Comment"
+msgstr "Comentario de Contrapartida"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_create_date
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_create_date
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_income_line_ids
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Credits"
+msgstr "Creditos"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_currency_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_currency_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Currency Options"
+msgstr "Opciones de Moneda"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.actions.act_window,name:l10n_ar_account_payment_order.action_payment_order_receipt
+#: model:ir.ui.menu,name:l10n_ar_account_payment_order.menu_action_sale_receipt
+msgid "Customer Payments"
+msgstr "Pagos de cliente"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_date
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_date_original
+msgid "Date"
+msgstr "Fecha"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_debt_line_ids
+msgid "Debits"
+msgstr "Debitos"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order.line,type:0
+msgid "Debt"
+msgstr "Deuda"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_type
+msgid "Default Type"
+msgstr "Tipo por defecto"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_name
+msgid "Description"
+msgstr "Descripción"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_writeoff_amount
+msgid "Difference Amount"
+msgstr "Importe de la diferencia"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_display_name
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_display_name
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_display_name
+msgid "Display Name"
+msgstr "Mostrar Nombre"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_type
+msgid "Dr/Cr"
+msgstr "Dr/Cr"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,state:0
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Draft Vouchers"
+msgstr "Comprobantes de borrador"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_date_due
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_date_due
+msgid "Due Date"
+msgstr "Fecha de vencimiento"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.actions.act_window,help:l10n_ar_account_payment_order.action_payment_order_receipt
+msgid "Enter the customer and the payment method and then, either\n"
+"                create manually a payment record or Odoo will propose to you\n"
+"                automatically the reconciliation of this payment with the open\n"
+"                invoices or sales receipts."
+msgstr "Enter the customer and the payment method and then, either\n"
+"                create manually a payment record or Odoo will propose to you\n"
+"                automatically the reconciliation of this payment with the open\n"
+"                invoices or sales receipts."
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:478
+#, python-format
+msgid "Error ! Cannot validate a voucher with negative amount. Please check that Writeoff Amount is not negative."
+msgstr "Error ! No se puede validar un pago con monto negativo. Por favor, compruebe que el importe de la diferencia no sea negativo."
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:528
+#, python-format
+msgid "Error!\nPlease define a sequence on the journal."
+msgstr "Error!\nPor favor, defina la secuencia del diario."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_payment_rate
+msgid "Exchange Rate"
+msgstr "Tipo de cambio"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_order_is_multi_currency
+msgid "Fields with internal purpose         only that depicts if the voucher is         a multi currency one or not"
+msgstr "Fields with internal purpose         only that depicts if the voucher is         a multi currency one or not"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_reconcile
+msgid "Full Reconcile"
+msgstr "Conciliación completa"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:730
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:741
+#, python-format
+msgid "Go to the configuration panel"
+msgstr "Ir al panel de configuración"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:55
+#, python-format
+msgid "Go to the journal configuration"
+msgstr "Ir a la configuración de diario"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Group By"
+msgstr "Agrupar por"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_id
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order.line,type:0
+msgid "Income"
+msgstr "Ingresos"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Internal Notes"
+msgstr "Notas internas"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_invoice_id
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_invoice_ids
+msgid "Invoices"
+msgstr "Facturas"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+msgid "Invoices and outstanding transactions"
+msgstr "Facturas y transacciones pendientes"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model,name:l10n_ar_account_payment_order.model_account_journal
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_journal_id
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_move_line_id
+msgid "Journal Item"
+msgstr "Apunte contable"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_move_line_ids
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Journal Items"
+msgstr "Apuntes contables"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,payment_option:0
+msgid "Keep Open"
+msgstr "Mantener Abierto"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line___last_update
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order___last_update
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line___last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_write_uid
+msgid "Last Updated by"
+msgstr "Última actualización realizada por"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_write_date
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_write_date
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_name
+msgid "Memo"
+msgstr "Memoria"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_name
+msgid "Mode"
+msgstr "Modo"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_is_multi_currency
+msgid "Multi Currency Voucher"
+msgstr "Multi Currency Voucher"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_narration
+msgid "Notes"
+msgstr "Notas"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_number
+msgid "Number"
+msgstr "Número"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.actions.act_window,help:l10n_ar_account_payment_order.action_vendor_payment_order
+msgid "Odoo helps you easily track payments you make and the remaining balances you need to pay your suppliers."
+msgstr "Odoo helps you easily track payments you make and the remaining balances you need to pay your suppliers."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_order_tax_id
+msgid "Only for tax excluded from price"
+msgstr "Sólo para impuestos excluídos del precio"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_amount_unreconciled
+msgid "Open Balance"
+msgstr "Balance inicial"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_amount_original
+msgid "Original Amount"
+msgstr "Importe original"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Paid Amount"
+msgstr "Monto pagado"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_paid_amount_in_company_currency
+msgid "Paid Amount in Company Currency"
+msgstr "Monto pagado en la moneda de la compania"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_partner_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_partner_id
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,pay_now:0
+msgid "Pay Directly"
+msgstr "Pagar Directamente"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,pay_now:0
+msgid "Pay Later or Group Funds"
+msgstr "Pay Later or Group Funds"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,type:0
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_pay_now
+msgid "Payment"
+msgstr "Pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_date
+msgid "Payment Date"
+msgstr "Fecha de pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_payment_option
+msgid "Payment Difference"
+msgstr "Diferencia en pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Payment Information"
+msgstr "Información del pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_ids
+msgid "Payment Lines"
+msgstr "Lineas de pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_payment_mode_id
+msgid "Payment Method"
+msgstr "Método de pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Payment Methods"
+msgstr "Métodos de Pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Payment Options"
+msgstr "Opciones de pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_payment_order_id
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_payment_order_id
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_tree
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Payment Order"
+msgstr "Orden de Pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_payment_rate_currency_id
+msgid "Payment Rate Currency"
+msgstr "Payment Rate Currency"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Payment Ref"
+msgstr "Ref. pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_mode_line_amount
+msgid "Payment amount in the company currency"
+msgstr "Monto del pago en la moneda de la compania"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_mode_line_amount_currency
+msgid "Payment amount in the partner currency"
+msgstr "Monto del pago en la moneda del partner"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model,name:l10n_ar_account_payment_order.model_account_payment_mode_line
+msgid "Payment method lines"
+msgstr "Lineas del metodo de pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_mode_line_name
+msgid "Payment reference"
+msgstr "Referencia del pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_payment_mode_line_ids
+msgid "Payments Lines"
+msgstr "Lineas del pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Period"
+msgstr "Período"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,state:0
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Posted"
+msgstr "Validado"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Posted Vouchers"
+msgstr "Comprobantes validados"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_pre_line
+msgid "Previous Payments ?"
+msgstr "Pagos previos ?"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.inherit_account_journal_form
+msgid "Prioridad"
+msgstr "Prioridad"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_journal_priority
+msgid "Priority"
+msgstr "Prioridad"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,state:0
+msgid "Pro-forma"
+msgstr "Pro-forma"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,type:0
+msgid "Purchase"
+msgstr "Compra"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,type:0
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+msgid "Receipt"
+msgstr "Recibo"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,payment_option:0
+msgid "Reconcile Payment Balance"
+msgstr "Conciliar saldo del pago"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_reference
+msgid "Ref #"
+msgstr "Ref #"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_ref
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: l10n_ar_account_payment_order
+#: selection:account.payment.order,type:0
+msgid "Sale"
+msgstr "Sale"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Search Vouchers"
+msgstr "Buscar comprobantes"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Set to Draft"
+msgstr "Cambiar a borrador"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_state
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_state
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Status"
+msgstr "Estado"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Supplier"
+msgstr "Proveedor"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Supplier Invoices and Outstanding transactions"
+msgstr "Facturas de proveedor y Tansacciones pendientes"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.actions.act_window,name:l10n_ar_account_payment_order.action_vendor_payment_order
+#: model:ir.ui.menu,name:l10n_ar_account_payment_order.menu_action_vendor_payment_order
+msgid "Supplier Payments"
+msgstr "Pagos a proveedores"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_tax_id
+msgid "Tax"
+msgstr "Impuesto"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_order_payment_rate
+msgid "The specific rate that will be used, in         this voucher, between the selected currency         (in 'Payment Rate Currency' field)  and the         voucher currency."
+msgstr "The specific rate that will be used, in         this voucher, between the selected currency         (in 'Payment Rate Currency' field)  and the         voucher currency."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_mode_line_date
+msgid "This date is informative only."
+msgstr "Esta fecha es solo informativa."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_order_payment_option
+msgid "This field helps you to choose what you want         to do with the eventual difference between the paid         amount and the sum of allocated amounts. You can either         choose to keep open this difference on the partner's         account, or reconcile it with the payment(s)"
+msgstr "This field helps you to choose what you want         to do with the eventual difference between the paid         amount and the sum of allocated amounts. You can either         choose to keep open this difference on the partner's         account, or reconcile it with the payment(s)"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,help:l10n_ar_account_payment_order.field_account_payment_order_line_date_due
+msgid "This field is used for payable and receivable journal entries. You can put the limit date for the payment of this line."
+msgstr "Este campo se utiliza en asientos pendientes de pago y de cobro. Puede establecer la fecha límite para el pago de esta entrada."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Total"
+msgstr "Total"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Total Allocation"
+msgstr "Importe total"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Total Unreconciled"
+msgstr "Total Desconciliado"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Unreconcile"
+msgstr "Desconciliar"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_untax_amount
+msgid "Untax Amount"
+msgstr "Untax Amount"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "Validate"
+msgstr "Validar"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_filter_vendor_pay
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_filter
+msgid "Voucher"
+msgstr "Comprobante"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:657
+#, python-format
+msgid "Voucher Error!\n"
+"                    Voucher Paid Amount and sum of different payment                         mode must be equal"
+msgstr "Voucher Error!\n"
+"                    Voucher Paid Amount and sum of different payment                         mode must be equal"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model,name:l10n_ar_account_payment_order.model_account_payment_order_line
+msgid "Voucher Lines"
+msgstr "Líneas de comprobante"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:160
+#, python-format
+msgid "Write-Off"
+msgstr "Write-Off"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_analytic_id
+msgid "Write-Off Analytic Account"
+msgstr "Write-Off Analytic Account"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:802
+#, python-format
+msgid "Wrong voucher line\n"
+"                        The invoice you are willing to                         pay is not valid anymore."
+msgstr "Wrong voucher line\n"
+"                        The invoice you are willing to                         pay is not valid anymore."
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:736
+#, python-format
+msgid "You should configure the 'Gain Exchange Rate Account' to manage automatically the booking of accounting entries related to differences between exchange rates."
+msgstr "You should configure the 'Gain Exchange Rate Account' to manage automatically the booking of accounting entries related to differences between exchange rates."
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:725
+#, python-format
+msgid "You should configure the 'Loss Exchange Rate Account' to manage automatically the booking of accounting entries related to differences between exchange rates."
+msgstr "You should configure the 'Loss Exchange Rate Account' to manage automatically the booking of accounting entries related to differences between exchange rates."
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.model,name:l10n_ar_account_payment_order.model_account_payment_order
+msgid "account.payment.order"
+msgstr "account.payment.order"
+
+#. module: l10n_ar_account_payment_order
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:752
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:766
+#: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:887
+#, python-format
+msgid "change"
+msgstr "change"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "e.g. 003/10"
+msgstr "e.g. 003/10"
+
+#. module: l10n_ar_account_payment_order
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_payment_order_receipt_form
+#: model:ir.ui.view,arch_db:l10n_ar_account_payment_order.view_vendor_payment_order_form
+msgid "e.g. Invoice SAJ/0042"
+msgstr "e.g. Invoice SAJ/0042"
+

@@ -131,13 +131,13 @@ msgid "CIF/NIF"
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-#: field:account.voucher,retention_ids:0
+#: view:account.payment.order:0
+#: field:account.payment.order,retention_ids:0
 #: model:ir.actions.act_window,name:l10n_ar_retentions_basic.action_retention_retention_tree
 #: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_retention_menu
 #: view:retention.retention:0
 msgid "Retentions"
-msgstr ""
+msgstr "Retenciones"
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax,name:l10n_ar_retentions_basic.tax_retencion_iibb_caba_efectuada
@@ -160,7 +160,7 @@ msgid "Retenciones SUSS Efectuada"
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Retention Lines"
 msgstr ""
 
@@ -191,14 +191,14 @@ msgid "Retencion IIBB CABA Sufrida"
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Supported Retentions"
-msgstr ""
+msgstr "Retenciones soportadas"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Retention Type"
-msgstr ""
+msgstr "Tipo de retención"
 
 #. module: l10n_ar_retentions_basic
 #: help:retention.retention,tax_id:0
@@ -221,9 +221,9 @@ msgid "Retentions for ARGENTINA (Retenciones)"
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Applied Retentions"
-msgstr ""
+msgstr "Retenciones aplicadas"
 
 #. module: l10n_ar_retentions_basic
 #: model:account.tax.code,name:l10n_ar_retentions_basic.operaciones_con_retencion_suss_sufrida
@@ -261,15 +261,15 @@ msgid "Retention configuration used '                                       'for
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Journal Items"
-msgstr ""
+msgstr "Elementos del Diario"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 #: field:retention.tax.line,amount:0
 msgid "Amount"
-msgstr ""
+msgstr "Monto"
 
 #. module: l10n_ar_retentions_basic
 #: model:ir.model,name:l10n_ar_retentions_basic.model_retention_retention
@@ -323,9 +323,9 @@ msgid "Retention Tax Supported"
 msgstr ""
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Keep it empty if the date is the same as the voucher."
-msgstr ""
+msgstr "Dejar vacío si la fecha es la misma que la del comprobante."
 
 #. module: l10n_ar_retentions_basic
 #: field:retention.retention,jurisdiccion:0

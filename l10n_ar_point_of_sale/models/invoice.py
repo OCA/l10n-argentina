@@ -49,15 +49,15 @@ class AccountInvoice(models.Model):
                                 digits=dp.get_precision('Account'),
                                 store=True, readonly=True,
                                 compute='_compute_amount')
-    amount_untaxed = fields.Float(string='Subtotal',
+    amount_untaxed = fields.Monetary(string='Subtotal',
                                   digits=dp.get_precision('Account'),
                                   store=True, readonly=True,
                                   compute='_compute_amount')
-    amount_tax = fields.Float(string='Tax',
+    amount_tax = fields.Monetary(string='Tax',
                               digits=dp.get_precision('Account'),
                               store=True, readonly=True,
                               compute='_compute_amount')
-    amount_total = fields.Float(string='Total',
+    amount_total = fields.Monetary(string='Total',
                                 digits=dp.get_precision('Account'),
                                 store=True, readonly=True,
                                 compute='_compute_amount')

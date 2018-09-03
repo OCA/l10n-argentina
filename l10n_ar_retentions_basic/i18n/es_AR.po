@@ -77,13 +77,13 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 #: field:retention.tax.line,base:0
 msgid "Base"
 msgstr "Base"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Retention Type"
 msgstr "Tipo de retención"
 
@@ -93,12 +93,7 @@ msgid "Applied"
 msgstr "Aplicado"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)"
-msgstr "onchange_payment_line(amount, payment_line_ids, issued_check_ids, third_check_ids, third_check_receipt_ids, retention_ids, context)"
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Applied Retentions"
 msgstr "Retenciones aplicadas"
 
@@ -149,8 +144,8 @@ msgid "Retencion Ganancias Efectuada (Pagos)"
 msgstr "Retencion Ganancias Efectuada (Pagos)"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-#: field:account.voucher,retention_ids:0
+#: view:account.payment.order:0
+#: field:account.payment.order,retention_ids:0
 #: model:ir.actions.act_window,name:l10n_ar_retentions_basic.action_retention_retention_tree
 #: model:ir.ui.menu,name:l10n_ar_retentions_basic.retention_retention_menu
 #: view:retention.retention:0
@@ -168,7 +163,7 @@ msgid "Retencion IIBB CABA Sufrida"
 msgstr "Retencion IIBB CABA Sufrida"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Retention Lines"
 msgstr "Líneas de retención"
 
@@ -280,11 +275,6 @@ msgid "Retention Tax Applied"
 msgstr "Impuesto de retención aplicado"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
-msgstr "onchange_issued_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
-
-#. module: l10n_ar_retentions_basic
 #: field:retention.retention,type_tax_use:0
 msgid "Tax Application"
 msgstr "Aplicación de impuestos"
@@ -295,7 +285,7 @@ msgid "Operaciones con Retencion IVA Sufrida"
 msgstr "Operaciones con Retencion IVA Sufrida"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Journal Items"
 msgstr "Apuntes contables"
 
@@ -321,7 +311,7 @@ msgid "Retention Tax Supported"
 msgstr "Retenciones de impuestos soportadas"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Keep it empty if the date is the same as the voucher."
 msgstr "Dejar vacío si la fecha es la misma que la del comprobante."
 
@@ -346,7 +336,7 @@ msgid "Operaciones con Retencion Ganancias Efectuada"
 msgstr "Operaciones con Retencion Ganancias Efectuada"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Information"
 msgstr "Información"
 
@@ -361,7 +351,7 @@ msgid "Operaciones con Retencion IVA Efectuada"
 msgstr "Operaciones con Retencion IVA Efectuada"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Amounts"
 msgstr "Cantidad"
 
@@ -384,11 +374,6 @@ msgstr "Otro"
 #: model:account.tax.code,name:l10n_ar_retentions_basic.retencion_iva_efectuada
 msgid "Retencion IVA Efectuada (Pagos)"
 msgstr "Retencion IVA Efectuada (Pagos)"
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)"
-msgstr "onchange_third_receipt_checks(amount, payment_line_ids, third_check_receipt_ids, retention_ids, context)"
 
 #. module: l10n_ar_retentions_basic
 #: model:ir.actions.act_window,help:l10n_ar_retentions_basic.action_retention_retention_tree
@@ -421,13 +406,7 @@ msgid "Retencion IIBB CABA Sufrida (Cobros)"
 msgstr "Retencion IIBB CABA Sufrida (Cobros)"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
-msgid "onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
-msgstr "onchange_third_checks(amount, payment_line_ids, issued_check_ids, third_check_ids, retention_ids, context)"
-
-
-#. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Supported Retentions"
 msgstr "Retenciones soportadas"
 
@@ -457,7 +436,7 @@ msgid "Operaciones con Retencion Efectuada"
 msgstr "Operaciones con Retencion Efectuada"
 
 #. module: l10n_ar_retentions_basic
-#: view:account.voucher:0
+#: view:account.payment.order:0
 msgid "Total"
 msgstr "Total"
 
