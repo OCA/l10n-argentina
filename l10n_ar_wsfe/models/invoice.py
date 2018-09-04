@@ -24,7 +24,6 @@ import re
 
 from odoo import _, api, exceptions, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import float_compare
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -242,12 +241,14 @@ class AccountInvoice(models.Model):
             AND state in %(state)s
             AND type = %(type)s
             AND is_debit_note = %(is_debit_note)s
+            AND denomination_id = %(denomination_id)s
         """
         q_vals = {
             'pos_id': invoice.pos_ar_id.id,
             'state': ('open', 'paid', 'cancel',),
             'type': invoice.type,
             'is_debit_note': invoice.is_debit_note,
+            'denomination_id': invoice.denomination_id.id,
         }
         cr.execute(q, q_vals)
         last_number = cr.fetchone()
@@ -260,26 +261,32 @@ class AccountInvoice(models.Model):
 
         return int(next_number)
 
+    # @api.multi
+    # def action_invoice_open_cae(self):
+    #     # lots of duplicate calls to action_invoice_open,
+    #     # so we remove those already open
+    #     to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+    #     if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
+    #         raise UserError(_("Invoice must be in draft state " +
+    #                           "in order to validate it."))
+    #     if to_open_invoices.filtered(
+    #             lambda inv: float_compare(
+    #                 inv.amount_total, 0.0,
+    #                 precision_rounding=inv.currency_id.rounding) == -1):
+    #         raise UserError(_("You cannot validate an invoice with " +
+    #                           "a negative total amount.\n" +
+    #                           "You should create a credit note instead."))
+    #     to_open_invoices.action_date_assign()
+    #     to_open_invoices.action_move_create()
+    #     self.action_number()
+    #     self.action_aut_cae()
+    #     return to_open_invoices.invoice_validate()
+
     @api.multi
-    def action_invoice_open_cae(self):
-        # lots of duplicate calls to action_invoice_open,
-        # so we remove those already open
-        to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-        if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
-            raise UserError(_("Invoice must be in draft state " +
-                              "in order to validate it."))
-        if to_open_invoices.filtered(
-                lambda inv: float_compare(
-                    inv.amount_total, 0.0,
-                    precision_rounding=inv.currency_id.rounding) == -1):
-            raise UserError(_("You cannot validate an invoice with " +
-                              "a negative total amount.\n" +
-                              "You should create a credit note instead."))
-        to_open_invoices.action_date_assign()
-        to_open_invoices.action_move_create()
+    def invoice_validate(self):
         self.action_number()
         self.action_aut_cae()
-        return to_open_invoices.invoice_validate()
+        return super().invoice_validate()
 
     # Heredado para no cancelar si es una factura electronica
     @api.multi
@@ -405,19 +412,23 @@ class AccountInvoice(models.Model):
         # IVA con un monto de impuesto 0.0
         # Esto pasa porque el monto sobre el que se aplica es muy chico.
         # Quitamos el impuesto
-        zero_taxes = invoice.tax_line_ids.filtered(lambda x: x.amount == 0.0)
+        zero_taxes = invoice.tax_line_ids.filtered(
+            lambda x: x.amount == 0.0 and x.is_exempt)
 
         if not zero_taxes:
             return
 
-        tax_in_zero = zero_taxes.mapped(lambda x: x.tax_id.id)
-        lines_no_taxes = invoice.invoice_line_ids.filtered(
-                lambda x: x.invoice_line_ids_tax_id.id in tax_in_zero)
+        for tax in zero_taxes:
+            if tax.tax_id.account_id:
+                lines_no_taxes = invoice.invoice_line_ids.filtered(
+                    lambda x: tax.tax_id in x.invoice_line_tax_ids)
+            else:
+                lines_no_taxes = invoice.invoice_line_ids.filtered(
+                    lambda x: x.account_id == tax.account_id and
+                    tax.tax_id in x.invoice_line_tax_ids)
 
-        tax_remove = map(lambda x: (3, x, _), tax_in_zero)
-        lines_no_taxes.write({'invoice_line_ids_tax_id': tax_remove})
-
-        invoice.button_reset_taxes()
+        tax_remove = [(3, x.tax_id.id, False) for x in zero_taxes]
+        lines_no_taxes.write({'invoice_line_tax_ids': tax_remove})
 
     @api.multi
     def action_aut_cae(self):
