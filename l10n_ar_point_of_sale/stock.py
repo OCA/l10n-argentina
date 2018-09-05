@@ -24,6 +24,20 @@
 from openerp import models, api, _
 from openerp.osv import osv
 
+
+class stock_move(models.Model):
+    _inherit = 'stock.move'
+
+    def _get_moves_taxes(self, cr, uid, moves, inv_type, context=None):
+        is_extra_move, extra_move_tax = super(stock_move, self)._get_moves_taxes(cr, uid, moves, inv_type, context=context)
+        if inv_type == 'in_invoice':
+            for move in moves:
+                # Check if no tax here and add the product one if not
+                if not extra_move_tax[move.picking_id, move.product_id]:
+                    if move.product_id.product_tmpl_id.supplier_taxes_id:
+                        extra_move_tax[move.picking_id, move.product_id] = [(6, 0, [x.id for x in move.product_id.product_tmpl_id.supplier_taxes_id])]
+        return (is_extra_move, extra_move_tax)
+
 class stock_picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
