@@ -1,5 +1,5 @@
 from datetime import datetime
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo import _, fields
 
 import time
@@ -173,10 +173,18 @@ class WSFE(WebService):
         invoice.ensure_one()
         conf = invoice.get_ws_conf()
 
+        afip_taxes = conf.vat_tax_ids.mapped('tax_id')
+        not_found_tax = invoice.tax_line_ids.filtered(
+            lambda x: x.amount and x.tax_id not in afip_taxes)
+        if not_found_tax:
+            err = _("Taxes `%s` are not configured in WSFE!") % \
+                (", ").join(not_found_tax.mapped('tax_id.name'))
+            raise ValidationError(_("Error!\n") + err)
+
         # Procesamos las taxes
 
         vat_dict = {}
-        for tax_line in invoice.tax_line_ids:
+        for tax_line in invoice.tax_line_ids.filtered(lambda x: x.amount):
             afip_tax = conf.vat_tax_ids.filtered(
                 lambda x: x.tax_id == tax_line.tax_id)
             if not afip_tax:
@@ -193,7 +201,6 @@ class WSFE(WebService):
                 vat_dict[code]['Importe'] += tax_line.amount
                 vat_dict[code]['BaseImp'] += tax_line.base
 
-        afip_taxes = conf.vat_tax_ids.mapped('tax_id')
         vat_array = [{**{'Id': code},
                       **vals} for code, vals in vat_dict.items()]
 
@@ -477,6 +484,7 @@ class WSFE(WebService):
                                     self.auth._element_name)
             for k, v in self.auth.attrs.items():
                 setattr(auth_instance, k, v)
+        _logger.debug(self.data.FECAESolicitar)
         response = self.request('FECAESolicitar')
         approved = self.parse_invoices_response(response)
         return approved

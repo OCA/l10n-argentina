@@ -54,7 +54,6 @@ class RetentionTaxLine(models.Model):
     def onchange_retention(self):
         retention = self.retention_id
         if retention.id:
-            __import__('ipdb').set_trace()
             self.name = retention.name
             self.account_id = retention.tax_id.account_id.id
             # self.base_code_id = retention.tax_id.base_code_id.id
@@ -114,7 +113,6 @@ class RetentionTaxLine(models.Model):
         sign = debit - credit < 0 and -1 or 1
 
         # Creamos la linea contable perteneciente a la retencion
-        __import__('ipdb').set_trace()
         move_line = {
             'name': retention.name or '/',
             'debit': debit,

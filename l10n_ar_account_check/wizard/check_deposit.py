@@ -92,7 +92,6 @@ class AccountCheckDeposit(models.Model):
     # TODO: action_deposit create a unbalanced journal entr now, the
     # journal entryes be created with context 'check_move_validity': False
     def action_deposit(self):
-        __import__('ipdb').set_trace()
         period_obj = self.env['date.period']
         third_check_obj = self.env['account.third.check']
         move_line_obj = self.env['account.move.line']

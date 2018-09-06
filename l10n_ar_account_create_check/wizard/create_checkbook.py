@@ -35,7 +35,6 @@ class WizardCreateCheck(models.Model):
     def create_checkbook(self):
         checkbook_obj = self.env['account.checkbook']
         checkbook_id = False
-        __import__('ipdb').set_trace()
         for form in self:
             start_num = int(form.start_num)
             end_num = int(form.end_num)

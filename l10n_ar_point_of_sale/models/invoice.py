@@ -50,17 +50,17 @@ class AccountInvoice(models.Model):
                                 store=True, readonly=True,
                                 compute='_compute_amount')
     amount_untaxed = fields.Monetary(string='Subtotal',
-                                  digits=dp.get_precision('Account'),
-                                  store=True, readonly=True,
-                                  compute='_compute_amount')
+                                     digits=dp.get_precision('Account'),
+                                     store=True, readonly=True,
+                                     compute='_compute_amount')
     amount_tax = fields.Monetary(string='Tax',
-                              digits=dp.get_precision('Account'),
-                              store=True, readonly=True,
-                              compute='_compute_amount')
+                                 digits=dp.get_precision('Account'),
+                                 store=True, readonly=True,
+                                 compute='_compute_amount')
     amount_total = fields.Monetary(string='Total',
-                                digits=dp.get_precision('Account'),
-                                store=True, readonly=True,
-                                compute='_compute_amount')
+                                   digits=dp.get_precision('Account'),
+                                   store=True, readonly=True,
+                                   compute='_compute_amount')
     local = fields.Boolean(string='Local', default=True)
     internal_number = fields.Char(string="Internal Number", default=False,
                                   copy=False, readonly=True,
@@ -162,7 +162,9 @@ class AccountInvoice(models.Model):
 
     # DONE
     # Se calculan los campos del pie de pagina de la factura
-    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount')
+    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount',
+                 'tax_line_ids.amount_rounding',
+                 'currency_id', 'company_id', 'date_invoice', 'type')
     def _compute_amount(self):
         for invoice in self:
             invoice.amount_untaxed = sum(
@@ -180,6 +182,22 @@ class AccountInvoice(models.Model):
                 line.price_subtotal for line in invoice.invoice_line_ids if
                 any(map(lambda x: (x.tax_group == 'vat' and not x.is_exempt),
                         line.invoice_line_tax_ids)))
+
+            amount_total_company_signed = self.amount_total
+            amount_untaxed_signed = self.amount_untaxed
+            if self.currency_id and self.company_id and \
+                    self.currency_id != self.company_id.currency_id:
+                currency_id = self.currency_id.with_context(
+                    date=self.date_invoice)
+                amount_total_company_signed = currency_id.compute(
+                    self.amount_total, self.company_id.currency_id)
+                amount_untaxed_signed = currency_id.compute(
+                    self.amount_untaxed, self.company_id.currency_id)
+            sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+            self.amount_total_company_signed = amount_total_company_signed * \
+                sign
+            self.amount_total_signed = self.amount_total * sign
+            self.amount_untaxed_signed = amount_untaxed_signed * sign
 
     # TODO --Averiguar como cancelar una nota de credito pagada
     @api.multi
@@ -333,23 +351,29 @@ class AccountInvoice(models.Model):
         en el sistema
         """
         self.ensure_one()
+        offset = self.env.context.get('invoice_number_offset', 0)
         # Obtenemos el ultimo numero de comprobante
         # para ese pos y ese tipo de comprobante
-        query = """
+        q = """
         SELECT MAX(TO_NUMBER(
-        SUBSTRING(internal_number FROM '[0-9]{8}$'), '99999999'))
+            SUBSTRING(internal_number FROM '[0-9]{8}$'), '99999999')
+            )
         FROM account_invoice
         WHERE internal_number ~ '^[0-9]{4}-[0-9]{8}$'
-        AND pos_ar_id=%(pos)s AND state IN %(state)s
-        AND type=%(type)s AND is_debit_note=%(debit_note)s
+            AND pos_ar_id = %(pos_id)s
+            AND state in %(state)s
+            AND type = %(type)s
+            AND is_debit_note = %(is_debit_note)s
+            AND denomination_id = %(denomination_id)s
         """
-        query_vals = {
-            'pos': self.pos_ar_id.id,
-            'state': ('open', 'paid', 'cancel'),
+        q_vals = {
+            'pos_id': self.pos_ar_id.id,
+            'state': ('open', 'paid', 'cancel',),
             'type': self.type,
-            'debit_note': self.is_debit_note,
+            'is_debit_note': self.is_debit_note,
+            'denomination_id': self.denomination_id.id,
         }
-        self.env.cr.execute(query, query_vals)
+        self.env.cr.execute(q, q_vals)
         last_number = self.env.cr.fetchone()
 
         # Si no devuelve resultados, es porque es el primero
@@ -358,7 +382,7 @@ class AccountInvoice(models.Model):
         else:
             next_number = last_number[0] + 1
 
-        return next_number
+        return int(next_number + offset)
 
     # DONE
     @api.multi
@@ -502,139 +526,3 @@ class AccountInvoiceTax(models.Model):
                              required=True)
     is_exempt = fields.Boolean(string='Is Exempt',
                                readonly=True)
-
-    # TODO: Evaluar que hacer con los campos 'base_code_id',
-    # TODO:'tax_code_id' y 'account_id' y sus relaciones correspondientes
-    # @api.onchange('tax_id')
-    # def tax_id_change(self):
-    #     self.name = self.tax_id.description
-    #     if self.invoice_id.type in ('out_invoice', 'in_invoice'):
-    #         self.base_code_id = self.tax_id.base_code_id.id
-    #         self.tax_code_id = self.tax_id.tax_code_id.id
-    #         self.account_id = self.tax_id.account_collected_id.id
-    #     else:
-    #         self.base_code_id = self.tax_id.ref_base_code_id.id
-    #         self.tax_code_id = self.tax_id.ref_tax_code_id.id
-    #         self.account_id = self.tax_id.account_paid_id.id
-
-    def hook_compute_invoice_taxes(self, invoice, tax_grouped):
-        return tax_grouped
-
-    # TODO --comprobar el nuevo compute--
-    # Ahora es un compute en base con un depends de las invoice_line_ids
-    # @api.v8
-    # def compute(self, invoice):
-    #     tax_grouped = {}
-
-    #     currency = invoice.currency_id.with_context(
-    #         date=invoice.date_invoice or fields.Date.context_today(invoice))
-    #     company_currency = invoice.company_id.currency_id
-
-    #     for line in invoice.invoice_line_ids:
-    #         taxes = line.invoice_line_ids_tax_id.compute_all(
-    #             (line.price_unit * (1-(line.discount or 0.0)/100.0)),
-    #             line.quantity, line.product_id, invoice.partner_id)['taxes']
-    #         for tax in taxes:
-    #             # TODO: Tal vez se pueda cambiar el boolean
-    #             # TODO: is_exempt por un type (selection)
-    #             # TODO: para despues incluir impuestos internos,
-    #             # TODO: retenciones, percepciones, o sea,
-    #             # TODO: distintos tipos de impuestos
-    #             tax_browse = self.env['account.tax'].browse(tax['id'])
-    #             # Se agregan los campos 'is_exempt' y 'tax_id'
-    #             val = {
-    #                 'invoice_id': invoice.id,
-    #                 'name': tax['name'],
-    #                 'amount': tax['amount'],
-    #                 'manual': False,
-    #                 'sequence': tax['sequence'],
-    #                 'is_exempt': tax_browse.is_exempt,
-    #                 'base': currency.round(
-    #                     tax['price_unit'] * line['quantity']),
-    #                 'tax_id': tax['id'],
-    #             }
-
-    #             if invoice.type in ('out_invoice', 'in_invoice'):
-    #                 val['base_code_id'] = tax['base_code_id']
-    #                 val['tax_code_id'] = tax['tax_code_id']
-    #                 val['base_amount'] = currency.compute(
-    #                     val['base'] * tax['base_sign'], company_currency,
-    #                     round=False)
-    #                 val['tax_amount'] = currency.compute(
-    #                     val['amount'] * tax['tax_sign'], company_currency,
-    #                     round=False)
-    #                 val['account_id'] = tax['account_collected_id'] or \
-    #                     line.account_id.id
-    #                 val['account_analytic_id'] = tax[
-    #                     'account_analytic_collected_id']
-    #             else:
-    #                 val['base_code_id'] = tax['ref_base_code_id']
-    #                 val['tax_code_id'] = tax['ref_tax_code_id']
-    #                 val['base_amount'] = currency.compute(
-    #                     val['base'] * tax['ref_base_sign'], company_currency,
-    #                     round=False)
-    #                 val['tax_amount'] = currency.compute(
-    #                     val['amount'] * tax['ref_tax_sign'], company_currency,
-    #                     round=False)
-    #                 val['account_id'] = tax['account_paid_id'] or \
-    #                     line.account_id.id
-    #                 val['account_analytic_id'] = tax[
-    #                     'account_analytic_paid_id']
-
-    #             # If the taxes generate moves on the same financial
-    #             # account as the invoice line and no default analytic
-    #             # account is defined at the tax level, propagate the
-    #             # analytic account from the invoice line to the tax line.
-    #             # This is necessary in situations were (part of) the taxes
-    #             # cannot be reclaimed, to ensure the tax move is
-    #             # allocated to the proper analytic account.
-    #             if not val.get('account_analytic_id') and \
-    #                     line.account_analytic_id and val['account_id'] == \
-    #                     line.account_id.id:
-    #                 val['account_analytic_id'] = line.account_analytic_id.id
-
-    #             key = (val['tax_code_id'],
-    #                    val['base_code_id'],
-    #                    val['account_id'])
-
-    #             if key not in tax_grouped:
-    #                 tax_grouped[key] = val
-    #             else:
-    #                 tax_grouped[key]['amount'] += val['amount']
-    #                 tax_grouped[key]['base'] += val['base']
-    #                 tax_grouped[key]['base_amount'] += val['base_amount']
-    #                 tax_grouped[key]['tax_amount'] += val['tax_amount']
-
-    #     for t in tax_grouped.values():
-    #         t['base'] = currency.round(t['base'])
-    #         t['amount'] = currency.round(t['amount'])
-    #         t['base_amount'] = currency.round(t['base_amount'])
-    #         t['tax_amount'] = currency.round(t['tax_amount'])
-
-    #     # Agregamos un hook por si otros modulos quieren agregar sus taxes
-    #     tax_grouped = self.hook_compute_invoice_taxes(invoice, tax_grouped)
-
-    #     return tax_grouped
-
-    # compute() v11
-    # @api.depends('invoice_id.invoice_line_ids')
-    # def _compute_base_amount(self):
-    #     tax_grouped = {}
-    #     for invoice in self.mapped('invoice_id'):
-    #         tax_grouped[invoice.id] = invoice.get_taxes_values()
-    #     for tax in self:
-    #         tax.base = 0.0
-    #         if tax.tax_id:
-    #             key = tax.tax_id.get_grouping_key({
-    #                 'tax_id': tax.tax_id.id,
-    #                 'account_id': tax.account_id.id,
-    #                 'account_analytic_id': tax.account_analytic_id.id,
-    #             })
-    #             if tax.invoice_id and key in tax_grouped[tax.invoice_id.id]:
-    #                 tax_grouped = self.hook_compute_invoice_taxes(
-    #                     invoice, tax_grouped)
-    #                 tax.base = tax_grouped[tax.invoice_id.id][key]['base']
-    #             else:
-    #                 _logger.warning(
-    #                     'Tax Base Amount not computable probably due to a \
-    #                     change in an underlying tax (%s).', tax.tax_id.name)
