@@ -85,14 +85,14 @@ class WSFE(WebService):
         for inv_index, inv in enumerate(invoices):
             if first_number:
                 nn = first_number + inv_index
-            inv_data = self.parse_invoice(inv, number=nn)
+            inv_data = self.parse_invoice(inv, number=nn, invoices=invoices)
             inv_data['first_of_lot'] = False
             if (first_number and nn == first_number) or len(invoices) == 1:
                 inv_data['first_of_lot'] = True
             details_array.append(inv_data)
         return data
 
-    def parse_invoice(self, invoice, number=False):
+    def parse_invoice(self, invoice, number=False, invoices=False):
         invoice.ensure_one()
         if not number:
             number = invoice.split_number()[1]
@@ -142,6 +142,7 @@ class WSFE(WebService):
         iva_values = self.get_vat_array(invoice)
 
         detail = {
+            'invoices': invoices,
             'invoice': invoice,
             'CbteDesde': number,
             'CbteHasta': number,
@@ -348,10 +349,13 @@ class WSFE(WebService):
                 doc_type = inv.partner_id.document_type_id and \
                     inv.partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
-                if inv.partner_id.vat:
-                    doc_num = comp['DocNro'] == int(inv.partner_id.vat)
+                if comp['DocNro'] == 0:
+                    doc_num = inv.partner_id.vat in [False, '', '0']
                 else:
-                    doc_num = True
+                    try:
+                        doc_num = bool(int(inv.partner_id.vat))
+                    except ValueError:
+                        doc_num = False
                 cbte = True
                 if inv.internal_number:
                     cbte = comp['CbteHasta'] == int(
@@ -561,15 +565,16 @@ class WSFE(WebService):
 
     @wsapi.check(['DocNro'], reraise=True, sequence=20)
     def validate_docnro(val, invoice, DocTipo):
-        return True
+        tin_number = int(val)
+        tin_type = int(DocTipo)
         if invoice.denomination_id.name == 'B':
-            if invoice.amount_total > 1000:
-                if not int(val):
+            if tin_type != 99 and not tin_number:
+                return False
+            if invoice.amount_total >= 5000:
+                if not tin_number:
                     return False
             else:
-                if int(DocTipo) == 99 and int(val):
-                    return False
-                elif int(DocTipo) != 99 and not int(val):
+                if tin_type == 99 and tin_number:
                     return False
         if invoice.denomination_id.name == 'A':
             if not int(val):
@@ -577,7 +582,7 @@ class WSFE(WebService):
         return True
 
     @wsapi.check(['CbteDesde'], reraise=True, sequence=20)
-    def validate_invoice_number(val, invoice, first_of_lot=True):
+    def validate_invoice_number(val, invoice, invoices, first_of_lot=True):
         if first_of_lot:
             conf = invoice.get_ws_conf()
             fe_next_number = invoice._get_next_wsfe_number(conf=conf)
@@ -585,11 +590,64 @@ class WSFE(WebService):
             # Si es homologacion, no hacemos el chequeo del numero
             if not conf.homologation:
                 if int(fe_next_number) != int(val):
-                    raise UserError(
-                        _("WSFE Error!\n") +
-                        _("The next number in the system [%d] does not " +
-                          "match the one obtained from AFIP WSFE [%d]") %
-                        (int(val), int(fe_next_number)))
+                    try:
+                        sync_invs = []
+                        invoices.env.cr.rollback()
+                        invoices.refresh()
+                        massive_sync_wiz = invoice.env[
+                            'wsfe.massive.sinchronize']
+                        vtype = invoice.env['wsfe.voucher_type'].search(
+                            [('code', '=', int(invoice._get_voucher_type()))])
+                        pos = invoice.env['pos.ar'].search(
+                            [('name', '=', str(invoice._get_pos()))])
+                        wiz = massive_sync_wiz.create({
+                            'voucher_type': vtype.id,
+                            'pos_id': pos.id,
+                        })
+                        act_window = wiz.sinchronize()
+                        if act_window and 'domain' in act_window:
+                            ids_domain = [x for x in act_window['domain']
+                                          if x[0] == 'id']
+                            if len(ids_domain) == 1 and \
+                                    len(ids_domain[0]) == 3:
+                                sync_ids = ids_domain[0][2]
+                                sync_invs = invoices.browse(sync_ids)
+                        if sync_invs:
+                            invoices = invoices.filtered(
+                                lambda x: x not in sync_invs)
+                        if len(invoices) > 1:
+                            massive_inv_wiz = invoices.env[
+                                'account.invoice.confirm']
+                            wiz = massive_inv_wiz.create({})
+                            ctx = {
+                                'active_ids': invoices.ids,
+                            }
+                            wiz.with_context(ctx).invoice_confirm()
+                        else:
+                            invoices.action_invoice_open()
+                    except Exception as e:
+                        sync_invs
+                        _logger.error(repr(e))
+                    finally:
+                        if sync_invs:
+                            raise UserError(
+                                _("WSFE Info!\n") +
+                                _("The current invoice was validated and " +
+                                  "other invoices were validated too due to " +
+                                  "desynchronization. " +
+                                  "\nValidated Invoices:\n" +
+                                  "%s") % ("\n").join(
+                                      invoices.browse(list(
+                                          set(sync_invs.ids +
+                                              invoices.ids))).mapped(
+                                              'internal_number')))
+                        else:
+                            raise UserError(
+                                _("WSFE Error!\n") +
+                                _("The next number in the system [%d] does " +
+                                  "not match the one obtained from " +
+                                  "AFIP WSFE [%d]") %
+                                (int(val), int(fe_next_number)))
         return True
 
     @wsapi.check(NATURALS)

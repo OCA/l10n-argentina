@@ -46,12 +46,15 @@ class wsfe_massive_sinchronize(models.TransientModel):
             ('amount_no_taxed', '=', amount_no_taxed),
             ('state', 'in', ('draft', 'proforma2', 'proforma'))]
 
-        invoice_ids = invoice_model.search(domain)
+        invoices = invoice_model.search(domain)
 
-        # Si hay mas de una, retorna la primera
-        if len(invoice_ids):
-            return invoice_ids[0]
-
+        if len(invoices) == 1:
+            return invoices
+        # Si hay mas de una, retorna la primera que tenga wsfe_request
+        if len(invoices) > 1:
+            final_inv = invoices.filtered(lambda x: x.wsfe_request_ids)
+            if final_inv:
+                return final_inv[0]
         return False
 
     @api.multi

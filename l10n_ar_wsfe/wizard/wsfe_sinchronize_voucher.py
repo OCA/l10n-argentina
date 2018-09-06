@@ -116,9 +116,14 @@ class wsfe_sinchronize_voucher(models.TransientModel):
         self.date_process = dpr
         self.infook = True
 
+        if self.document_number == '0':
+            doc_number = [False, '0', '']
+        else:
+            doc_number = [self.document_number]
+
         domain = [
             ('amount_total', '=', self.amount_total),
-            ('partner_id.vat', '=', self.document_number),
+            ('partner_id.vat', 'in', doc_number),
             ('amount_exempt', '=', self.amount_exempt),
             ('amount_taxed', '=', self.amount_taxed),
             ('amount_no_taxed', '=', self.amount_no_taxed),
