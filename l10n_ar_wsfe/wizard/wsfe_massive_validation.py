@@ -22,6 +22,7 @@ class AccountInvoiceConfirm(models.TransientModel):
         conf = wsfe_conf_obj.get_config()
 
         invoices = inv_obj.browse(self.env.context['active_ids'])
+        invoices = invoices.sorted(key=lambda x: x.create_date)
 
         # Primero tenemos que chequear si al menos alguna de las facturas
         # se debe hacer por factura electronica
@@ -81,69 +82,23 @@ class AccountInvoiceConfirm(models.TransientModel):
         # Preparamos el lote de facturas para la AFIP
         next_system_number = invoices[0].get_next_invoice_number()
 
-        # if not conf.homologation:
-        #     if next_wsfe_number != next_system_number:
-        #         raise UserError(
-        #             _("WSFE Error!"),
-        #             _("The next number in the system [%d] does not match " +
-        #               "the one obtained from AFIP WSFE [%d]") %
-        #             (int(next_system_number), int(next_wsfe_number)))
-
         no_create_move = self.env.context.get('no_create_move', False)
         if not no_create_move:
-            for inv in invoices:
-                inv.action_move_create()
+            for index, inv in enumerate(invoices):
+                ctx = self.env.context.copy()
+                ctx.update({
+                    'invoice_number_offset': index,
+                })
+                inv.with_context(ctx).action_move_create()
 
-        ws = invoices.new_ws(conf=conf)
-        try:
-            invoices_approved = ws.send_invoices(
-                invoices, first_number=next_system_number)
+        request_log = invoices._validate_electronic_invoices(
+            first_number=next_system_number)
 
-            # Para las facturas aprobadas creo los asientos,
-            # y seguimos adelante con el workflow
-            for invoice_id, invoice_vals in invoices_approved.items():
-                invoice = inv_obj.browse(invoice_id)
-
-                invoice.write(invoice_vals)
-
-                if not no_create_move:
-                    ref = invoice.reference or ''
-                    if not ref:
-                        invoice_name = self.name_get()[0][1]
-                        ref = invoice_name
-                    invoice._update_reference(ref)
-
-                # Llamamos al workflow para que siga su curso
-                # TODO: Esta bien pensado?
-                self.action_invoice_open()
-                # invoice.signal_workflow('invoice_massive_open')
-            self.env.cr.commit()
-        except Exception as e:
-            err = _('Error received was: \n %s') % e
-            raise UserError(
-                _('WSFE Validation Error\n') + err)
-        finally:
-            # Creamos el wsfe.request con otro cursor,
-            # porque puede pasar que
-            # tengamos una excepcion e igualmente,
-            # tenemos que escribir la request
-            # Sino al hacer el rollback se pierde hasta el wsfe.request
-            self.env.cr.rollback()
-            with api.Environment.manage():
-                new_cr = self.env.cursor()
-                new_env = api.Environment(new_cr, self.env.user.id,
-                                          self.env.context)
-                request_log = ws.log_request(new_env)
-                new_cr.commit()
-                new_cr.close()
-
-        # TODO: Ver que pasa con las account_analytic_lines
         return {
             'name': _('WSFE Request'),
-            'domain': "[('id','=',%s)]" % (request_log.id),
+            'res_id': request_log.id,
             'view_type': 'form',
-            'view_mode': 'tree,form',
+            'view_mode': 'form',
             'res_model': 'wsfe.request',
-            'view_id': False,
             'type': 'ir.actions.act_window',
         }

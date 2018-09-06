@@ -18,12 +18,12 @@ class sale_order(models.Model):
         pos_ar_obj = self.env['pos.ar']
         res_pos = pos_ar_obj.search([
             ('shop_id', '=', self.warehouse_id.id),
-            ('denomination_ids', '=', denom.id)],
-            limit=1)
+            ('denomination_ids', 'in', denom.id)],
+            order='priority', limit=1)
 
         if not len(res_pos):
             raise UserError(
-                _('Error'),
+                _('Error!\n') +
                 _('You need to set up a Shop and/or a Fiscal Position'))
 
         return res_pos

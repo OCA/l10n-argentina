@@ -1,5 +1,5 @@
 from datetime import datetime
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo import _, fields
 
 import time
@@ -46,6 +46,20 @@ class Event:
 
 
 class WSFE(WebService):
+
+    # AFIP Requests a (13, 2) format for amounts
+    _decimal_precision = 2
+
+    def afip_round(self, data):
+        for key, value in data.items():
+            if isinstance(value, float):
+                data[key] = round(value, self._decimal_precision)
+            if isinstance(value, dict):
+                self.afip_round(value)
+            if isinstance(value, list):
+                for item in value:
+                    self.afip_round(item)
+        return True
 
     def parse_invoices(self, invoices, first_number=False):
         reg_qty = len(invoices)
@@ -125,7 +139,7 @@ class WSFE(WebService):
         if invoice.currency_id.id != company_currency_id.id:
             invoice_rate = invoice.currency_rate
 
-        iva_values = self.get_iva_array(invoice)
+        iva_values = self.get_vat_array(invoice)
 
         detail = {
             'invoice': invoice,
@@ -155,68 +169,82 @@ class WSFE(WebService):
         self.data.sent_invoices[invoice] = detail
         return detail
 
-    def get_iva_array(self, invoice, retry=False):
+    def get_vat_array(self, invoice, retry=False):
         invoice.ensure_one()
         conf = invoice.get_ws_conf()
-        iva_array = []
 
-        importe_neto = 0.0
-        importe_operaciones_exentas = invoice.amount_exempt
-        importe_iva = 0.0
-        importe_tributos = 0.0
-        importe_total = 0.0
-        importe_neto_no_gravado = invoice.amount_no_taxed
+        afip_taxes = conf.vat_tax_ids.mapped('tax_id')
+        not_found_tax = invoice.tax_line_ids.filtered(
+            lambda x: x.amount and x.tax_id not in afip_taxes)
+        if not_found_tax:
+            err = _("Taxes `%s` are not configured in WSFE!") % \
+                (", ").join(not_found_tax.mapped('tax_id.name'))
+            raise ValidationError(_("Error!\n") + err)
 
         # Procesamos las taxes
-        for tax in invoice.tax_line_ids:
-            found = False
-            for eitax in conf.vat_tax_ids + conf.exempt_operations_tax_ids:
-                if eitax.tax_id.id == tax.tax_id.id:
-                    found = True
-                    if eitax.exempt_operations:
-                        pass
-                        # importe_operaciones_exentas += tax.base
-                    else:
-                        importe_iva += tax.amount
-                        importe_neto += tax.base
-                        iva2 = {
-                            'Id': int(eitax.code),
-                            'BaseImp': tax.base,
-                            'Importe': tax.amount
-                        }
-                        iva_array.append(iva2)
-            if not found:
-                importe_tributos += tax.amount
 
-        importe_total = importe_neto + importe_neto_no_gravado + \
-            importe_operaciones_exentas + importe_iva + importe_tributos
+        vat_dict = {}
+        for tax_line in invoice.tax_line_ids.filtered(lambda x: x.amount):
+            afip_tax = conf.vat_tax_ids.filtered(
+                lambda x: x.tax_id == tax_line.tax_id)
+            if not afip_tax:
+                continue
+            # This should be a constraint in wsfe.tax.codes
+            afip_tax.ensure_one()
+            code = int(afip_tax.code)
+            if code not in vat_dict:
+                vat_dict[code] = {
+                    'Importe': tax_line.amount,
+                    'BaseImp': tax_line.base,
+                }
+            else:
+                vat_dict[code]['Importe'] += tax_line.amount
+                vat_dict[code]['BaseImp'] += tax_line.base
 
-        try:
-            invoice.check_invoice_total(importe_total)
-        except UserError:
-            if retry:
-                raise
-            # TODO
-            # invoice.button_reset_taxes()
-            return self.get_iva_array(invoice, retry=True)
+        vat_array = [{**{'Id': code},
+                      **vals} for code, vals in vat_dict.items()]
+
+        vat_tax_amount = sum([x['Importe'] for x in vat_dict.values()])
+        vat_base_amount = sum([x['BaseImp'] for x in vat_dict.values()])
+
+        tribute_tax_amount = sum([x.amount for x in invoice.tax_line_ids
+                                  if x.tax_id not in afip_taxes and
+                                  not x.tax_id.is_exempt])
+        tribute_base_amount = sum([x.base for x in invoice.tax_line_ids
+                                   if x.tax_id not in afip_taxes and
+                                   not x.tax_id.is_exempt])
+
+        exempt_operation_amount = invoice.amount_exempt
+        no_taxed_amount = invoice.amount_no_taxed
+
+        base_amount = vat_base_amount + tribute_base_amount
+        tax_amount = tribute_tax_amount + vat_tax_amount
+
+        total_amount = round(base_amount + no_taxed_amount +
+                             exempt_operation_amount +
+                             tax_amount, self._decimal_precision)
+
+        invoice.check_invoice_total(total_amount)
 
         vals = {
             'number': invoice.internal_number,
             'id': invoice.id,
-            'ImpIVA': importe_iva,
-            'ImpNeto': importe_neto,
-            'ImpOpEx': importe_operaciones_exentas,
-            'ImpTotal': importe_total,
-            'ImpTotConc': importe_neto_no_gravado,
-            'ImpTrib': importe_tributos,
+            'ImpIVA': vat_tax_amount,
+            'ImpNeto': vat_base_amount,
+            'ImpOpEx': exempt_operation_amount,
+            'ImpTotal': total_amount,
+            'ImpTotConc': no_taxed_amount,
+            'ImpTrib': tribute_tax_amount + tribute_base_amount,
             'Iva': {
-                'AlicIva': iva_array,
+                'AlicIva': vat_array,
             },
         }
+        self.afip_round(vals)
         log = ('Procesando Factura Electronica: %(number)s (id: %(id)s)\n' +
                'Importe Total: %(ImpTotal)s\n' +
                'Importe Neto Gravado: %(ImpNeto)s\n' +
                'Importe IVA: %(ImpIVA)s\n' +
+               'Importe Tributos: %(ImpTrib)s\n' +
                'Importe Operaciones Exentas: %(ImpOpEx)s\n' +
                'Importe Neto no Gravado: %(ImpTotConc)s\n' +
                'Array de IVA: %(Iva)s\n') % vals
@@ -320,7 +348,10 @@ class WSFE(WebService):
                 doc_type = inv.partner_id.document_type_id and \
                     inv.partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
-                doc_num = comp['DocNro'] == int(inv.partner_id.vat)
+                if inv.partner_id.vat:
+                    doc_num = comp['DocNro'] == int(inv.partner_id.vat)
+                else:
+                    doc_num = True
                 cbte = True
                 if inv.internal_number:
                     cbte = comp['CbteHasta'] == int(
@@ -373,6 +404,13 @@ class WSFE(WebService):
                 invoice_id = False
             else:
                 invoice_id = read_inv.id
+                q = """
+                SELECT id FROM account_invoice WHERE id = %(id)s
+                """
+                env.cr.execute(q, {'id': invoice_id})
+                # Invoice Failed to create and does not exist in the DB
+                if not env.cr.rowcount:
+                    invoice_id = False
 
             det = {
                 'name': invoice_id,
@@ -446,6 +484,7 @@ class WSFE(WebService):
                                     self.auth._element_name)
             for k, v in self.auth.attrs.items():
                 setattr(auth_instance, k, v)
+        _logger.debug(self.data.FECAESolicitar)
         response = self.request('FECAESolicitar')
         approved = self.parse_invoices_response(response)
         return approved
@@ -510,7 +549,7 @@ class WSFE(WebService):
 
 ###############################################################################
 # AFIP Data Validation Methods According to:
-# http://www.afip.gov.ar/fe/documentos/manual_desarrollador_COMPG_v2.pdf
+# http://afip.gob.ar/fe/documentos/manual_desarrollador_COMPG_v2_11.pdf
 
     NATURALS = ['CantReg', 'CbteTipo', 'PtoVta', 'DocTipo',
                 'CbteHasta', 'CbteNro', 'Id']
@@ -522,6 +561,7 @@ class WSFE(WebService):
 
     @wsapi.check(['DocNro'], reraise=True, sequence=20)
     def validate_docnro(val, invoice, DocTipo):
+        return True
         if invoice.denomination_id.name == 'B':
             if invoice.amount_total > 1000:
                 if not int(val):

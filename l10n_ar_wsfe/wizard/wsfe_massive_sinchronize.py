@@ -30,7 +30,8 @@ class wsfe_massive_sinchronize(models.TransientModel):
         document_type = doc_ids and doc_ids[0] or False
 
         document_type = document_type
-        document_number = str(res['DocNro'])
+        document_number = [str(res['DocNro'])] if res['DocNro'] \
+            else [str(res['DocNro']), '', False]
         amount_total = res['ImpTotal']
         amount_no_taxed = res['ImpTotConc']
         amount_taxed = res['ImpNeto']
@@ -39,7 +40,7 @@ class wsfe_massive_sinchronize(models.TransientModel):
 
         domain = [
             ('amount_total', '=', amount_total),
-            ('partner_id.vat', '=', document_number),
+            ('partner_id.vat', 'in', document_number),
             ('amount_exempt', '=', amount_exempt),
             ('amount_taxed', '=', amount_taxed),
             ('amount_no_taxed', '=', amount_no_taxed),

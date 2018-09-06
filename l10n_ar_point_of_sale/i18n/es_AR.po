@@ -52,19 +52,19 @@ msgstr "Denominaciones Disponibles"
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:80
 #, python-format
 msgid "CD "
-msgstr "ND"
+msgstr "ND "
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:76
 #, python-format
 msgid "CI "
-msgstr "FAC"
+msgstr "FAC "
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:78
 #, python-format
 msgid "CR "
-msgstr "NC"
+msgstr "NC "
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,help:l10n_ar_point_of_sale.field_account_fiscal_position_local

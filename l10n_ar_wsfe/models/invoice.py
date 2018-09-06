@@ -23,8 +23,7 @@
 import re
 
 from odoo import _, api, exceptions, fields, models
-from odoo.exceptions import UserError
-from odoo.tools import float_compare
+from odoo.exceptions import UserError, except_orm
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -222,64 +221,10 @@ class AccountInvoice(models.Model):
         return last_date
 
     @api.multi
-    def get_next_invoice_number(self):
-        """
-        Funcion para obtener el siguiente numero de comprobante
-        correspondiente en el sistema
-        """
-        self.ensure_one()
-        invoice = self
-        cr = self.env.cr
-        # Obtenemos el ultimo numero de comprobante
-        # para ese pos y ese tipo de comprobante
-        q = """
-        SELECT MAX(TO_NUMBER(
-            SUBSTRING(internal_number FROM '[0-9]{8}$'), '99999999')
-            )
-        FROM account_invoice
-        WHERE internal_number ~ '^[0-9]{4}-[0-9]{8}$'
-            AND pos_ar_id = %(pos_id)s
-            AND state in %(state)s
-            AND type = %(type)s
-            AND is_debit_note = %(is_debit_note)s
-        """
-        q_vals = {
-            'pos_id': invoice.pos_ar_id.id,
-            'state': ('open', 'paid', 'cancel',),
-            'type': invoice.type,
-            'is_debit_note': invoice.is_debit_note,
-        }
-        cr.execute(q, q_vals)
-        last_number = cr.fetchone()
-
-        # Si no devuelve resultados, es porque es el primero
-        if not last_number or not last_number[0]:
-            next_number = 1
-        else:
-            next_number = last_number[0] + 1
-
-        return int(next_number)
-
-    @api.multi
-    def action_invoice_open_cae(self):
-        # lots of duplicate calls to action_invoice_open,
-        # so we remove those already open
-        to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-        if to_open_invoices.filtered(lambda inv: inv.state != 'draft'):
-            raise UserError(_("Invoice must be in draft state " +
-                              "in order to validate it."))
-        if to_open_invoices.filtered(
-                lambda inv: float_compare(
-                    inv.amount_total, 0.0,
-                    precision_rounding=inv.currency_id.rounding) == -1):
-            raise UserError(_("You cannot validate an invoice with " +
-                              "a negative total amount.\n" +
-                              "You should create a credit note instead."))
-        to_open_invoices.action_date_assign()
-        to_open_invoices.action_move_create()
+    def invoice_validate(self):
         self.action_number()
         self.action_aut_cae()
-        return to_open_invoices.invoice_validate()
+        return super().invoice_validate()
 
     # Heredado para no cancelar si es una factura electronica
     @api.multi
@@ -399,66 +344,79 @@ class AccountInvoice(models.Model):
     def hook_add_taxes(self, inv, detalle):
         return detalle
 
-    def _sanitize_taxes(self, invoice):
-
+    @api.multi
+    def _sanitize_taxes(self):
         # Sanitize taxes: puede pasar que tenga un
         # IVA con un monto de impuesto 0.0
         # Esto pasa porque el monto sobre el que se aplica es muy chico.
         # Quitamos el impuesto
-        zero_taxes = invoice.tax_line_ids.filtered(lambda x: x.amount == 0.0)
+        for invoice in self:
+            zero_taxes = invoice.tax_line_ids.filtered(
+                lambda x: x.amount == 0.0 and x.is_exempt)
 
-        if not zero_taxes:
-            return
+            if not zero_taxes:
+                return
 
-        tax_in_zero = zero_taxes.mapped(lambda x: x.tax_id.id)
-        lines_no_taxes = invoice.invoice_line_ids.filtered(
-                lambda x: x.invoice_line_ids_tax_id.id in tax_in_zero)
+            for tax in zero_taxes:
+                if tax.tax_id.account_id:
+                    lines_no_taxes = invoice.invoice_line_ids.filtered(
+                        lambda x: tax.tax_id in x.invoice_line_tax_ids)
+                else:
+                    lines_no_taxes = invoice.invoice_line_ids.filtered(
+                        lambda x: x.account_id == tax.account_id and
+                        tax.tax_id in x.invoice_line_tax_ids)
 
-        tax_remove = map(lambda x: (3, x, _), tax_in_zero)
-        lines_no_taxes.write({'invoice_line_ids_tax_id': tax_remove})
-
-        invoice.button_reset_taxes()
+            tax_remove = [(3, x.tax_id.id, False) for x in zero_taxes]
+            lines_no_taxes.write({'invoice_line_tax_ids': tax_remove})
+        return True
 
     @api.multi
     def action_aut_cae(self):
-
-        for inv in self:
-            if not inv.aut_cae:
-                return True
-
-            self._sanitize_taxes(self)
-            ws = self.new_ws()
-            new_cr = self.pool.cursor()
-            uid = self.env.user.id
-            ctx = self.env.context
-            try:
-                invoices_approved = ws.send_invoice(inv)
-
-                for invoice_id, invoice_vals in invoices_approved.items():
-                    inv_obj = self.env['account.invoice'].browse(invoice_id)
-                    inv_obj.write(invoice_vals)
-                # Commit the info that was written to the invoice and
-                # given by AFIP to prevent desynchronizations
-                self.env.cr.commit()
-            except UserError as e:
-                raise
-            except Exception as e:
-                err = _('WSFE Validation Error\n' +
-                        'Error received was: \n %s') % repr(e)
-                raise UserError(err)
-            finally:
-                # Creamos el wsfe.request con otro cursor,
-                # porque puede pasar que
-                # tengamos una excepcion e igualmente,
-                # tenemos que escribir la request
-                # Sino al hacer el rollback se pierde hasta el wsfe.request
-                self.env.cr.rollback()
-                with api.Environment.manage():
-                    new_env = api.Environment(new_cr, uid, ctx)
-                    ws.log_request(new_env)
-                    new_cr.commit()
-                    new_cr.close()
+        self.ensure_one()
+        self._validate_electronic_invoices()
         return True
+
+    @api.multi
+    def _validate_electronic_invoices(self, first_number=False):
+        if not all(self.mapped('aut_cae')):
+            return True
+
+        self._sanitize_taxes()
+        ws = self.new_ws()
+        new_cr = self.pool.cursor()
+        uid = self.env.user.id
+        ctx = self.env.context
+        inv_model = self.env['account.invoice']
+        try:
+            invoices_approved = ws.send_invoices(
+                self, first_number=first_number)
+
+            for invoice_id, invoice_vals in invoices_approved.items():
+                invoice = inv_model.browse(invoice_id)
+                invoice.write({**invoice_vals, **{'state': 'open'}})
+            # Commit the info given by AFIP that was written to the invoice
+            # to prevent desynchronizations
+            self.env.cr.commit()
+        except Exception as e:
+            # Simply reraise if the exception is already controlled
+            if isinstance(e, except_orm):
+                raise
+            err = _('WSFE Validation Error\n' +
+                    'Error received was: \n %s') % repr(e)
+            raise UserError(err)
+        finally:
+            # Creamos el wsfe.request con otro cursor,
+            # porque puede pasar que
+            # tengamos una excepcion e igualmente,
+            # tenemos que escribir la request
+            # Sino al hacer el rollback se pierde hasta el wsfe.request
+            self.env.cr.rollback()
+            with api.Environment.manage():
+                new_env = api.Environment(new_cr, uid, ctx)
+                logs = ws.log_request(new_env)
+                new_cr.commit()
+                new_cr.close()
+        return logs
 
     @api.multi
     def wsfe_relate_invoice(self, pos, number, date_invoice,
@@ -473,6 +431,7 @@ class AccountInvoice(models.Model):
                 'date_invoice': date_invoice,
                 'cae': cae,
                 'cae_due_date': cae_due_date,
+                'state': 'open',
             }
 
             # Escribimos los campos necesarios de la factura
@@ -487,11 +446,6 @@ class AccountInvoice(models.Model):
             # Actulizamos el campo reference del move_id
             # correspondiente a la creacion de la factura
             inv._update_reference(ref)
-
-            # Llamamos al workflow para que siga su curso
-            # TODO: Esta bien pensado?
-            inv.action_invoice_open()
-            # self.signal_workflow('invoice_massive_open')
             return
 
 ###############################################################################
