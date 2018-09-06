@@ -111,9 +111,6 @@
                 <field name="number" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
-                <field name="number" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
             </field>
         </record>
 
