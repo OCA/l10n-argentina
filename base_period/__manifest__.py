@@ -27,8 +27,8 @@
     "depends": [
         "base",
         "account",
-        "account_voucher",
-        # "l10n_ar_account_payment_order",
+        "stock",
+        "l10n_ar_account_payment_order",
     ],
     "data": [
         "views/date_period_view.xml",

@@ -3,17 +3,17 @@
     <data>
 
         <!-- Reordenamiento de Menues Account/Customer -->
-        <menuitem action="account.action_invoice_tree1"
-            id="account.menu_action_invoice_tree1"
+        <menuitem id="account.menu_action_invoice_tree1"
+            action="account.action_invoice_tree1"
             sequence="5"
             parent="account.menu_finance_receivables_documents"/>
-        <menuitem action="account.action_invoice_out_refund"
-            id="account.menu_action_invoice_tree3"
+        <menuitem id="account.menu_action_invoice_tree3"
+            action="account.action_invoice_out_refund"
             sequence="6"
             parent="account.menu_finance_receivables_documents"/>
-        <menuitem action="action_customer_debit_note_tree"
+        <menuitem id="menu_customer_debit_note"
+            action="action_customer_debit_note_tree"
             sequence="7"
-            id="menu_customer_debit_note"
             parent="account.menu_finance_receivables_documents"/>
         <menuitem id="menu_taxes_receivables"
             name="Taxes"
@@ -21,17 +21,17 @@
             parent="account.menu_finance_receivables"/>
 
         <!-- Reordenamiento de Menues Account/Supplier -->
-        <menuitem action="account.action_invoice_tree2"
-            id="account.menu_action_invoice_tree2"
+        <menuitem id="account.menu_action_invoice_tree2"
+            action="account.action_invoice_tree2"
             sequence="5"
             parent="account.menu_finance_payables_documents"/>
-        <menuitem action="account.action_invoice_in_refund"
-            id="account.menu_action_invoice_tree4"
+        <menuitem id="account.menu_action_invoice_tree4"
+            action="account.action_invoice_in_refund"
             sequence="6"
             parent="account.menu_finance_payables_documents"/>
-        <menuitem action="action_supplier_debit_note_tree"
+        <menuitem id="menu_supplier_debit_note"
+            action="action_supplier_debit_note_tree"
             sequence="7"
-            id="menu_supplier_debit_note"
             parent="account.menu_finance_payables_documents"/>
         <menuitem id="menu_taxes_payables"
             name="Taxes"
@@ -40,15 +40,20 @@
 
 
         <!--Menues POS-->
-        <menuitem name="Point of Sale AR" id="menu_pos_ar_root" parent="account.account_account_menu"
+        <menuitem id="menu_pos_ar_root"
+            name="Point of Sale AR"
+            parent="account.account_account_menu"
             action="action_pos_ar_view_tree"
             sequence="10"
             icon="terp-partner"
             web_icon="images/pos.png"
             web_icon_hover="images/pos-hover.png"/>
 
-        <menuitem id="menu_invoice_denomination" action="action_pos_ar_denomination_view_tree"
-            name="Denominations" parent="account.account_account_menu" sequence="20"/>
+        <menuitem id="menu_invoice_denomination"
+            action="action_pos_ar_denomination_view_tree"
+            name="Denominations"
+            parent="account.account_account_menu"
+            sequence="20"/>
 
 
         <menuitem id="not_used_native_menues_finance_receivables"

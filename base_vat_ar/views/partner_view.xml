@@ -25,7 +25,7 @@
           </field>
         </record>
 
-        <record model="ir.ui.view" id="view_res_document_type_form">
+        <record id="view_res_document_type_form" model="ir.ui.view">
             <field name="name">res.document.type.form</field>
             <field name="model">res.document.type</field>
             <field name="type">form</field>
@@ -45,7 +45,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_res_document_type_tree">
+        <record id="view_res_document_type_tree" model="ir.ui.view">
             <field name="name">res.document.type.tree</field>
             <field name="model">res.document.type</field>
             <field name="type">tree</field>
@@ -58,15 +58,15 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_res_document_type">
+        <record id="action_res_document_type" model="ir.actions.act_window">
             <field name="name">Document type</field>
             <field name="res_model">res.document.type</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Document types"
-            id="menu_document_type"
+        <menuitem id="menu_document_type"
+            name="Document types"
             action="action_res_document_type"
             parent="account.account_account_menu"/>
 

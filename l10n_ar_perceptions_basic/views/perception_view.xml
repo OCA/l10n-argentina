@@ -116,7 +116,7 @@
   </record>
 
   <!--Window Action para Perceptions -->
-  <record model="ir.actions.act_window" id="action_perception_perception_tree">
+  <record id="action_perception_perception_tree" model="ir.actions.act_window">
     <field name="name">Perception</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">perception.perception</field>

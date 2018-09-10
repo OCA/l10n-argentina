@@ -25,7 +25,7 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="wizard_annull_checks_wizard_action">
+        <record id="wizard_annull_checks_wizard_action" model="ir.actions.act_window">
             <field name="name">Select checks</field>
             <field name="res_model">wizard.annull.checks</field>
             <field name="view_type">form</field>

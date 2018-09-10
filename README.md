@@ -8,7 +8,7 @@ Write me.
 [//]: # (addons)
 
 Available addons                     
-----------------                     
+----------------
 addon | version | summary            
 --- | --- | ---                                                                                                                                       
 [base_period](base_period/) | 11.0.1.0.0 | base_period
@@ -26,6 +26,39 @@ addon | version | summary
 
 [//]: # (end addons)
 
+----
+
+Addons dependencies
+----------------
+```
+l10n-argentina
+    │
+    ├──  base_vat_ar
+    │        │
+    │        ├── l10n_ar_point_of_sale
+    │        │       │
+    │        │       ├── l10n_ar_wsaa
+    │        │       │    │
+    │        │       │    └── l10n_ar_wsfe
+    │        │       │
+    │        │       ├── l10n_ar_perceptions_basic
+    │        │       │
+    │        │       └── l10n_ar_retentions_basic
+    │        │
+    │        └── l10n_ar_wsfe
+    │
+    ├──  l10n_ar_account_payment_order
+    │        │
+    │        ├── l10n_ar_account_check
+    │        │   │
+    │        │   ├── l10n_ar_account_create_check
+    │        │   │
+    │        │   └── l10n_ar_retentions_basic
+    │        │
+    │        └── base_period
+    │
+    └──  l10n_ar_base_country_state
+```
 ----
 
 OCA, or the Odoo Community Association, is a nonprofit organization whose 

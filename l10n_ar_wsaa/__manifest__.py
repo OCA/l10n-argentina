@@ -24,7 +24,8 @@
     "version": "11.0.1.0.0",
     "depends": [
         "base",
-        "account"
+        "account",
+        "l10n_ar_point_of_sale",
     ],
     "author": "Proyecto Aconcagua",
     "website": "http://proyectoaconcagua.com.ar",

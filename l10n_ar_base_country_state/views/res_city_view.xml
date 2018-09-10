@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-
         <record id="view_res_city_tree" model="ir.ui.view">
             <field name="name">res.city.tree</field>
             <field name="model">res.city</field>
@@ -34,7 +33,7 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="act_res_city_view">
+        <record id="act_res_city_view" model="ir.actions.act_window">
             <field name="name">City</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.city</field>
@@ -42,13 +41,10 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem 
-            id="menu_res_city"
+        <menuitem id="menu_res_city"
             parent="sale.menu_sale_config"
             sequence="2"
             action="act_res_city_view"
-            name="Cities"
-            />
-
+            name="Cities"/>
     </data>
 </odoo>

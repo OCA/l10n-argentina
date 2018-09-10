@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 	<data>
-
         <record id="certificate_renewal_wizard" model="ir.ui.view">
             <field name="name">certificate.renewal.wizard</field>
             <field name="model">wsaa.load.config</field>
@@ -67,6 +66,5 @@
             <field name="view_id" ref="key_renewal_wizard"/>
             <field name="target">new</field>
         </record>
-
     </data>
 </odoo>

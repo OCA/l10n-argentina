@@ -36,13 +36,12 @@
             <field name="target">new</field>
         </record>
         
-        <menuitem
+        <menuitem id="menu_wizard_create_check"
             action="action_wizard_create_check"
-            id="menu_wizard_create_check"
             sequence="20"
             name="Create Checkbook"
-            parent="l10n_ar_account_check.menu_treasury_configuration" groups="account.group_account_user"
-        />
+            parent="l10n_ar_account_check.menu_treasury_configuration"
+            groups="account.group_account_user"/>
 
     </data>
 </odoo>

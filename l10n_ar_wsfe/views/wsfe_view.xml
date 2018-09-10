@@ -95,7 +95,7 @@
 		</record>
 
 		<!--Window Action para wsfe_config-->
-		<record model="ir.actions.act_window" id="action_wsfe_config">
+		<record id="action_wsfe_config" model="ir.actions.act_window">
 				<field name="name">WSFE Config</field>
 				<field name="type">ir.actions.act_window</field>
 				<field name="res_model">wsfe.config</field>
@@ -279,7 +279,7 @@
 		</record>
 
 		<!--Window Action para wsfex_config-->
-		<record model="ir.actions.act_window" id="action_wsfex_config">
+		<record id="action_wsfex_config" model="ir.actions.act_window">
 				<field name="name">WSFEX Config</field>
 				<field name="type">ir.actions.act_window</field>
 				<field name="res_model">wsfex.config</field>
@@ -333,7 +333,7 @@
 		</record>
 
 		<!--Window Action para Voucher Types-->
-		<record model="ir.actions.act_window" id="action_wsfe_voucher_type_tree">
+		<record id="action_wsfe_voucher_type_tree" model="ir.actions.act_window">
 			<field name="name">Voucher Types</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">wsfe.voucher_type</field>
@@ -432,7 +432,7 @@
 			</field>
 		</record>
 
-		<record model="ir.actions.act_window" id="action_wsfe_request_tree">
+		<record id="action_wsfe_request_tree" model="ir.actions.act_window">
 			<field name="name">WSFE Request</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">wsfe.request</field>
@@ -440,10 +440,28 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="voucher_type_menu" name="Voucher Types" parent="l10n_ar_wsaa.base_afipws" sequence="30" action="action_wsfe_voucher_type_tree"/>
-		<menuitem id="wsfe_request_menu" name="WSFE Request" parent="l10n_ar_wsaa.base_afipws" sequence="20" action="action_wsfe_request_tree"/>
-		<menuitem id="wsfe_config_menu" name="WSFE Configuration" parent="l10n_ar_wsaa.base_afipws" sequence="10" action="action_wsfe_config"/>
-        <menuitem id="wsfex_config_menu" name="WSFEX Configuration" parent="l10n_ar_wsaa.base_afipws" sequence="15" action="action_wsfex_config"/>
+		<menuitem id="voucher_type_menu"
+            name="Voucher Types"
+            parent="l10n_ar_wsaa.base_afipws"
+            sequence="30"
+            action="action_wsfe_voucher_type_tree"/>
 
+		<menuitem id="wsfe_request_menu"
+            name="WSFE Request"
+            parent="l10n_ar_wsaa.base_afipws"
+            sequence="20"
+            action="action_wsfe_request_tree"/>
+
+		<menuitem id="wsfe_config_menu"
+            name="WSFE Configuration"
+            parent="l10n_ar_wsaa.base_afipws"
+            sequence="10"
+            action="action_wsfe_config"/>
+
+        <menuitem id="wsfex_config_menu"
+            name="WSFEX Configuration"
+            parent="l10n_ar_wsaa.base_afipws"
+            sequence="15"
+            action="action_wsfex_config"/>
 	</data>
 </openerp>

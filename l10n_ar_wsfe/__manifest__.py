@@ -25,8 +25,6 @@
     "depends": [
         "base",
         "account",
-        "base_vat_ar",
-        "l10n_ar_point_of_sale",
         "l10n_ar_wsaa",
     ],
     "author": "E-MIPS",
