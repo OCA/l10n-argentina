@@ -30,7 +30,7 @@ addon | version | summary
 
 Addons dependencies
 ----------------
-
+```
 l10n-argentina
     │
     ├──  base_vat_ar
@@ -58,7 +58,7 @@ l10n-argentina
     │        └── base_period
     │
     └──  l10n_ar_base_country_state
-
+```
 ----
 
 OCA, or the Odoo Community Association, is a nonprofit organization whose 
