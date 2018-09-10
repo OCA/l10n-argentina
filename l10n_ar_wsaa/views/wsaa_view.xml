@@ -3,7 +3,9 @@
     <data>
 
         <!-- Menuitems principales -->
-        <menuitem id="base_afipws" name="AFIP WebServices" parent="account.menu_finance_configuration"/>
+        <menuitem id="base_afipws"
+            name="AFIP WebServices"
+            parent="account.menu_finance_configuration"/>
 
         <!-- Tree View for wsaa_config -->
         <record id="view_wsaa_config_tree" model="ir.ui.view">
@@ -76,7 +78,7 @@
         </record>
 
         <!--Window Action para wsaa_config -->
-		<record model="ir.actions.act_window" id="action_wsaa_config_tree">
+		<record id="action_wsaa_config_tree" model="ir.actions.act_window">
                 <field name="name">WSAA Config</field>
                 <field name="type">ir.actions.act_window</field>
                 <field name="res_model">wsaa.config</field>
@@ -84,7 +86,11 @@
                 <field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="wsaa_config_menu" name="WSAA Configuration" parent="base_afipws" sequence="20" action="action_wsaa_config_tree"/>
+		<menuitem id="wsaa_config_menu"
+            name="WSAA Configuration"
+            parent="base_afipws"
+            sequence="20"
+            action="action_wsaa_config_tree"/>
 
     </data>
 </odoo>

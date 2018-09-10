@@ -8,11 +8,6 @@
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-                <!-- <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="replace" >
-                    <button type='action' string='Refund Invoice' groups="base.group_user"
-                        name="%(account.action_account_invoice_refund)d"
-                        attrs="{'invisible': ['|', ('type', '=', 'out_refund'), ('state', 'not in', ('open', 'paid'))]}"/>
-                </xpath> -->
                 <data>
                     <field name="number" position="attributes">
                         <attribute name="invisible">1</attribute>
@@ -67,15 +62,6 @@
                         </field>
                       </page>
                     </xpath>
-                   <!-- <xpath expr="//field[@name='tax_line_ids']/tree/field[@name='name']" position="after">
-                        <field name="tax_id" domain="[('tax_group','in',['other','vat']), ('type_tax_use','in',['sale','all'])]" />
-                        TODO
-                        <field name="base_code_id" invisible="1"/>
-                        <field name="tax_code_id" invisible="1"/>
-                   </xpath> -->
-                   <!-- <xpath expr="//field[@name='tax_line_ids']/tree/field[@name='base']" position="attributes">
-                        <attribute name="attrs">{'readonly': False}</attribute>
-                   </xpath> -->
                 </data>
             </field>
         </record>
@@ -165,26 +151,9 @@
                         </field>
                       </page>
                     </xpath>
-                    <!-- <xpath expr="//form/sheet/div" position="replace">
-                        <label string="Draft Invoice" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_invoice')]}"/>
-                        <label string="Draft Refund" attrs="{'invisible': ['|',('state','&lt;&gt;','draft'), ('type','&lt;&gt;','in_refund')]}"/>
-                        <label string="Invoice" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_invoice')]}"/>
-                        <label string="Refund" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','&lt;&gt;','in_refund')]}"/>
-                        <h1>
-                            <field name="denomination_id" class="oe_inline" required="1" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
-                            <field name="sequence_number_next" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', 'not in', ('draft', 'proforma', 'proforma2'))]}"/>
-                        </h1>
-                    </xpath> -->
                    <field name="partner_id" position="after">
                        <field name="is_debit_note" invisible="1"/>
                    </field>
-
-                    <!-- <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="replace" >
-                        <button name="%(account.action_account_invoice_refund)d"
-                            type='action' string='Refund' groups="account.group_account_invoice"
-                            attrs="{'invisible':['|', ('type','=','in_refund'), ('is_debit_note','=',True),
-                            ('state', 'not in', ['open', 'paid'])]}"/>
-                    </xpath> -->
                     <field name="fiscal_position_id" position="attributes">
                         <attribute name="required">1</attribute>
                     </field>
@@ -194,13 +163,6 @@
                        <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                        <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                    </field>
-                     <!-- TODO -->
-                   <!-- <xpath expr="//field[@name='tax_line_ids']/tree/field[@name='name']" position="after">
-                        <field name="tax_id" domain="[('tax_group','in',['other','vat']), ('type_tax_use','in',['purchase','all'])]" />
-                        <field name="base_code_id" invisible="1"/>
-                        <field name="tax_code_id" invisible="1"/>
-                   </xpath> -->
-
             </field>
         </record>
 

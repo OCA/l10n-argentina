@@ -138,7 +138,7 @@
   </record>
 
   <!--Window Action para Retentions -->
-  <record model="ir.actions.act_window" id="action_retention_retention_tree">
+  <record id="action_retention_retention_tree" model="ir.actions.act_window">
     <field name="name">Retentions</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">retention.retention</field>

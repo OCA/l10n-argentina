@@ -8,7 +8,7 @@
 
         <!-- Cheques Configuracion -->
 
-        <record model="ir.ui.view" id="view_account_check_config_tree">
+        <record id="view_account_check_config_tree" model="ir.ui.view">
             <field name="name">account.check.config.tree</field>
             <field name="model">account.check.config</field>
             <field name="type">tree</field>
@@ -22,7 +22,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_account_check_config_form">
+        <record id="view_account_check_config_form" model="ir.ui.view">
             <field name="name">account.check.config.form</field>
             <field name="model">account.check.config</field>
             <field name="type">form</field>
@@ -43,23 +43,22 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_check_config">
+        <record id="action_check_config" model="ir.actions.act_window">
             <field name="name">Check Config</field>
             <field name="res_model">account.check.config</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem
+        <menuitem id="menu_treasury_check_config"
             action="action_check_config"
-            id="menu_treasury_check_config"
             name="Check Config"
             parent="menu_treasury_configuration"
         />
 
         <!-- Cheques Emitidos -->
 
-        <record model="ir.ui.view" id="view_account_issued_check_tree">
+        <record id="view_account_issued_check_tree" model="ir.ui.view">
             <field name="name">account.issued.check.tree</field>
             <field name="model">account.issued.check</field>
             <field name="type">tree</field>
@@ -79,7 +78,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_account_issued_check_form">
+        <record id="view_account_issued_check_form" model="ir.ui.view">
             <field name="name">account.issued.check.form</field>
             <field name="model">account.issued.check</field>
             <field name="type">form</field>
@@ -196,7 +195,7 @@
 
     <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
-        <record model="ir.actions.act_window" id="action_issued_check">
+        <record id="action_issued_check" model="ir.actions.act_window">
             <field name="name">Issued Checks</field>
             <field name="res_model">account.issued.check</field>
             <field name="view_type">form</field>
@@ -204,44 +203,41 @@
             <field name="search_view_id" ref="view_account_issued_check_filter"/>
         </record>
 
-        <record model="ir.actions.act_window" id="action_issued_check_calendar_payment_date">
+        <record id="action_issued_check_calendar_payment_date" model="ir.actions.act_window">
             <field name="name">Issued Checks by Payment Date</field>
             <field name="res_model">account.issued.check</field>
             <field name="view_mode">calendar,form</field>
             <field name="view_id" ref="view_account_issued_check_payment_calendar"/>
         </record>
 
-        <record model="ir.actions.act_window" id="action_issued_check_calendar_issued_date">
+        <record id="action_issued_check_calendar_issued_date" model="ir.actions.act_window">
             <field name="name">Issued Checks by Issue Date</field>
             <field name="res_model">account.issued.check</field>
             <field name="view_mode">calendar,form</field>
             <field name="view_id" ref="view_account_issued_check_issued_calendar"/>
         </record>
 
-        <menuitem
+        <menuitem id="menu_treasury_issued_check"
             action="action_issued_check"
-            id="menu_treasury_issued_check"
             name="Issued Checks"
             parent="menu_treasury_issued_check_menu"
         />
 
-        <menuitem
+        <menuitem id="menu_treasury_issued_check_calendar_payment"
             action="action_issued_check_calendar_payment_date"
-            id="menu_treasury_issued_check_calendar_payment"
             name="Calendar By Payment Date"
             parent="menu_treasury_issued_check_menu"
         />
 
-        <menuitem
+        <menuitem id="menu_treasury_issued_check_calendar_issued"
             action="action_issued_check_calendar_issued_date"
-            id="menu_treasury_issued_check_calendar_issued"
             name="Calendar By Issue Date"
             parent="menu_treasury_issued_check_menu"
         />
 
     <!-- Third Checks -->
 
-        <record model="ir.ui.view" id="view_account_third_check_tree">
+        <record id="view_account_third_check_tree" model="ir.ui.view">
             <field name="name">account.third.check.tree</field>
             <field name="model">account.third.check</field>
             <field name="type">tree</field>
@@ -264,7 +260,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_account_third_check_form">
+        <record id="view_account_third_check_form" model="ir.ui.view">
             <field name="name">account.third.check.form</field>
             <field name="model">account.third.check</field>
             <field name="type">form</field>
@@ -425,7 +421,7 @@
 
     <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
-        <record model="ir.actions.act_window" id="action_third_check">
+        <record id="action_third_check" model="ir.actions.act_window">
             <field name="name">Third Checks</field>
             <field name="res_model">account.third.check</field>
             <field name="view_type">form</field>
@@ -434,21 +430,21 @@
             <field name="search_view_id" ref="view_third_checks_search"/>
         </record>
 
-        <record model="ir.actions.act_window" id="action_third_check_calendar_payment_date">
+        <record id="action_third_check_calendar_payment_date" model="ir.actions.act_window">
             <field name="name">Third Checks by Payment Date</field>
             <field name="res_model">account.third.check</field>
             <field name="view_mode">calendar,form</field>
             <field name="view_id" ref="view_account_third_check_payment_calendar"/>
         </record>
 
-        <record model="ir.actions.act_window" id="action_third_check_calendar_issued_date">
+        <record id="action_third_check_calendar_issued_date" model="ir.actions.act_window">
             <field name="name">Third Checks by Issue Date</field>
             <field name="res_model">account.third.check</field>
             <field name="view_mode">calendar,form</field>
             <field name="view_id" ref="view_account_third_check_issued_calendar"/>
         </record>
 
-        <record model="ir.actions.act_window" id="action_third_check_calendar_endorsement_date">
+        <record id="action_third_check_calendar_endorsement_date" model="ir.actions.act_window">
             <field name="name">Third Checks by Endorsement Date</field>
             <field name="res_model">account.third.check</field>
             <field name="view_mode">calendar,form</field>
@@ -458,30 +454,32 @@
 
 
 
-        <menuitem id="menu_treasury_third_check_menu" name="Third Checks" parent="menu_treasury_root" sequence="20"/>
+        <menuitem id="menu_treasury_third_check_menu"
+            name="Third Checks"
+            parent="menu_treasury_root"
+            sequence="20"/>
 
-        <menuitem action="action_third_check" id="menu_treasury_third_check" name="Third Checks" sequence="5" parent="menu_treasury_third_check_menu" />
+        <menuitem id="menu_treasury_third_check"
+            action="action_third_check"
+            name="Third Checks"
+            sequence="5"
+            parent="menu_treasury_third_check_menu"/>
 
 
-        <menuitem action="action_third_check_calendar_payment_date"
-            id="menu_treasury_third_check_calendar_payment"
+        <menuitem id="menu_treasury_third_check_calendar_payment"
+            action="action_third_check_calendar_payment_date"
             name="Calendar By Payment Date"
-            parent="menu_treasury_third_check_menu"
-        />
+            parent="menu_treasury_third_check_menu"/>
 
-        <menuitem
+        <menuitem id="menu_treasury_third_check_calendar_issued"
             action="action_third_check_calendar_issued_date"
-            id="menu_treasury_third_check_calendar_issued"
             name="Calendar By Issue Date"
-            parent="menu_treasury_third_check_menu"
-        />
+            parent="menu_treasury_third_check_menu"/>
 
-        <menuitem
+        <menuitem id="menu_treasury_third_check_calendar_endorsement"
             action="action_third_check_calendar_endorsement_date"
-            id="menu_treasury_third_check_calendar_endorsement"
             name="Calendar By Endorsement Date"
-            parent="menu_treasury_third_check_menu"
-        />
+            parent="menu_treasury_third_check_menu"/>
 
     </data>
 </odoo>

@@ -26,7 +26,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_payment_order_receipt_tree">
+        <record id="view_payment_order_receipt_tree" model="ir.ui.view">
             <field name="name">account.payment.order.receipt.tree</field>
             <field name="model">account.payment.order</field>
             <field name="arch" type="xml">
@@ -44,7 +44,7 @@
         </record>
 
 
-        <record model="ir.ui.view" id="view_payment_order_receipt_form">
+        <record id="view_payment_order_receipt_form" model="ir.ui.view">
             <field name="name">account.payment.order.receipt.form</field>
             <field name="model">account.payment.order</field>
             <field name="arch" type="xml">
@@ -237,7 +237,7 @@
         </record>
 
 
-        <record model="ir.actions.act_window" id="action_payment_order_receipt">
+        <record id="action_payment_order_receipt" model="ir.actions.act_window">
             <field name="name">Customer Payments</field>
             <field name="res_model">account.payment.order</field>
             <field name="view_type">form</field>
@@ -300,7 +300,7 @@
         </record>
 
         <!-- Supplier Payment -->
-        <record model="ir.ui.view" id="view_vendor_payment_order_form">
+        <record id="view_vendor_payment_order_form" model="ir.ui.view">
             <field name="name">account.payment.order.form</field>
             <field name="model">account.payment.order</field>
             <field name="arch" type="xml">

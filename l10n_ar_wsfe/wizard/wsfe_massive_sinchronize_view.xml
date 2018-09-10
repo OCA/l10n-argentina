@@ -34,7 +34,11 @@
              <field name="target">new</field>
        </record>
 
-		<menuitem id="wsfe_massive_sinchronize" name="Massive Sinchronize" parent="l10n_ar_wsaa.base_afipws" sequence="40" action="action_wsfe_massive_sinchronize"/>
+		<menuitem id="wsfe_massive_sinchronize"
+            name="Massive Sinchronize"
+            parent="l10n_ar_wsaa.base_afipws"
+            sequence="40"
+            action="action_wsfe_massive_sinchronize"/>
 
     </data>
 </odoo>

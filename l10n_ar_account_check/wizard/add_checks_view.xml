@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <!--Para los Supplier Payments-->
-        <record model="ir.ui.view" id="add_issued_checks_form_view">
+        <record id="add_issued_checks_form_view" model="ir.ui.view">
             <field name="name">account.add.issued.checks.wizard.form</field>
             <field name="model">account.add.issued.check</field>
             <field name="type">form</field>
@@ -39,7 +39,7 @@
         </record>
         
         <!--Para los Customer Payments-->
-        <record model="ir.ui.view" id="add_third_checks_form_view">
+        <record id="add_third_checks_form_view" model="ir.ui.view">
             <field name="name">account.add.third.checks.wizard.form</field>
             <field name="model">account.add.third.check</field>
             <field name="type">form</field>
