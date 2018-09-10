@@ -22,7 +22,7 @@
 
 {
     "name": "Perceptions for ARGENTINA (Percepciones) - Basic Module",
-    "version": "11.0.1.0.1",
+    "version": "11.0.1.0.0",
     "depends": [
         "l10n_ar_point_of_sale",
     ],
