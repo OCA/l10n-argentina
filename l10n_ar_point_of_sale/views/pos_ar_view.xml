@@ -10,26 +10,29 @@
             <field name="arch" type="xml">
                 <form string="Point of Sale AR">
                     <sheet>
-                        <h1>
-                            <label string="Point of Sale AR"/>
-                        </h1>
+                        <h1>Point of Sale AR</h1>
                         <group>
                             <group>
                                 <field name="name"/>
-                                <!-- <field name="denomination_id" select="1"/> -->
-                                <field name="show_in_reports"/>
+                                <field name="shop_id"/>
+                                <field name="activity_start_date"/>
                             </group>
                             <group>
                                 <field name="priority"/>
-                                <field name="shop_id"/>
+                                <field name="show_in_reports"/>
                             </group>
                         </group>
-                        <group string="Available denominations">
-                            <field name="denomination_ids" string="Denominations"/>
-                        </group>
-                        <group string="Description">
-                            <field name="desc" select="1" nolabel="1"/>
-                        </group>
+                        <notebook>
+                            <page string="Available Denominations" name="denominations">
+                                <field name="denomination_ids" string="Denominations">
+                                </field>
+                            </page>
+                            <page string="Description" name="description">
+                                <group string="Description">
+                                    <field name="desc" select="1" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

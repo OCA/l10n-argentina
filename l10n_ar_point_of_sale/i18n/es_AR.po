@@ -567,3 +567,14 @@ msgstr "Debe configurar un Punto de Venta en el Depósito."
 #, python-format
 msgid "You need to set up a Shop and/or a Fiscal Position"
 msgstr "Debe configurar un Depósito y/o una Posición Fiscal."
+
+#. module: l10n_ar_point_of_sale
+#: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_pos_ar_activity_start_date
+msgid "Activity Start Date"
+msgstr "Comienzo de Actividades"
+
+#. module: l10n_ar_point_of_sale
+#: code:addons/l10n_ar_point_of_sale/models/pos_ar.py:61
+#, python-format:
+msgid "The PoS Name should be a 4 digit number!"
+msgstr "El nombre del Punto de Venta debería ser un número de 4 dígitos!"

@@ -5,7 +5,8 @@
 ###############################################################################
 
 
-from odoo import fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class InvoiceDenomination(models.Model):
@@ -41,16 +42,23 @@ class PosAr(models.Model):
     name = fields.Char(string='Number', required=True, size=6)
     desc = fields.Char(string='Description', required=False, size=100)
     priority = fields.Integer(string='Priority', required=True, size=6)
-    # 'shop_id': fields.many2one('sale.shop', 'Shop', required=True),
     shop_id = fields.Many2one('stock.warehouse',
                               string='Warehouse',
                               required=True)
-    # denomination_id = fields.Many2one('invoice.denomination',
-    #                                   string='Denomination',
-    #                                   required=True)
     denomination_ids = fields.Many2many('invoice.denomination',
                                         'posar_denomination_rel',
                                         'pos_ar_id', 'denomination_id',
                                         string='Denominations')
     show_in_reports = fields.Boolean('Show in reports?', default=True)
+    activity_start_date = fields.Date(string="Activity Start Date",
+                                      required=True)
     active = fields.Boolean('Active', default=True)
+
+    @api.constrains('name')
+    def _check_pos_name(self):
+        for pos in self:
+            if not (pos.name.isdigit() and len(pos.name) <= 4):
+                err = _("The PoS Name should be a 4 digit number!")
+                raise ValidationError(_("Error!\n") + err)
+            if len(pos.name) < 4:
+                pos.name = pos.name.zfill(4)
