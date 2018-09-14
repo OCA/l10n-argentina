@@ -32,35 +32,22 @@ class AccountInvoice(models.Model):
                                   states={'draft': [('readonly', False)]},
                                   help="Unique number of the invoice, computed \
                                   automatically when the invoice is created.")
-    amount_untaxed = fields.Float(string='Subtotal',
-                                  digits=dp.get_precision('Account'),
-                                  store=True, readonly=True,
-                                  compute='_compute_amount',
-                                  track_visibility='always')
-    amount_exempt = fields.Float(string='Amount Exempt',
-                                 digits=dp.get_precision('Account'),
-                                 store=True,
-                                 readonly=True, compute='_compute_amount')
-    amount_no_taxed = fields.Float(string='No Taxed',
+    amount_exempt = fields.Monetary(string='Amount Exempt',
+                                    digits=dp.get_precision('Account'),
+                                    store=True,
+                                    readonly=True, compute='_compute_amount')
+    amount_no_taxed = fields.Monetary(string='No Taxed',
+                                      digits=dp.get_precision('Account'),
+                                      store=True, readonly=True,
+                                      compute='_compute_amount')
+    amount_taxed = fields.Monetary(string='VAT Base',
                                    digits=dp.get_precision('Account'),
                                    store=True, readonly=True,
                                    compute='_compute_amount')
-    amount_taxed = fields.Float(string='Taxed',
-                                digits=dp.get_precision('Account'),
-                                store=True, readonly=True,
-                                compute='_compute_amount')
-    amount_untaxed = fields.Monetary(string='Subtotal',
-                                     digits=dp.get_precision('Account'),
-                                     store=True, readonly=True,
-                                     compute='_compute_amount')
-    amount_tax = fields.Monetary(string='Tax',
-                                 digits=dp.get_precision('Account'),
-                                 store=True, readonly=True,
-                                 compute='_compute_amount')
-    amount_total = fields.Monetary(string='Total',
-                                   digits=dp.get_precision('Account'),
-                                   store=True, readonly=True,
-                                   compute='_compute_amount')
+    amount_other_taxed = fields.Monetary(string='Other Tax Base',
+                                         digits=dp.get_precision('Account'),
+                                         store=True, readonly=True,
+                                         compute='_compute_amount')
     local = fields.Boolean(string='Local', default=True)
     internal_number = fields.Char(string="Internal Number", default=False,
                                   copy=False, readonly=True,
@@ -166,12 +153,8 @@ class AccountInvoice(models.Model):
                  'tax_line_ids.amount_rounding',
                  'currency_id', 'company_id', 'date_invoice', 'type')
     def _compute_amount(self):
+        super()._compute_amount()
         for invoice in self:
-            invoice.amount_untaxed = sum(
-                line.price_subtotal for line in invoice.invoice_line_ids)
-            invoice.amount_tax = sum(
-                line.amount for line in invoice.tax_line_ids)
-            invoice.amount_total = invoice.amount_untaxed + invoice.amount_tax
             invoice.amount_exempt = sum(
                 line.price_subtotal for line in invoice.invoice_line_ids if
                 any(map(lambda x: x.is_exempt, line.invoice_line_tax_ids)))
@@ -182,22 +165,10 @@ class AccountInvoice(models.Model):
                 line.price_subtotal for line in invoice.invoice_line_ids if
                 any(map(lambda x: (x.tax_group == 'vat' and not x.is_exempt),
                         line.invoice_line_tax_ids)))
-
-            amount_total_company_signed = self.amount_total
-            amount_untaxed_signed = self.amount_untaxed
-            if self.currency_id and self.company_id and \
-                    self.currency_id != self.company_id.currency_id:
-                currency_id = self.currency_id.with_context(
-                    date=self.date_invoice)
-                amount_total_company_signed = currency_id.compute(
-                    self.amount_total, self.company_id.currency_id)
-                amount_untaxed_signed = currency_id.compute(
-                    self.amount_untaxed, self.company_id.currency_id)
-            sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
-            self.amount_total_company_signed = amount_total_company_signed * \
-                sign
-            self.amount_total_signed = self.amount_total * sign
-            self.amount_untaxed_signed = amount_untaxed_signed * sign
+            invoice.amount_other_taxed = sum(
+                line.price_subtotal for line in invoice.invoice_line_ids if
+                any(map(lambda x: (x.tax_group != 'vat' and not x.is_exempt),
+                        line.invoice_line_tax_ids)))
 
     # TODO --Averiguar como cancelar una nota de credito pagada
     @api.multi

@@ -34,10 +34,11 @@
                        <field name="is_debit_note" invisible="1"/>
                    </field>
                    <field name="amount_untaxed" position="replace">
-                       <field name="amount_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                       <field name="amount_no_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                       <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                       <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       <field name="amount_taxed"/>
+                       <field name="amount_other_taxed" attrs="{'invisible': [('amount_other_taxed', '=', 0)]}"/>
+                       <field name="amount_no_taxed"/>
+                       <field name="amount_exempt"/>
+                       <field name="amount_untaxed" class="oe_subtotal_footer_separator" string="Subtotal"/>
                    </field>
                    <!-- It is necessary because the invisible attribute set invisible the tax_line_ids of Taxes page-->
                    <xpath expr="//notebook/page[@name='other_info']/field[@name='tax_line_ids']" position="replace"/>
