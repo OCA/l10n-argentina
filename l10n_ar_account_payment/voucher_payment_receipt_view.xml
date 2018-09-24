@@ -153,7 +153,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_low_priority_payment_form_inherit10">
+        <record model="ir.ui.view" id="view_low_priority_receipt_form_inherit10">
             <field name="name">account.voucher.receipt.dialog.inherit10.form</field>
             <field name="model">account.voucher</field>
             <field name="inherit_id" ref="account_voucher.view_vendor_receipt_dialog_form"/>
