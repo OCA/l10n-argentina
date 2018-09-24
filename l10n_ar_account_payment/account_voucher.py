@@ -36,10 +36,7 @@ class account_voucher(models.Model):
         res = super(account_voucher, self)._get_journal() #
         ttype = self.env.context.get('type', 'bank')
 
-        # Pago inmediato, al contado, desde el boton de la factura
-        immediate = self.env.context.get('immediate_payment', False)
-
-        if not immediate and ttype in ('payment', 'receipt'):
+        if ttype in ('payment', 'receipt'):
             rec = self.env['account.journal'].search([('type', '=', ttype)], limit=1 , order= 'priority')
             if not rec:
                 action = self.env.ref('account.action_account_journal_form')
