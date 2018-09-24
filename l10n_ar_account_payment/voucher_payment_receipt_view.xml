@@ -161,6 +161,13 @@
                 <field name="account_id" position="attributes">
                     <attribute name="required">1</attribute>
                 </field>
+                <field name="journal_id" position="after">
+                    <field name="journal_payment_id" widget="selection"
+                        domain="[('type', 'in', ('cash', 'bank'))]" required="1"/>
+                </field>
+                <field name="journal_id" position="attributes">
+                    <attribute name="domain">[('type', '=', type)]</attribute>
+                </field>
             </field>
         </record>
 
