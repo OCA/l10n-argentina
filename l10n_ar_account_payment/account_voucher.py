@@ -52,8 +52,24 @@ class account_voucher(models.Model):
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
     journal_id = fields.Many2one('account.journal', 'Journal', default=_get_journal, required=True, readonly=True, states={'draft':[('readonly',False)]})
     account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
+    journal_payment_id = fields.Many2one('account.journal', 'Journal')
+
+    @api.onchange('journal_payment_id')
+    def change_journal_payment(self):
+
+        journal = self.journal_payment_id
+
+        if not journal:
+            self.account_id = False
+        elif self.type == 'payment':
+            self.account_id = journal.default_credit_account_id.id
+        else:
+            self.account_id = journal.default_debit_account_id.id
+
     @api.multi
     def _get_payment_lines_amount(self):
+        if self._context.get('immediate_payment') is True:
+            return self.amount
         amount = 0.0
         for payment_line in self.payment_line_ids:
             amount += float(payment_line.amount)
@@ -210,10 +226,11 @@ class account_voucher(models.Model):
             move_lines.append(move_line)
 
         # Si es pago contado
-        if self.journal_id.type not in ('receipt', 'payment'):
-            move_line = self._create_move_line_payment(move_id, _('Immediate'),
-                            self.journal_id, self.amount,
-                            company_currency, current_currency, sign)
+        if self.journal_payment_id:
+            move_line = self._create_move_line_payment(
+                move_id, _('Immediate'),
+                self.journal_payment_id, self.amount,
+                company_currency, current_currency, sign)
 
             move_lines.append(move_line)
 
