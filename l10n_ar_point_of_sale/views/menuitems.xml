@@ -7,7 +7,7 @@
             action="account.action_invoice_tree1"
             sequence="5"
             parent="account.menu_finance_receivables_documents"/>
-        <menuitem id="account.menu_action_invoice_tree3"
+        <menuitem id="menu_action_invoice_tree3"
             action="account.action_invoice_out_refund"
             sequence="6"
             parent="account.menu_finance_receivables_documents"/>
@@ -25,7 +25,7 @@
             action="account.action_invoice_tree2"
             sequence="5"
             parent="account.menu_finance_payables_documents"/>
-        <menuitem id="account.menu_action_invoice_tree4"
+        <menuitem id="menu_action_invoice_tree4"
             action="account.action_invoice_in_refund"
             sequence="6"
             parent="account.menu_finance_payables_documents"/>

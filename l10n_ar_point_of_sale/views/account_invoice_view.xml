@@ -241,5 +241,13 @@
             <field name="view_id" ref="view_pos_invoice_supplier_form"/>
         </record>
 
+        <record id="account.action_invoice_out_refund" model="ir.actions.act_window">
+            <field name="name">Customer Credit Notes</field>
+        </record>
+
+        <record id="account.action_invoice_in_refund" model="ir.actions.act_window">
+            <field name="name">Vendor Credit Notes</field>
+        </record>
+
     </data>
 </odoo>
