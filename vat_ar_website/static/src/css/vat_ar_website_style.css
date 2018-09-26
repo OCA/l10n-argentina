@@ -1,0 +1,18 @@
+.div_vat {
+    margin-top: 10px;
+}
+
+h4.text-danger {
+    color: #a94442;
+    padding: 20px 10px;
+    border: 1px solid;
+    background-color: #FF8575;
+    border-radius: 10px;
+}
+
+/*h4.text-danger {
+    padding: 15px 10px;
+    background-color: #FF8575;
+    border-radius: 10px;
+    margin-top: -28px;
+}*/

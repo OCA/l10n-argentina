@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
+        <xpath expr="." position="inside">
+            <link rel='stylesheet' href='/vat_ar_website/static/src/css/vat_ar_website_style.css'/>
+        </xpath>
+    </template>
+
+    <template id="vat_ar_address" inherit_id="website_sale.address" name="Address VAT AR Management">
+        <xpath expr="//form/t[2]" position="replace">
+            <t t-if="mode == ('new', 'billing')">
+                <div t-attf-class="form-group #{error.get('company_name') and 'has-error' or ''} col-md-12">
+                    <label class="control-label font-weight-normal label-optional" for="company_name">Company Name</label>
+                    <input type="text" name="company_name" class="form-control" t-att-value="'company_name' in checkout and checkout['company_name']"/>
+                </div>
+            </t>
+            <div class="clearfix"/>
+            <div t-attf-class="form-group #{error.get('document_type_id') and 'has-error' or ''} col-md-6 div_country">
+                <label class="control-label" for="document_type_id">Tipo de Documento</label>
+                <select id="document_type_id" name="document_type_id" class="form-control">
+                    <option value="">Tipo de Documento...</option>
+                    <t t-foreach="documents" t-as="doc">
+                        <option t-att-value="doc.id" t-att-selected="doc.id == (document and document.id or -1)">
+                            <t t-esc="doc.name"/>
+                        </option>
+                    </t>
+                </select>
+            </div>
+            <div t-attf-class="form-group #{error.get('vat') and 'has-error' or ''} col-md-6 div_vat">
+                <label class="control-label font-weight-normal label-optional" for="vat">TIN / VAT </label>
+                <input type="text" name="vat" class="form-control" t-att-value="'vat' in checkout and checkout['vat']"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>
+
