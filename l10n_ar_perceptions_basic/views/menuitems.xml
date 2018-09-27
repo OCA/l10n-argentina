@@ -4,7 +4,7 @@
 
       <menuitem id="perception_perception_menu"
           name="Perceptions"
-          parent="account.account_account_menu"
+          parent="l10n_ar_point_of_sale.menu_tax_subroot"
           sequence="20"
           action="action_perception_perception_tree"/>
 

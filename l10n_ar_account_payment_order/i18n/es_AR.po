@@ -232,8 +232,8 @@ msgstr "Enter the customer and the payment method and then, either\n"
 #. module: l10n_ar_account_payment_order
 #: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:478
 #, python-format
-msgid "Error ! Cannot validate a voucher with negative amount. Please check that Writeoff Amount is not negative."
-msgstr "Error ! No se puede validar un pago con monto negativo. Por favor, compruebe que el importe de la diferencia no sea negativo."
+msgid "Error!\n Cannot validate a voucher with negative amount.\n Please check that Writeoff Amount is not negative."
+msgstr "Error!\n No se puede validar un pago con monto negativo.\n Por favor, compruebe que el importe de la diferencia no sea negativo."
 
 #. module: l10n_ar_account_payment_order
 #: code:addons/l10n_ar_account_payment_order/models/account_payment_order.py:528

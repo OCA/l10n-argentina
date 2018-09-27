@@ -56,11 +56,8 @@ class AccountPaymentOrder(models.Model):
             res = rec[0] or False
         return res.id
 
-    @api.depends('debt_line_ids', 'income_line_ids')
+    @api.depends('debt_line_ids', 'income_line_ids', 'amount')
     def _get_writeoff_amount(self):
-        if not self:
-            self.writeoff_amount = 0.0
-            return False
         for payment in self:
             debit = credit = 0.0
             sign = payment.type == 'payment' and -1 or 1
@@ -264,12 +261,9 @@ class AccountPaymentOrder(models.Model):
         return account_id
 
     def _get_payment_lines_amount(self):
-        amount = 0.0
-        for payment_line in self.payment_mode_line_ids:
-            amount += float(payment_line.amount)
-        return amount
+        return sum(self.payment_mode_line_ids.mapped('amount'))
 
-    @api.onchange('payment_mode_line_ids')
+    @api.onchange('payment_mode_line_ids.amount')
     def onchange_payment_line(self):
         amount = self._get_payment_lines_amount()
         self.amount = amount
@@ -281,6 +275,14 @@ class AccountPaymentOrder(models.Model):
     @api.onchange('income_line_ids')
     def onchange_income_lines(self):
         self.recompute_payment_lines('income_line_ids')
+
+    @api.multi
+    def unlink(self):
+        if self.state not in ['draft', 'cancel']:
+            raise ValidationError(
+                _("Error!\nYou can't unlink a posted payment order.\n" +
+                  "First you should unreconcile It."))
+        super(AccountPaymentOrder, self).unlink()
 
     @api.multi
     def recompute_payment_lines(self, onchange_attr):
@@ -406,7 +408,8 @@ class AccountPaymentOrder(models.Model):
                 continue
 
             amount_original = line.debit or line.credit or 0.0
-            amount_unreconciled = line.amount_residual or 0.0
+            sign = self.type == 'payment' and -1 or 1
+            amount_unreconciled = sign * line.amount_residual or 0.0
 
             # line_currency_id = line.currency_id or company_currency
             rs.update({
@@ -476,8 +479,8 @@ class AccountPaymentOrder(models.Model):
         # Chequeamos si la writeoff_amount no es negativa
         if round(self.writeoff_amount, 2) < 0.0:
             raise ValidationError(
-                _('Error ! Cannot validate a ' +
-                    'voucher with negative amount. Please check ' +
+                _('Error!\n Cannot validate a ' +
+                    'voucher with negative amount.\n Please check ' +
                     'that Writeoff Amount is not negative.'))
 
         self._clean_payment_lines()
@@ -751,32 +754,32 @@ class AccountPaymentOrder(models.Model):
             account_currency_id = company_currency != current_currency and \
                 current_currency or False
         move_line = {
-            'journal_id': line.voucher_id.journal_id.id,
-            # 'period_id': line.voucher_id.period_id.id,
+            'journal_id': line.payment_order_id.journal_id.id,
+            # 'period_id': line.payment_order_id.period_id.id,
             'name': _('change')+': '+(line.name or '/'),
             'account_id': line.account_id.id,
             'move_id': move_id,
-            'partner_id': line.voucher_id.partner_id.id,
+            'partner_id': line.payment_order_id.partner_id.id,
             'currency_id': account_currency_id.id,
             'amount_currency': 0.0,
             'quantity': 1,
             'credit': amount_residual > 0 and amount_residual or 0.0,
             'debit': amount_residual < 0 and -amount_residual or 0.0,
-            'date': line.voucher_id.date,
+            'date': line.payment_order_id.date,
         }
         move_line_counterpart = {
-            'journal_id': line.voucher_id.journal_id.id,
-            # 'period_id': line.voucher_id.period_id.id,
+            'journal_id': line.payment_order_id.journal_id.id,
+            # 'period_id': line.payment_order_id.period_id.id,
             'name': _('change')+': '+(line.name or '/'),
             'account_id': account_id.id,
             'move_id': move_id,
             'amount_currency': 0.0,
-            'partner_id': line.voucher_id.partner_id.id,
+            'partner_id': line.payment_order_id.partner_id.id,
             'currency_id': account_currency_id.id,
             'quantity': 1,
             'debit': amount_residual > 0 and amount_residual or 0.0,
             'credit': amount_residual < 0 and -amount_residual or 0.0,
-            'date': line.voucher_id.date,
+            'date': line.payment_order_id.date,
         }
         return (move_line, move_line_counterpart)
 
@@ -820,7 +823,8 @@ class AccountPaymentOrder(models.Model):
                 'account_id': line.account_id.id,
                 'move_id': move_id,
                 'partner_id': self.partner_id.id,
-                'currency_id': self.currency_id.id,
+                'currency_id': self.currency_id != company_currency and
+                self.currency_id.id or False,
                 'analytic_account_id': move_line_analytic_account_id,
                 'quantity': 1,
                 'credit': 0.0,
@@ -869,7 +873,7 @@ class AccountPaymentOrder(models.Model):
 
             move_line['amount_currency'] = amount_currency
             payment_line = move_line_obj.create(move_line)
-            rec_ids = [payment_line, line.move_line_id]
+            new_amls = payment_line + line.move_line_id
 
             if not self.company_id.currency_id.is_zero(
                     currency_rate_difference):
@@ -877,9 +881,9 @@ class AccountPaymentOrder(models.Model):
                 exch_lines = self._get_exchange_lines(
                     line, move_id, currency_rate_difference,
                     company_currency, current_currency)
-                new_id = move_line_obj.create(exch_lines[0])
+                new_aml = move_line_obj.create(exch_lines[0])
                 move_line_obj.create(exch_lines[1])
-                rec_ids.append(new_id)
+                new_amls += new_aml
 
             if line.move_line_id and line.move_line_id.currency_id and \
                     not line.move_line_id.currency_id.is_zero(
@@ -900,10 +904,10 @@ class AccountPaymentOrder(models.Model):
                     'debit': 0.0,
                     'date': line.payment_order_id.date,
                 }
-                new_id = move_line_obj.create(move_line_foreign_currency)
-                rec_ids.append(new_id)
+                new_aml = move_line_obj.create(move_line_foreign_currency)
+                new_amls += new_aml
             if line.move_line_id.id:
-                rec_lst_ids.append(rec_ids)
+                rec_lst_ids.append(new_amls)
         return (tot_line, rec_lst_ids)
 
     def writeoff_move_line_get(self, line_total, move_id, name,
@@ -1016,12 +1020,11 @@ class AccountPaymentOrder(models.Model):
 
             move_recordset.post()
             # We automatically reconcile the account move lines.
-            for rec_ids in rec_list_ids:
-                if len(rec_ids) >= 2:
-                    for rec_id in rec_ids:
-                        rec_id.reconcile(
-                            writeoff_acc_id=payment.writeoff_acc_id.id,
-                            writeoff_journal_id=payment.journal_id.id)
+            for move_lines in rec_list_ids:
+                if len(move_lines) >= 2:
+                    move_lines.reconcile(
+                        writeoff_acc_id=payment.writeoff_acc_id.id,
+                        writeoff_journal_id=payment.journal_id.id)
 
             # Borramos las lineas que estan en 0
             for line in payment.line_ids:
@@ -1072,9 +1075,9 @@ class AccountPaymentOrderLine(models.Model):
             # payment_currency = line.payment_order_id.currency_id or \
             #     company_currency
             move_line = line.move_line_id
-
             line.amount_original = move_line.debit or move_line.credit or 0.0
-            line.amount_unreconciled = move_line.amount_residual or 0.0
+            sign = self.payment_order_id.type == 'payment' and -1 or 1
+            line.amount_unreconciled = sign * move_line.amount_residual or 0.0
 
     def _currency_id(self):
         '''
@@ -1146,8 +1149,20 @@ class AccountPaymentOrderLine(models.Model):
                              related='payment_order_id.state',
                              readonly=True)
 
+    def _check_amount_over_original(self):
+        if not (0 <= self.amount <= self.amount_unreconciled):
+            raise ValidationError(
+                _("Error!\nThe amount assigned to an invoice must not excede" +
+                  " the unreconciled amount, nor be negative."))
+
+    @api.constrains('amount')
+    def _check_amount(self):
+        for order_line in self:
+            order_line._check_amount_over_original()
+
     @api.onchange('amount')
     def onchange_amount(self):
+        self._check_amount_over_original()
         if self.amount:
             round_amount = round(self.amount, 2)
             round_unreconciled = round(self.amount_unreconciled, 2)
