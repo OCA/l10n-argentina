@@ -415,7 +415,6 @@ class AccountInvoice(models.Model):
             inv.write(invoice_vals)
         return True
 
-    # DONE
     @api.multi
     @api.returns('self')
     def refund(self, date_invoice=None, date=None,
@@ -426,12 +425,12 @@ class AccountInvoice(models.Model):
             refund(date_invoice, date, description, journal_id)
 
         # Busco los puntos de venta de las invoices anteriores
-        for obj in self:
-            rec_dic = {
-                'pos_ar_id': obj.pos_ar_id.id,
-                'denomination_id': obj.denomination_id.id
+        for inv in inv_ids:
+            vals = {
+                'pos_ar_id': self.pos_ar_id.id,
+                'denomination_id': self.denomination_id.id
             }
-            self.write(rec_dic)
+            inv.write(vals)
 
         return inv_ids
 
