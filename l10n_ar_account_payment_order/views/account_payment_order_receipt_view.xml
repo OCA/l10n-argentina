@@ -101,7 +101,8 @@
                                 <!-- <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey"/> -->
                                 <field name="paid_amount_in_company_currency" colspan="4" invisible="1"/>
                             </group>
-                            <group>
+                            <group col="2">
+                                <separator string="Payment Options" colspan="2"/>
                                 <field name="writeoff_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="payment_option"
                                     required="1"
@@ -134,7 +135,7 @@
                                 <field name="invoice_ids" widget="many2many_tags" invisible="1"/>
                                 <label for="income_line_ids" invisible="context.get('line_type', False)" string="Invoices and outstanding transactions"/>
                                 <field name="income_line_ids" context="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
-                                    <tree string="Invoices and outstanding transactions" editable="bottom" decoration-muted="amount == 0">
+                                    <tree string="Invoices and outstanding transactions" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
                                         <field name="state" invisible="1"/>
                                         <field name="invoice_id"
                                             domain="[('state', '=', 'open'),
@@ -161,11 +162,12 @@
                                              sum="Total Unreconciled" force_save="True"/>
                                         <field name="amount" sum="Total Allocation" string="Allocation"
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <field string="Full" name="reconcile"/>
                                     </tree>
                                 </field>
                                 <label for="debt_line_ids" string="Credits"/>
                                 <field name="debt_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}" context="{'journal_id':journal_id, 'partner_id':partner_id}">
-                                    <tree string="Credits" editable="bottom" decoration-muted="amount == 0">
+                                    <tree string="Credits" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
                                         <field name="state" invisible="1"/>
                                         <field name="invoice_id"
                                             domain="[('state', '=', 'open'),
@@ -192,6 +194,7 @@
                                         <field name="reconcile" readonly="1" force_save="True" invisible="1"/>
                                         <field name="amount" sum="Total Allocation" string="Allocation"
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <field string="Full" name="reconcile"/>
                                     </tree>
                                 </field>
                                 <group col="3">
@@ -349,15 +352,18 @@
                         </group>
                         <group col="2">
                             <separator string="Payment Options" colspan="2"/>
-                            <field name="writeoff_amount" widget='monetary' options='{"currency_field": "currency_id"}'/>
-                            <field name="payment_option" required="1"/>
+                            <field name="writeoff_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="payment_option"
+                                required="1"
+                                attrs="{'invisible':[('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
                             <field name="writeoff_acc_id"
-                                   attrs="{'invisible':[('payment_option','!=','with_writeoff')], 'required':[('payment_option','=','with_writeoff')]}"
+                                   attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft'))]}"
                                    domain="[('type','=','other')]"/>
                             <field name="comment"
-                                   attrs="{'invisible':[('payment_option','!=','with_writeoff')]}"/>
+                                   attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
                             <field name="analytic_id"
-                                   groups="analytic.group_analytic_accounting"/>
+                                   groups="analytic.group_analytic_accounting"
+                                   attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
                         </group>
                     </group>
                     <notebook>
@@ -378,7 +384,7 @@
                             <label for="debt_line_ids" string="Supplier Invoices and Outstanding transactions"/>
                             <field name="debt_line_ids" context="{'journal_id':journal_id,
                                 'type':type, 'partner_id':partner_id, 'account_id':account_id}">
-                                <tree string="Supplier Invoices and Outstanding transactions" editable="bottom" colors="gray:amount==0">
+                                <tree string="Supplier Invoices and Outstanding transactions" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
                                     <field name="state" invisible="1"/>
                                     <field name="invoice_id"
                                         domain="[('state', '=', 'open'),
@@ -405,11 +411,12 @@
                                     <field name="reconcile" groups="account.group_account_user" invisible="1"/>
                                     <field name="amount" sum="Total Allocation"
                                         widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field string="Full" name="reconcile"/>
                                 </tree>
                             </field>
                             <label for="income_line_ids" string="Credits"/>
                             <field name="income_line_ids" context="{'journal_id':journal_id, 'partner_id':partner_id}">
-                                <tree string="Credits" editable="bottom" colors="gray:amount==0">
+                                <tree string="Credits" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
                                     <field name="state" invisible="1"/>
                                     <field name="invoice_id"
                                         attr="{'readonly': [('move_line_id', '!=', False)]}"
@@ -436,6 +443,7 @@
                                     <field name="reconcile" groups="account.group_account_user" invisible="1"/>
                                     <field name="amount" sum="Total Allocation"
                                         widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field string="Full" name="reconcile"/>
                                 </tree>
                             </field>
                             <group>
@@ -519,4 +527,3 @@
             sequence="10"/>
     </data>
 </odoo>
-

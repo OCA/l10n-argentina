@@ -263,7 +263,7 @@ class AccountPaymentOrder(models.Model):
     def _get_payment_lines_amount(self):
         return sum(self.payment_mode_line_ids.mapped('amount'))
 
-    @api.onchange('payment_mode_line_ids.amount')
+    @api.onchange('payment_mode_line_ids')
     def onchange_payment_line(self):
         amount = self._get_payment_lines_amount()
         self.amount = amount
@@ -408,7 +408,7 @@ class AccountPaymentOrder(models.Model):
                 continue
 
             amount_original = line.debit or line.credit or 0.0
-            sign = self.type == 'payment' and -1 or 1
+            sign = rs['type'] == 'debt' and -1 or 1
             amount_unreconciled = sign * line.amount_residual or 0.0
 
             # line_currency_id = line.currency_id or company_currency
@@ -803,14 +803,15 @@ class AccountPaymentOrder(models.Model):
                             line.move_line_id.debit, 0.0,
                             precision_digits=prec)):
                 continue
-            amount = self._convert_amount(line.untax_amount or line.amount)
+            sign = line.type == 'debt' and -1 or 1
+            amount = sign * self._convert_amount(
+                line.untax_amount or line.amount)
             if line.amount == line.amount_unreconciled:
                 if not line.move_line_id:
                     raise UserError(_("Wrong voucher line\n\
                         The invoice you are willing to \
                         pay is not valid anymore."))
-                sign = line.type == 'debt' and -1 or 1
-                currency_rate_difference = sign * (
+                currency_rate_difference = (
                     line.move_line_id.amount_residual - amount)
             else:
                 currency_rate_difference = 0.0
@@ -833,10 +834,6 @@ class AccountPaymentOrder(models.Model):
             }
             if amount < 0:
                 amount = -amount
-                if line.type == 'debt':
-                    line.type = 'income'
-                else:
-                    line.type = 'debt'
 
             if (line.type == 'debt'):
                 tot_line += amount
@@ -1076,7 +1073,7 @@ class AccountPaymentOrderLine(models.Model):
             #     company_currency
             move_line = line.move_line_id
             line.amount_original = move_line.debit or move_line.credit or 0.0
-            sign = self.payment_order_id.type == 'payment' and -1 or 1
+            sign = line.type == 'debt' and -1 or 1
             line.amount_unreconciled = sign * move_line.amount_residual or 0.0
 
     def _currency_id(self):
@@ -1149,8 +1146,17 @@ class AccountPaymentOrderLine(models.Model):
                              related='payment_order_id.state',
                              readonly=True)
 
+    @api.onchange('reconcile')
+    def amount_full_conciliation(self):
+        for line in self:
+            if line.amount_unreconciled == line.amount:
+                line.amount = 0
+            else:
+                line.amount = line.amount_unreconciled
+
     def _check_amount_over_original(self):
         if not (0 <= self.amount <= self.amount_unreconciled):
+            print(self.amount, self.amount_unreconciled)
             raise ValidationError(
                 _("Error!\nThe amount assigned to an invoice must not excede" +
                   " the unreconciled amount, nor be negative."))
