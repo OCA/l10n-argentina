@@ -137,9 +137,18 @@ class WsfeConfig(models.Model):
     @api.model
     def check_errors(self, res, raise_exception=True):
         msg = ''
-        if 'errors' in res:
-            errors = [error.msg for error in res['errors']]
-            err_codes = [str(error.code) for error in res['errors']]
+        if 'errors' in res or 'Errors' in res:
+            res_err = res['errors'] if 'errors' in res else res['Errors']
+            if isinstance(res_err, list):
+                err_array = res_err
+                err_var_name = 'msg'
+                err_var_code = 'code'
+            elif 'Err' in res_err and isinstance(res_err.Err, list):
+                err_array = res_err.Err
+                err_var_name = 'Msg'
+                err_var_code = 'Code'
+            errors = [getattr(error, err_var_name) for error in err_array]
+            err_codes = [str(getattr(error, err_var_code)) for error in err_array]
             msg = ' '.join(errors)
             msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
 
