@@ -215,14 +215,16 @@ class account_issued_check(models.Model):
             check.write({'clearance_move_id': move_id.id})
 
             # Creamos la línea contable que iguala el pago del cheque
-            check_move_line_vals = {    'journal_id': def_check_journal.id,
-                                        'period_id': current_period.id,
-                                        'date': current_date,
-                                        'name': name_ref,
-                                        'account_id': def_check_account.id,
-                                        'debit': check.amount,
-                                        'move_id': move_id.id,
-                                   }
+            check_move_line_vals = {
+                'journal_id': def_check_journal.id,
+                'period_id': current_period.id,
+                'date': current_date,
+                'name': name_ref,
+                'account_id': def_check_account.id,
+                'debit': check.amount,
+                'move_id': move_id.id,
+                'partner_id': check.receiving_partner_id.id,
+           }
 
             clearance_move_line = move_line_obj.create(check_move_line_vals)
 
