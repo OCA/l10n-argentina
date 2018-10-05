@@ -80,6 +80,7 @@
                             </group>
                             <group>
                                 <field name="date" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                <field name="period_id"/>
                                 <field name="reference" string="Payment Ref" placeholder="e.g. 003/10" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="name" colspan="2" placeholder="e.g. Invoice SAJ/0042" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="company_id" widget="selection" groups="base.group_multi_company" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
@@ -132,16 +133,29 @@
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                     </tree>
                                 </field>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="gather_income_lines"
+                                        attrs="{'invisible': [('state', 'in', ['cancel', 'posted'])]}"
+                                        type="object" class="oe_stat_button" icon="fa-refresh slow-spin">
+                                        Gather Lines
+                                    </button>
+                                </div>
                                 <field name="invoice_ids" widget="many2many_tags" invisible="1"/>
                                 <label for="income_line_ids" invisible="context.get('line_type', False)" string="Invoices and outstanding transactions"/>
                                 <field name="income_line_ids" context="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
                                     <tree string="Invoices and outstanding transactions" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
+                                        <field name="move_invoice_id" invisible="1"/>
                                         <field name="state" invisible="1"/>
-                                        <field name="invoice_id"
+                                        <field name="invoice_id" force_save="true"
                                             domain="[('state', '=', 'open'),
                                             ('commercial_partner_id', '=', parent.partner_id),
                                             ('id', 'not in', parent.invoice_ids),
                                             ('type', '=', 'out_invoice')]"
+                                            attrs="{
+                                            'required': ['|',
+                                                ('move_line_id', '=', False),
+                                                ('move_invoice_id', '!=', False)],
+                                            'readonly': [('move_line_id', '!=', False)]}"
                                             options="{'no_quick_create': True, 'no_create_edit': True}"/>
                                         <field name="ref" readonly="1" force_save="True"/>
                                         <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
@@ -165,15 +179,28 @@
                                         <field string="Full" name="reconcile"/>
                                     </tree>
                                 </field>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="gather_debt_lines"
+                                        attrs="{'invisible': [('state', 'in', ['cancel', 'posted'])]}"
+                                        type="object" class="oe_stat_button" icon="fa-refresh slow-spin">
+                                        Gather Lines
+                                    </button>
+                                </div>
                                 <label for="debt_line_ids" string="Credits"/>
                                 <field name="debt_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}" context="{'journal_id':journal_id, 'partner_id':partner_id}">
                                     <tree string="Credits" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
+                                        <field name="move_invoice_id" invisible="1"/>
                                         <field name="state" invisible="1"/>
-                                        <field name="invoice_id"
+                                        <field name="invoice_id" force_save="true"
                                             domain="[('state', '=', 'open'),
                                             ('commercial_partner_id', '=', parent.partner_id),
                                             ('id', 'not in', parent.invoice_ids),
                                             ('type', '=', 'out_refund')]"
+                                            attrs="{
+                                            'required': ['|',
+                                                ('move_line_id', '=', False),
+                                                ('move_invoice_id', '!=', False)],
+                                            'readonly': [('move_line_id', '!=', False)]}"
                                             options="{'no_quick_create': True, 'no_create_edit': True}"/>
                                         <field name="ref" attrs="{'readonly': True}" force_save="True"/>
                                         <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
@@ -335,6 +362,7 @@
                         </group>
                         <group>
                             <field name="date" invisible="context.get('line_type', False)"/>
+                            <field name="period_id"/>
                             <field name="reference" invisible="context.get('line_type', False)" string="Payment Ref" placeholder="e.g. 003/10"/>
                             <field name="name" colspan="2" invisible="context.get('line_type', False)" placeholder="e.g. Invoice SAJ/0042"/>
                             <field name="company_id" widget="selection" groups="base.group_multi_company"/>
@@ -381,16 +409,29 @@
                                 </tree>
                             </field>
                             <field name="invoice_ids" widget="many2many_tags" invisible="1"/>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="gather_debt_lines"
+                                    attrs="{'invisible': [('state', 'in', ['cancel', 'posted'])]}"
+                                    type="object" class="oe_stat_button" icon="fa-refresh slow-spin">
+                                    Gather Lines
+                                </button>
+                            </div>
                             <label for="debt_line_ids" string="Supplier Invoices and Outstanding transactions"/>
                             <field name="debt_line_ids" context="{'journal_id':journal_id,
                                 'type':type, 'partner_id':partner_id, 'account_id':account_id}">
                                 <tree string="Supplier Invoices and Outstanding transactions" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
+                                    <field name="move_invoice_id" invisible="1"/>
                                     <field name="state" invisible="1"/>
-                                    <field name="invoice_id"
+                                    <field name="invoice_id" force_save="True"
                                         domain="[('state', '=', 'open'),
                                         ('commercial_partner_id', '=', parent.partner_id),
                                         ('id', 'not in', parent.invoice_ids),
                                         ('type', '=', 'in_invoice')]"
+                                        attrs="{
+                                        'required': ['|',
+                                            ('move_line_id', '=', False),
+                                            ('move_invoice_id', '!=', False)],
+                                        'readonly': [('move_line_id', '!=', False)]}"
                                         options="{'no_quick_create': True, 'no_create_edit': True}"/>
                                     <field name="ref" readonly="1" force_save="True"/>
                                     <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"
@@ -414,16 +455,29 @@
                                     <field string="Full" name="reconcile"/>
                                 </tree>
                             </field>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="gather_income_lines"
+                                    attrs="{'invisible': [('state', 'in', ['cancel', 'posted'])]}"
+                                    type="object" class="oe_stat_button" icon="fa-refresh slow-spin">
+                                    Gather Lines
+                                </button>
+                            </div>
                             <label for="income_line_ids" string="Credits"/>
                             <field name="income_line_ids" context="{'journal_id':journal_id, 'partner_id':partner_id}">
                                 <tree string="Credits" editable="bottom" decoration-muted="amount == 0" decoration-success="amount == amount_unreconciled">
+                                    <field name="move_invoice_id" invisible="1"/>
                                     <field name="state" invisible="1"/>
-                                    <field name="invoice_id"
+                                    <field name="invoice_id" force_save="True"
                                         attr="{'readonly': [('move_line_id', '!=', False)]}"
                                         domain="[('state', '=', 'open'),
                                         ('commercial_partner_id', '=', parent.partner_id),
                                         ('id', 'not in', parent.invoice_ids),
                                         ('type', '=', 'in_refund')]"
+                                        attrs="{
+                                        'required': ['|',
+                                            ('move_line_id', '=', False),
+                                            ('move_invoice_id', '!=', False)],
+                                        'readonly': [('move_line_id', '!=', False)]}"
                                         options="{'no_quick_create': True, 'no_create_edit': True}"/>
                                     <field name="ref" readonly="1" force_save="True"/>
                                     <field name="move_line_id" context="{'journal_id':parent.journal_id, 'partner_id':parent.partner_id}"

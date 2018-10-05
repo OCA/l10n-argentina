@@ -5,6 +5,5 @@
 
 from . import date_period  # noqa
 from . import account_invoice  # noqa
-from . import account_payment_order  # noqa
 from . import account_move  # noqa
 from . import stock_inventory  # noqa

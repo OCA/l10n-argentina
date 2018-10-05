@@ -4,14 +4,11 @@
 ###############################################################################
 
 import logging
+from datetime import datetime
 from odoo.addons import decimal_precision as dp
 from odoo import models, fields, api, _  # , api, fields, _, exceptions
 from odoo.exceptions import RedirectWarning, ValidationError, UserError
 from odoo.tools import float_compare
-# from odoo.addons.decimal_precision import decimal_precision as dp
-# from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, \
-#         DEFAULT_SERVER_DATETIME_FORMAT, float_compare
-
 
 _logger = logging.getLogger(__name__)
 
@@ -21,6 +18,16 @@ class AccountPaymentOrder(models.Model):
     _inherit = ['mail.thread']
     _rec_name = 'number'
     _order = 'date DESC'
+
+    @api.depends('date')
+    def _compute_period(self):
+        for rec in self:
+            if rec.date:
+                period_obj = rec.env['date.period']
+                period_date = datetime.strptime(
+                    rec.date, '%Y-%m-%d').date()
+                period = period_obj._get_period(period_date)
+                rec.period_id = period.id
 
     @api.depends('income_line_ids.invoice_id', 'debt_line_ids.invoice_id')
     def _get_invoice_ids(self):
@@ -109,10 +116,18 @@ class AccountPaymentOrder(models.Model):
                     payment.company_id.currency_id)
 
     name = fields.Char(string='Memo', default='')
-    number = fields.Char(string='Number', copy=False)
+    number = fields.Char(string='Number', copy=False,
+                         states={
+                             'cancel': [('readonly', True)],
+                             'posted': [('readonly', True)]
+                         })
     narration = fields.Text(string='Notes', default=_get_narration)
     partner_id = fields.Many2one(comodel_name='res.partner',
                                  string='Partner',
+                                 states={
+                                     'cancel': [('readonly', True)],
+                                     'posted': [('readonly', True)]
+                                 },
                                  default=_get_partner)
     account_id = fields.Many2one(comodel_name='account.account',
                                  string='Account')
@@ -124,6 +139,10 @@ class AccountPaymentOrder(models.Model):
     reference = fields.Char(string='Ref #', default=_get_reference)
     journal_id = fields.Many2one(comodel_name='account.journal',
                                  string='Journal', required=True,
+                                 states={
+                                     'cancel': [('readonly', True)],
+                                     'posted': [('readonly', True)]
+                                 },
                                  default=_get_journal)
     move_id = fields.Many2one(comodel_name='account.move',
                               string='Account Entry',
@@ -132,6 +151,10 @@ class AccountPaymentOrder(models.Model):
                                     related='move_id.line_ids',
                                     string='Journal Items')
     date = fields.Date(string='Date',
+                       states={
+                           'cancel': [('readonly', True)],
+                           'posted': [('readonly', True)]
+                       },
                        default=lambda self: self._context.get(
                            'date', fields.Date.context_today(self)))
     date_due = fields.Date(string="Due Date")
@@ -150,8 +173,16 @@ class AccountPaymentOrder(models.Model):
     amount = fields.Float(strin='Tax Amount',
                           digits=dp.get_precision('Account'),
                           default=_get_amount,
+                          states={
+                              'cancel': [('readonly', True)],
+                              'posted': [('readonly', True)]
+                          },
                           required=True)
     writeoff_acc_id = fields.Many2one(comodel_name='account.account',
+                                      states={
+                                          'cancel': [('readonly', True)],
+                                          'posted': [('readonly', True)]
+                                      },
                                       string='Counterpart Account')
     comment = fields.Char(string='Counterpart Comment',
                           default=_('Write-Off'),
@@ -196,6 +227,10 @@ class AccountPaymentOrder(models.Model):
     payment_mode_line_ids = fields.One2many(
         comodel_name='account.payment.mode.line',
         inverse_name='payment_order_id',
+        states={
+            'cancel': [('readonly', True)],
+            'posted': [('readonly', True)]
+        },
         string='Payments Lines')
     line_ids = fields.One2many(
         comodel_name='account.payment.order.line',
@@ -204,23 +239,39 @@ class AccountPaymentOrder(models.Model):
     income_line_ids = fields.One2many(
         comodel_name='account.payment.order.line',
         inverse_name='payment_order_id',
+        states={
+            'cancel': [('readonly', True)],
+            'posted': [('readonly', True)]
+        },
         string='Credits',
         domain=[('type', '=', 'income')],
         context={'default_type': 'income'})
     debt_line_ids = fields.One2many(
         comodel_name='account.payment.order.line',
         inverse_name='payment_order_id',
+        states={
+            'cancel': [('readonly', True)],
+            'posted': [('readonly', True)]
+        },
         string='Debits',
         domain=[('type', '=', 'debt')],
         context={'default_type': 'debt'})
     payment_rate_currency_id = fields.Many2one(
         comodel_name='res.currency',
         string='Payment Rate Currency',
+        states={
+            'cancel': [('readonly', True)],
+            'posted': [('readonly', True)]
+        },
         default=_get_payment_rate_currency,
         required=True)
     payment_rate = fields.Float(
         string='Exchange Rate',
         digits=(12, 6), required=True,
+        states={
+            'cancel': [('readonly', True)],
+            'posted': [('readonly', True)]
+        },
         default=1.0,
         help='The specific rate that will be used, in \
         this voucher, between the selected currency \
@@ -239,11 +290,10 @@ class AccountPaymentOrder(models.Model):
         comodel_name='account.invoice',
         compute='_get_invoice_ids',
         string='Invoices', readonly=True)
-    # currency_help_label = fields.Text(strig='Helping Sentence',
-    #                                   compute='_fnct_currency_help_label',
-    #                                   help="This sentence helps you to know \
-    #                                   how to specify the payment rate by \
-    #                                   giving you the direct effect it has")
+
+    period_id = fields.Many2one(string="Period", comodel_name="date.period",
+                                compute='_compute_period',
+                                store=True, required=False)
 
     def basic_onchange_partner(self):
         if self.journal_id.type in ('sale', 'sale_refund'):
@@ -285,50 +335,105 @@ class AccountPaymentOrder(models.Model):
         super(AccountPaymentOrder, self).unlink()
 
     @api.multi
-    def recompute_payment_lines(self, onchange_attr):
-        """
-        Returns a dict that contains new values and context
+    def _check_partner_set(self):
+        if not self.partner_id:
+            raise UserError(
+                _("Error!\n" +
+                  "The Partner must be set to gather accounting information."))
 
-        @param partner_id: latest value from user input for field partner_id
-        @param args: other arguments
-        @param context: context arguments, like lang, time zone
-
-        @return: Returns a dict which contains new values, and context
-        """
-        def _remove_noise_in_o2m():
-            """if the line is partially reconciled, then we
-               must pay attention to display it only once and
-                in the good o2m.
-                This function returns True if the line is
-                considered as noise and should not be displayed
-            """
-            if line.reconciled:
-                if self.currency_id == line.currency_id:
-                    if line.amount_residual_currency <= 0:
-                        return True
-                else:
-                    if line.amount_residual <= 0:
-                        return True
+    @api.multi
+    def update_o2m(self, field_str, lines):
+        if not hasattr(self, field_str) or not lines:
             return False
+        old_lines = getattr(self, field_str)
+        new_lines = [x for x in lines if x['move_line_id'] not in
+                     old_lines.mapped('move_line_id.id')]
+        setattr(self, field_str, [(0, 0, x) for x in new_lines])
+        return True
 
-        account_account_obj = self.env['account.account']
+    @api.multi
+    def gather_income_lines(self):
+        self.ensure_one()
+        self._check_partner_set()
+        move_line_obj = self.env['account.move.line']
+        lines_type = 'income'
+        account_type = self.type == 'payment' and 'payable' or 'receivable'
+        moves = move_line_obj.search([
+            ('debit', '!=', 0),
+            ('credit', '=', 0),
+            ('account_id.internal_type', '=', account_type),
+            ('reconciled', '=', False),
+            ('partner_id', '=', self.partner_id.id)])
+        lines = self._prepare_income_debt_lines(lines_type, moves)
+        return self.update_o2m('income_line_ids', lines)
+
+    @api.multi
+    def gather_debt_lines(self):
+        self.ensure_one()
+        self._check_partner_set()
+        move_line_obj = self.env['account.move.line']
+        lines_type = 'debt'
+        account_type = self.type == 'payment' and 'payable' or 'receivable'
+        moves = move_line_obj.search([
+            ('debit', '=', 0),
+            ('credit', '!=', 0),
+            ('account_id.internal_type', '=', account_type),
+            ('reconciled', '=', False),
+            ('partner_id', '=', self.partner_id.id)])
+        lines = self._prepare_income_debt_lines(lines_type, moves)
+        return self.update_o2m('debt_line_ids', lines)
+
+    @api.multi
+    def doesnt_have_residual(self, move_line):
+        if move_line.reconciled:
+            if self.currency_id == move_line.currency_id:
+                if move_line.amount_residual_currency <= 0:
+                    return True
+            else:
+                if move_line.amount_residual <= 0:
+                    return True
+        return False
+
+    @api.multi
+    def _prepare_income_debt_lines(self, lines_type, move_lines):
+        res = []
+        for line in move_lines:
+            line_data = {}
+            if self.doesnt_have_residual(line):
+                continue
+
+            amount_original = line.debit or line.credit or 0.0
+            sign = lines_type == 'debt' and -1 or 1
+            amount_unreconciled = sign * line.amount_residual or 0.0
+
+            line_data = {
+                'name': line.move_id.name,
+                'invoice_id': line.invoice_id.id,
+                'move_line_id': line.id,
+                'account_id': line.account_id.id,
+                'amount_original': amount_original,
+                'date_original': line.date,
+                'date_due': line.date_maturity,
+                'amount_unreconciled': amount_unreconciled,
+                'currency_id': self.currency_id.id,
+                'type': lines_type,
+            }
+            res.append(line_data)
+        return res
+
+    @api.multi
+    def recompute_payment_lines(self, onchange_attr):
         move_line_obj = self.env['account.move.line']
         currency_obj = self.env['res.currency']
 
         ttype = self.env.context.get('type', 'bank')
         total_credit = total_debit = 0.0
-        account_type = account_account_obj.browse(
-            self.env.context.get('account_id')).id
-        if not account_type:
-            account_type = None
         if ttype == 'payment':
-            if not account_type:
-                account_type = 'payable'
+            account_type = 'payable'
             total_debit = self.amount or 0.0
         else:
             total_credit = self.amount or 0.0
-            if not account_type:
-                account_type = 'receivable'
+            account_type = 'receivable'
 
         line_ids = getattr(self, onchange_attr)
         the_line = False
@@ -356,7 +461,7 @@ class AccountPaymentOrder(models.Model):
         move_lines_found = []
 
         for line in account_move_lines:
-            if _remove_noise_in_o2m():
+            if self.doesnt_have_residual(line):
                 continue
 
             if invoice_id:
@@ -389,73 +494,20 @@ class AccountPaymentOrder(models.Model):
                 total_credit += line.credit and line_residual or 0.0
                 total_debit += line.debit and line_residual or 0.0
 
-        # remaining_amount = self.amount
         # voucher line creation
-        rs = {}
-        rss = []
-        for line in account_move_lines:
+        res = self._prepare_income_debt_lines(
+            onchange_attr == 'debt_line_ids' and 'debt' or 'income',
+            account_move_lines)
 
-            if onchange_attr == 'income_line_ids':
-                rs['type'] = 'income'
-                if line.credit:
-                    continue
-            elif onchange_attr == 'debt_line_ids':
-                rs['type'] = 'debt'
-                if not line.credit:
-                    continue
-
-            if _remove_noise_in_o2m():
-                continue
-
-            amount_original = line.debit or line.credit or 0.0
-            sign = rs['type'] == 'debt' and -1 or 1
-            amount_unreconciled = sign * line.amount_residual or 0.0
-
-            # line_currency_id = line.currency_id or company_currency
-            rs.update({
-                'name': line.move_id.name,
-                'invoice_id': line_ids.invoice_id.id,
-                'move_line_id': line.id,
-                'account_id': line.account_id.id,
-                'amount_original': amount_original,
-                'date_original': line.date,
-                'date_due': line.date_maturity,
-                'amount_unreconciled': amount_unreconciled,
-                'currency_id': self.currency_id.id,
-            })
-            # remaining_amount -= rs['amount']
-            # in case a corresponding move_line hasn't been
-            # found, we now try to assign the voucher amount
-            # on existing invoices: we split voucher amount by most
-            # old first, but only for lines in the same currency
-            # if not move_lines_found:
-            #     if self.currency_id == line_currency_id:
-            #         if line.credit:
-            #             amount = min(amount_unreconciled, abs(total_debit))
-            #             rs['amount'] = amount
-            #             total_debit -= amount
-            #         else:
-            #             amount = min(amount_unreconciled, abs(total_credit))
-            #             rs['amount'] = amount
-            #             total_credit -= amount
-            #
-            # if rs['amount_unreconciled'] == rs['amount']:
-            #     rs['reconcile'] = True
-
-            rss.append(rs.copy())
-
-        if rss:
+        if res:
             old_lines = getattr(self, onchange_attr)
-            setattr(self, onchange_attr, [(0, 0, x) for x in rss])
+            setattr(self, onchange_attr, [(0, 0, x) for x in res])
             setattr(self, onchange_attr, getattr(
                 self, onchange_attr) + old_lines)
             setattr(self, onchange_attr, getattr(
                 self, onchange_attr) - line_ids)
         else:
             setattr(self, onchange_attr, False)
-        # writeoff_amount = self.writeoff_amount
-        # self.writeoff_amount = self._compute_writeoff_amount(
-        #   rss, self.amount, ttype, writeoff_amount)
 
     def _compute_writeoff_amount(
         self, records, amount,
@@ -545,7 +597,6 @@ class AccountPaymentOrder(models.Model):
             'narration': self.narration,
             'date': self.date,
             'ref': ref,
-            # 'period_id': self.period_id.id
         }
         return move
 
@@ -587,11 +638,10 @@ class AccountPaymentOrder(models.Model):
             'account_id': pl_account_id,
             'move_id': move_id,
             'journal_id': self.journal_id.id,
-            # 'period_id': self.period_id.id,
             'partner_id': self.partner_id.id,
-            'currency_id': company_currency != current_currency and \
+            'currency_id': company_currency != current_currency and
             current_currency.id or False,
-            'amount_currency': company_currency != current_currency and \
+            'amount_currency': company_currency != current_currency and
             sign * amount or 0.0,
             'date': self.date,
             'date_maturity': self.date_due
@@ -707,12 +757,11 @@ class AccountPaymentOrder(models.Model):
                 'account_id': self.account_id.id,
                 'move_id': move_id,
                 'journal_id': self.journal_id.id,
-                # 'period_id': self.period_id.id,
                 'partner_id': self.partner_id.id,
-                'currency_id': company_currency != current_currency and \
+                'currency_id': company_currency != current_currency and
                 current_currency.id or False,
                 'amount_currency': (sign * abs(self.amount)
-                                    if company_currency !=\
+                                    if company_currency !=
                                      current_currency else 0.0),
                 'date': self.date,
                 'date_maturity': self.date_due
@@ -755,7 +804,6 @@ class AccountPaymentOrder(models.Model):
                 current_currency or False
         move_line = {
             'journal_id': line.payment_order_id.journal_id.id,
-            # 'period_id': line.payment_order_id.period_id.id,
             'name': _('change')+': '+(line.name or '/'),
             'account_id': line.account_id.id,
             'move_id': move_id,
@@ -769,7 +817,6 @@ class AccountPaymentOrder(models.Model):
         }
         move_line_counterpart = {
             'journal_id': line.payment_order_id.journal_id.id,
-            # 'period_id': line.payment_order_id.period_id.id,
             'name': _('change')+': '+(line.name or '/'),
             'account_id': account_id.id,
             'move_id': move_id,
@@ -819,7 +866,6 @@ class AccountPaymentOrder(models.Model):
                 line.account_analytic_id.id or False
             move_line = {
                 'journal_id': self.journal_id.id,
-                # 'period_id': self.period_id.id,
                 'name': line.name or '/',
                 'account_id': line.account_id.id,
                 'move_id': move_id,
@@ -888,13 +934,12 @@ class AccountPaymentOrder(models.Model):
                 # Change difference entry in voucher currency
                 move_line_foreign_currency = {
                     'journal_id': line.payment_order_id.journal_id.id,
-                    # 'period_id': line.voucher_id.period_id.id,
                     'name': _('change')+': '+(line.name or '/'),
                     'account_id': line.account_id.id,
                     'move_id': move_id,
                     'partner_id': line.payment_order_id.partner_id.id,
                     'currency_id': line.move_line_id.currency_id.id,
-                    'amount_currency': (-1 if line.type == 'cr' else 1) * \
+                    'amount_currency': (-1 if line.type == 'cr' else 1) *
                     foreign_currency_diff,
                     'quantity': 1,
                     'credit': 0.0,
@@ -1032,7 +1077,10 @@ class AccountPaymentOrder(models.Model):
 
     def cancel_voucher(self):
         for payment in self:
-            if self.move_id:
+            if payment.move_id:
+                payment.move_id.line_ids.search(
+                    payment.move_id.open_reconcile_view()[
+                        'domain']).remove_move_reconcile()
                 payment.move_id.button_cancel()
                 payment.move_id.unlink()
         self.write({
@@ -1137,8 +1185,9 @@ class AccountPaymentOrderLine(models.Model):
                                   readonly=True)
     invoice_id = fields.Many2one(comodel_name='account.invoice',
                                  string='Invoice',
-                                 required=True,
                                  domain=[('state', '=', 'open')])
+    move_invoice_id = fields.Many2one(comodel_name='account.invoice',
+                                      related='move_line_id.invoice_id')
     ref = fields.Char(string='Reference', size=64)
     # TODO: Este state sigue siendo util?,
     # requiere en move_line_id(draft) en vista
@@ -1169,10 +1218,6 @@ class AccountPaymentOrderLine(models.Model):
     @api.onchange('amount')
     def onchange_amount(self):
         self._check_amount_over_original()
-        if self.amount:
-            round_amount = round(self.amount, 2)
-            round_unreconciled = round(self.amount_unreconciled, 2)
-            self.reconcile = (round_amount == round_unreconciled)
 
     def _compute_writeoff_amount(
         self, debt_line_ids, income_line_ids,

@@ -30,6 +30,7 @@
         "base",
         "account",
         "analytic",
+        "base_period",
     ],
     "data": [
         "views/assets.xml",

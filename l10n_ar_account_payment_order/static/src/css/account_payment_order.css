@@ -21,3 +21,8 @@ div[name="income_line_ids"] div.o_checkbox, div[name="debt_line_ids"] div.o_chec
   display: block !important;
   font-size: 1.5em;
 }
+
+.fa.slow-spin {
+  -webkit-animation: fa-spin 6s infinite linear;
+  animation: fa-spin 6s infinite linear;
+}
