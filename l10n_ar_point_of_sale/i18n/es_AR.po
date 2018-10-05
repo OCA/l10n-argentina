@@ -1,22 +1,20 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* l10n_ar_point_of_sale
-# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2018.
+#	* l10n_ar_point_of_sale
 #
 msgid ""
 msgstr ""
 "Language: Spanish\n"
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 15:46+0000\n"
-"PO-Revision-Date: 2018-09-26 12:48-0300\n"
-"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
-"Language-Team: Spanish; Castilian <>\n"
+"POT-Creation-Date: 2018-09-27 18:15+0000\n"
+"PO-Revision-Date: 2018-09-27 18:15+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: l10n_ar_point_of_sale
 #: selection:invoice.denomination,name:0
@@ -73,12 +71,8 @@ msgstr "NC "
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,help:l10n_ar_point_of_sale.field_account_fiscal_position_local
-msgid ""
-"Check this if it corresponds to                            apply local "
-"fiscal rules, like invoice                            number validation, etc"
-msgstr ""
-"Tilde si corresponde                            aplicar reglas fiscales "
-"locales, como                            validación de número de factura, etc"
+msgid "Check this if it corresponds to                            apply local fiscal rules, like invoice                            number validation, etc"
+msgstr "Tilde si corresponde                            aplicar reglas fiscales locales, como                            validación de número de factura, etc"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,help:l10n_ar_point_of_sale.field_account_tax_is_exempt
@@ -100,11 +94,8 @@ msgstr "Creado en"
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:189
 #, python-format
-msgid ""
-"Credit Note can only be                     cancelled in these states: %s!"
-msgstr ""
-"Una Nota de Crédito sólo puede ser                     cancelada en estos "
-"estados: %s!"
+msgid "Credit Note can only be                     cancelled in these states: %s!"
+msgstr "Una Nota de Crédito sólo puede ser                     cancelada en estos estados: %s!"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_action_invoice_tree3
@@ -178,21 +169,19 @@ msgstr "Error"
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/sale.py:47
 #, python-format
-msgid ""
-"Error\n"
-"Check the Fiscal Position Configuration.                     sale.order[#%s] "
-"%s"
-msgstr ""
-"Error\n"
-"Revise la configuración de la Posición Fiscal.                     sale."
-"order[#%s] %s"
+msgid "Error\n"
+"Check the Fiscal Position Configuration.                     sale.order[#%s] %s"
+msgstr "Error\n"
+"Revise la configuración de la Posición Fiscal.                     sale.order[#%s] %s"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/pos_ar.py:62
 #: code:addons/l10n_ar_point_of_sale/models/sale.py:26
 #, python-format
 msgid "Error!\n"
+""
 msgstr "Error!\n"
+""
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:253
@@ -219,12 +208,8 @@ msgstr "ID (identificación)"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,help:l10n_ar_point_of_sale.field_invoice_denomination_vat_discriminated
-msgid ""
-"If True, the vat will be                                        "
-"discriminated at invoice report."
-msgstr ""
-"El impuesto será discriminado                                       en "
-"reportes de Factura."
+msgid "If True, the vat will be                                        discriminated at invoice report."
+msgstr "El impuesto será discriminado                                       en reportes de Factura."
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_account_invoice_internal_number
@@ -250,7 +235,7 @@ msgstr "Denominación de la factura"
 #. module: l10n_ar_point_of_sale
 #: model:ir.model,name:l10n_ar_point_of_sale.model_account_invoice_tax
 msgid "Invoice Tax"
-msgstr "Impuesto de factura"
+msgstr "Impuestos sobre Factura"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.view,arch_db:l10n_ar_point_of_sale.inv_den_view_form
@@ -263,9 +248,19 @@ msgid "Invoice denominations"
 msgstr "Denominaciones de factura"
 
 #. module: l10n_ar_point_of_sale
+#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_invoicing_subroot
+msgid "Invoicing"
+msgstr "Facturación"
+
+#. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_account_invoice_tax_is_exempt
 msgid "Is Exempt"
 msgstr "Es Exento"
+
+#. module: l10n_ar_point_of_sale
+#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_journal_subroot
+msgid "Journals"
+msgstr "Diarios"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_invoice_denomination___last_update
@@ -350,11 +345,8 @@ msgstr "Percepción"
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/account.py:54
 #, python-format
-msgid ""
-"Please define a sequence                                 for the credit notes"
-msgstr ""
-"Por Favor, defina una secuencia                                 para Notas "
-"de Crédito"
+msgid "Please define a sequence                                 for the credit notes"
+msgstr "Por Favor, defina una secuencia                                 para Notas de Crédito"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/account.py:61
@@ -367,7 +359,7 @@ msgstr "Por favor, defina una secuencia en el Diario."
 #: model:ir.actions.act_window,name:l10n_ar_point_of_sale.action_pos_ar_view_tree
 #: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_account_invoice_pos_ar_id
 msgid "Point of Sale"
-msgstr "Terminal Punto de Venta"
+msgstr "Punto de Venta"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_pos_ar_root
@@ -462,6 +454,7 @@ msgid "Tax Group"
 msgstr "Grupo de impuestos"
 
 #. module: l10n_ar_point_of_sale
+#: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_tax_subroot
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_taxes_payables
 #: model:ir.ui.menu,name:l10n_ar_point_of_sale.menu_taxes_receivables
 #: model:ir.ui.view,arch_db:l10n_ar_point_of_sale.view_pos_invoice_form
@@ -472,22 +465,14 @@ msgstr "Impuestos"
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:411
 #, python-format
-msgid ""
-"The Invoice Number should                                 be the format XXXX-"
-"XXXXXXXX"
-msgstr ""
-"El número de la Factura debería estar                                 en el "
-"formato: XXXX-XXXXXXXX"
+msgid "The Invoice Number should                                 be the format XXXX-XXXXXXXX"
+msgstr "El número de la Factura debería estar                                 en el formato: XXXX-XXXXXXXX"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:395
 #, python-format
-msgid ""
-"The Invoice Number should                             be the format XXXX-"
-"XXXXXXXX"
-msgstr ""
-"El número de la Factura debería estar                             en el "
-"formato: XXXX-XXXXXXXX"
+msgid "The Invoice Number should                             be the format XXXX-XXXXXXXX"
+msgstr "El número de la Factura debería estar                             en el formato: XXXX-XXXXXXXX"
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:405
@@ -505,16 +490,13 @@ msgstr "El nombre del Punto de Venta debería ser un número de 4 dígitos!"
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:292
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:305
 #, python-format
-msgid ""
-"The invoice denomination does not corresponds with this fiscal position."
-msgstr ""
-"La Denominación de la Factura no se corresponde con la de la Posición Fiscal."
+msgid "The invoice denomination does not corresponds with this fiscal position."
+msgstr "La Denominación de la Factura no se corresponde con la de la Posición Fiscal."
 
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/invoice.py:313
 #, python-format
-msgid ""
-"The invoice fiscal position is not the same as the partner's fiscal position."
+msgid "The invoice fiscal position is not the same as the partner's fiscal position."
 msgstr "La Posición Fiscal de la Factura no es la misma que la del Contacto."
 
 #. module: l10n_ar_point_of_sale
@@ -530,11 +512,8 @@ msgstr "Esto es categorización de Impuesto."
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,help:l10n_ar_point_of_sale.field_account_invoice_internal_number
-msgid ""
-"Unique number of the invoice, computed automatically when the invoice is "
-"created."
-msgstr ""
-"Número único de Factura, calculado automaticamente cuando ésta es creada."
+msgid "Unique number of the invoice, computed automatically when the invoice is created."
+msgstr "Número único de Factura, calculado automaticamente cuando ésta es creada."
 
 #. module: l10n_ar_point_of_sale
 #: selection:account.tax,tax_group:0
@@ -563,27 +542,13 @@ msgstr "Almacén"
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.actions.act_window,help:l10n_ar_point_of_sale.action_customer_debit_note_tree
-msgid ""
-"With Customer Debit Notes you can manage the debit notes for your customers. "
-"A debit note is a document that increases the value of the debt or account "
-"balance, either by an error in billing, interest for late payment, or any "
-"other circumstance that means the increase in the balance of an account."
-msgstr ""
-"Una Nota de Débito es un documento que aumenta el valor de la deuda, ya sea "
-"por un error en la factura u otra circunstancia que signifique incrementar "
-"el valor del balance de una cuenta."
+msgid "With Customer Debit Notes you can manage the debit notes for your customers. A debit note is a document that increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account."
+msgstr "Una Nota de Débito es un documento que aumenta el valor de la deuda, ya sea por un error en la factura u otra circunstancia que signifique incrementar el valor del balance de una cuenta."
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.actions.act_window,help:l10n_ar_point_of_sale.action_supplier_debit_note_tree
-msgid ""
-"With Supplier Debit Notes you can manage the debit notes for your suppliers. "
-"A debit note is a document that increases the value of the debt or account "
-"balance, either by an error in billing, interest for late payment, or any "
-"other circumstance that means the increase in the balance of an account."
-msgstr ""
-"Una Nota de Débito es un documento que aumenta el valor de la deuda, ya sea "
-"por un error en la factura u otra circunstancia que signifique incrementar "
-"el valor del balance de una cuenta."
+msgid "With Supplier Debit Notes you can manage the debit notes for your suppliers. A debit note is a document that increases the value of the debt or account balance, either by an error in billing, interest for late payment, or any other circumstance that means the increase in the balance of an account."
+msgstr "Una Nota de Débito es un documento que aumenta el valor de la deuda, ya sea por un error en la factura u otra circunstancia que signifique incrementar el valor del balance de una cuenta."
 
 #. module: l10n_ar_point_of_sale
 #: model:ir.ui.view,arch_db:l10n_ar_point_of_sale.view_pos_invoice_form

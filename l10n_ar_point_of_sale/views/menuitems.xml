@@ -38,22 +38,41 @@
             sequence="20"
             parent="account.menu_finance_payables"/>
 
-
-        <!--Menues POS-->
-        <menuitem id="menu_pos_ar_root"
-            name="Point of Sale AR"
+        <menuitem id="menu_journal_subroot"
+            name="Journals"
             parent="account.account_account_menu"
-            action="action_pos_ar_view_tree"
-            sequence="10"
-            icon="terp-partner"
-            web_icon="images/pos.png"
-            web_icon_hover="images/pos-hover.png"/>
+            sequence="1"/>
+            <menuitem id="account.menu_action_account_journal_form"
+                parent="menu_journal_subroot" sequence="1"/>
+            <menuitem id="account.menu_action_account_bank_journal_form"
+                parent="menu_journal_subroot" sequence="3"/>
 
-        <menuitem id="menu_invoice_denomination"
-            action="action_pos_ar_denomination_view_tree"
-            name="Denominations"
+
+        <menuitem id="menu_tax_subroot"
+            name="Taxes"
             parent="account.account_account_menu"
-            sequence="20"/>
+            sequence="2"/>
+            <menuitem id="account.menu_action_tax_form"
+                parent="menu_tax_subroot" sequence="1"/>
+            <menuitem id="account.menu_action_account_fiscal_position_form"
+                parent="menu_tax_subroot" sequence="3"/>
+
+        <menuitem id="menu_invoicing_subroot"
+            name="Invoicing"
+            parent="account.account_account_menu"
+            sequence="3"/>
+            <menuitem id="menu_pos_ar_root"
+                name="Point of Sale AR"
+                parent="menu_invoicing_subroot"
+                action="action_pos_ar_view_tree"
+                sequence="10"/>
+            <menuitem id="menu_invoice_denomination"
+                action="action_pos_ar_denomination_view_tree"
+                name="Denominations"
+                parent="menu_invoicing_subroot"
+                sequence="20"/>
+            <menuitem id="base_vat_ar.menu_document_type"
+                parent="menu_invoicing_subroot"/>
 
 
         <menuitem id="not_used_native_menues_finance_receivables"

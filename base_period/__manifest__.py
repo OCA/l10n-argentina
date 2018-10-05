@@ -28,16 +28,14 @@
         "base",
         "account",
         "stock",
-        "l10n_ar_account_payment_order",
     ],
     "data": [
         "views/date_period_view.xml",
         "views/account_invoice_view.xml",
         "views/account_move_view.xml",
         "views/stock_inventory_view.xml",
-        "views/account_payment_order_receipt_view.xml",
+        "security/ir.model.access.csv",
     ],
-    "qweb": ['static/src/xml/*.xml'],
     "installable": True,
     "application": True,
 }

@@ -4,7 +4,7 @@
 
       <menuitem id="retention_retention_menu"
           name="Retentions"
-          parent="account.account_account_menu"
+          parent="l10n_ar_point_of_sale.menu_tax_subroot"
           sequence="20"
           action="action_retention_retention_tree"/>
 

@@ -63,6 +63,12 @@
                         </field>
                       </page>
                     </xpath>
+                    <field name="outstanding_credits_debits_widget" position="replace"/>
+                    <xpath expr="//group[hasclass('oe_subtotal_footer', 'oe_right')]" position="after">
+                        <div style="clear:both;float:right">
+                            <field name="outstanding_credits_debits_widget" colspan="2" nolabel="1" widget="payment" attrs="{'invisible': [('state', 'not in', 'open')]}"/>
+                        </div>
+                    </xpath>
                 </data>
             </field>
         </record>
@@ -163,7 +169,13 @@
                        <field name="amount_no_taxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                        <field name="amount_exempt" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                        <field name="amount_untaxed" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                   </field>
+                    </field>
+                    <field name="outstanding_credits_debits_widget" position="replace"/>
+                    <xpath expr="//group[hasclass('oe_subtotal_footer', 'oe_right')]" position="after">
+                        <div style="clear:both;float:right">
+                            <field name="outstanding_credits_debits_widget" colspan="2" nolabel="1" widget="payment" attrs="{'invisible': [('state', 'not in', 'open')]}"/>
+                        </div>
+                    </xpath>
             </field>
         </record>
 
