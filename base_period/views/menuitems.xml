@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+
+        <menuitem id="menu_period"
+            name="Periods"
+            parent="account.account_account_menu"
+            sequence="5" />
+        <menuitem id="menu_action_period"
+            parent="menu_period"
+            action="action_period"/>
+
+    </data>
+</odoo>

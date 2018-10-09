@@ -1277,3 +1277,13 @@ class AccountPaymentModeLine(models.Model):
                                        default=_get_company_currency)
     date = fields.Date(string='Payment Date',
                        help="This date is informative only.")
+
+
+class DatePeriod(models.Model):
+    _name = 'date.period'
+    _inherit = 'date.period'
+
+    @api.multi
+    def _hook_affected_models(self, affected_models):
+        affected_models.append('account.payment.order')
+        return super()._hook_affected_models(affected_models)

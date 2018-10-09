@@ -34,6 +34,7 @@
         "views/account_invoice_view.xml",
         "views/account_move_view.xml",
         "views/stock_inventory_view.xml",
+        "views/menuitems.xml",
         "security/ir.model.access.csv",
     ],
     "installable": True,

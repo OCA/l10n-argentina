@@ -6,11 +6,8 @@
 import logging
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, fields, api  # , api, fields, _, exceptions
-# from odoo.exceptions import except_orm
-# from odoo.addons.decimal_precision import decimal_precision as dp
-# from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, \
-#         DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 _logger = logging.getLogger(__name__)
@@ -35,6 +32,39 @@ class DatePeriod(models.Model):
     inventory_ids = fields.One2many(comodel_name="stock.inventory",
                                     inverse_name="period_id",
                                     string="Stock Inventory")
+
+    @api.multi
+    def unlink(self):
+        affected_models = [
+            'account.move',
+            'account.invoice',
+            'stock.inventory',
+        ]
+        affected_models = self._hook_affected_models(affected_models)
+        self._check_affected_models(affected_models)
+        super().unlink()
+
+    @api.multi
+    def _hook_affected_models(self, affected_models):
+        return affected_models
+
+    @api.multi
+    def _check_affected_models(self, affected_models):
+        for record in self:
+            search_dict = {}
+            for model in affected_models:
+                searched = self.env[model].search([
+                    ('period_id', '=', self.id)])
+                if searched:
+                    search_dict[model] = searched
+            if search_dict:
+                raise ValidationError(
+                    _("Error\n You can not unlink a period with " +
+                      "associates records.\n Found this ones:\n%s\n" +
+                      " For the period %s [ %s ]. ") %
+                    (("\n").join(
+                        [repr(x.sorted()) for x in search_dict.values()]),
+                     record.name, record))
 
     @api.multi
     def name_search(self, name, args=None, operator='ilike', limit=100):

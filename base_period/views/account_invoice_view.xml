@@ -10,7 +10,21 @@
                 <field name="date_invoice" position="replace">
                     <label for="date_invoice" string="Date"/>
                     <div>
-                        <field name="date_invoice" class="oe_inline" nolabel="1"/> -
+                        <field name="date_invoice" class="oe_inline" nolabel="1"/><span attrs="{'invisible': [('period_id', '=', False)]}" > - </span>
+                        <field name="period_id" nolabel="1" class="oe_inline"/>
+                    </div>
+                </field>
+            </field>
+        </record>
+        <record id="view_account_invoice_form_supplier_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.select.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <field name="date_invoice" position="replace">
+                    <label for="date_invoice" string="Date"/>
+                    <div>
+                        <field name="date_invoice" class="oe_inline" nolabel="1"/><span attrs="{'invisible': [('period_id', '=', False)]}" > - </span>
                         <field name="period_id" nolabel="1" class="oe_inline"/>
                     </div>
                 </field>
