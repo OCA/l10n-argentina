@@ -276,6 +276,7 @@ msgstr "Número de cheque"
 
 #. module: l10n_ar_account_check
 #: model:ir.actions.act_window,name:l10n_ar_account_check.action_check_reject
+#: model:ir.actions.act_window,name:l10n_ar_account_check.action_check_reject2
 msgid "Check Reject"
 msgstr "Rechazar Cheques"
 
@@ -367,6 +368,7 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: l10n_ar_account_check
+#: field:account.issued.check,crossed:0
 #: field:account.third.check,crossed:0
 msgid "Crossed"
 msgstr "Cruzado"
@@ -710,6 +712,7 @@ msgstr "A la orden"
 
 #. module: l10n_ar_account_check
 #: field:account.third.check,not_order:0
+#: field:account.issued.check,not_order:0
 msgid "Not Order"
 msgstr "No a la Orden"
 
@@ -794,8 +797,25 @@ msgstr "Rechazo"
 
 #. module: l10n_ar_account_check
 #: field:account.check.reject,reject_date:0
+#: field:check.reject.issued.check,reject_date:0
 msgid "Reject Date"
 msgstr "Fecha de rechazo"
+
+#. module: l10n_ar_account_check
+#: view:check.reject.issued.check:l10n_ar_account_check.check_reject_form_view
+msgid "Reject"
+msgstr "Rechazar"
+
+#. module: l10n_ar_account_check
+#: view:check.reject.issued.check:l10n_ar_account_check.check_reject_form_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_account_check
+#: field:account.check.reject,reject_date:0
+#: field:check.reject.issued.check,note:0
+msgid "Note"
+msgstr "Nota"
 
 #. module: l10n_ar_account_check
 #: field:account.add.third.check,reject_debit_note:0
