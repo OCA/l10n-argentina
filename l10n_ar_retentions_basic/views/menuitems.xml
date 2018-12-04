@@ -2,11 +2,15 @@
 <odoo>
   <data>
 
-      <menuitem id="retention_retention_menu"
+      <menuitem id="retention_root_menu"
           name="Retentions"
           parent="l10n_ar_point_of_sale.menu_tax_subroot"
-          sequence="20"
-          action="action_retention_retention_tree"/>
+          sequence="20"/>
+          <menuitem id="retention_retention_menu"
+              name="Retentions"
+              parent="retention_root_menu"
+              sequence="10"
+              action="action_retention_retention_tree"/>
 
       <menuitem id="retention_tax_line_applied_menu"
           name="Retentions Applied"
