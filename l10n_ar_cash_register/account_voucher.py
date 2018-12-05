@@ -24,18 +24,18 @@ from openerp.osv import osv, fields
 from openerp.tools.translate import _
 
 class account_voucher(osv.osv):
-    
+
     _name = "account.voucher"
     _inherit = "account.voucher"
-    
+
     _columns = {
         'statement_bank_line_ids': fields.one2many('account.bank.statement.line', 'ref_voucher_id', string='Bank statement lines'),
     }
 
     def proforma_voucher(self, cr, uid, ids, context=None):
-        vouchers = super(account_voucher, self).proforma_voucher(cr, uid, ids, context=context)
-        stl = []
-        
+        super(account_voucher, self).proforma_voucher(cr, uid, ids, context=context)
+        invoice_obj = self.pool.get("account.invoice")
+
         for vou in self.browse(cr, uid, ids, context=context):
             if vou.type in 'receipt':
                 sign = 1
@@ -43,18 +43,25 @@ class account_voucher(osv.osv):
             if vou.type in 'payment':
                 sign = -1
                 aux_account = vou.partner_id.property_account_payable.id
-            
+
+            invoice_ids = set()
+            for dr_line in vou.line_dr_ids:
+                invoices.add(dr_line.invoice_id.id)
+
+            invoices = invoice_obj.browse(cr, uid, invoice_ids, context=context)
+            invoices_ref = ", ".join(name or '' for __, name in invoices.name_get())
+
             for line in vou.payment_line_ids:
                 if line.payment_mode_id.type in 'cash':
                     voucher_number = line.voucher_id.number
-                    
+
                     amount = line.amount * sign
-                    
+
                     voucher_date = line.voucher_id.date or fields.date.context_today(self,cr,uid,context=context)
-                    statement = self.pool.get('account.bank.statement').search(cr, uid, 
+                    statement = self.pool.get('account.bank.statement').search(cr, uid,
                     [('journal_id','=', line.payment_mode_id.id),('state','=','open'),
                      ('date', '<=', voucher_date)], order='date desc')
-                    
+
                     if statement:
                         # Elegimos la primer caja que sera la que corresponde en fecha
                         st_line = {
@@ -72,7 +79,7 @@ class account_voucher(osv.osv):
                             'ref_voucher_id': vou.id,
                             'creation_type': 'system',
                             'statement_id': statement[0],
-                            #~ 'ref': vou.reference,
+                            'ref': invoices_ref,
                             'journal_id': line.payment_mode_id.id,
                         }
 
@@ -80,11 +87,11 @@ class account_voucher(osv.osv):
                     else:
                         raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with cash and box not open."))
             return True
-        
+
     def cancel_voucher(self, cr, uid, ids, context=None):
 
         statement_line_obj = self.pool.get('account.bank.statement.line')
-        
+
         for voucher in self.browse(cr, uid, ids, context=None):
             for statement_line in voucher.statement_bank_line_ids:
                 statement_line_obj.unlink(cr, uid, statement_line.id, context=None)
