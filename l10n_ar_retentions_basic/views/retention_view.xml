@@ -85,7 +85,7 @@
     <field name="model">retention.tax.line</field>
     <field name="type">tree</field>
     <field name="arch" type="xml">
-      <tree string="Retention Tax Lines">
+    <tree string="Retention Tax Lines">
           <field name="date"/>
           <field name="name"/>
           <field name="partner_id"/>
@@ -96,6 +96,8 @@
           <field name="base" sum="Base Total"/>
           <field name="state_id"/>
           <field name="company_id" groups="base.group_multi_company"/>
+          <field name="account_id" invisible="1"/>
+          <field name="payment_order_id" invisible="1"/>
       </tree>
     </field>
   </record>
@@ -116,6 +118,7 @@
                   <field name="date"/>
                   <field name="partner_id"/>
                   <field name="vat"/>
+                  <field name="account_id" invisible="1"/>
                 </group>
                 <group>
                   <field name="certificate_no"/>
@@ -162,7 +165,7 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_retention_tax_line_tree"/>
         <field name="context">{"search_default_applied":1}</field>
-        <field name="domain">[('payment_order_id.state','in',['posted'])]</field>
+        <field name="domain">[('payment_order_id.state','in',['cancel', 'posted'])]</field>
         <field name="search_view_id" ref="view_retention_tax_line_search" />
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">
@@ -178,7 +181,7 @@
         <field name="view_type">form</field>
         <field name="view_id" ref="view_retention_tax_line_tree"/>
         <field name="context">{"search_default_supported":1}</field>
-        <field name="domain">[('payment_order_id.state','in',['posted'])]</field>
+        <field name="domain">[('payment_order_id.state','in',['cancel', 'posted'])]</field>
         <field name="search_view_id" ref="view_retention_tax_line_search" />
         <field name="help" type="html">
           <p class="oe_view_nocontent_create">

@@ -310,12 +310,18 @@ class AccountPaymentOrder(models.Model):
                 self.journal_id.default_debit_account_id.id
         return account_id
 
-    def _get_payment_lines_amount(self):
+    @api.multi
+    def get_payment_lines_amount(self):
         return sum(self.payment_mode_line_ids.mapped('amount'))
+
+    @api.multi
+    def payment_order_amount_hook(self):
+        amount = self.get_payment_lines_amount()
+        return amount
 
     @api.onchange('payment_mode_line_ids')
     def onchange_payment_line(self):
-        amount = self._get_payment_lines_amount()
+        amount = self.payment_order_amount_hook()
         self.amount = amount
 
     @api.onchange('debt_line_ids')

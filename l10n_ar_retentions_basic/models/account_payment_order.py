@@ -64,18 +64,18 @@ class RetentionTaxLine(models.Model):
             else:
                 self.state_id = False
 
-    @api.model
+    @api.multi
     def create_voucher_move_line(self):
         """
         Params
         self = retention.tax.line
         """
         voucher = self.payment_order_id
+        self.ensure_one()
         retention = self
-        move_lines = []
 
         if retention.amount == 0.0:
-            return move_lines
+            return {}
 
         # Chequeamos si esta seteada la fecha,
         # sino le ponemos la fecha del voucher
@@ -88,8 +88,6 @@ class RetentionTaxLine(models.Model):
 
         tax_amount_in_company_currency = \
             voucher._convert_paid_amount_in_company_currency(retention.amount)
-        base_amount_in_company_currency = \
-            voucher._convert_paid_amount_in_company_currency(retention.base)
 
         debit = credit = 0.0
 
@@ -112,6 +110,8 @@ class RetentionTaxLine(models.Model):
             credit = 0.0
         sign = debit - credit < 0 and -1 or 1
 
+        self.apply_retention_sequence()
+
         # Creamos la linea contable perteneciente a la retencion
         move_line = {
             'name': retention.name or '/',
@@ -119,8 +119,6 @@ class RetentionTaxLine(models.Model):
             'credit': credit,
             'account_id': retention.account_id.id,
             'tax_line_id': retention.retention_id.tax_id.id,
-            'tax_amount': tax_amount_in_company_currency,
-            # 'move_id': move_id,
             'journal_id': voucher.journal_id.id,
             'period_id': voucher.period_id.id,
             'partner_id': voucher.partner_id.id,
@@ -132,33 +130,16 @@ class RetentionTaxLine(models.Model):
             'date_maturity': voucher.date_due
         }
 
-        move_lines.append(move_line)
+        return move_line
 
-        # ...y ahora creamos la linea contable perteneciente
-        # a la base imponible de la retencion
-        # Notar que credit & debit son 0.0 ambas.
-        # Lo que cuenta es el tax_code_id y el tax_amount
-        tax_ids = [(6, 0, [retention.retention_id.tax_id.id])]
-        move_line = {
-            'name': retention.name + '(Base Imp)',
-            # 'ref': voucher.name,
-            'debit': 0.0,
-            'credit': 0.0,
-            'account_id': retention.account_id.id,
-            'tax_ids': tax_ids,
-            'tax_amount': base_amount_in_company_currency,
-            # 'move_id': move_id,
-            'journal_id': voucher.journal_id.id,
-            'period_id': voucher.period_id.id,
-            'partner_id': voucher.partner_id.id,
-            'currency_id': False,
-            'amount_currency': 0.0,
-            'date': voucher.date,
-            'date_maturity': voucher.date_due
-        }
-
-        move_lines.append(move_line)
-        return move_lines
+    @api.multi
+    def apply_retention_sequence(self):
+        sequence_model = self.env['ir.sequence']
+        for rtl in self:
+            number = sequence_model.next_by_code('retention.applied')
+            rtl.write({
+                'certificate_no': number,
+            })
 
 
 class AccountPaymentOrder(models.Model):
@@ -171,30 +152,18 @@ class AccountPaymentOrder(models.Model):
                                     states={'draft': [('readonly', False)]})
 
     @api.multi
-    def _get_retention_amount(self):
-        amount = 0.0
-        for retention_line in self.retention_ids:
-            am = retention_line.amount
-            if am:
-                amount += float(am)
-        return amount
+    def get_retentions_amount(self):
+        return sum(self.retention_ids.mapped('amount'))
 
     @api.multi
-    def _get_amount_hook(self):
-        return 0
+    def payment_order_amount_hook(self):
+        amount = super().payment_order_amount_hook()
+        amount += self.get_retentions_amount()
+        return amount
 
-    @api.onchange('payment_mode_line_ids',
-                  'third_check_receipt_ids',
-                  'issued_check_ids',
-                  'third_check_ids',
-                  'retention_ids')
-    def onchange_amount_payment(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_third_checks_receipt_amount()
-        amount += self._get_third_checks_amount()
-        amount += self._get_issued_checks_amount()
-        amount += self._get_retention_amount()
-        amount += self._get_amount_hook()
+    @api.onchange('retention_ids')
+    def onchange_retentions(self):
+        amount = self.payment_order_amount_hook()
         self.amount = amount
 
     @api.multi
@@ -206,10 +175,8 @@ class AccountPaymentOrder(models.Model):
         for ret in voucher.retention_ids:
             res = ret.create_voucher_move_line()
             if res:
-                res[0]['move_id'] = move_id
-                res[1]['move_id'] = move_id
-                move_lines.append(res[0])
-                move_lines.append(res[1])
+                res['move_id'] = move_id
+                move_lines.append(res)
 
             # Escribimos valores del voucher en la retention tax line
             ret_vals = {

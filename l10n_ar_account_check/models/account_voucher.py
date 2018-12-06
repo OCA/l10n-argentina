@@ -52,95 +52,32 @@ class AccountPaymentOrder(models.Model):
         return res
 
     @api.multi
-    def _get_issued_checks_amount(self):
-        # TODO: testear que este metodo funcione
-        # issued_check_obj = self.pool.get('account.issued.check')
-        amount = 0.0
-        for check in self.issued_check_ids:
-            am = check.amount
-            if am:
-                amount += float(am)
-
-        # for check in self.issued_check_ids:
-        #     if check[0] == 4 and check[1] and not check[2]:
-        #         # am = issued_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
-        #         am = check.amount
-        #         if am:
-        #             amount += float(am)
-        #     if check[2]:
-        #         amount += check[2]['amount']
-        return amount
+    def get_issued_checks_amount(self):
+        return sum(self.issued_check_ids.mapped('amount'))
 
     @api.multi
-    def _get_third_checks_amount(self):
-        # TODO: testear que este metodo funcione
-        # third_check_obj = self.pool.get('account.third.check')
-        amount = 0.0
-        for check in self.third_check_ids:
-            am = check.amount
-            if am:
-                amount += am
-        # for check in self.third_check_ids:
-        #     if check[0] == 6 and check[2]:
-        #         for c in check[2]:
-        #             # am = third_check_obj.read(cr, uid, c, ['amount'], context=context)['amount']
-        #             am = check.amount
-        #             if am:
-        #                 amount += float(am)
-        return amount
+    def get_third_checks_amount(self):
+        return sum(self.third_check_ids.mapped('amount'))
 
     @api.multi
-    def _get_third_checks_receipt_amount(self):
-        # TODO: testear que este metodo funcione
-        # third_check_obj = self.pool.get('account.third.check')
-        amount = 0.0
+    def get_third_check_receipts_amount(self):
+        return sum(self.third_check_receipt_ids.mapped('amount'))
 
-        for check in self.third_check_receipt_ids:
-            am = check.amount
-            if am:
-                amount += am
-        # for check in self.third_check_ids:
-        #     if check[0] == 4 and check[1] and not check[2]:
-        #         # am = third_check_obj.read(cr, uid, check[1], ['amount'], context=context)['amount']
-        #         am = check.amount
-        #         if am:
-        #             amount += float(am)
-        #     if check[2]:
-        #         amount += check[2]['amount']
+    @api.onchange(
+        'third_check_ids',
+        'issued_check_ids',
+        'third_check_receipt_ids')
+    def onchange_checks(self):
+        amount = self.payment_order_amount_hook()
+        self.amount = amount
 
+    @api.multi
+    def payment_order_amount_hook(self):
+        amount = super().payment_order_amount_hook()
+        amount += self.get_issued_checks_amount()
+        amount += self.get_third_checks_amount()
+        amount += self.get_third_check_receipts_amount()
         return amount
-
-    @api.onchange('third_check_receipt_ids')
-    def onchange_third_receipt_checks(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_third_checks_receipt_amount()
-
-        self.amount = amount
-
-    @api.onchange('payment_mode_line_ids')
-    def onchange_payment_line(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_issued_checks_amount()
-        amount += self._get_third_checks_amount()
-        amount += self._get_third_checks_receipt_amount()
-
-        self.amount = amount
-
-    @api.onchange('issued_check_ids')
-    def onchange_issued_checks(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_issued_checks_amount()
-        amount += self._get_third_checks_amount()
-
-        self.amount = amount
-
-    @api.onchange('third_check_ids')
-    def onchange_third_checks(self):
-        amount = self._get_payment_lines_amount()
-        amount += self._get_issued_checks_amount()
-        amount += self._get_third_checks_amount()
-
-        self.amount = amount
 
     @api.multi
     def unlink(self):
@@ -204,19 +141,6 @@ class AccountPaymentOrder(models.Model):
                 check.write(vals)
 
         return move_lines
-
-#    def add_precreated_check(self, cr, uid, ids, context=None):
-#        third_obj = self.pool.get('account.third.check')
-#
-#        partner_id = self.read(cr, uid, ids[0], ['partner_id'], context)['partner_id'][0]
-#        # Buscamos todos los cheques de terceros del partner del voucher
-#        # y que esten en estado 'draft'
-#        check_ids = third_obj.search(cr, uid, [('source_partner_id','=',partner_id), ('state','=','draft'),('payment_order_id','=',False)], context=context)
-#
-#        if check_ids:
-#            third_obj.write(cr, uid, check_ids, {'payment_order_id': ids[0]}, context)
-#
-#        return True
 
     @api.multi
     def cancel_voucher(self):

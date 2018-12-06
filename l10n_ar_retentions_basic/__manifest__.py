@@ -27,7 +27,6 @@
         "sale",
         "purchase",
         "l10n_ar_account_payment_order",
-        "l10n_ar_account_check",
         "l10n_ar_point_of_sale",
     ],
     "author": "E-MIPS,Odoo Community Association (OCA)",
