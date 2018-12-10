@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data noupdate="1">
 
         <record id="denomination_A" model="invoice.denomination" forcecreate="0">
@@ -65,4 +65,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>

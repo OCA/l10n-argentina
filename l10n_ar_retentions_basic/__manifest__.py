@@ -29,9 +29,9 @@
         "l10n_ar_account_payment_order",
         "l10n_ar_point_of_sale",
     ],
-    "author": "E-MIPS,Odoo Community Association (OCA)",
-    "website": "http://e-mips.com.ar",
-    "license": "GPL-3",
+    "author": "Eynes/E-MIPS",
+    "website": "http://eynes.com.ar",
+    "license": "AGPL-3",
     "category": "Localisation Modules",
     "description": """
     This module provides:
@@ -45,4 +45,5 @@
         'views/menuitems.xml',
     ],
     'installable': True,
+    'application': True,
 }

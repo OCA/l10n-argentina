@@ -159,7 +159,7 @@ class PerceptionPerception(models.Model):
         if self.check_sit_iibb:
             _logger.info("Chequeo de situacion IIBB activado")
             multilateral = self.env.ref(
-                "l10n_ar_perceptions.iibb_situation_multilateral")
+                "l10n_ar_point_of_sale.iibb_situation_multilateral")
             if sit_iibb == multilateral:
                 _logger.info("Partner es Convenio Multilateral, " +
                              "aplica Percepcion %s", self.name)
@@ -543,9 +543,3 @@ class PerceptionTaxApplication(models.Model):
         amount *= (1 - excluded_percent)
 
         return base, amount
-
-
-class IIBBSituation(models.Model):
-    _name = 'iibb.situation'
-
-    name = fields.Char(string='Name', required=True)

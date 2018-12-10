@@ -4,9 +4,10 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ###############################################################################
 
-from . import pos_ar  # noqa
-from . import sale  # noqa
-from . import invoice  # noqa
-from . import partner  # noqa
-from . import account  # noqa
-from . import iibb_situation  # noqa
+from odoo import fields, models
+
+
+class IIBBSituation(models.Model):
+    _name = 'iibb.situation'
+
+    name = fields.Char(string='Name', required=True)

@@ -22,6 +22,7 @@
     "category": "Accounting & Finance",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
+    "website": "http://eynes.com.ar",
     "license": "AGPL-3",
     "description": "Implementación del Cálculo Automático de Retenciones en Argentina",  # noqa
     "depends": [
@@ -29,14 +30,13 @@
         "l10n_ar_point_of_sale",
         "l10n_ar_account_payment_order",
         "l10n_ar_retentions_basic",
-        "l10n_ar_account_check",
-        "l10n_ar_perceptions",
     ],
     "data": [
-        'views/retention_sequence.xml',
+        'data/retention_sequence.xml',
         'views/retention_view.xml',
         'views/partner_view.xml',
-        'views/voucher_payment_receipt_view.xml',
+        'views/payment_order_view.xml',
+        'views/menuitems.xml',
         'security/ir.model.access.csv',
     ],
     "installable": True,

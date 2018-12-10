@@ -6,9 +6,9 @@
 import logging
 from pprint import pformat as pf
 
-from openerp import models, fields, api
-from openerp.exceptions import except_orm
-from openerp.tools.translate import _
+from odoo import models, fields, api
+from odoo.exceptions import except_orm
+from odoo.tools.translate import _
 
 _logger = logging.getLogger()
 

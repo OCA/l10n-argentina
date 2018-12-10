@@ -56,6 +56,11 @@
                 parent="menu_tax_subroot" sequence="1"/>
             <menuitem id="account.menu_action_account_fiscal_position_form"
                 parent="menu_tax_subroot" sequence="3"/>
+            <menuitem id="menu_iibb_situation"
+                name="IIBB Situations"
+                parent="menu_tax_subroot"
+                sequence="120"
+                action="action_iibb_situation"/>
 
         <menuitem id="menu_invoicing_subroot"
             name="Invoicing"

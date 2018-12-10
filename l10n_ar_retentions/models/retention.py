@@ -101,7 +101,7 @@ class retention_retention(models.Model):
         if self.check_sit_iibb:
             _logger.info("Chequeo de situacion IIBB activado")
             multilateral = self.env.ref(
-                "l10n_ar_perceptions.iibb_situation_multilateral")
+                "l10n_ar_point_of_sale.iibb_situation_multilateral")
             if sit_iibb == multilateral:
                 _logger.info("Partner es Convenio Multilateral, " +
                              "aplica Retencion %s", self.name)

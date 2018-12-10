@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="perception_perception_concepts_menu"
+            name="Concepts"
+            parent="l10n_ar_perceptions_basic.perception_root_menu"
+            action="action_perception_concept_tree"
+            sequence="10"/>
+        <menuitem id="perception_perception_activities_menu"
+            name="Activities"
+            parent="l10n_ar_perceptions_basic.perception_root_menu"
+            action="action_perception_activity_tree"
+            sequence="15"/>
+
+    </data>
+</odoo>

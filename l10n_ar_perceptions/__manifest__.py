@@ -18,30 +18,24 @@
 ###############################################################################
 
 {
-    "name": "Point of Sale ARGENTINA",
+    "name": "L10N AR Perceptions",
     "category": "Accounting & Finance",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
     "website": "http://eynes.com.ar",
     "license": "AGPL-3",
-    "description": "Normativas básicas para la Facturación Argentina",  # noqa
+    "description": "Implementación del Cálculo Automático de Percepciones en Argentina",  # noqa
     "depends": [
         "base",
         "sale_stock",
-        "sale",
-        "purchase",
-        "account",
-        "account_voucher",
-        "base_vat_ar"
+        "l10n_ar_point_of_sale",
+        "l10n_ar_perceptions_basic",
     ],
     "data": [
-        'data/partner_data.xml',
-        'data/iibb_situation_data.xml',
-        'views/pos_ar_view.xml',
-        'views/account_invoice_view.xml',
+        'data/perception_data.xml',
+        'views/perception_view.xml',
         'views/partner_view.xml',
-        'views/account_view.xml',
-        'views/iibb_situation_view.xml',
+        'views/account_invoice_view.xml',
         'views/menuitems.xml',
         'security/ir.model.access.csv',
     ],

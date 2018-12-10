@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="iibb_situation_view_tree" model="ir.ui.view">
+            <field name="name">iibb.situation.tree</field>
+            <field name="model">iibb.situation</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Iibb Situation" delete="false" editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_iibb_situation">
+            <field name="name">IIBB Situations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">iibb.situation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+    </data>
+</odoo>

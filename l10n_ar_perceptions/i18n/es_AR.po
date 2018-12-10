@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.3\n"
-"Report-Msgid-Bugs-To: support@openerp.com\n"
+"Report-Msgid-Bugs-To: support@odoo.com\n"
 "POT-Creation-Date: 2013-08-24 00:09+0000\n"
 "PO-Revision-Date: 2013-08-23 23:35-0300\n"
 "Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
