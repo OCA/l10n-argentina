@@ -1,0 +1,555 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_perceptions
+# <Sebastian Kennedy> <skennedy@e-mips.com.ar>, 2013.
+# Sebastian Kennedy <skennedy@e-mips.com.ar>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-08-24 00:09+0000\n"
+"PO-Revision-Date: 2013-08-23 23:35-0300\n"
+"Last-Translator: Sebastian Kennedy <skennedy@e-mips.com.ar>\n"
+"Language-Team: Spanish; Castilian <>\n"
+"Language: es_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.tax.application,calculation_base:0
+msgid "Rate Proportional VAT"
+msgstr "Tasa Proporcional al IVA"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.activity,type:0 selection:perception.concept,type:0
+#: selection:perception.perception,type:0
+#: selection:perception.tax.application,type:0
+msgid "Profit"
+msgstr "Ganancias"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.perception,applicable_state:0
+msgid "Destination"
+msgstr "Destino"
+
+#. module: l10n_ar_perceptions
+#: help:perception.perception,applicable_state:0
+msgid ""
+"Indicates if this Perception is applicable when:\n"
+"* State/Province is equals to source address\n"
+"* State/Province is equals to destination address\n"
+"* Always"
+msgstr ""
+"Indica si la Percepción es aplicable cuando:\n"
+"* Jurisdicción/Provincia es el mismo que el de la dirección de Origen de la "
+"mercadería\n"
+"* Jurisdicción/Provincia es el mismo que el de la dirección de Destino de la "
+"mercadería\n"
+"* Siempre"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,calculation_base:0
+msgid "Calculation Base"
+msgstr "Base de Cálculo"
+
+#. module: l10n_ar_perceptions
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique !"
+msgstr "¡La referencia del pedido debe ser única!"
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+#: field:perception.perception,vat_application_ids:0
+msgid "VAT Tax Application"
+msgstr "Aplicación Impuesto IVA"
+
+#. module: l10n_ar_perceptions
+#: field:product.product,per_other_concept_id:0
+msgid "Perception Other Concept"
+msgstr "Concepto de Otra Percepción"
+
+#. module: l10n_ar_perceptions
+#: help:perception.vat.tax,rate:0
+msgid ""
+"Rate from 1.0 to 0.0. This is the proportion of percent applied to base "
+"amount of this tax."
+msgstr ""
+"Rango de 1.0 a 0.0. Esta es la proporción del porcentaje aplicado a la base "
+"del impuesto."
+
+#. module: l10n_ar_perceptions
+#: view:perception.activity:0 field:perception.activity,notes:0
+#: view:perception.concept:0 field:perception.concept,notes:0
+#: view:perception.perception:0 field:perception.perception,notes:0
+msgid "Notes"
+msgstr "Notas"
+
+#. module: l10n_ar_perceptions
+#: view:res.partner:0
+msgid "Perceptions to Apply"
+msgstr "Percepciones para aplicar"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_perception_tax_application
+msgid "perception.tax.application"
+msgstr "Aplicación de Impuesto Percepción"
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+msgid "General Resolution Associated"
+msgstr "Resolución asociada"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.activity,type:0 selection:perception.concept,type:0
+#: selection:perception.perception,type:0
+#: selection:perception.tax.application,type:0
+msgid "VAT"
+msgstr "IVA"
+
+#. module: l10n_ar_perceptions
+#: constraint:res.partner:0
+msgid "The Vat does not seems to be correct."
+msgstr "El CUIT no parece ser el correcto."
+
+#. module: l10n_ar_perceptions
+#: view:perception.activity:0
+msgid "Perception Activities"
+msgstr "Actividades (Percepción)"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,exclude_tax_allowance:0
+msgid "Exclude Tax Allowance"
+msgstr "Excluír Mínimo No Imponible"
+
+#. module: l10n_ar_perceptions
+#: field:product.product,per_profit_concept_id:0
+msgid "Perception Profit Concept"
+msgstr "Concepto Percepción de Ganancias"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:170
+#, python-format
+msgid "Warning!"
+msgstr "Atención!"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_perception_perception
+#: model:ir.ui.menu,name:l10n_ar_perceptions.perception_root_menu
+msgid "Perception Configuration"
+msgstr "Configuración de la percepción"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_res_partner
+#: field:res.partner.perception,partner_id:0
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_sale_order
+msgid "Sales Order"
+msgstr "Pedido de venta"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,percent:0
+#: field:res.partner.perception,percent:0
+msgid "Percent"
+msgstr "Porcentaje"
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+#: field:perception.perception,gi_application_ids:0
+msgid "Gross Income Tax Application"
+msgstr "Aplicación de Impuesto de II BB"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.perception,applicable_state:0
+msgid "Source"
+msgstr "Origen"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_res_partner_perception
+msgid "Perception Defined in Partner"
+msgstr "Percepción definida en la empresa"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.tax.application,calculation_base:0
+msgid "User Defined"
+msgstr "Definido por Usuario"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_stock_picking
+msgid "Picking List"
+msgstr "Remito"
+
+#. module: l10n_ar_perceptions
+#: field:perception.activity,type:0 field:perception.concept,type:0
+#: field:perception.perception,type:0 field:perception.tax.application,type:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ar_perceptions
+#: field:perception.perception,applicable_state:0
+msgid "Applicable State"
+msgstr "Jurisdicción Aplicable"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,perception_id:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: l10n_ar_perceptions
+#: model:ir.module.module,description:l10n_ar_perceptions.module_meta_information
+msgid ""
+"\n"
+"    This module provide :\n"
+"    A complete and complex configuration of Perceptions.\n"
+"    "
+msgstr ""
+"\n"
+"    Este módulo provee :\n"
+"    Una completa y complejo configuración de Percepciones.\n"
+"    "
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+msgid "Other Information"
+msgstr "Otra Información"
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+msgid "Configuration"
+msgstr "Configuración"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.tax.application,calculation_base:0
+msgid "Invoice Net Untaxed"
+msgstr "Neto No Gravado"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.line,manual:0
+msgid "Manual"
+msgstr "Manual"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,user_defined_base:0
+msgid "User Defined Base Calculation"
+msgstr "Base de Cálculo definida por usuario"
+
+#. module: l10n_ar_perceptions
+#: field:perception.perception,general_resolution:0
+msgid "GR Number"
+msgstr "Número de IIBB"
+
+#. module: l10n_ar_perceptions
+#: field:res.partner.perception,perception_type:0
+msgid "Perception Type"
+msgstr "Tipo de Percepción"
+
+#. module: l10n_ar_perceptions
+#: view:account.invoice:0 field:perception.tax.application,concept_id:0
+#: field:perception.tax.line,concept_id:0
+msgid "Concept"
+msgstr "Concepto"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:200
+#: code:addons/l10n_ar_perceptions/perception.py:203
+#, python-format
+msgid "Perception Error!"
+msgstr "Error de Percepción!"
+
+#. module: l10n_ar_perceptions
+#: view:perception.activity:0
+msgid "Perception Activity"
+msgstr "Actividad de Percepción"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Línea de factura"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_perception_activity
+msgid "Perception Gross Income Activity"
+msgstr "Actividad de Percepción de II BB"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_perception_vat_tax
+msgid "VAT Taxes for Perception Calculation"
+msgstr "Impuestos para el cálculo de la percepción"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:129
+#, python-format
+msgid "There is no State/Province configured for this Company"
+msgstr "No hay configurado una Provincia para esta compañía"
+
+#. module: l10n_ar_perceptions
+#: field:account.invoice,address_shipping_id:0
+msgid "Shipping Address"
+msgstr "Dirección de Envío"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,activity_id:0
+#: field:res.partner.perception,activity_id:0
+msgid "Activity"
+msgstr "Actividad"
+
+#. module: l10n_ar_perceptions
+#: help:perception.tax.application,exclude_tax_allowance:0
+msgid "Check this if Tax Allowance should be excluded from calculated Base"
+msgstr ""
+"Chequee esto si el Mínimo No Imponible debería excluírse de la Base de "
+"Cálculo"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,tax_minimum:0
+msgid "Tax Minimum"
+msgstr "Impuesto Mínimo"
+
+#. module: l10n_ar_perceptions
+#: field:perception.perception,code:0
+msgid "AFIP Code"
+msgstr "Código de AFIP"
+
+#. module: l10n_ar_perceptions
+#: field:res.partner.perception,perception_id:0
+msgid "Perception"
+msgstr "Percepción"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:170
+#, python-format
+msgid ""
+"Partner has no Delivery State configured. To compute Perception, is needed "
+"to know Delivery State. Please, configure a Partner Address."
+msgstr ""
+"La empresa no tiene la dirección de envío configurada. Para calcular las "
+"percepciones es necesario conocer estos datos. Por favor, configure una "
+"dirección de envío."
+
+#. module: l10n_ar_perceptions
+#: field:perception.vat.tax,tax_id:0
+msgid "VAT Tax"
+msgstr "Impuesto de IVA"
+
+#. module: l10n_ar_perceptions
+#: field:perception.vat.tax,application_id:0
+msgid "Perception Tax Application"
+msgstr "Aplicación Impuesto Percepción"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:92
+#, python-format
+msgid "Error in expression"
+msgstr "Error en la expresión"
+
+#. module: l10n_ar_perceptions
+#: field:res.partner,perception_ids:0
+msgid "Defined Perceptions"
+msgstr "Percepciones definidas"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.activity,type:0 selection:perception.concept,type:0
+#: selection:perception.perception,type:0
+#: selection:perception.tax.application,type:0
+msgid "Gross Income"
+msgstr "Ingresos Brutos"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:200
+#, python-format
+msgid ""
+"There is no configured a Perception Application (%s) that corresponds to\n"
+"Activity: %s \n"
+"Concept: %s\n"
+" for the Product %s"
+msgstr ""
+"No hay configurado una Aplicación de Percepción (%s) que se corresponda a\n"
+"Actividad: %s \n"
+"Concepto: %s\n"
+" para el Producto %s"
+
+#. module: l10n_ar_perceptions
+#: help:perception.tax.application,tax_minimum:0
+msgid "Perception is performed when the amount thereof exceeds this value."
+msgstr ""
+"La percepción se lleva a cabo cuando el valor de la misma excede este valor."
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+#: field:perception.perception,profit_application_ids:0
+msgid "Profit Tax Application"
+msgstr "Aplicación de Impuesto Ganancias"
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0
+msgid "Tax Application"
+msgstr "Aplicación del impuesto"
+
+#. module: l10n_ar_perceptions
+#: field:product.product,per_gi_concept_id:0
+msgid "Perception Gross Income Concept"
+msgstr "Concepto de Percepción de II BB"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.tax.application,calculation_base:0
+msgid "Invoice Total"
+msgstr "Total de Factura"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_account_invoice_tax
+msgid "Invoice Tax"
+msgstr "Impuestos sobre Factura"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_perception_tax_line
+msgid "Perception Tax Line"
+msgstr "Línea de impuesto de la percepción"
+
+#. module: l10n_ar_perceptions
+#: view:perception.perception:0 field:perception.tax.application,vat_tax_ids:0
+msgid "VAT Taxes for Calculation"
+msgstr "Impuestos sobre el IVA para el cálculo"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_account_invoice
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ar_perceptions
+#: view:perception.concept:0
+msgid "Perception Concept"
+msgstr "Concepto de Percepción"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.tax.application,calculation_base:0
+msgid "Invoice Net Taxed"
+msgstr "Neto Gravado"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.activity,type:0 selection:perception.concept,type:0
+#: selection:perception.perception,type:0
+msgid "Other"
+msgstr "Otro"
+
+#. module: l10n_ar_perceptions
+#: field:perception.tax.application,tax_allowance:0
+msgid "Tax Allowance"
+msgstr "Mínimo No Imponible"
+
+#. module: l10n_ar_perceptions
+#: model:ir.actions.act_window,name:l10n_ar_perceptions.action_perception_activity_tree
+#: model:ir.ui.menu,name:l10n_ar_perceptions.perception_perception_activities_menu
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.tax.application,calculation_base:0
+msgid "Invoice Subtotal"
+msgstr "Subtotal"
+
+#. module: l10n_ar_perceptions
+#: field:perception.activity,name:0 field:perception.concept,name:0
+#: field:perception.tax.application,name:0
+msgid "Description"
+msgstr "Descripción"
+
+#. module: l10n_ar_perceptions
+#: field:product.product,per_vat_concept_id:0
+msgid "Perception VAT Concept"
+msgstr "Concepto de Percepción de IVA"
+
+#. module: l10n_ar_perceptions
+#: field:perception.activity,code:0 field:perception.concept,code:0
+msgid "Code"
+msgstr "Código"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:129
+#, python-format
+msgid "Company Configuration Error!"
+msgstr "Error en Configuración de Compañía!"
+
+#. module: l10n_ar_perceptions
+#: model:ir.ui.menu,name:l10n_ar_perceptions.perception_perceptions_menu
+#: view:perception.perception:0 view:product.product:0 view:res.partner:0
+msgid "Perceptions"
+msgstr "Percepciones"
+
+#. module: l10n_ar_perceptions
+#: selection:perception.perception,applicable_state:0
+msgid "Always"
+msgstr "Siempre"
+
+#. module: l10n_ar_perceptions
+#: code:addons/l10n_ar_perceptions/perception.py:203
+#, python-format
+msgid ""
+"There is more than one Perception Application (%s) configured that "
+"corresponds to\n"
+"Activity: %s \n"
+"Concept: %s\n"
+" for the Product %s"
+msgstr ""
+"Existe más de una Aplicación de Percepción (%s) configurada que corresponda "
+"a \n"
+"Actividad: %s \n"
+"Concepto: %s\n"
+" para este Producto %s"
+
+#. module: l10n_ar_perceptions
+#: view:product.product:0
+msgid "VAT Perceptions"
+msgstr "Percepciones de IVA"
+
+#. module: l10n_ar_perceptions
+#: model:ir.actions.act_window,name:l10n_ar_perceptions.action_perception_concept_tree
+#: model:ir.ui.menu,name:l10n_ar_perceptions.perception_perception_concepts_menu
+msgid "Concepts"
+msgstr "Conceptos"
+
+#. module: l10n_ar_perceptions
+#: help:perception.tax.application,tax_allowance:0
+msgid "Perception will be calculated over this amount."
+msgstr "La Percepción será calculada sobre esta cantidad."
+
+#. module: l10n_ar_perceptions
+#: model:ir.module.module,shortdesc:l10n_ar_perceptions.module_meta_information
+msgid "Extended configuration for Perceptions for ARGENTINA"
+msgstr "Configuración de Percepciones Extendida para ARGENTINA"
+
+#. module: l10n_ar_perceptions
+#: help:perception.tax.application,percent:0
+msgid "Percent to Apply if the Partner is inscripted in the Tax"
+msgstr "Porcentaje a Aplicar si el Partner está inscripto en este impuesto"
+
+#. module: l10n_ar_perceptions
+#: model:ir.model,name:l10n_ar_perceptions.model_perception_concept
+#: view:perception.concept:0
+msgid "Perception Concepts"
+msgstr "Conceptos de Percepción"
+
+#. module: l10n_ar_perceptions
+#: field:perception.vat.tax,rate:0
+msgid "Rate"
+msgstr "Rango"
+
+#. module: l10n_ar_perceptions
+#: constraint:product.product:0
+msgid "Error: Invalid ean code"
+msgstr "Error: Código EAN no válido"
+
+#. module: l10n_ar_perceptions
+#: view:res.partner:0
+msgid "Accounting"
+msgstr "Contabilidad"

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_vendor_payment_retention_form_extended_inherit" model="ir.ui.view">
+            <field name="name">account.payment.order.retention.form.inherit</field>
+            <field name="model">account.payment.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="l10n_ar_retentions_basic.view_vendor_payment_retention_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="name" position="after">
+                        <field name="date_effective"/>
+                        <field name="receipt_number"/>
+                        <field name="disable_retentions"
+                            attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    </field>
+                    <xpath expr="//field[@name='retention_ids']" position="attributes">
+                        <attribute name="force_save">1</attribute>
+                        <attribute name="attrs">{'readonly': [('disable_retentions', '=', False)]}</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='retention_ids']/tree/field[@name='retention_id']" position="after">
+                        <field name="taxapp_id" invisible="1"/>
+                        <field name="date_applied"/>
+                        <field name="concept_id"/>
+                        <field name="invoice_ref"/>
+                        <field name="invoice_id" invisible="1"/>
+                        <field name="manual" invisible="1"/>
+                        <field name="reg_code" invisible="1"/>
+                        <field name="excluded_percent" invisible="1"/>
+                        <field name="exclusion_date_certificate" invisible="1"/>
+                    </xpath>
+                    <xpath expr="//field[@name='retention_ids']/form" position="replace">
+                        <form string="Retention Lines" name="retention_lines_form">
+                            <h1>
+                                <field name="name" class="oe_inline"/>
+                            </h1>
+                            <group>
+                                <group string="Information" name="info">
+                                    <field name="state_id" invisible="1"/>
+                                    <field name="retention_id" domain="[('type_tax_use', '=', 'sale')]"
+                                        attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                    <field name="certificate_no"
+                                        attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                    <field name="state_id"
+                                        attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                    <field name="date"
+                                        attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                    <label string="Keep it empty if the date is the same as the voucher." class="oe_grey"/>
+                                </group>
+                                <group string="Amounts" name="amount">
+                                    <field name="base"
+                                        attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                    <field name="amount"
+                                        attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                    <field name="account_id" invisible="1"/>
+                                </group>
+                            </group>
+                            <group string="Moves Information" name="moves">
+                                <field name="manual" colspan="1" invisible="1"/>
+                                <field name="concept_id" colspan="1"
+                                    attrs="{'readonly': [('parent.disable_retentions', '=', False)]}"/>
+                                <field name="move_line_ids" readonly="1" colspan="4" nolabel="1">
+                                    <separator string="Move Lines"/>
+                                    <tree string="Included Lines">
+                                        <field name="name"/>
+                                        <field name="move_id"/>
+                                        <field name="date"/>
+                                        <field name="date_maturity"/>
+                                        <field name="invoice_id"/>
+                                        <field name="amount_residual"/>
+                                        <field name="balance"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </form>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_retention_tax_line_tree_inherit1" model="ir.ui.view">
+            <field name="name">retention.tax.line.tree.inherit1</field>
+            <field name="model">retention.tax.line</field>
+            <field name="inherit_id" ref="l10n_ar_retentions_basic.view_retention_tax_line_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name="voucher_number" position="after">
+                    <field name="invoice_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_retention_tax_line_form_inherit" model="ir.ui.view">
+            <field name="name">retention.tax.line.form.inherit</field>
+            <field name="model">retention.tax.line</field>
+            <field name="inherit_id" ref="l10n_ar_retentions_basic.view_retention_tax_line_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="voucher_number" position="after">
+                    <field name="concept_id" />
+                    <field name="retention_id" invisible="True"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

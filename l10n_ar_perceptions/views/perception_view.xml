@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+  <!-- *************************** -->
+  <!-- * Perception Configuration * -->
+  <!-- *************************** -->
+  <!-- Form View for perception.perception -->
+    <delete model="ir.ui.view" search="[('name','=','perception.perception.form')]" />
+
+    <record id="view_perception_perception_form" model="ir.ui.view">
+        <field name="name">perception.perception.auto.form</field>
+        <field name="model">perception.perception</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Perceptions">
+                <sheet>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Perception"/>
+                        <h1><field name="name" placeholder="Perception Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Tax Information">
+                            <field name="tax_id" select="1"/>
+                            <field name="type_tax_use" select="1"/>
+                        </group>
+                        <group string="Jurisdiction Information">
+                            <field name="jurisdiccion" select="1"/>
+                            <field name="state_id" select="1" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
+                            <field name="applicable_state" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
+                            <field name="applicable_location"
+                                attrs="{'invisible': ['|', ('jurisdiccion', '!=', 'provincial'), ('applicable_state', 'not in', ['source', 'dest'])],
+                                'required': [('applicable_state', 'in', ['source', 'dest'])]}"/>
+                        </group>
+                        <group string="Usability Configuration">
+                            <field name="check_sit_iibb" attrs="{'invisible':[('jurisdiccion','!=','provincial')]}"/>
+                            <field name="always_apply_padron"/>
+                        </group>
+                        <group string="Other Info">
+                            <field name="code"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Tax Application">
+                            <group colspan="4" col="6">
+                                <field name="type" colspan="6"/>
+                            </group>
+
+                            <separator string="Tax Application"/>
+                            <field name="vat_application_ids" nolabel="1" colspan="4" attrs="{'invisible':[('type','!=','vat')]}" context="{'default_type':'vat'}">
+                                <tree string="VAT Tax Application">
+                                    <field name="reg_code"/>
+                                    <field name="activity_id"/>
+                                    <field name="concept_id"/>
+                                    <field name="tax_allowance"/>
+                                    <field name="exclude_tax_allowance"/>
+                                    <field name="calculation_base" required="1"/>
+                                    <field name="tax_minimum" />
+                                    <!--<field name="aliq_type" required="1"/>-->
+                                    <field name="percent"/>
+                                    <field name="type" invisible="1"/>
+                                </tree>
+                                <form string="VAT Tax Application">
+                                    <group>
+                                        <field name="activity_id" domain="[('type','=','vat')]"/>
+                                        <field name="concept_id" domain="[('type','=','vat')]"/>
+                                        <field name="tax_allowance" />
+                                        <field name="exclude_tax_allowance" />
+                                        <field name="calculation_base" required="1"/>
+                                        <field name="tax_minimum" />
+                                        <!--<field name="aliq_type" required="1"/>-->
+                                        <field name="percent"/>
+                                        <field name="name" />
+                                        <field name="reg_code"/>
+                                        <field name="type" invisible="1"/>
+                                    </group>
+
+                                    <group name="proportional" colspan="4" attrs="{'invisible':[('calculation_base','!=','proportional_vat')]}">
+                                        <separator string="Configuration" colspan="4"/>
+                                        <field name="vat_tax_ids" nolabel="1">
+                                            <tree editable="bottom" string="VAT Taxes for Calculation">
+                                                <field name="tax_id"/>
+                                                <field name="rate"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                </form>
+                            </field>
+
+                            <field name="gi_application_ids" nolabel="1" colspan="4" attrs="{'invisible':[('type','!=','gross_income')]}" context="{'default_type':'gross_income'}">
+                                <tree string="Gross Income Tax Application">
+                                    <field name="reg_code"/>
+                                    <field name="activity_id"/>
+                                    <field name="concept_id"/>
+                                    <field name="tax_allowance"/>
+                                    <field name="exclude_tax_allowance"/>
+                                    <field name="calculation_base" required="1"/>
+                                    <field name="tax_minimum" />
+                                    <!--<field name="aliq_type" required="1"/>-->
+                                    <field name="percent"/>
+                                    <field name="sit_iibb"/>
+                                    <field name="type" invisible="1"/>
+                                </tree>
+                                <form string="Gross Income Tax Application">
+                                    <group>
+                                        <field name="activity_id" domain="[('type','=','gross_income')]"/>
+                                        <field name="concept_id" domain="[('type','=','gross_income')]"/>
+                                        <field name="tax_allowance" />
+                                        <field name="exclude_tax_allowance" />
+                                        <field name="calculation_base" required="1"/>
+                                        <field name="tax_minimum" />
+                                        <!--<field name="aliq_type" required="1"/>-->
+                                        <field name="percent"/>
+                                        <field name="name" />
+                                        <field name="reg_code"/>
+                                        <field name="sit_iibb"/>
+                                        <field name="type" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+
+                            <field name="profit_application_ids" nolabel="1" colspan="4" attrs="{'invisible':[('type','!=','profit')]}" context="{'default_type':'profit'}" >
+                                <tree string="Profit Tax Application">
+                                    <field name="reg_code"/>
+                                    <field name="activity_id"/>
+                                    <field name="concept_id"/>
+                                    <field name="tax_allowance" />
+                                    <field name="exclude_tax_allowance" />
+                                    <field name="calculation_base" required="1"/>
+                                    <field name="tax_minimum" />
+                                    <!--<field name="aliq_type" required="1"/>-->
+                                    <field name="percent"/>
+                                    <field name="type" invisible="1"/>
+                                </tree>
+                                <form string="Profit Tax Application">
+                                    <group>
+                                        <field name="activity_id" domain="[('type','=','profit')]"/>
+                                        <field name="concept_id" domain="[('type','=','profit')]"/>
+                                        <field name="tax_allowance" />
+                                        <field name="exclude_tax_allowance" />
+                                        <field name="calculation_base" required="1"/>
+                                        <field name="tax_minimum" />
+                                        <!--<field name="aliq_type" required="1"/>-->
+                                        <field name="percent"/>
+                                        <field name="name" />
+                                        <field name="reg_code"/>
+                                        <field name="type" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Other Information">
+                            <field name="general_resolution" string="General Resolution Associated"/>
+                            <newline/>
+                            <separator string="Notes" colspan="4"/>
+                            <field name="notes" nolabel="1" colspan="4"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- *********************** -->
+    <!-- * perception Concepts * -->
+    <!-- *********************** -->
+    <record id="view_perception_concept_form" model="ir.ui.view">
+      <field name="name">perception.concept.form</field>
+      <field name="model">perception.concept</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Perception Concept">
+          <group>
+            <group>
+              <field name="code"/>
+              <field name="type"/>
+            </group>
+            <group>
+              <field name="name" select="1"/>
+              <field name="no_subject"/>
+            </group>
+          </group>
+          <separator string="Accounts Associated"/>
+          <field name="account_ids">
+            <tree>
+              <field name="name"/>
+              <field name="code"/>
+              <field name="internal_type"/>
+              <field name="user_type_id"/>
+              </tree>
+          </field>
+          <separator string="Notes"/>
+          <field name="notes" colspan="4" nolabel="1"/>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_perception_concept_tree" model="ir.ui.view">
+      <field name="name">perception.concept.tree</field>
+      <field name="model">perception.concept</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Perception Concepts">
+          <field name="code"/>
+          <field name="type"/>
+          <field name="name"/>
+          <field name="no_subject"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_perception_concept_tree">
+      <field name="name">Concepts</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">perception.concept</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+  <!-- ************************ -->
+  <!-- * perception Activities * -->
+  <!-- ************************ -->
+    <record id="view_perception_activity_form" model="ir.ui.view">
+      <field name="name">perception.activity.form</field>
+      <field name="model">perception.activity</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Perception Activity">
+          <field name="code" select="1"/>
+          <field name="type" select="1"/>
+          <field name="name" select="1"/>
+          <separator string="Notes" colspan="4"/>
+          <field name="notes" colspan="4" nolabel="1"/>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_perception_activity_tree" model="ir.ui.view">
+      <field name="name">perception.activity.tree</field>
+      <field name="model">perception.activity</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Perception Activities" editable="bottom">
+          <field name="code"/>
+          <field name="type"/>
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_perception_activity_tree">
+      <field name="name">Activities</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">perception.activity</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+  <!-- *********************** -->
+  <!-- * Perception Tax Lines * -->
+  <!-- *********************** -->
+    <record id="view_perception_tax_line_concept_tree" model="ir.ui.view">
+        <field name="name">perception.tax.line.concept.tree</field>
+        <field name="model">perception.tax.line</field>
+        <field name="type">tree</field>
+        <field name="inherit_id" ref="l10n_ar_perceptions_basic.view_perception_tax_line_tree"/>
+        <field name="arch" type="xml">
+            <data>
+                <field name="date" position="after">
+                    <field name="reg_code"/>
+                    <field name="concept_id"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record id="view_perception_tax_line_concept_search" model="ir.ui.view">
+        <field name="name">perception.tax.line.concept.search</field>
+        <field name="model">perception.tax.line</field>
+        <field name="inherit_id" ref="l10n_ar_perceptions_basic.view_perception_tax_line_search"/>
+        <field name="arch" type="xml">
+            <data>
+                <field name="invoice_id" position="before">
+                    <field name="concept_id"/>
+                    <field name="reg_code"/>
+                </field>
+                <filter name="group_date" position="after">
+                    <filter string="Concept" name="group_concept" domain="[]"  context="{'group_by':'concept_id'}"/>
+                    <filter string="Reg. Code" name="group_code" domain="[]"  context="{'group_by':'reg_code'}"/>
+                </filter>
+            </data>
+        </field>
+    </record>
+
+  <!-- *********************** -->
+  <!-- * Perception Tax Lines * -->
+  <!-- *********************** -->
+    <record id="iibb_situation_view_tree" model="ir.ui.view">
+      <field name="name">iibb.situation.tree</field>
+      <field name="model">iibb.situation</field>
+      <field name="priority" eval="16"/>
+      <field name="arch" type="xml">
+          <tree string="Iibb Situation" delete="false" editable="bottom">
+              <field name="name"/>
+          </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_iibb_situation">
+      <field name="name">IIBB Situations</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">iibb.situation</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree</field>
+    </record>
+
+
+    <menuitem id="perception_root_menu" name="Perception Configuration" parent="account.account_account_menu" sequence="30"/>
+    <menuitem id="perception_perceptions_menu" name="Perceptions" parent="perception_root_menu" sequence="5" action="l10n_ar_perceptions_basic.action_perception_perception_tree"/>
+    <menuitem id="perception_perception_concepts_menu" name="Concepts" parent="perception_root_menu" sequence="10" action="action_perception_concept_tree"/>
+    <menuitem id="perception_perception_activities_menu" name="Activities" parent="perception_root_menu" sequence="15" action="action_perception_activity_tree"/>
+    <menuitem id="perception_iibb_situation_menu"
+        name="IIBB Situations"
+        parent="perception_root_menu"
+        sequence="20"
+        action="action_iibb_situation"/>
+
+  </data>
+</openerp>

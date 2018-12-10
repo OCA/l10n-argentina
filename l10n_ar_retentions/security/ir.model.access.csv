@@ -1,0 +1,22 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_retention_manager,res.partner.retention manager,model_res_partner_retention,account.group_account_manager,1,1,1,1
+access_res_partner_retention_user,res.partner.retention user,model_res_partner_retention,account.group_account_user,1,1,1,0
+access_res_partner_retention_payment,res.partner.retention payment,model_res_partner_retention,account.group_account_invoice,1,0,0,0
+access_retention_concept_payment,retention.concept payment,model_retention_concept,account.group_account_invoice,1,0,0,0
+access_retention_concept_user,retention.concept user,model_retention_concept,account.group_account_user,1,1,1,0
+access_retention_concept_manager,retention.concept manager,model_retention_concept,account.group_account_manager,1,1,1,1
+access_retention_activity_payment,retention.activity payment,model_retention_activity,account.group_account_invoice,1,0,0,0
+access_retention_activity_user,retention.activity user,model_retention_activity,account.group_account_user,1,1,1,0
+access_retention_activity_manager,retention.activity manager,model_retention_activity,account.group_account_manager,1,1,1,1
+access_retention_scale_payment,retention.scale payment,model_retention_scale,account.group_account_invoice,1,0,0,0
+access_retention_scale_user,retention.scale user,model_retention_scale,account.group_account_user,1,1,1,0
+access_retention_scale_manager,retention.scale manager,model_retention_scale,account.group_account_manager,1,1,1,1
+access_retention_scale_line_payment,retention.scale.line payment,model_retention_scale_line,account.group_account_invoice,1,0,0,0
+access_retention_scale_line_user,retention.scale.line user,model_retention_scale_line,account.group_account_user,1,1,1,0
+access_retention_scale_line_manager,retention.scale.line manager,model_retention_scale_line,account.group_account_manager,1,1,1,1
+access_retention_tax_application_payment,retention.tax.application payment,model_retention_tax_application,account.group_account_invoice,1,1,0,0
+access_retention_tax_application_user,retention.tax.application user,model_retention_tax_application,account.group_account_user,1,1,1,0
+access_retention_tax_application_manager,retention.tax.application manager,model_retention_tax_application,account.group_account_manager,1,1,1,1
+access_retention_retention_vat_tax_payment,retention.vat.tax payment,model_retention_vat_tax,account.group_account_invoice,1,1,0,0
+access_retention_retention_vat_tax_user,retention.vat.tax user,model_retention_vat_tax,account.group_account_user,1,1,0,0
+access_retention_retention_vat_tax_manager,retention.vat.tax manager,model_retention_vat_tax,account.group_account_manager,1,1,1,1

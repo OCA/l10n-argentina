@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+        <!-- Padron Mass Update  -->
+        <record model="ir.ui.view" id="padron_mass_update_form">
+            <field name="name">padron.mass.update.form</field>
+            <field name="model">padron.mass.update</field>
+            <field name="arch" type="xml">
+                <form string="Padron Mass Update" version="7.0">
+                    <group string="Select Padron">
+                        <field name="arba"/>
+                        <field name="agip"/>
+                    </group>
+                    <footer>
+                        <button name="action_update" type="object" string="Update" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    <!-- Actualizacion masiva por Padron ARBA -->
+    <act_window id="action_padron_mass_update"
+        multi="True"
+        key2="client_action_multi" name="Update from Padron"
+        res_model="padron.mass.update" src_model="res.partner"
+        view_mode="form" target="new" view_type="form"/>
+
+    </data>
+</odoo>

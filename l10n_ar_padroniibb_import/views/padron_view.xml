@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="padrones_root_menu"
+            name="Padrones"
+            parent="account.menu_finance"
+            sequence="10"/>
+
+        <menuitem id="padron_arba_root_menu"
+            name="Padron ARBA IIBB"
+            parent="padrones_root_menu"
+            sequence="5"/>
+
+        <!-- Padron ARBA -->
+        <record model="ir.ui.view" id="view_arba_perceptions_tree">
+            <field name="name">arba.perceptions.tree</field>
+            <field name="model">padron.arba_perception</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Padron Percepciones ARBA">
+                    <field name="from_date"/>
+                    <field name="to_date"/>
+                    <field name="vat"/>
+                    <field name="percentage"/>
+                    <field name="multilateral"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_arba_perceptions_search" model="ir.ui.view">
+            <field name="name">arba.perceptions.search</field>
+            <field name="model">padron.arba_perception</field>
+            <field name="arch" type="xml">
+                <search string="Padron Percepciones ARBA">
+                    <field name="vat"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_arba_retentions_tree">
+            <field name="name">arba.retentions.tree</field>
+            <field name="model">padron.arba_retention</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Padron Retenciones ARBA">
+                    <field name="from_date"/>
+                    <field name="to_date"/>
+                    <field name="vat"/>
+                    <field name="percentage"/>
+                    <field name="multilateral"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_arba_retentions_search" model="ir.ui.view">
+            <field name="name">arba.retentions.search</field>
+            <field name="model">padron.arba_retention</field>
+            <field name="arch" type="xml">
+                <search string="Padron Retenciones ARBA">
+                    <field name="vat"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_arba_perceptions" model="ir.actions.act_window">
+            <field name="name">Padron Percepciones ARBA</field>
+            <field name="res_model">padron.arba_perception</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_arba_perceptions_tree"/>
+            <field name="search_view_id" ref="view_arba_perceptions_search"/>
+        </record>
+
+        <record id="action_arba_retentions" model="ir.actions.act_window">
+            <field name="name">Padron Retenciones ARBA</field>
+            <field name="res_model">padron.arba_retention</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_arba_retentions_tree"/>
+            <field name="search_view_id" ref="view_arba_retentions_search"/>
+        </record>
+
+        <menuitem id="padron_arba_perceptions_menu"
+            action="action_arba_perceptions"
+            parent="padron_arba_root_menu"
+            sequence="10"/>
+
+        <menuitem id="padron_arba_retentions_menu"
+            action="action_arba_retentions"
+            parent="padron_arba_root_menu"
+            sequence="10"/>
+
+
+        <!-- Padron Retencion y Percepcion AGIP -->
+        <menuitem id="padron_agip_root_menu"
+            name="Padron AGIP IIBB"
+            parent="padrones_root_menu"
+            sequence="10"/>
+
+        <!-- Padron AGIP -->
+        <record model="ir.ui.view" id="view_agip_perceptions_retentions_tree">
+            <field name="name">agip.perceptions.retentions.tree</field>
+            <field name="model">padron.agip_percentages</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Padron Percepciones y Retenciones AGIP">
+                    <field name="from_date"/>
+                    <field name="to_date"/>
+                    <field name="name_partner" invisible="1"/>
+                    <field name="vat"/>
+                    <field name="percentage_retention"/>
+                    <field name="percentage_perception"/>
+                    <field name="multilateral"/>
+                    <field name="group_retention_id"/>
+                    <field name="group_perception_id"/>
+                    <field name="name_partner"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_agip_perceptions_retentions_search" model="ir.ui.view">
+            <field name="name">agip.perceptions.retentions.search</field>
+            <field name="model">padron.agip_percentages</field>
+            <field name="arch" type="xml">
+                <search string="Padron Percepciones y Retenciones AGIP">
+                    <field name="vat" filter_domain="['|', ('vat', 'like', self), ('name_partner', 'ilike', self)]"/>
+                    <field name="group_retention_id"/>
+                    <field name="group_perception_id"/>
+                    <group expand="0" string="Group By..." groups="account.group_account_manager">
+                        <filter string="Retention Group" domain="[]" context="{'group_by':'group_retention_id'}"/>
+                        <filter string="Perception Group" domain="[]" context="{'group_by':'group_perception_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_agip_perceptions_retentions" model="ir.actions.act_window">
+            <field name="name">Padron Per/Ret AGIP</field>
+            <field name="res_model">padron.agip_percentages</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_agip_perceptions_retentions_tree"/>
+            <field name="search_view_id" ref="view_agip_perceptions_retentions_search"/>
+        </record>
+
+        <menuitem id="padron_agip_perceptions_retentions_menu"
+            action="action_agip_perceptions_retentions"
+            parent="padron_agip_root_menu"
+            sequence="10"/>
+
+    </data>
+</odoo>
