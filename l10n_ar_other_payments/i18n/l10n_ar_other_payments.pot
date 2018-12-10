@@ -1,0 +1,243 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_other_payments
+#
+msgid ""
+msgstr ""
+"Language: Spanish\n"
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-08 13:38+0000\n"
+"PO-Revision-Date: 2016-02-08 13:38+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_other_payments
+#: model:ir.actions.act_window,help:l10n_ar_other_payments.action_other_payments
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to register a purchase receipt.\n"
+"              </p><p>\n"
+"                When the purchase receipt is confirmed, you can record the\n"
+"                supplier payment related to this purchase receipt.\n"
+"              </p>\n"
+"            "
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,account_id:0
+msgid "Account"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: model:ir.model,name:l10n_ar_other_payments.model_account_voucher
+msgid "Accounting Voucher"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,amount:0
+msgid "Amount"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,account_analytic_id:0
+msgid "Analytic Account"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Are you sure to unreconcile and cancel this record ?"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Cancel Voucher"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: code:addons/l10n_ar_other_payments/account_voucher.py:76
+#, python-format
+msgid "Cannot validate a voucher that has difference between credit and debit. Difference Amount must be 0.0."
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: code:addons/l10n_ar_other_payments/account_voucher.py:110
+#, python-format
+msgid "Cannot validate a voucher with cash and box not open."
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Checks"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,create_uid:0
+msgid "Created by"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,create_date:0
+msgid "Created on"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,name:0
+msgid "Description"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,id:0
+msgid "ID"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Internal Notes"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Issued Checks"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,journal_id:0
+msgid "Journal"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Journal Items"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,write_uid:0
+msgid "Last Updated by"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,write_date:0
+msgid "Last Updated on"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Lines"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher,concept_line_ids:0
+msgid "Other Concepts"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher,other_payment:0
+#: model:ir.actions.act_window,name:l10n_ar_other_payments.action_other_payments
+#: model:ir.ui.menu,name:l10n_ar_other_payments.menu_action_other_payments
+msgid "Other Payments"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Payment Information"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Payment Method"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Payment Methods"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Payment Options"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Payment Ref"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Set to Draft"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Supplier"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: code:addons/l10n_ar_other_payments/account_voucher.py:73
+#, python-format
+msgid "There should be at least on concept line."
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Third Checks"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Total"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Total Amount"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Unreconcile"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Validate"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: code:addons/l10n_ar_other_payments/account_voucher.py:70
+#: code:addons/l10n_ar_other_payments/account_voucher.py:73
+#: code:addons/l10n_ar_other_payments/account_voucher.py:76
+#: code:addons/l10n_ar_other_payments/account_voucher.py:110
+#, python-format
+msgid "Validate Error!"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: field:account.voucher.concept.line,voucher_id:0
+msgid "Voucher"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "Voucher Payment"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: code:addons/l10n_ar_other_payments/account_voucher.py:70
+#, python-format
+msgid "You cannot validate a voucher with amount of 0.0."
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "e.g. 003/10"
+msgstr ""
+
+#. module: l10n_ar_other_payments
+#: view:account.voucher:l10n_ar_other_payments.view_other_payment_form
+msgid "e.g. Invoice SAJ/0042"
+msgstr ""

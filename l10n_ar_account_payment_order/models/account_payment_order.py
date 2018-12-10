@@ -65,16 +65,22 @@ class AccountPaymentOrder(models.Model):
 
     @api.depends('debt_line_ids', 'income_line_ids', 'amount')
     def _get_writeoff_amount(self):
-        for payment in self:
-            debit = credit = 0.0
-            sign = payment.type == 'payment' and -1 or 1
-            for l in payment.debt_line_ids:
-                debit += l.amount
-            for l in payment.income_line_ids:
-                credit += l.amount
-            currency = payment.currency_id or payment.company_id.currency_id
-            amount = payment.amount - sign * (credit - debit)
-        self.writeoff_amount = currency.round(amount)
+        for po in self:
+            writeoff_amount = po._get_writeoff_amount_hook()
+            currency = po.currency_id or po.company_id.currency_id
+            po.writeoff_amount = currency.round(writeoff_amount)
+
+    @api.multi
+    def _get_writeoff_amount_hook(self):
+        self.ensure_one
+        debit = credit = 0.0
+        sign = self.type == 'payment' and -1 or 1
+        for l in self.debt_line_ids:
+            debit += l.amount
+        for l in self.income_line_ids:
+            credit += l.amount
+        amount = self.amount - sign * (credit - debit)
+        return amount
 
     def _get_partner(self):
         return self.env.context.get('partner_id', False)
@@ -534,12 +540,17 @@ class AccountPaymentOrder(models.Model):
 
     @api.multi
     def proforma_voucher(self):
+        self.ensure_one()
         # Chequeamos si la writeoff_amount no es negativa
         if round(self.writeoff_amount, 2) < 0.0:
             raise ValidationError(
                 _('Error!\n Cannot validate a ' +
                     'voucher with negative amount.\n Please check ' +
                     'that Writeoff Amount is not negative.'))
+        if self.amount == 0.0:
+            raise ValidationError(
+                _("Validate Error!\n"),
+                _("You cannot validate a voucher with amount of 0.0"))
 
         self._clean_payment_lines()
         self.action_move_line_create()
@@ -836,6 +847,7 @@ class AccountPaymentOrder(models.Model):
         }
         return (move_line, move_line_counterpart)
 
+    @api.multi
     def voucher_move_line_create(self, line_total, move_id,
                                  company_currency, current_currency):
         move_line_obj = self.env['account.move.line']

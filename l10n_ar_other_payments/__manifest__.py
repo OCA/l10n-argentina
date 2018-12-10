@@ -1,0 +1,39 @@
+###############################################################################
+#
+#    Copyright (c) 2018 Eynes/E-MIPS
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
+
+{
+    "name": "Other Payments",
+    "category": "Accounting & Finance",
+    "version": "11.0.1.0.0",
+    "author": "Eynes/E-MIPS",
+    "website": "http://eynes.com.ar",
+    "license": "AGPL-3",
+    "description": "Extension del modulo de pagos, para poder registrar salida de dinero para otros conceptos con ordenes de pago.",  # noqa
+    "depends": [
+        "base",
+        "l10n_ar_account_payment_order",
+        "l10n_ar_account_create_check",
+    ],
+    "data": [
+        'views/payment_order_view.xml',
+        'security/ir.model.access.csv',
+    ],
+    "installable": True,
+    "application": True,
+}
