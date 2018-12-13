@@ -14,5 +14,3 @@ access_perception_tax_application_manager,perception.tax.application manager,mod
 access_perception_perception_vat_tax_payment,perception.vat.tax payment,model_perception_vat_tax,account.group_account_invoice,1,1,0,0
 access_perception_perception_vat_tax_user,perception.vat.tax user,model_perception_vat_tax,account.group_account_user,1,1,0,0
 access_perception_perception_vat_tax_manager,perception.vat.tax manager,model_perception_vat_tax,account.group_account_manager,1,1,1,1
-access_iibb_situation_base_user,iibb.situation BaseUser,model_iibb_situation,base.group_user,1,0,0,0
-access_iibb_situation_account_manager,iibb.situation manager,model_iibb_situation,account.group_account_manager,1,1,1,1
