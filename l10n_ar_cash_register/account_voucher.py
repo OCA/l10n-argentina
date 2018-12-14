@@ -46,7 +46,8 @@ class account_voucher(osv.osv):
 
             invoice_ids = set()
             for dr_line in vou.line_dr_ids:
-                invoice_ids.add(dr_line.invoice_id.id)
+                if dr_line.invoice_id:
+                    invoice_ids.add(dr_line.invoice_id.id)
 
             invoices = invoice_obj.browse(cr, uid, list(invoice_ids), context=context)
             invoices_ref = ", ".join(name or '' for __, name in invoices.name_get())
