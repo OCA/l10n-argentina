@@ -42,6 +42,7 @@ class retention_retention(models.Model):
     type = fields.Selection([('vat', 'VAT'),
                             ('gross_income', 'Gross Income'),
                             ('profit', 'Profit'),
+                            ('suss', 'SUSS'),
                             ('other', 'Other')], 'Type', required=True)
 
     jurisdiccion = fields.Selection([('nacional', 'Nacional'),
