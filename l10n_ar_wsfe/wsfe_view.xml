@@ -21,6 +21,7 @@
 							<field name="cuit" select="1"/>
 							<field name="url" select="1"/>
 							<field name="homologation"/>
+							<field name="config_id"/>
 						</group>
 						<notebook colspan="4">
 							<page string="Points Of Sale">

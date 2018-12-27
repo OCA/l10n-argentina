@@ -34,14 +34,18 @@ class wsaa_config(models.Model):
     _description = "Configuration for WSAA"
 
     name = fields.Char('Description', size=255)
-    certificate = fields.Text('Certificate', readonly=True)
-    key = fields.Text('Private Key', readonly=True)
+    certificate = fields.Text('Certificate', readonly=False)
+    key = fields.Text('Private Key', readonly=False)
     url = fields.Char('URL for WSAA', size=60, required=True)
-    company_id = fields.Many2one('res.company', 'Company Name', required=True, default=lambda self: self.env.user.company_id.id)
-    service_ids = fields.One2many('wsaa.ta', 'config_id', string="Authorized Services")
+    company_id = fields.Many2one(
+        'res.company', 'Company Name', required=True,
+        default=lambda self: self.env.user.company_id.id)
+    service_ids = fields.One2many('wsaa.ta', 'config_id',
+        string="Authorized Services")
 
     _sql_constraints = [
-        ('company_uniq', 'unique (company_id)', 'The configuration must be unique per company !')
+        ('company_uniq', 'unique (company_id, url)',
+            'The configuration must be unique per company !')
     ]
 
 wsaa_config()
@@ -73,7 +77,8 @@ class wsaa_ta(models.Model):
     company_id = fields.Many2one('res.company', 'Company Name')
 
     _sql_constraints = [
-        ('company_name_uniq', 'unique (name, company_id)', 'The service must be unique per company!')
+        ('company_name_uniq', 'unique (name, company_id, config_id)',
+         'The service must be unique per company!')
     ]
 
     @api.model
@@ -106,7 +111,9 @@ class wsaa_ta(models.Model):
 
         if not force:
             if ticket.expiration_time:
-                expiration_time = datetime.strptime(ticket.expiration_time, '%Y-%m-%d %H:%M:%S')
+                expiration_time = datetime.strptime(
+                    ticket.expiration_time, '%Y-%m-%d %H:%M:%S')+\
+                    timedelta(hours=3)
                 # Primero chequemos si tenemos ya un ticket expirado
                 # Si ahora+10 minutos es mayor al momento de expiracion
                 # debemos renovar el ticket.
