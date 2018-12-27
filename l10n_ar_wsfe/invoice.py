@@ -180,8 +180,6 @@ class account_invoice(models.Model):
     def action_number(self):
         wsfe_conf_obj = self.env['wsfe.config']
         wsfex_conf_obj = self.env['wsfex.config']
-        wsfe_conf = wsfe_conf_obj.get_config()
-        wsfex_conf = wsfex_conf_obj.get_config()
 
         next_number = None
         invoice_vals = {}
@@ -218,7 +216,11 @@ class account_invoice(models.Model):
 
                 # Chequeamos si corresponde Factura Electronica
                 # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
-                confs = filter(lambda c: pos_ar in c.point_of_sale_ids, [wsfe_conf, wsfex_conf]) #_get_ws_conf(obj_inv.pos_ar_id)
+                wsfe_conf = wsfe_conf_obj.get_config(pos_ar)
+                wsfex_conf = wsfex_conf_obj.get_config(pos_ar)
+
+                confs = filter(lambda c: c.id, [wsfe_conf, wsfex_conf])
+                #confs = filter(lambda c: pos_ar in c.point_of_sale_ids, [wsfe_conf, wsfex_conf]) #_get_ws_conf(obj_inv.pos_ar_id)
 
                 if len(confs)>1:
                     raise osv.except_osv(_("WSFE Error"), _("There is more than one configuration with this POS %s") % pos_ar.name)

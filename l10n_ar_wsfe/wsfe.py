@@ -54,6 +54,7 @@ class wsfe_config(models.Model):
     point_of_sale_ids = fields.Many2many('pos.ar', 'pos_ar_wsfe_rel', 'wsfe_config_id', 'pos_ar_id', 'Points of Sale')
     vat_tax_ids = fields.One2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', True)])
     exempt_operations_tax_ids = fields.One2many('wsfe.tax.codes', 'wsfe_config_id', 'Taxes', domain=[('from_afip', '=', False), ('exempt_operations', '=', True)])
+    config_id = fields.Many2one('wsaa.config', required=True)
     wsaa_ticket_id = fields.Many2one('wsaa.ta', 'Ticket Access')
     company_id = fields.Many2one('res.company', 'Company Name', required=True)
 
@@ -75,13 +76,14 @@ class wsfe_config(models.Model):
 
         # Buscamos primero el wsaa que corresponde a esta compania
         # porque hay que recordar que son unicos por compania
-        wsaa_ids = wsaa_obj.search(cr, uid, [('company_id', '=', vals['company_id'])], context=context)
+        #wsaa_ids = wsaa_obj.search(cr, uid, [('company_id', '=', vals['company_id'])], context=context)
+        wsaa_id = vals['config_id']
         service_ids = service_obj.search(cr, uid, [('name', '=', 'wsfe')], context=context)
-        if wsaa_ids:
+        if wsaa_id:
             ta_vals = {
                 'name': service_ids[0],
                 'company_id': vals['company_id'],
-                'config_id': wsaa_ids[0],
+                'config_id': wsaa_id, #wsaa_ids[0],
             }
 
             ta_id = ta_obj.create(cr, uid, ta_vals, context)
@@ -94,13 +96,17 @@ class wsfe_config(models.Model):
     #def unlink(self, cr, uid, ids):
 
     @api.model
-    def get_config(self):
+    def get_config(self, pos_ar):
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
         if not company_id:
             raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
 
-        ids = self.search([('company_id', '=', company_id)])
+        ids = self.search([
+            ('company_id', '=', company_id),
+            ('point_of_sale_ids', 'in', pos_ar.id),
+        ])
+
         if not ids:
             raise osv.except_osv(_('WSFE Config Error!'), _('There is no WSFE configuration set to this company'))
 
