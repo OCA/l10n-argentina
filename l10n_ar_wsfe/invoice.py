@@ -311,16 +311,20 @@ class account_invoice(models.Model):
     def action_aut_cae(self):
         voucher_type_obj = self.env['wsfe.voucher_type']
 
-        wsfe_conf_obj = self.env['wsfe.config']
-        wsfe_conf = wsfe_conf_obj.get_config()
 
+        wsfe_conf_obj = self.env['wsfe.config']
         wsfex_conf_obj = self.env['wsfex.config']
-        wsfex_conf = wsfex_conf_obj.get_config()
+
 
         for inv in self:
+
             if not inv.aut_cae:
                 #self.write(cr, uid, ids, {'cae' : 'NA'})
                 return True
+
+            pos_ar = inv.pos_ar_id
+            wsfe_conf = wsfe_conf_obj.get_config(pos_ar)
+            wsfex_conf = wsfex_conf_obj.get_config(pos_ar)
 
             self._sanitize_taxes(inv)
             pos_ar = inv.pos_ar_id
