@@ -32,6 +32,6 @@ class SaleOrder(models.Model):
     def _prepare_invoice(self):
         vals = super()._prepare_invoice()
         vals.update({
-            'address_shipping_id': self.address_shipping_id,
+            'address_shipping_id': self.partner_shipping_id.id,
         })
         return vals
