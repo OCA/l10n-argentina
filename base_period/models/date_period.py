@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
 
 
 _logger = logging.getLogger(__name__)
@@ -97,9 +98,13 @@ class DatePeriod(models.Model):
                 self.create(args)
 
     def _get_period(self, period_date):
-        period = str(period_date.month) + '/' + str(period_date.year)
-        period_obj = self.search([('code', 'like', period)])
-        if not period_obj:
+        ddate = period_date.strftime(DSDF)
+        domain = [
+            ('date_from', '<=', ddate),
+            ('date_to', '>=', ddate)
+        ]
+        period = self.search(domain)
+        if not period:
             self.create_period(period_date)
-            period = self.search([('code', 'like', period)])
-        return period_obj
+            period = self.search(domain)
+        return period

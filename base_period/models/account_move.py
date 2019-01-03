@@ -5,7 +5,9 @@
 
 import logging
 from datetime import datetime
+
 from odoo import models, fields, api
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
 
 
 _logger = logging.getLogger(__name__)
@@ -20,7 +22,7 @@ class AccountMove(models.Model):
         for rec in self:
             if rec.date:
                 period_obj = rec.env['date.period']
-                period_date = datetime.strptime(rec.date, '%Y-%m-%d').date()
+                period_date = datetime.strptime(rec.date, DSDF).date()
                 period = period_obj._get_period(period_date)
                 rec.period_id = period.id
 

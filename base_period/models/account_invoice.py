@@ -5,7 +5,9 @@
 
 import logging
 from datetime import datetime
+
 from odoo import models, fields, api
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
 
 
 _logger = logging.getLogger(__name__)
@@ -21,7 +23,7 @@ class AccountInvoice(models.Model):
             if rec.date_invoice:
                 period_obj = rec.env['date.period']
                 period_date = datetime.strptime(
-                    rec.date_invoice, '%Y-%m-%d').date()
+                    rec.date_invoice, DSDF).date()
                 period = period_obj._get_period(period_date)
                 rec.period_id = period.id
 
