@@ -434,6 +434,15 @@ class AccountInvoice(models.Model):
 
         return inv_ids
 
+    @api.model
+    def _get_refund_point_of_sale_fields(self):
+        return ['denomination_id', 'pos_ar_id']
+
+    @api.model
+    def _get_refund_common_fields(self):
+        res = super(AccountInvoice, self)._get_refund_common_fields()
+        return self._get_refund_point_of_sale_fields() + res
+
     # DONE
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):
