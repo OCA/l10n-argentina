@@ -83,7 +83,7 @@ msgstr "Cheque"
 #. module: l10n_ar_account_create_check
 #: model:ir.model.fields,field_description:l10n_ar_account_create_check.field_account_checkbook_account_check_id
 msgid "Check Account"
-msgstr "Cuenta de Cheque"
+msgstr "Cuenta Contable de Cheques"
 
 #. module: l10n_ar_account_create_check
 #: model:ir.model.fields,field_description:l10n_ar_account_create_check.field_account_checkbook_check_name
@@ -206,7 +206,7 @@ msgstr "Borrador"
 #. module: l10n_ar_account_create_check
 #: model:ir.model.fields,field_description:l10n_ar_account_create_check.field_wizard_create_check_end_num
 msgid "End number of check"
-msgstr "Ultimo numero del cheque"
+msgstr "Número final de la chequera"
 
 #. module: l10n_ar_account_create_check
 #: code:addons/l10n_ar_account_create_check/wizard/create_checkbook.py:43
@@ -296,7 +296,7 @@ msgstr "Seleccionar cheques"
 #. module: l10n_ar_account_create_check
 #: model:ir.model.fields,field_description:l10n_ar_account_create_check.field_wizard_create_check_start_num
 msgid "Start number of check"
-msgstr "Numero de inicio del cheque"
+msgstr "Número inicial de la chequera"
 
 #. module: l10n_ar_account_create_check
 #: model:ir.model.fields,field_description:l10n_ar_account_create_check.field_account_checkbook_check_state

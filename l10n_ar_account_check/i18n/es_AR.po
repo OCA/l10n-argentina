@@ -120,7 +120,7 @@ msgstr "Importe"
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_add_issued_check_amount
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_amount
 msgid "Amount Check"
-msgstr "Cantidad de Cheques"
+msgstr "Monto"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_add_issued_check_bank_id
@@ -409,12 +409,12 @@ msgstr "Nota de Débito"
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_check_config_deferred_account_id
 msgid "Deferred Check Account"
-msgstr "Cuenta de cheques diferida"
+msgstr "Cuenta de Cheque Diferido"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_check_config_deferred_journal_id
 msgid "Deferred Check Journal"
-msgstr "Diario de Cheques diferidos"
+msgstr "Diario de Cheque Diferido"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
@@ -648,7 +648,7 @@ msgstr "Factura"
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_issue_date
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_issue_date
 msgid "Issue Date"
-msgstr "Fecha de Asunto"
+msgstr "Fecha de Emisión"
 
 #. module: l10n_ar_account_check
 #: selection:account.issued.check,state:0
@@ -750,13 +750,13 @@ msgstr "Última actualización el"
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_check_config_account_id
 msgid "Main Check Account"
-msgstr "Cuenta de Cheques Principal"
+msgstr "Cuenta Principal de Cheque"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_not_order
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_not_order
 msgid "Not Order"
-msgstr "No Orden"
+msgstr "No a la Orden"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_note
