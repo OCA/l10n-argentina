@@ -7,7 +7,7 @@ import logging
 from datetime import datetime
 
 from odoo import models, fields, api
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DSDTF
 
 
 _logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ class StockInventory(models.Model):
             if rec.date:
                 period_obj = rec.env['date.period']
                 period_date = datetime.strptime(
-                    rec.date, DSDF).date()
+                    rec.date, DSDTF).date()
                 period = period_obj._get_period(period_date)
                 rec.period_id = period.id
 
