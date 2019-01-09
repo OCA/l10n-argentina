@@ -285,10 +285,10 @@ class AccountInvoice(models.Model):
                 if not internal_number:
                     internal_number = '%s-%08d' % (pos_ar.name, next_number)
 
-                m = re.match('^[0-9]{4}-[0-9]{8}$', internal_number)
+                m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', internal_number)
                 if not m:
                     err = _('The Invoice Number should be the ' +
-                            'format XXXX-XXXXXXXX')
+                            'format XXXX[X]-XXXXXXXX')
                     raise UserError(_('Error\n') + err)
 
                 # Escribimos el internal number
@@ -301,11 +301,11 @@ class AccountInvoice(models.Model):
                     raise UserError(_('Error\n') + err)
 
                 if local:
-                    m = re.match('^[0-9]{4}-[0-9]{8}$',
-                                 obj_inv.internal_number)
+                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', obj_inv.internal_number)	   
+                   
                     if not m:
                         err = _('The Invoice Number should be ' +
-                                'the format XXXX-XXXXXXXX')
+                                'the format XXXX[X]-XXXXXXXX')
                         raise UserError(_('Error\n') + err)
 
             # Escribimos los campos necesarios de la factura
