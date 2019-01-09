@@ -8,7 +8,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta as relatived
 
 from odoo import _, api, fields, models
-from odoo.exceptions import except_orm
+from odoo.exceptions import ValidationError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
 from odoo.addons import decimal_precision as dp
 
@@ -74,8 +74,8 @@ class retention_retention(models.Model):
         concepts = account.retention_concept_ids.filtered(
             lambda c: c.type == retention.type)
         if not concepts:
-            raise except_orm(
-                _("Retention Error"),
+            raise ValidationError(
+                _("Retention Error\n") +
                 _("Accont %s[%s] must have an associated concept for %s. " +
                   "Please configure it!") % (account.name, account.code,
                                              retention.name))
@@ -230,8 +230,8 @@ class retention_retention(models.Model):
                     taxapps = tax_app_obj.search(tapp_domain)
 
                 if not taxapps:
-                    raise except_orm(
-                        _("Retention Error!"),
+                    raise ValidationError(
+                        _("Retention Error!\n") +
                         _("There is no configured a Retention Application " +
                           "(%s) that corresponds to\nActivity: %s \n" +
                           "Concept: %s\n for the Account %s") % (
@@ -239,8 +239,8 @@ class retention_retention(models.Model):
                               ml.account_id.name))
 
                 if len(taxapps) > 1:
-                    raise except_orm(
-                        _("Retention Error!"),
+                    raise ValidationError(
+                        _("Retention Error!\n") +
                         _("There is more than one Retention Application " +
                           "(%s) configured that corresponds to\n" +
                           "Activity: %s \nConcept: %s\n for the Account %s") %
@@ -613,8 +613,8 @@ class RetentionTaxApplication(models.Model):
 
         # Chequeamos que la cantidad a retener no sea negativa
         if amount < 0:
-            raise except_orm(
-                _('Retention Error!'),
+            raise ValidationError(
+                _('Retention Error!\n') +
                 _('There is an error in retention configuration because ' +
                   'amount of %s is negative') % self.retention_id.name)
         elif amount == 0.0:

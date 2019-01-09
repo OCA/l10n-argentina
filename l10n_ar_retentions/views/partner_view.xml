@@ -11,19 +11,30 @@
             <field name="arch" type="xml">
                 <page name="accounting" position="after">
                     <page string="Retentions" name="retentions">
-                        <field colspan="4" name="retention_ids" nolabel="1">
-                            <tree string="Retentions to Apply" editable="bottom">
-                                <field name="retention_id" domain="[('type_tax_use','=','purchase')]"/>
-                                <field name="activity_id" />
-                                <field name="percent"/>
-                                <field name="excluded_percent" />
-                                <field name="ex_date_from" />
-                                <field name="ex_date_to" />
-                                <field name="exclusion_certificate" />
-                                <field name="exclusion_date_certificate" />
-                                <field name="sit_iibb"/>
-                            </tree>
-                        </field>
+                        <group string="Partner Retentions">
+                            <field name="retention_ids" nolabel="1">
+                                <tree string="Retentions to Apply" editable="bottom">
+                                    <field name="retention_id" domain="[('type_tax_use','=','purchase')]"/>
+                                    <field name="activity_id" />
+                                    <field name="percent"/>
+                                    <field name="excluded_percent" />
+                                    <field name="ex_date_from" />
+                                    <field name="ex_date_to" />
+                                    <field name="exclusion_certificate" />
+                                    <field name="exclusion_date_certificate" />
+                                    <field name="sit_iibb"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Advance Payment Retentions"
+                            attrs="{'invisible': [('supplier', '=', False)]}">
+                            <field name="advance_retention_ids" nolabel="1">
+                                <tree string="Retentions to Apply" editable="bottom">
+                                    <field name="retention_id"/>
+                                    <field name="concept_id"/>
+                                </tree>
+                            </field>
+                        </group>
                     </page>
                 </page>
             </field>

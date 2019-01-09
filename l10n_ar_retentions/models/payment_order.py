@@ -7,7 +7,7 @@ import logging
 from pprint import pformat as pf
 
 from odoo import models, fields, api
-from odoo.exceptions import except_orm
+from odoo.exceptions import ValidationError
 from odoo.tools.translate import _
 
 _logger = logging.getLogger()
@@ -73,6 +73,86 @@ class AccountPaymentOrder(models.Model):
         "calculation of retention on this payment")
 
     @api.multi
+    def payment_order_amount_hook(self):
+        amount = super().payment_order_amount_hook()
+        if any(self.debt_line_ids.mapped('amount') +
+               self.income_line_ids.mapped('amount')) or not amount or \
+                self.disable_retentions:
+            return amount
+        amount += self.compute_advance_payment_retentions(amount)
+        return amount
+
+    @api.multi
+    def compute_advance_payment_retentions(self, amount):
+        amount = amount - sum(self.retention_ids.mapped('amount'))
+        tax_app_obj = self.env['retention.tax.application']
+        partner_retentions = self.partner_id._get_retentions_to_apply(
+            self.date)
+        create_vals = []
+        for advance_ret in self.partner_id.advance_retention_ids:
+            ret_vals = partner_retentions.get(advance_ret.retention_id.id)
+            if not ret_vals:
+                raise ValidationError(
+                    _("Retention %s is not configured for Partner " +
+                      "Fiscal Position %s") % (
+                          advance_ret.retention_id.name,
+                          self.partner_id.account_fiscal_position_id.name))
+            tapp_domain = [
+                ('retention_id', '=', advance_ret.retention_id.id),
+                ('concept_id', '=', advance_ret.concept_id.id)]
+            taxapp = tax_app_obj.search(tapp_domain)
+            if not taxapp:
+                raise ValidationError(
+                    _("Retention Error!\n") +
+                    _("There is no configured a Retention Application " +
+                      "(%s) that corresponds to Concept: %s") % (
+                          advance_ret.retention_id.name,
+                          advance_ret.concept_id.name))
+
+            if len(taxapp) > 1:
+                raise ValidationError(
+                    _("Retention Error!\n") +
+                    _("There is more than one Retention Application " +
+                      "(%s) configured that corresponds to " +
+                      "Concept: %s") %
+                    (advance_ret.retention_id.name,
+                     advance_ret.concept_id.name))
+            vals = {
+                'base': amount,
+                'to_pay': amount,
+            }
+            base, amount = taxapp.apply_retention(
+                    self.partner_id, ret_vals.get('percent'),
+                    ret_vals.get('excluded_percent'), vals, self.date)
+            retention_line_vals = self._prepare_advanced_payment_retention(
+                advance_ret, taxapp, ret_vals, base, amount)
+            create_vals.append(retention_line_vals)
+        self.retention_ids = [(0, 0, val) for val in create_vals]
+        return sum(self.retention_ids.mapped('amount'))
+
+    @api.multi
+    def _prepare_advanced_payment_retention(
+            self, advance_ret, taxapp, ret_vals, base, amount):
+        retention_line_vals = {
+            'name': advance_ret.retention_id.name,
+            'concept_id': advance_ret.concept_id.id,
+            'date': self.date,
+            'account_id': advance_ret.retention_id.tax_id.account_id.id,
+            'base': base,
+            'amount': amount,
+            'manual': False,
+            'retention_id': advance_ret.retention_id.id,
+            'certificate_no': '',
+            'taxapp_id': taxapp.id,
+            'reg_code': taxapp.reg_code,
+            'state_id': advance_ret.retention_id.state_id.id,
+            'excluded_percent': ret_vals.get('excluded_percent'),
+            'exclusion_date_certificate': ret_vals.get(
+                'exclusion_date_certificate'),
+        }
+        return retention_line_vals
+
+    @api.multi
     def recompute_voucher_lines(self, partner_id, journal_id, price,
                                 currency_id, ttype, date):
         res = super(AccountPaymentOrder, self).recompute_voucher_lines(
@@ -87,36 +167,6 @@ class AccountPaymentOrder(models.Model):
                 line['reconcile'] = False
 
         return res
-
-    # @api.onchange('amount')
-    # def onchange_amount_ret(self):
-    #     """
-    #     Besides original onchange,
-    #     this one do not call recompute_voucher_lines
-    #     """
-    #     if self._context.get('immediate_payment'):
-    #         rvl_res = self.recompute_voucher_lines(
-    #             self.partner_id.id, self.journal_id.id,
-    #             self.amount, self.currency_id.id,
-    #             self._context['type'], self.date)
-    #         self.line_dr_ids = rvl_res['value']['line_dr_ids']
-    #         self.line_cr_ids = rvl_res['value']['line_cr_ids']
-    #
-    #     self.onchange_amount_payment()
-    #
-    #     self.writeoff_amount = self._compute_writeoff_amount(
-    #         self.line_dr_ids, self.line_cr_ids, self.amount, self.type)
-    #
-    #     vals = self.onchange_rate(
-    #         self.payment_rate, self.amount, self.currency_id.id,
-    #         self.payment_rate_currency_id.id, self.company_id.id)
-    #
-    #     self.currency_help_label = 'currency_help_label' in vals['value'] \
-    #         and vals['value']['currency_help_label'] or ''
-    #     paicc = 'paid_amount_in_company_currency' in vals['value'] and \
-    #         vals['value']['paid_amount_in_company_currency'] or 0.0
-    #     self.paid_amount_in_company_currency = paicc
-    #     return
 
     @api.multi
     def calculate_retentions(self):
@@ -301,56 +351,6 @@ class AccountPaymentOrder(models.Model):
         line_ids = [r[0] for r in res]
         return line_ids
 
-    # def create_move_line_hook(self, move_id, move_lines):
-    #     sequence_obj = self.env['ir.sequence']
-    #     move_lines = super(AccountPaymentOrder, self).create_move_line_hook(
-    #         move_id, move_lines)
-    #
-    #     # Asignamos los numeros de certificados a las retenciones
-    #     # Si es de tipo payment. Porque si es un cobro, no deberiamos ponerle
-    #     # nros de certificado nosotros
-    #     if self.type == 'payment':
-    #         groups = {}
-    #         for ret in self.retention_ids:
-    #             key = (ret.retention_id.id, ret.concept_id.id)
-    #
-    #             if key in groups:
-    #                 groups[key].append(ret)
-    #             else:
-    #                 groups[key] = [ret]
-    #
-    #         for g, ret in groups.items():
-    #
-    #             # Esto no deberia pasar
-    #             if not len(ret):
-    #                 continue
-    #
-    #             if not ret[0].certificate_no:
-    #                 __import__('ipdb').set_trace()
-    #                 certificate_no = sequence_obj.get(
-    #                     ret[0].retention_id.sequence_type_id.code)
-    #                 for r in ret:
-    #                     r.write({'certificate_no': certificate_no})
-    #
-    #     return move_lines
-
-    # def write(self, cr, uid, ids, vals, context=None):
-    #     if 'date_effective' in vals:
-    #         date_applied = vals['date_effective']
-    #
-    #         # TODO: Mejorar este tema, podriamos escribir todas de golpe.
-    #         # No mejora mucho tampoco.
-    #         for v in self.browse(cr, uid, ids, context=context):
-    #             for rl in v.retention_ids:
-    #                 self.pool.get('retention.tax.line').write(
-    #                     cr, uid, rl.id, {
-    #                         'date_applied': date_applied,
-    #                     }, context=context)
-    #
-    #     res = super(AccountPaymentOrder, self).write(cr, uid, ids,
-    #                                                  vals, context=context)
-    #     return res
-
     @api.model
     def _compute_writeoff_amount(self, line_dr_ids, line_cr_ids,
                                  amount, ttype):
@@ -375,15 +375,11 @@ class AccountPaymentOrder(models.Model):
         for po in self:
             if po.type != 'payment':
                 return
+            po.onchange_payment_line()
             if po.disable_retentions or not (
                     po.income_line_ids + po.debt_line_ids):
                 po.retention_ids = False
                 continue
-
-            prev_rets = []
-            for ret in po.retention_ids:
-                if ret.manual:
-                    prev_rets.append(ret)
 
             vals = po.calculate_retentions()
 
@@ -414,8 +410,8 @@ class AccountPaymentOrder(models.Model):
         for voucher in self:
             u_rets = voucher.retention_ids.filtered(lambda x: not x.unlinkable)
             if u_rets:
-                raise except_orm(
-                    _("Error!"),
+                raise ValidationError(
+                    _("Error!\n") +
                     _("Voucher %s [id: %s] has Unlinkable Retentions:\n" +
                       "%s") % (
                           voucher.name, voucher.id,
