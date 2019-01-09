@@ -57,8 +57,8 @@ class PosAr(models.Model):
     @api.constrains('name')
     def _check_pos_name(self):
         for pos in self:
-            if not (pos.name.isdigit() and len(pos.name) <= 4):
-                err = _("The PoS Name should be a 4 digit number!")
+            if not (pos.name.isdigit() and len(pos.name) <= 5):
+                err = _("The PoS Name should be a 4-5 digit number!")
                 raise ValidationError(_("Error!\n") + err)
             if len(pos.name) < 4:
                 pos.name = pos.name.zfill(4)
