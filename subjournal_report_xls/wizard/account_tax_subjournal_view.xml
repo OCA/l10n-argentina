@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_tax_subjournal" model="ir.ui.view">
+            <field name="name">Account Tax Subjournal</field>
+            <field name="model">account.tax.subjournal</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Taxes Subjournal">
+                    <separator string="Taxes Subjournal" colspan="4"/>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                        </group>
+                        <group>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Configuration" name="configuration">
+                            <group>
+                                <field name="based_on" />
+                                <field name="report_id" invisible="1" />
+                                <field name="report_config_id"
+                                    domain="[('tax_report_id','=',report_id), ('based_on','=',based_on)]" />
+                            </group>
+                            <group>
+                                <field name="grouped"/>
+                                <field name="grouped_max_amount"
+                                    attrs="{'invisible': [('grouped', '=', False)],
+                                            'required': [('grouped', '!=', False)]}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="create_report" string="Print Report" type="object"/>
+                        <button special="cancel"  string="Cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_account_tax_subjournal" model="ir.actions.act_window">
+            <field name="name">Account Tax Subjournal</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.tax.subjournal</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_account_tax_subjournal"
+            name="Taxes Subjournal"
+            parent="account.menu_finance_legal_statement"
+            action="action_account_tax_subjournal"
+            icon="STOCK_PRINT"/>
+
+    </data>
+</openerp>
