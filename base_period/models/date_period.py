@@ -55,7 +55,7 @@ class DatePeriod(models.Model):
             search_dict = {}
             for model in affected_models:
                 searched = self.env[model].search([
-                    ('period_id', '=', self.id)])
+                    ('period_id', '=', record.id)])
                 if searched:
                     search_dict[model] = searched
             if search_dict:
@@ -80,17 +80,22 @@ class DatePeriod(models.Model):
 
     def create_period(self, p_date):
         for i in range(1, 13):
-            new_p_date = p_date + relativedelta(month=i)
-            period = str(new_p_date.month) + '/' + str(new_p_date.year)
-            period_obj = self.search([('code', 'like', period)])
-            if not period_obj:
-                first_day = new_p_date + relativedelta(day=1)
-                last_day = new_p_date + relativedelta(
+            period_date = p_date + relativedelta(month=i)
+            period_code = period_date.strftime("%m/%Y")
+            ddate = period_date.strftime(DSDF)
+            domain = [
+                ('date_from', '<=', ddate),
+                ('date_to', '>=', ddate)
+            ]
+            period = self.search(domain)
+            if not period:
+                first_day = period_date + relativedelta(day=1)
+                last_day = period_date + relativedelta(
                     day=1, months=+1, days=-1)
 
                 args = {
-                    'name': period,
-                    'code': period,
+                    'name': period_code,
+                    'code': period_code,
                     'date_from': first_day,
                     'date_to': last_day,
                 }
