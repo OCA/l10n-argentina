@@ -67,7 +67,7 @@ class DatePeriod(models.Model):
                         [repr(x.sorted()) for x in search_dict.values()]),
                      record.name, record))
 
-    @api.multi
+    @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         args = args or []
         recs = self.browse()
