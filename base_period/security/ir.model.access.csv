@@ -1,2 +1,3 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-access_date_period,date.period User,model_date_period,base.group_user,1,1,1,1
+access_date_period,date.period User,model_date_period,base.group_user,1,0,0,0
+access_date_period_account_manager,date.period AccountManager,model_date_period,account.group_account_manager,1,1,1,1
