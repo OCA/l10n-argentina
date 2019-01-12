@@ -42,18 +42,18 @@ class AccountBankStatement(models.Model):
     @api.multi
     def button_open(self):
         ret = super(AccountBankStatement, self).button_open()
-        self.mapped("line_ids").write({"state": "open"})
+        self.mapped("line_ids").open_line()
         return ret
 
     @api.multi
     def button_draft(self):
         ret = super(AccountBankStatement, self).button_draft()
-        self.mapped("line_ids").write({"state": "open"})
+        self.mapped("line_ids").open_line()
         return ret
 
     def unlink_unconfirmed_lines(self):
         unconfirmed_lines = self.mapped("line_ids").filtered(lambda l: l.state != "confirm")
-        return unconfirmed_lines.write({"statement_id": False})
+        return unconfirmed_lines.remove_line()
 
     @api.multi
     def button_confirm_bank(self):
@@ -84,6 +84,18 @@ class AccountBankStatementLine(models.Model):
         required=True,
     )
 
+    def remove_line(self):
+        return self.write({"statement_id": False})
+
+    @api.multi
+    def unlink(self):
+        if self.env.context.get("force_unlink_statement_line", False):
+            return super(AccountBankStatementLine, self).unlink()
+
+        lines_to_unlink = self.filtered(lambda l: l.line_type in ('out', 'in'))
+        (self - lines_to_unlink).remove_line()
+        return super(AccountBankStatementLine, lines_to_unlink).unlink()
+
     def _get_state_select(self):
         return self.env["account.bank.statement"]._fields["state"].selection
 
@@ -106,3 +118,10 @@ class AccountBankStatementLine(models.Model):
     @api.multi
     def button_confirm(self):
         return self.confirm()
+
+    def open_line(self):
+        return self.write({"state": "open"})
+
+    @api.multi
+    def button_open_line(self):
+        return self.open_line()
