@@ -1,0 +1,8 @@
+*.py[cow]
+*.sw*
+*~ 
+*.jasper
+__pycache__
+*.orig
+*.mo
+*.prpt

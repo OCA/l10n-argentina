@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_pos_box_concept_tree" model="ir.ui.view">
+        <field name="name">pos.box.concept.tree</field>
+        <field name="model">pos.box.concept</field>
+        <field name="type">tree</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <tree string="PoS Box Concept">
+            <field name="concept_type"/>
+            <field name="name"/>
+            <field name="account_id"/>
+        </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_box_concept_form" model="ir.ui.view">
+        <field name="name">pos.box.concept.form</field>
+        <field name="model">pos.box.concept</field>
+        <field name="type">form</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <form string="PoS Box Concept">
+            <sheet>
+                <h2>
+                    <field name="name" placeholder="Name..."/>
+                </h2>
+                <group col="6" colspan="2">
+                    <field name="account_id"/>
+                    <field name="concept_type"/>
+                </group>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_pos_box_concept_search" model="ir.ui.view">
+        <field name="name">pos.box.concept.search</field>
+        <field name="model">pos.box.concept</field>
+        <field name="type">search</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <search string="PoS Box Concept">
+            <field name="name"/>
+            <field name="account_id"/>
+            <field name="concept_type"/>
+            <filter name="filter_by_type_in" domain="[('concept_type', '=', 'in')]" string="Put money in"/>
+            <filter name="filter_by_type_out" domain="[('concept_type', '=', 'out')]" string="Take money out"/>
+            <group expand="0" string="Group By...">
+                <filter string="Concept type" context="{'group_by': 'concept_type'}" name="group_by_concept_type"/>
+            </group>
+        </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="act_open_pos_box_concept_view">
+        <field name="name">PoS Box Concept</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pos.box.concept</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pos_box_concept_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new PoS Box Concept
+            </p><p>
+                Cofigure the Accounts used when Puting mony into/Taking money from a Bank Statement
+            </p>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="act_open_pos_box_concept_view_form">
+        <field name="act_window_id" ref="act_open_pos_box_concept_view"/>
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_pos_box_concept_form"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="act_open_pos_box_concept_view_tree">
+        <field name="act_window_id" ref="act_open_pos_box_concept_view"/>
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_pos_box_concept_tree"/>
+    </record>
+
+</odoo>
