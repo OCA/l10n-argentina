@@ -42,7 +42,7 @@ class AccountPaymentOrder(models.Model):
                 if journal.type != 'bank':
                     continue
 
-                st_line_data = self._prepare_statement_line_data()
+                st_line_data = line._prepare_statement_line_data()
                 bank_st_line_obj.create(st_line_data)
 
             #for issued_check in vou.issued_check_ids:

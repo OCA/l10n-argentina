@@ -22,4 +22,4 @@
 from . import pos_box_concept  # noqa
 from . import bank_statement  # noqa
 from . import account_payment  # noqa
-#from . import account_payment_order  # noqa
+from . import account_payment_order  # noqa
