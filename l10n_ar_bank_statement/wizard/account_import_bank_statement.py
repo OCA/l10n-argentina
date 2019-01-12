@@ -70,6 +70,7 @@ class WizardImportAccountBankStatementLine(models.TransientModel):
         ret = statement.write({"line_ids": [(4, line.id) for line in self.statement_line_ids]})
 
         if self.do_confirm:
+            self.statement_line_ids.confirm()
             ret = statement.check_confirm_bank()
 
         return ret
