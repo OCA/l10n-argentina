@@ -86,6 +86,7 @@ class AccountBankStatementLine(models.Model):
     )
 
     def remove_line(self):
+        self.open_line()
         return self.write({"statement_id": False})
 
     @api.multi
