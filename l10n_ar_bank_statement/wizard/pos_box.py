@@ -41,7 +41,12 @@ def onchange_concept_id(self):
 #
 #    return ret
 
-CashBox.concept_id = fields.Many2one('pos.box.concept', string='Concept', required=True)
+CashBox.concept_id = fields.Many2one(
+    'pos.box.concept',
+    string='Concept',
+    required=True,
+    ondelete='cascade',
+)
 CashBox.onchange_concept_id = onchange_concept_id
 #CashBox._run = _run
 

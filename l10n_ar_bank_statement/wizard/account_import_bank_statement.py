@@ -26,11 +26,21 @@ class WizardImportAccountBankStatementLine(models.TransientModel):
     _name = "wizard.import.account.bank.statement.line"
     _description = "Wizard to link Account Bank Statement Lines with an Statement"
 
-    statement_id = fields.Many2one('account.bank.statement', string='Bank Statement',
-                                   required=True, default=lambda w: w._get_default_statement_id())
-    journal_id = fields.Many2one('account.journal', string='Journal', required=True,
-                                 default=lambda w: w._get_default_journal_id())
     do_confirm = fields.Boolean(string='Confirm all lines', default=False)
+    statement_id = fields.Many2one(
+        'account.bank.statement',
+        string='Bank Statement',
+        required=True,
+        ondelete='cascade',
+        default=lambda w: w._get_default_statement_id()
+    )
+    journal_id = fields.Many2one(
+        'account.journal',
+        string='Journal',
+        required=True,
+        ondelete='cascade',
+        default=lambda w: w._get_default_journal_id(),
+    )
     statement_line_ids = fields.Many2many(
         comodel_name='account.bank.statement.line',
         relation='st_line_import_wiz_rel',
