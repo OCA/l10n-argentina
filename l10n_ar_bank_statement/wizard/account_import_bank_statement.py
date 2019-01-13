@@ -81,7 +81,7 @@ class WizardImportAccountBankStatementLine(models.TransientModel):
 
         if self.do_confirm:
             self.statement_line_ids.confirm()
-            ret = statement.check_confirm_bank()
+            #ret = statement.check_confirm_bank()
 
         return ret
 
