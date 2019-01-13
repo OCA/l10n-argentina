@@ -70,6 +70,7 @@ class AccountBankStatementLine(models.Model):
     company_id = fields.Many2one(related=False)
     state = fields.Selection(lambda l: l._get_state_select(), related=False, string='Status',
                              readonly=False, default=lambda l: l._get_default_state_value())
+    statement_state = fields.Selection(related="statement_id.state")
     payment_id = fields.Many2one('account.payment', string='Payment reference')
     payment_order_id = fields.Many2one('account.payment.order', string='Payment Order reference')
     line_type = fields.Selection(

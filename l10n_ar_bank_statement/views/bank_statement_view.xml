@@ -12,12 +12,17 @@
                     name="%(l10n_ar_bank_statement.action_wizard_import_account_bank_statement_line)d"/>
             </button>
             <xpath expr="//field[@name='line_ids']//tree" position="inside">
+                <field name="statement_state" invisible="1"/>
                 <field name="state" invisible="1"/>
                 <field name="line_type" invisible="1"/>
                 <button string="Validate" type="object" name="button_confirm"
                     attrs="{'invisible': ['|', ('state', '!=', 'open'), ('line_type', 'in', ('in', 'out'))]}"/>
                 <button string="Re-Open" type="object" name="button_open_line"
-                    attrs="{'invisible': ['|', ('state', '!=', 'confirm'), ('line_type', 'in', ('in', 'out'))]}"/>
+                    attrs="{'invisible': ['|',
+                                               ('state', '!=', 'confirm'),
+                                          '|',
+                                               ('line_type', 'in', ('in', 'out')),
+                                               ('statement_state', '=', 'confirm')]}"/>
             </xpath>
             <xpath expr="//field[@name='line_ids']//tree" position="attributes">
                 <attribute name="colors">red:state=='open'</attribute>
