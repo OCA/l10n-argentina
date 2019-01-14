@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+        <record id="view_period_form_inherit" model="ir.ui.view">
+            <field name="name">date.period.form.inherit</field>
+            <field name="model">date.period</field>
+            <field name="inherit_id" ref="base_period.view_period_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="%(close_date_period.close_date_period_wizard_action)d" class="btn-primary"
+                            string="Close" type="action" attrs="{'invisible': [('period_state', 'in', 'closed')]}"
+                            groups='account.group_account_manager'/>
+                        <field name="period_state" widget="statusbar" statusbar_visible="open,partial,closed"/>
+                    </header>
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page name="closed_journals" string="Closed Journals">
+                            <field name="journal_ids"/>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
