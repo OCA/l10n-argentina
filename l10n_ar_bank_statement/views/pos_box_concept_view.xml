@@ -24,7 +24,8 @@
         <form string="PoS Box Concept">
             <sheet>
                 <h2>
-                    <field name="name" placeholder="Name..."/>
+                    <field name="code" placeholder="Code..." class="oe_inline"/>
+                    <field name="name" placeholder="Name..." class="oe_inline"/>
                 </h2>
                 <group col="6" colspan="2">
                     <field name="account_id"/>

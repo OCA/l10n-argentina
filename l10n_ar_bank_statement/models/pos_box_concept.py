@@ -26,6 +26,14 @@ class PoSBoxConcept(models.Model):
     _name = 'pos.box.concept'
     _description = 'Concept with an account to be used by cash.box.in and cash.box.out'
 
+    @api.constrains("code")
+    def check_code_not_dup(self):
+        for concept in self:
+            code = concept.code
+            count = self.search_count([("name", "=", code)])
+            if count > 1:
+                raise exceptions.ValidationError(_("Concept duplicated: %s") % code)
+
     @api.constrains("name", "concept_type")
     def check_name_not_dup(self):
         for concept in self:
@@ -40,6 +48,7 @@ class PoSBoxConcept(models.Model):
             if count > 1:
                 raise exceptions.ValidationError(_("Concept duplicated: %s") % name)
 
+    code = fields.Char(string='Code', size=16, required=True)
     name = fields.Char(string='Name', size=128, required=True)
     account_id = fields.Many2one('account.account', string='Account', required=True)
     concept_type = fields.Selection(
