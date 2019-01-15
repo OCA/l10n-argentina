@@ -85,11 +85,19 @@ class AccountPaymentOrder(models.Model):
     @api.multi
     def compute_advance_payment_retentions(self, amount):
         amount = amount - sum(self.retention_ids.mapped('amount'))
+        new_ret_amount = 0.0
+        if not amount:
+            self.retention_ids = False
+            return amount
         tax_app_obj = self.env['retention.tax.application']
         partner_retentions = self.partner_id._get_retentions_to_apply(
             self.date)
         create_vals = []
         for advance_ret in self.partner_id.advance_retention_ids:
+            if (advance_ret.retention_id, advance_ret.concept_id) in \
+                    [(rtl.retention_id, rtl.concept_id) for
+                     rtl in self.retention_ids]:
+                continue
             ret_vals = partner_retentions.get(advance_ret.retention_id.id)
             if not ret_vals:
                 raise ValidationError(
@@ -124,11 +132,16 @@ class AccountPaymentOrder(models.Model):
             base, amount = taxapp.apply_retention(
                     self.partner_id, ret_vals.get('percent'),
                     ret_vals.get('excluded_percent'), vals, self.date)
+            if not amount:
+                continue
             retention_line_vals = self._prepare_advanced_payment_retention(
                 advance_ret, taxapp, ret_vals, base, amount)
             create_vals.append(retention_line_vals)
-        self.retention_ids = [(0, 0, val) for val in create_vals]
-        return sum(self.retention_ids.mapped('amount'))
+            new_ret_amount += amount
+            _logger.info("Retentions to create: %s" % pf(retention_line_vals))
+        if create_vals:
+            self.retention_ids = [(0, 0, val) for val in create_vals]
+        return new_ret_amount
 
     @api.multi
     def _prepare_advanced_payment_retention(
@@ -375,16 +388,20 @@ class AccountPaymentOrder(models.Model):
         for po in self:
             if po.type != 'payment':
                 return
-            po.onchange_payment_line()
-            if po.disable_retentions or not (
-                    po.income_line_ids + po.debt_line_ids):
+            if po.disable_retentions:
                 po.retention_ids = False
                 continue
+            if any(self.debt_line_ids.mapped('amount') +
+                   self.income_line_ids.mapped('amount')):
+                vals = po.calculate_retentions()
 
-            vals = po.calculate_retentions()
-
-            _logger.info("Retentions to create: %s" % pf(vals))
-            po.retention_ids = [(0, 0, val) for val in vals]
+                _logger.info("Retentions to create: %s" % pf(vals))
+                po.retention_ids = [(0, 0, val) for val in vals]
+            else:
+                if not po.amount:
+                    po.retention_ids = False
+                    continue
+                po.compute_advance_payment_retentions(po.amount)
 
     @api.multi
     def proforma_voucher(self):
