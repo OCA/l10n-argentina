@@ -31,6 +31,7 @@
         'account_cancel',
     ],
     "data": [
+        'data/ir_sequence_data.xml',
         'wizard/pos_box_view.xml',
         'wizard/account_import_bank_statement_view.xml',
         'views/pos_box_concept_view.xml',

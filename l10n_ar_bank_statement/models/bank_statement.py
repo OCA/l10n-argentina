@@ -25,12 +25,29 @@ from odoo import api, fields, models
 class AccountBankStatement(models.Model):
     _inherit = 'account.bank.statement'
 
+    def _get_next_name(self):
+        return self.env["ir.sequence"].next_by_code(self._name)
+
+    @api.model
+    def create(self, vals):
+        if not vals.get("name", False):
+            vals["name"] = self._get_next_name()
+
+        return super(AccountBankStatement, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if "name" in vals and not vals["name"]:
+            vals["name"] = self._get_next_name()
+
+        return super(AccountBankStatement, self).write(vals)
+
     @api.one
     @api.depends(
-        'line_ids',
         'balance_start',
-        'line_ids.amount',
         'balance_end_real',
+        'line_ids',
+        'line_ids.amount',
         'line_ids.state',
     )
     def _end_balance(self):
@@ -85,8 +102,13 @@ class AccountBankStatementLine(models.Model):
         required=True,
     )
 
-    def remove_line(self):
-        self.open_line()
+    def open_line(self):
+        return self.write({"state": "open"})
+
+    def remove_line(self, open_lines=True):
+        if open_lines:
+            self.open_line()
+
         return self.write({"statement_id": False})
 
     @api.multi
@@ -120,9 +142,6 @@ class AccountBankStatementLine(models.Model):
     @api.multi
     def button_confirm(self):
         return self.confirm()
-
-    def open_line(self):
-        return self.write({"state": "open"})
 
     @api.multi
     def button_open_line(self):
