@@ -36,11 +36,11 @@
     ],
     'data': [
         'wizard/view_check_deposit.xml',
+        'wizard/view_check_reject.xml',
         'views/account_check_view.xml',
         'views/account_payment_order_view.xml',
         'views/partner_view.xml',
         'wizard/add_checks_view.xml',
-        'wizard/view_check_reject.xml',
         'wizard/accredit_checks_view.xml',
         'security/ir.model.access.csv',
         # TODO

@@ -6,18 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-04 17:23+0000\n"
-"PO-Revision-Date: 2018-10-04 15:45-0300\n"
+"POT-Creation-Date: 2019-01-15 14:37+0000\n"
+"PO-Revision-Date: 2019-01-15 11:42-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
-"X-Generator: Poedit 2.1.1\n"
+"Plural-Forms: \n"
+"Language: es_AR\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_reject.py:95
+#: code:addons/l10n_ar_account_check/wizard/check_reject.py:87
 #, python-format
 msgid " ERROR! There is no check                     configuration for this Company!"
 msgstr " ERROR! No hay cheque                     configuracion para esta empresa!"
@@ -120,7 +121,7 @@ msgstr "Importe"
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_add_issued_check_amount
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_amount
 msgid "Amount Check"
-msgstr "Monto"
+msgstr "Cantidad de Cheques"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_add_issued_check_bank_id
@@ -275,13 +276,19 @@ msgid "Check Reject"
 msgstr "Rechazar Cheques"
 
 #. module: l10n_ar_account_check
+#: code:addons/l10n_ar_account_check/wizard/check_reject.py:96
+#, python-format
+msgid "Check Rejected"
+msgstr "Cheque Rechazado"
+
+#. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_type
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_type
 msgid "Check Type"
 msgstr "Tipo de Cheque"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_voucher.py:238
+#: code:addons/l10n_ar_account_check/models/account_voucher.py:162
 #, python-format
 msgid ""
 "Check number %s is postdated and has                         already been accredited!\n"
@@ -409,12 +416,12 @@ msgstr "Nota de Débito"
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_check_config_deferred_account_id
 msgid "Deferred Check Account"
-msgstr "Cuenta de Cheque Diferido"
+msgstr "Cuenta de cheques diferida"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_check_config_deferred_journal_id
 msgid "Deferred Check Journal"
-msgstr "Diario de Cheque Diferido"
+msgstr "Diario de Cheques diferidos"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
@@ -539,7 +546,7 @@ msgid "Error! Bank Account has no accountconfigured. Please, configure an accoun
 msgstr "Error! La cuenta bancaria no tiene una cuenta configurada. Por favor, configure una cuenta para la cuenta bancaria utilizada para cheques!"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_reject.py:63
+#: code:addons/l10n_ar_account_check/wizard/check_reject.py:62
 #, python-format
 msgid "Error! Check %s has to be deposited                     or delivered!"
 msgstr "Error! El Cheque %s tiene que ser depositado                     o entregado!"
@@ -639,7 +646,7 @@ msgid "In case of rejection of the third check"
 msgstr "En caso de rechazo del tercer control"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/wizard/check_reject.py:165
+#: code:addons/l10n_ar_account_check/wizard/check_reject.py:147
 #, python-format
 msgid "Invoice"
 msgstr "Factura"
@@ -648,7 +655,7 @@ msgstr "Factura"
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_issue_date
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_issue_date
 msgid "Issue Date"
-msgstr "Fecha de Emisión"
+msgstr "Fecha de Asunto"
 
 #. module: l10n_ar_account_check
 #: selection:account.issued.check,state:0
@@ -750,13 +757,13 @@ msgstr "Última actualización el"
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_check_config_account_id
 msgid "Main Check Account"
-msgstr "Cuenta Principal de Cheque"
+msgstr "Cuenta de Cheques Principal"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_not_order
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_not_order
 msgid "Not Order"
-msgstr "No a la Orden"
+msgstr "No Orden"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_issued_check_note
@@ -848,7 +855,7 @@ msgstr "Fecha de Rechazo"
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_add_third_check_reject_debit_note
 msgid "Reject Debit Note"
-msgstr "Rechazar Nora de Débito"
+msgstr "Rechazar Nota de Débito"
 
 #. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
@@ -910,7 +917,7 @@ msgstr "Estado"
 #: code:addons/l10n_ar_account_check/models/account_check.py:130
 #, python-format
 msgid "There is no check configuration for this Company!"
-msgstr "There is no check configuration for this Company!"
+msgstr "No hay configuraciones de cheque para esta compañía!"
 
 #. module: l10n_ar_account_check
 #: model:ir.ui.view,arch_db:l10n_ar_account_check.view_account_third_check_form

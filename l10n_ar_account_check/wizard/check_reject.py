@@ -6,9 +6,10 @@
 ###############################################################################
 
 from odoo import models, fields, _, api
-from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 import odoo.addons.decimal_precision as dp
 
+from datetime import datetime
 
 # TODO: Que pasa si no se valida la Nota de Debito???
 
@@ -56,11 +57,9 @@ class AccountCheckReject(models.Model):
         record_ids = self.env.context.get('active_ids', [])
         check_objs = third_check_obj.browse(record_ids)
 
-        period_id = self.env['account.period'].find(wizard.reject_date)[0]
-
         for check in check_objs:
             if check.state not in ('deposited', 'delivered'):
-                raise UserError(_("Error! Check %s has to be deposited \
+                raise ValidationError(_("Error! Check %s has to be deposited \
                     or delivered!") % (check.number))
 
             partner = check.source_partner_id
@@ -71,28 +70,21 @@ class AccountCheckReject(models.Model):
                 (check.number or '', check.source_payment_order_id.number),
                 'type': 'out_invoice',
                 'is_debit_note': True,
-                'account_id': partner.property_account_receivable.id,
+                'account_id': partner.property_account_receivable_id.id,
                 'partner_id': partner.id,
                 'date_invoice': wizard.reject_date,
-                'period_id': period_id,
                 'journal_id': wizard.journal_id.id,
-                'fiscal_position': partner.property_account_position.id,
+                'fiscal_position': partner.property_account_position_id.id,
                 'company_id': wizard.company_id.id,
             }
 
-            vals = invoice_obj.onchange_partner_id(
-                'out_invoice', partner.id, date_invoice=wizard.reject_date,
-                payment_term=partner.property_payment_term,
-                partner_bank_id=False, company_id=wizard.company_id.id)
-
-            invoice_vals.update(vals['value'])
             lines = []
             # Linea del cheque rechazado
 
             config = check_config_obj.search(
                 [('company_id', '=', check.company_id.id)])
             if not config:
-                raise UserError(_(' ERROR! There is no check \
+                raise ValidationError(_(' ERROR! There is no check \
                     configuration for this Company!'))
 
             account_id = False
@@ -101,59 +93,49 @@ class AccountCheckReject(models.Model):
             elif check.state == 'deposited':
                 account_id = check.deposit_bank_id.account_id.id
 
-            name = 'Check Rejected' + check.number
+            name = _('Check Rejected') + ' ' + check.number
             invoice_line_vals = {
                 'name': name,
                 'quantity': 1,
+                'price_unit': check.amount,
+                'account_id': account_id,
             }
 
-            vals = invoice_line_obj.product_id_change(
-                product=False, uom_id=False, qty=1, name=name,
-                type='out_invoice', partner_id=partner.id,
-                price_unit=check.amount, currency_id=False,
-                company_id=check.company_id.id)
-
-            invoice_line_vals.update(vals['value'])
-            invoice_line_vals['price_unit'] = check.amount
-            invoice_line_vals['account_id'] = account_id
             lines.append((0, 0, invoice_line_vals))
 
             # Lineas de gastos
             for expense in wizard.expense_line_ids:
+
                 invoice_line_vals = {
+                    'name': expense.product_id.name,
                     'product_id': expense.product_id.id,
                     'quantity': 1,
+                    'price_unit': expense.price,
+                    'account_id': account_id,
                 }
 
-                vals = invoice_line_obj.product_id_change(
-                    product=expense.product_id.id, uom_id=False, qty=1,
-                    name='', type='out_invoice', partner_id=partner.id,
-                    price_unit=expense.price, currency_id=False,
-                    company_id=wizard.company_id.id)
-
-                invoice_line_vals.update(vals['value'])
-                invoice_line_vals['price_unit'] = expense.price
-                taxes = [(6, 0, invoice_line_vals['invoice_line_tax_id'])]
-                invoice_line_vals['invoice_line_tax_id'] = taxes
                 lines.append((0, 0, invoice_line_vals))
 
-            invoice_vals['invoice_line'] = lines
-
-            invoice_vals['pos_ar_id'] = invoice_vals['pos_ar_id']
+            invoice_vals['invoice_line_ids'] = lines
 
             # Creamos la nota de debito
             debit_note_id = invoice_obj.create(invoice_vals)
 
-            # TODO: Chequear que es lo mismo el estado en el que este,
-            # asi quitamos este if que parece no tener sentido
-            if check.state == 'delivered':
-                third_check_obj.reject_check([check.id])
-            elif check.state == 'deposited':
-                third_check_obj.reject_check([check.id])
+            debit_note_id._onchange_partner_id()
 
-            # Guardamos la referencia a la nota de debito del rechazo
-            # TODO: Cambiar el write del state, tiene que ser por workflow.
-            check.write({'debit_note_id': debit_note_id, 'state': 'rejected'})
+            for line in debit_note_id.invoice_line_ids:
+                line._onchange_product_id()
+
+            debit_note_id._onchange_invoice_line_ids()
+
+        # TODO: Chequear que es lo mismo el estado en el que este,
+        # asi quitamos este if que parece no tener sentido
+        if check.state == 'delivered' or check.state == 'deposited':
+            check.reject_check()
+
+        # Guardamos la referencia a la nota de debito del rechazo
+        check.state = 'rejected'
+        check.debit_note_id = debit_note_id
 
         form_res = self.env.ref('l10n_ar_point_of_sale.view_pos_invoice_form')
         form_id = form_res and form_res.id or False
@@ -166,10 +148,9 @@ class AccountCheckReject(models.Model):
             'view_type': 'form',
             'view_mode': 'form,tree',
             'res_model': 'account.invoice',
-            'res_id': debit_note_id,
+            'res_id': debit_note_id.id,
             'view_id': False,
             'views': [(form_id, 'form'), (tree_id, 'tree')],
-            'context': {'type': 'out_invoice', 'is_debit_note': True},
             'type': 'ir.actions.act_window',
         }
 
