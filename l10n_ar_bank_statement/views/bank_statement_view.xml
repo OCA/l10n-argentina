@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <button name="check_confirm_bank" position="after">
                 <button string="Add lines" type="action" states="open"
-                    name="%(l10n_ar_bank_statement.action_wizard_import_account_bank_statement_line)d"/>
+                    name="%(l10n_ar_bank_statement.action_wizard_add_account_bank_statement_line)d"/>
             </button>
             <xpath expr="//field[@name='line_ids']//tree" position="inside">
                 <field name="statement_state" invisible="1"/>

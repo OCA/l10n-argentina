@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record id="wizard_import_account_bank_statement_line_view" model="ir.ui.view">
-        <field name="name">Import statement lines</field>
-        <field name="model">wizard.import.account.bank.statement.line</field>
+    <record id="wizard_add_account_bank_statement_line_view" model="ir.ui.view">
+        <field name="name">Add statement lines</field>
+        <field name="model">wizard.add.account.bank.statement.line</field>
         <field name="arch" type="xml">
-        <form string="Import Statement lines">
+        <form string="Add Statement lines">
             <field name="do_confirm" class="oe_inline" default_focus="1"/>
             <label for="do_confirm" class="oe_inline" string="Add lines and validate Statement too"/>
             <group colspan="4" col="4">
@@ -44,13 +44,13 @@
         </field>
     </record>
 
-    <record id="action_wizard_import_account_bank_statement_line" model="ir.actions.act_window">
-        <field name="name">Import statement lines</field>
-        <field name="res_model">wizard.import.account.bank.statement.line</field>
+    <record id="action_wizard_add_account_bank_statement_line" model="ir.actions.act_window">
+        <field name="name">Add statement lines</field>
+        <field name="res_model">wizard.add.account.bank.statement.line</field>
         <field name="type">ir.actions.act_window</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="wizard_import_account_bank_statement_line_view"/>
+        <field name="view_id" ref="wizard_add_account_bank_statement_line_view"/>
         <field name="target">new</field>
     </record>
 

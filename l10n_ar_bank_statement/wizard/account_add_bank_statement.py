@@ -22,8 +22,8 @@
 from odoo import api, fields, models
 
 
-class WizardImportAccountBankStatementLine(models.TransientModel):
-    _name = "wizard.import.account.bank.statement.line"
+class WizardAddAccountBankStatementLine(models.TransientModel):
+    _name = "wizard.add.account.bank.statement.line"
     _description = "Wizard to link Account Bank Statement Lines with an Statement"
 
     do_confirm = fields.Boolean(string='Confirm all lines', default=False)
@@ -43,7 +43,7 @@ class WizardImportAccountBankStatementLine(models.TransientModel):
     )
     statement_line_ids = fields.Many2many(
         comodel_name='account.bank.statement.line',
-        relation='st_line_import_wiz_rel',
+        relation='st_line_add_wiz_rel',
         column1='wiz_id',
         column2='line_id',
         string='Lines',
