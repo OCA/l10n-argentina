@@ -36,6 +36,8 @@
     "init_xml": [],
     'update_xml': [
         'security/ir.model.access.csv',
+        'security/account_payment_security.xml',
+        'res_config_view.xml',
         'voucher_payment_receipt_view.xml',
         'voucher_sales_purchase_view.xml',
         'account_voucher_view.xml',
