@@ -51,6 +51,20 @@ class res_partner_retention(models.Model):
         return {'domain': {'activity_id': domain}}
 
 
+class ResPartnerAdvanceRetention(models.Model):
+    _name = "res.partner.advance.retention"
+
+    retention_id = fields.Many2one(
+        comodel_name='retention.retention',
+        string='Retention', required=True)
+    concept_id = fields.Many2one(
+        comodel_name='retention.concept',
+        string="Concept", required=True)
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Partner")
+
+
 class res_partner(models.Model):
     _name = "res.partner"
     _inherit = "res.partner"
@@ -59,6 +73,10 @@ class res_partner(models.Model):
         'res.partner.retention', 'partner_id', 'Retentions Exceptions',
         help="Here you have to configure retention exceptions for this " +
         "partner with this Fiscal Position")
+    advance_retention_ids = fields.One2many(
+        comodel_name='res.partner.advance.retention',
+        inverse_name='partner_id',
+        string="Advance Payment Concept")
 
     def _get_retentions_to_apply(self, operation_date):
 
