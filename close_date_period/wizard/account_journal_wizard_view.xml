@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="close_account_journal_wizard_view">
+            <field name="name">close.account.journal.wizard.form</field>
+            <field name="model">close.account.journal.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Open/Close Period">
+                    <p>
+                        <strong>Select the period to open/close:</strong>
+                    </p>
+                    <group>
+                        <field name="closed" invisible="1"/>
+                        <field  name="period_id"/>
+                    </group>
+                    <footer>
+                        <button name="button_open" type="object" string="Open" class="btn-primary"
+                             attrs="{'invisible': [('closed', 'not in', True)]}"/>
+                        <button name="button_close" type="object" string="Close" class="btn-primary"
+                             attrs="{'invisible': [('closed', 'not in', False)]}"/>
+                        or
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="close_account_journal_wizard_action"
+                    name="Open/Close Period"
+                    res_model="close.account.journal.wizard"
+                    view_mode="form"
+                    target="new"/>
+    </data>
+</openerp>

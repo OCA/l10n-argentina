@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="close_date_period_wizard_view">
+            <field name="name">close.date.period.wizard.form</field>
+            <field name="model">close.date.period.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Close Period">
+                    <p>
+                        <strong>Select the journals to close:</strong>
+                    </p>
+                    <group>
+                        <field name="closed_journal_ids" invisible="1"/>
+                        <field name="journal_ids" domain="[('id', 'not in', closed_journal_ids)]"/>
+                    </group>
+                    <footer>
+                        <button name="button_close" type="object" string="Close" class="btn-primary"/>
+                        or
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="close_date_period_wizard_action"
+                    name="Close Period"
+                    res_model="close.date.period.wizard"
+                    view_mode="form"
+                    target="new"/>
+    </data>
+</openerp>
