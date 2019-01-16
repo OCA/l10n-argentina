@@ -1,0 +1,264 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_ar_bank_statement
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-14 13:32+0000\n"
+"PO-Revision-Date: 2015-07-14 10:35-0300\n"
+"Last-Translator: kloss <kloss>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_bank_statement
+#: view:account.import.statement.lines:l10n_ar_bank_statement.account_import_statement_lines_view
+msgid "ADD"
+msgstr "Añadir"
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,lines:0
+msgid "Account Bank Statement Lines"
+msgstr "Cuenta de las líneas del extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_import_statement_lines
+msgid "Account Import Statement Lines"
+msgstr "Importar asientos al extracto"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Voucher de contabilidad"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:135
+#, python-format
+msgid "All the account entries lines must be processed in order to close the statement."
+msgstr "All the account entries lines must be processed in order to close the statement."
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+#: field:account.bank.statement.line,analytic_id:0
+msgid "Analytic account"
+msgstr "Cuenta analítica"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Línea de extracto bancario"
+
+#. module: l10n_ar_bank_statement
+#: view:account.import.statement.lines:l10n_ar_bank_statement.account_import_statement_lines_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:64
+#, python-format
+msgid "Cannot delete Account Bank Statement Line(s) which are not draft state o creation type is system !"
+msgstr "No puede borrar las líneas del extracto bancario que tienen estado borrador o fueron creadas por el sistema !"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:82
+#, python-format
+msgid "Cannot delete Account Bank Statement Line(s) which are not manual type!"
+msgstr "No puede eliminar un registro creado de manera automática"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:73
+#, python-format
+msgid "Cannot remove Account Bank Statement Line(s) which are already confirm or conciliated!"
+msgstr "No puede eliminar un registro que fue confirmado o conciliado"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account_voucher.py:79
+#, python-format
+msgid "Check Nro. "
+msgstr "Cheque Nro. "
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/account_voucher.py:81
+#, python-format
+msgid "Checkbook No. "
+msgstr "Chequera Nro. "
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+#: field:account.bank.statement.line,concept_id:0
+msgid "Concept"
+msgstr "Concepto"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:105
+#, python-format
+msgid "Configuration Error!"
+msgstr "Error de configuración!"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,creation_type:0
+msgid "Creation type"
+msgstr "Creation type"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
+msgid "Des-conciliated"
+msgstr "Des-conciliated"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:108
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:135
+#, python-format
+msgid "Error!"
+msgstr "Error!"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+msgid "Group By..."
+msgstr "Group By..."
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_bank_statement
+#: view:account.import.statement.lines:l10n_ar_bank_statement.account_import_statement_lines_view
+msgid "Import Statement lines"
+msgstr "Importar líneas al extracto"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_account_import_statement_lines
+msgid "Import statement lines"
+msgstr "Importar los movimientos bancarios"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:64
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:73
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:82
+#, python-format
+msgid "Invalid action !"
+msgstr "Acción invalida !"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,issue_date:0
+msgid "Issue date"
+msgstr "Fecha de emisión"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+#: field:account.bank.statement.line,aux_journal_id:0
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: l10n_ar_bank_statement
+#: field:account.import.statement.lines,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+msgid "Partner"
+msgstr "Partner"
+
+#. module: l10n_ar_bank_statement
+#: field:account.bank.statement.line,payment_date:0
+msgid "Payment date"
+msgstr "Fecha de pago"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:105
+#, python-format
+msgid "Please verify that an account is defined in the journal."
+msgstr "Verifique que una cuenta fue definida en el diario"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_ar_statement_lines_tree
+#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_ar_statement_lines_tree
+msgid "Remove Statements Lines"
+msgstr "Eliminar registros"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+msgid "Search Bank Statements Lines"
+msgstr "Search Bank Statements Lines"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:139
+#, python-format
+msgid "Statement %s confirmed, journal items were created."
+msgstr "Statement %s confirmed, journal items were created."
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_tree
+msgid "Statement Lines"
+msgstr "Statement Lines"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_bank_statement_lines_tree
+#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_bank_statement_lines_tree
+msgid "Statements Lines"
+msgstr "Líneas del extracto"
+
+#. module: l10n_ar_bank_statement
+#: help:account.bank.statement.line,creation_type:0
+msgid "System: created by OpenERP, Manual: created by the user"
+msgstr "System: creado por OpenERP, Manual: creado por el usuario"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/bank_statement.py:108
+#, python-format
+msgid "The account entries lines are not in valid state."
+msgstr "Los apuntes contables no fueron validados"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_ar_form
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
+msgid "True"
+msgstr "True"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ar_bank_statement
+#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
+msgid "bank_line_on_change_amount(type,amount)"
+msgstr "bank_line_on_change_amount(type,amount)"
+

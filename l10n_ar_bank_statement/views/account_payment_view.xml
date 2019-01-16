@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_payment_form_inherit_add_st_button" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit.add_st_button</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='open_payment_matching_screen']" position="after">
+                <button class="oe_stat_button" name="button_open_bank_statements" string="Bank Statements"
+                    type="object" attrs="{'invisible':[('statement_count', '=', 0)]}" icon="fa-university"/>
+            </xpath>
+            <field name="move_reconciled" position="after">
+                <field name="statement_count" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

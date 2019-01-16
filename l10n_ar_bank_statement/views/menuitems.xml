@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_pos_box_concept_act"
+        parent="l10n_ar_point_of_sale.menu_journal_subroot"
+        sequence="20"
+        action="act_open_pos_box_concept_view"
+        />
+
+</odoo>
