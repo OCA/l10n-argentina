@@ -25,6 +25,7 @@
     "version": "11.0.1.0.0",
     "depends": ["base", "base_vat"],
     "author": "Eynes, E-MIPS, Odoo Community Association (OCA)",
+    "license": "AGPL-3",
     "category": "VAT Modules",
     "description": "This module provides VAT Check for Argentina.",
     "data": [
