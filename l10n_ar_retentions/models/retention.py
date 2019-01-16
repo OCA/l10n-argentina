@@ -522,7 +522,19 @@ class RetentionTaxApplication(models.Model):
         untaxed_debt = sum([ml.credit or ml.debit for ml in debt_untax_mls])
         untaxed_inc = sum([ml.credit or ml.debit for ml in income_untax_mls])
         untaxed_amount = untaxed_debt - untaxed_inc
+        untaxed_amount += self.get_period_partner_advance_payments(prev_pos)
         return untaxed_amount
+
+    @api.multi
+    def get_period_partner_advance_payments(self, prev_pos):
+        extra_untaxed_amount = 0.0
+        for po in prev_pos:
+            if any(po.debt_line_ids.mapped('amount') +
+                   po.income_line_ids.mapped('amount')) or not po.amount \
+                   or not po.retention_ids:
+                continue
+            extra_untaxed_amount += po.amount - sum(po.retention_ids.mapped('amount'))
+        return extra_untaxed_amount
 
     def get_period_base_amount(self, partner, concept,
                                po_date=False):
