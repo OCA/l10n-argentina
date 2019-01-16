@@ -30,6 +30,21 @@ class AccountPaymentOrder(models.Model):
         'payment_order_id',
         string='Bank Statement Lines',
     )
+    statement_count = fields.Integer(
+        string='Related Bank Statement Qty.',
+        compute='_calc_bank_statement_count',
+    )
+
+    def _calc_bank_statement_count_from_lines(self, bank_lines):
+        return self.env["account.payment"]._calc_bank_statement_count_from_lines(bank_lines)
+
+    @api.depends("bank_statement_line_ids")
+    def _calc_bank_statement_count(self):
+        for payment in self:
+            statement_count = self._calc_bank_statement_count_from_lines(
+                payment.bank_statement_line_ids,
+            )
+            payment.statement_count = statement_count
 
     @api.multi
     def proforma_voucher(self):
@@ -94,6 +109,35 @@ class AccountPaymentOrder(models.Model):
         self.mapped("bank_statement_line_ids").unlink()
 
         return ret
+
+    @api.multi
+    def button_open_bank_statements(self):
+        bank_lines = self.mapped("bank_statement_line_ids")
+        statements = self.env["account.payment"]._get_statements_from_lines(bank_lines)
+        form = self.env.ref('account.view_bank_statement_form')
+        if len(statements) == 1:
+            return {
+                'res_model': 'account.bank.statement',
+                'src_model': 'account.bank.statement',
+                'type': 'ir.actions.act_window',
+                'views': [(form.id, 'form')],
+                'view_id': form.id,
+                'target': 'current',
+                'res_id': statements.id,
+                'context': str(self.env.context),
+            }
+
+        tree = self.env.ref('account.view_bank_statement_tree')
+        return {
+            'res_model': 'account.bank.statement',
+            'src_model': 'account.bank.statement',
+            'type': 'ir.actions.act_window',
+            'views': [(tree.id, 'tree'), (form.id, 'form')],
+            'view_id': False,
+            'target': 'current',
+            'res_id': statements.ids,
+            'context': str(self.env.context),
+        }
 
 
 class AccountPaymentModeLine(models.Model):

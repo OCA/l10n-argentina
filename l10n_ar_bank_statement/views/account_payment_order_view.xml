@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
 
-    </data>
-</openerp>
+    <record id="view_account_payment_order_form_inherit_add_st_button" model="ir.ui.view">
+        <field name="name">account.payment.order.form.inherit.add_st_button</field>
+        <field name="model">account.payment.order</field>
+        <field name="inherit_id" ref="l10n_ar_account_payment_order.view_payment_order_receipt_form"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/h1" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" name="button_open_bank_statements" string="Bank Statements"
+                        type="object" attrs="{'invisible':[('statement_count', '=', 0)]}" icon="fa-university"/>
+                    <field name="statement_count" invisible="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
