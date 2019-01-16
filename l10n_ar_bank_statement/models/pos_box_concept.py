@@ -30,7 +30,7 @@ class PoSBoxConcept(models.Model):
     def check_code_not_dup(self):
         for concept in self:
             code = concept.code
-            count = self.search_count([("name", "=", code)])
+            count = self.search_count([("name", "ilike", code)])
             if count > 1:
                 raise exceptions.ValidationError(_("Concept duplicated: %s") % code)
 
