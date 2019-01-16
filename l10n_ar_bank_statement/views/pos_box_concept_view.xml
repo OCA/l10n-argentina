@@ -23,9 +23,17 @@
         <field name="arch" type="xml">
         <form string="PoS Box Concept">
             <sheet>
+                <h1>
+                    <div>
+                        <label for="name" class="oe_edit_only"/>
+                        <field name="name" placeholder="Name..."/>
+                    </div>
+                </h1>
                 <h2>
-                    <field name="code" placeholder="Code..." class="oe_inline"/>
-                    <field name="name" placeholder="Name..." class="oe_inline"/>
+                    <div>
+                        <label for="code" class="oe_inline oe_edit_only"/>
+                        <field name="code" placeholder="Code..." class="oe_inline"/>
+                    </div>
                 </h2>
                 <group col="6" colspan="2">
                     <field name="account_id"/>
