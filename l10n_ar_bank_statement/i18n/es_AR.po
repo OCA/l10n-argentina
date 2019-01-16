@@ -1,54 +1,55 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* l10n_ar_bank_statement
+# 	* l10n_ar_bank_statement
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0\n"
+"Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-14 13:32+0000\n"
-"PO-Revision-Date: 2015-07-14 10:35-0300\n"
-"Last-Translator: kloss <kloss>\n"
+"POT-Creation-Date: 2019-01-16 16:46+0000\n"
+"PO-Revision-Date: 2019-01-16 14:11-0300\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: es_AR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #. module: l10n_ar_bank_statement
-#: view:account.import.statement.lines:l10n_ar_bank_statement.account_import_statement_lines_view
-msgid "ADD"
-msgstr "Añadir"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_account_id
+msgid "Account"
+msgstr "Cuenta"
 
 #. module: l10n_ar_bank_statement
-#: field:account.import.statement.lines,lines:0
-msgid "Account Bank Statement Lines"
-msgstr "Cuenta de las líneas del extracto bancario"
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.wizard_add_account_bank_statement_line_view
+msgid "Add"
+msgstr "Agregar"
 
 #. module: l10n_ar_bank_statement
-#: model:ir.model,name:l10n_ar_bank_statement.model_account_import_statement_lines
-msgid "Account Import Statement Lines"
-msgstr "Importar asientos al extracto"
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.wizard_add_account_bank_statement_line_view
+msgid "Add Statement lines"
+msgstr "Agregar líneas de Extracto"
 
 #. module: l10n_ar_bank_statement
-#: model:ir.model,name:l10n_ar_bank_statement.model_account_voucher
-msgid "Accounting Voucher"
-msgstr "Voucher de contabilidad"
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_account_bank_statement_form_inherit_l10n_ar
+msgid "Add lines"
+msgstr "Agregar líneas"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:135
-#, python-format
-msgid "All the account entries lines must be processed in order to close the statement."
-msgstr "All the account entries lines must be processed in order to close the statement."
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.wizard_add_account_bank_statement_line_view
+msgid "Add lines and validate them too"
+msgstr "Agregar líneas y confirmarlas"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
-#: field:account.bank.statement.line,analytic_id:0
-msgid "Analytic account"
-msgstr "Cuenta analítica"
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_wizard_add_account_bank_statement_line
+msgid "Add statement lines"
+msgstr "Agregar líneas de Extracto"
 
 #. module: l10n_ar_bank_statement
 #: model:ir.model,name:l10n_ar_bank_statement.model_account_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_statement_id
 msgid "Bank Statement"
 msgstr "Extracto bancario"
 
@@ -58,207 +59,315 @@ msgid "Bank Statement Line"
 msgstr "Línea de extracto bancario"
 
 #. module: l10n_ar_bank_statement
-#: view:account.import.statement.lines:l10n_ar_bank_statement.account_import_statement_lines_view
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_payment_bank_statement_line_ids
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_payment_order_bank_statement_line_ids
+msgid "Bank Statement Lines"
+msgstr "Líneas de Extracto Bancario"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_account_payment_form_inherit_add_st_button
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_account_payment_order_form_inherit_add_st_button
+msgid "Bank Statements"
+msgstr "Extractos bancarios"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_wizard_import_account_bank_statement_line_form
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.wizard_add_account_bank_statement_line_view
 msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:64
-#, python-format
-msgid "Cannot delete Account Bank Statement Line(s) which are not draft state o creation type is system !"
-msgstr "No puede borrar las líneas del extracto bancario que tienen estado borrador o fueron creadas por el sistema !"
+#: model:ir.actions.act_window,help:l10n_ar_bank_statement.act_open_pos_box_concept_view
+msgid "Click to create a new PoS Box Concept"
+msgstr "Click para crear un nuevo Concepto de Caja"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:82
-#, python-format
-msgid "Cannot delete Account Bank Statement Line(s) which are not manual type!"
-msgstr "No puede eliminar un registro creado de manera automática"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_code
+msgid "Code"
+msgstr "Código"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:73
-#, python-format
-msgid "Cannot remove Account Bank Statement Line(s) which are already confirm or conciliated!"
-msgstr "No puede eliminar un registro que fue confirmado o conciliado"
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_form
+msgid "Code..."
+msgstr "Código..."
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/account_voucher.py:79
-#, python-format
-msgid "Check Nro. "
-msgstr "Cheque Nro. "
+#: model:ir.actions.act_window,help:l10n_ar_bank_statement.act_open_pos_box_concept_view
+msgid "Cofigure the Accounts used when Puting money into/Taking money from a Bank Statement"
+msgstr "Configurar la Cuenta Contable usada para Poner/Sacar dinero de un Extracto Bancario"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/account_voucher.py:81
-#, python-format
-msgid "Checkbook No. "
-msgstr "Chequera Nro. "
-
-#. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
-#: field:account.bank.statement.line,concept_id:0
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_cash_box_in_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_cash_box_out_concept_id
 msgid "Concept"
 msgstr "Concepto"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:105
+#: code:addons/l10n_ar_bank_statement/models/pos_box_concept.py:35
+#: code:addons/l10n_ar_bank_statement/models/pos_box_concept.py:49
 #, python-format
-msgid "Configuration Error!"
-msgstr "Error de configuración!"
+msgid "Concept duplicated: %s"
+msgstr "¡El Concepto %s está duplicado!"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
-msgid "Confirm"
-msgstr "Confirmar"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_concept_type
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_search
+msgid "Concept type"
+msgstr "Tipo de Concepto"
 
 #. module: l10n_ar_bank_statement
-#: field:account.import.statement.lines,create_uid:0
+#: model:ir.model,name:l10n_ar_bank_statement.model_pos_box_concept
+msgid "Concept with an account to be used by cash.box.in and cash.box.out"
+msgstr "Concepto para asociar una Cuenta Contable con líneas de Extracto "
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_do_confirm
+msgid "Confirm all lines"
+msgstr "Confirmar las líneas"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_create_uid
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por"
 
 #. module: l10n_ar_bank_statement
-#: field:account.import.statement.lines,create_date:0
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_create_date
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_create_date
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_create_date
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado en"
 
 #. module: l10n_ar_bank_statement
-#: field:account.bank.statement.line,creation_type:0
-msgid "Creation type"
-msgstr "Creation type"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_display_name
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_display_name
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
-msgid "Des-conciliated"
-msgstr "Des-conciliated"
+#: selection:account.bank.statement.line,line_type:0
+msgid "Expense"
+msgstr "Gasto"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
-msgid "Draft"
-msgstr "Borrador"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_filedata
+msgid "File"
+msgstr "Archivo"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:108
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:135
-#, python-format
-msgid "Error!"
-msgstr "Error!"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_filename
+msgid "Filename"
+msgstr "Nombre de archivo"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_search
 msgid "Group By..."
-msgstr "Group By..."
+msgstr "Agrupar por..."
 
 #. module: l10n_ar_bank_statement
-#: field:account.import.statement.lines,id:0
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_id
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_id
 msgid "ID"
-msgstr "ID"
+msgstr "ID (identificación)"
 
 #. module: l10n_ar_bank_statement
-#: view:account.import.statement.lines:l10n_ar_bank_statement.account_import_statement_lines_view
-msgid "Import Statement lines"
-msgstr "Importar líneas al extracto"
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_wizard_import_account_bank_statement_line_form
+msgid "Import Bank Statement Lines"
+msgstr "Importar Líneas de Extracto Bancario"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
-#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_account_import_statement_lines
-msgid "Import statement lines"
-msgstr "Importar los movimientos bancarios"
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_wizard_import_account_bank_statement_line_view
+msgid "Import Lines"
+msgstr "Importar Líneas"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:64
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:73
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:82
-#, python-format
-msgid "Invalid action !"
-msgstr "Acción invalida !"
+#: selection:account.bank.statement.line,line_type:0
+msgid "Income"
+msgstr "Ingreso"
 
 #. module: l10n_ar_bank_statement
-#: field:account.bank.statement.line,issue_date:0
-msgid "Issue date"
-msgstr "Fecha de emisión"
-
-#. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
-#: field:account.bank.statement.line,aux_journal_id:0
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_journal_id
 msgid "Journal"
 msgstr "Diario"
 
 #. module: l10n_ar_bank_statement
-#: field:account.import.statement.lines,write_uid:0
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept___last_update
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line___last_update
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line___last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_write_uid
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización de"
 
 #. module: l10n_ar_bank_statement
-#: field:account.import.statement.lines,write_date:0
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_write_date
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_write_date
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_write_date
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
-msgid "Partner"
-msgstr "Partner"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_add_account_bank_statement_line_statement_line_ids
+msgid "Lines"
+msgstr "Líneas"
 
 #. module: l10n_ar_bank_statement
-#: field:account.bank.statement.line,payment_date:0
-msgid "Payment date"
-msgstr "Fecha de pago"
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_pos_box_concept_name
+msgid "Name"
+msgstr "Nombre"
 
 #. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:105
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_form
+msgid "Name..."
+msgstr "Nombre..."
+
+#. module: l10n_ar_bank_statement
+#: selection:account.bank.statement.line,line_type:0
+msgid "Payment"
+msgstr "Pago"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_bank_statement_line_payment_order_id
+msgid "Payment Order reference"
+msgstr "Referencia a la Orden de Pago"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_payment_mode_line
+msgid "Payment method lines"
+msgstr "Lineas del metodo de pago"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_bank_statement_line_payment_id
+msgid "Payment reference"
+msgstr "Referencia al Pago"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_payment
+msgid "Payments"
+msgstr "Pagos"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.actions.act_window,name:l10n_ar_bank_statement.act_open_pos_box_concept_view
+#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_pos_box_concept_act
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_form
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_search
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_tree
+msgid "PoS Box Concept"
+msgstr "Concepto de Caja"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_wizard_import_account_bank_statement_line_form
+msgid "Process File"
+msgstr "Procesar archivo"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_search
+#: selection:pos.box.concept,concept_type:0
+msgid "Put money in"
+msgstr "Poner dinero en"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_account_bank_statement_form_inherit_l10n_ar
+msgid "Re-Open"
+msgstr "Reabrir"
+
+#. module: l10n_ar_bank_statement
+#: selection:account.bank.statement.line,line_type:0
+msgid "Receipt"
+msgstr "Recibo"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_payment_order_statement_count
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_payment_statement_count
+msgid "Related Bank Statement Qty."
+msgstr "Cantidad de Extractos Bancario relacionados"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_wizard_import_account_bank_statement_line_statement_id
+msgid "Statement"
+msgstr "Extracto"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_bank_statement_line_statement_state
+msgid "Status"
+msgstr "Estado"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_search
+#: selection:pos.box.concept,concept_type:0
+msgid "Take money out"
+msgstr "Sacar dinero"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/models/pos_box_concept.py:67
+#: sql_constraint:pos.box.concept:0
 #, python-format
-msgid "Please verify that an account is defined in the journal."
-msgstr "Verifique que una cuenta fue definida en el diario"
+msgid "This account is already assigned to another concept"
+msgstr "Esta Cuenta ya está asignada a otro Concepto"
 
 #. module: l10n_ar_bank_statement
-#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_ar_statement_lines_tree
-#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_ar_statement_lines_tree
-msgid "Remove Statements Lines"
-msgstr "Eliminar registros"
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.wizard_add_account_bank_statement_line_view
+msgid "Total"
+msgstr "Total"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
-msgid "Search Bank Statements Lines"
-msgstr "Search Bank Statements Lines"
-
-#. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:139
-#, python-format
-msgid "Statement %s confirmed, journal items were created."
-msgstr "Statement %s confirmed, journal items were created."
-
-#. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_tree
-msgid "Statement Lines"
-msgstr "Statement Lines"
-
-#. module: l10n_ar_bank_statement
-#: model:ir.actions.act_window,name:l10n_ar_bank_statement.action_bank_statement_lines_tree
-#: model:ir.ui.menu,name:l10n_ar_bank_statement.menu_bank_statement_lines_tree
-msgid "Statements Lines"
-msgstr "Líneas del extracto"
-
-#. module: l10n_ar_bank_statement
-#: help:account.bank.statement.line,creation_type:0
-msgid "System: created by OpenERP, Manual: created by the user"
-msgstr "System: creado por OpenERP, Manual: creado por el usuario"
-
-#. module: l10n_ar_bank_statement
-#: code:addons/l10n_ar_bank_statement/bank_statement.py:108
-#, python-format
-msgid "The account entries lines are not in valid state."
-msgstr "Los apuntes contables no fueron validados"
-
-#. module: l10n_ar_bank_statement
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_ar_form
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
-msgid "True"
-msgstr "True"
-
-#. module: l10n_ar_bank_statement
-#: view:account.bank.statement.line:l10n_ar_bank_statement.view_ar_statement_lines_search
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_bank_statement_line_line_type
 msgid "Type"
 msgstr "Tipo"
 
 #. module: l10n_ar_bank_statement
-#: view:account.bank.statement:l10n_ar_bank_statement.view_bank_import_statement_form
-msgid "bank_line_on_change_amount(type,amount)"
-msgstr "bank_line_on_change_amount(type,amount)"
+#: model:ir.model.fields,help:l10n_ar_bank_statement.field_account_bank_statement_line_line_type
+msgid "Type of the associated operation"
+msgstr "Tipo de operación asociada"
 
+#. module: l10n_ar_bank_statement
+#: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_account_bank_statement_form_inherit_l10n_ar
+msgid "Validate"
+msgstr "Validar"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_wizard_import_account_bank_statement_line
+msgid "Wizard to import Account Bank Statement Lines from a spreadsheet"
+msgstr "Asistente para importar Líneas de Extracto Bancario desde una planilla de cálculos"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_wizard_add_account_bank_statement_line
+msgid "Wizard to link Account Bank Statement Lines with an Statement"
+msgstr "Asistente para asociar Líneas de Extracto Bancario con un Extracto"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/models/account_payment.py:115
+#, python-format
+msgid ""
+"You can't cancel a Payment with confirmed Bank Statements\n"
+"\n"
+"                    HINT: Click on the 'Bank Statements' button your right.\n"
+"                    "
+msgstr ""
+"No puede cancelar un Pago relacionado a Extractos confirmados\n"
+"\n"
+"                    HINT: Haga click en el boton 'Extractos Bancarios' a su derecha para solucionar el problema.\n"
+"                    "
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_account_payment_order
+msgid "account.payment.order"
+msgstr "account.payment.order"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_cash_box_in
+msgid "cash.box.in"
+msgstr "cash.box.in"
+
+#. module: l10n_ar_bank_statement
+#: model:ir.model,name:l10n_ar_bank_statement.model_cash_box_out
+msgid "cash.box.out"
+msgstr "cash.box.out"
