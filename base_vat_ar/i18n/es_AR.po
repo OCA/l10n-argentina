@@ -1,19 +1,22 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* base_vat_ar
+# 	* base_vat_ar
+# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2018.
 #
 msgid ""
 msgstr ""
+"Language: Spanish\n"
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-28 19:50+0000\n"
-"PO-Revision-Date: 2018-05-28 19:50+0000\n"
-"Last-Translator: <>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2018-05-30 19:09+0000\n"
+"PO-Revision-Date: 2018-05-30 16:16-0300\n"
+"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
+"Language-Team: Spanish; Castilian <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_afip_code
@@ -23,7 +26,7 @@ msgstr "Código AFIP"
 #. module: base_vat_ar
 #: model:ir.model,name:base_vat_ar.model_res_partner
 msgid "Contact"
-msgstr "Contact"
+msgstr "Contacto"
 
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_create_uid
@@ -85,21 +88,21 @@ msgstr "Última actualización el"
 #: code:addons/base_vat_ar/models/partner.py:69
 #, python-format
 msgid "The Vat does not seems to be correct."
-msgstr "El Numero de identificació ingresado no es correcto."
+msgstr "El Número de Identificación ingresado no es correcto."
 
 #. module: base_vat_ar
 #: code:addons/base_vat_ar/models/partner.py:74
 #, python-format
 msgid "The Vat only supports numbers."
-msgstr "El Numerode Identificación solo soporta numeros"
+msgstr "El Número de Identificación solo soporta numeros"
 
 #. module: base_vat_ar
 #: code:addons/base_vat_ar/models/partner.py:46
 #, python-format
 msgid "There is another partner with same VAT Information"
-msgstr "Hay otro cliente con el mismo Numero de Identificación"
+msgstr "Hay otro contacto con el mismo Nro. de Documento."
 
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_verification_required
 msgid "Verification required"
-msgstr "Verification required"
+msgstr "Requiere Verificación"
