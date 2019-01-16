@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_account_bank_statement_form_inherit_l10n_ar" model="ir.ui.view">
+        <field name="name">account.bank.statement.form.inherit.l10n_ar</field>
+        <field name="model">account.bank.statement</field>
+        <field name="inherit_id" ref="account.view_bank_statement_form"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <button name="check_confirm_bank" position="after">
+                <button string="Add lines" type="action" states="open"
+                    name="%(l10n_ar_bank_statement.action_wizard_add_account_bank_statement_line)d"/>
+            </button>
+            <xpath expr="//field[@name='line_ids']//tree" position="inside">
+                <field name="statement_state" invisible="1"/>
+                <field name="state" invisible="1"/>
+                <field name="line_type" invisible="1"/>
+                <button string="Validate" type="object" name="button_confirm"
+                    attrs="{'invisible': ['|', ('state', '!=', 'open'), ('line_type', 'in', ('in', 'out'))]}"/>
+                <button string="Re-Open" type="object" name="button_open_line"
+                    attrs="{'invisible': ['|',
+                                               ('state', '!=', 'confirm'),
+                                          '|',
+                                               ('line_type', 'in', ('in', 'out')),
+                                               ('statement_state', '=', 'confirm')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']//tree" position="attributes">
+                <attribute name="colors">red:state=='open'</attribute>
+                <attribute name="create">false</attribute>
+                <attribute name="edit">false</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

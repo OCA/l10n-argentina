@@ -20,6 +20,16 @@ class ResDocumentType(models.Model):
     verification_required = fields.Boolean(string='Verification required',
                                            default=lambda *a: False)
 
+    def get_website_sale_documents(self, mode='billing'):
+        cuit = self.sudo().env.ref(
+            'base_vat_ar.document_cuit').name
+        cuil = self.sudo().env.ref(
+            'base_vat_ar.document_cuil').name
+        dni = self.sudo().env.ref(
+            'base_vat_ar.document_dni').name
+        return self.sudo().search([(
+            'name', 'in', (cuit, cuil, dni))])
+
 
 class ResPartner(models.Model):
     _name = "res.partner"
@@ -31,6 +41,8 @@ class ResPartner(models.Model):
     @api.constrains('vat', 'document_type_id')
     def check_vat_duplicated(self):
         for partner in self:
+            if partner.env.context.get('from_website', False):
+                continue
             if not partner.vat:
                 continue
             search_param = [
@@ -42,6 +54,30 @@ class ResPartner(models.Model):
             if res > 1:
                 raise ValidationError(
                     _('There is another partner with same VAT Information'))
+
+    @api.multi
+    def write(self, vals):
+        self.check_vat_string(vals)
+        res = super().write(vals)
+        return res
+
+    @api.multi
+    def check_vat_string(self, vals):
+        vat = vals.get("vat")
+        if not vat:
+            return False
+        ci_extranjera = self.env.ref(
+            'base_vat_ar.document_ci_extranjera')
+        pasaporte = self.env.ref(
+            'base_vat_ar.document_pasaporte')
+        if [x for x in self if x.document_type_id not in [ci_extranjera,
+                                                          pasaporte]]:
+            vat = vat.replace('.', '').replace('-', '')
+            if not vat.isdigit():
+                raise ValidationError(
+                    _('The Vat only supports numbers.'))
+            vals['vat'] = vat
+        return False
 
     @api.constrains('vat', 'country_id', 'document_type_id')
     def check_vat(self):
@@ -58,7 +94,7 @@ class ResPartner(models.Model):
                 vat_country, vat_number = partner.vat[:2].lower(), \
                     partner.vat[2:].replace(' ', '')
             if partner.document_type_id and \
-                    not partner.document_type_id.verification_required:
+                    not partner.document_type_id.sudo().verification_required:
                 return True
             if not hasattr(self, 'check_vat_' + vat_country):
                 return True

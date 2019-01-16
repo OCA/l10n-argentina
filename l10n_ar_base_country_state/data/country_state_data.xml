@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="state_capital_federal" model="res.country.state">
+            <field name="name">Ciudad Autónoma de Buenos Aires</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">1</field>
+        </record>
+
+        <record id="state_buenos_aires" model="res.country.state">
+            <field name="name">Buenos Aires</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">2</field>
+        </record>
+
+        <record id="state_catamarca" model="res.country.state">
+            <field name="name">Catamarca</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">3</field>
+        </record>
+
+        <record id="state_cordoba" model="res.country.state">
+            <field name="name">Córdoba</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">4</field>
+        </record>
+
+        <record id="state_corrientes" model="res.country.state">
+            <field name="name">Corrientes</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">5</field>
+        </record>
+
+        <record id="state_chaco" model="res.country.state">
+            <field name="name">Chaco</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">6</field>
+        </record>
+
+        <record id="state_chubut" model="res.country.state">
+            <field name="name">Chubut</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">7</field>
+        </record>
+
+        <record id="state_entre_rios" model="res.country.state">
+            <field name="name">Entre Ríos</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">8</field>
+        </record>
+
+        <record id="state_formosa" model="res.country.state">
+            <field name="name">Formosa</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">9</field>
+        </record>
+
+        <record id="state_jujuy" model="res.country.state">
+            <field name="name">Jujuy</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">10</field>
+        </record>
+
+        <record id="state_la_pampa" model="res.country.state">
+            <field name="name">La Pampa</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">11</field>
+        </record>
+
+        <record id="state_la_rioja" model="res.country.state">
+            <field name="name">La Rioja</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">12</field>
+        </record>
+
+        <record id="state_mendoza" model="res.country.state">
+            <field name="name">Mendoza</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">13</field>
+        </record>
+
+        <record id="state_misiones" model="res.country.state">
+            <field name="name">Misiones</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">14</field>
+        </record>
+
+        <record id="state_neuquen" model="res.country.state">
+            <field name="name">Neuquén</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">15</field>
+        </record>
+
+        <record id="state_rio_negro" model="res.country.state">
+            <field name="name">Río Negro</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">16</field>
+        </record>
+
+        <record id="state_salta" model="res.country.state">
+            <field name="name">Salta</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">17</field>
+        </record>
+
+        <record id="state_san_juan" model="res.country.state">
+            <field name="name">San Juan</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">18</field>
+        </record>
+
+        <record id="state_san_luis" model="res.country.state">
+            <field name="name">San Luis</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">19</field>
+        </record>
+
+        <record id="state_santa_cruz" model="res.country.state">
+            <field name="name">Santa Cruz</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">20</field>
+        </record>
+
+        <record id="state_santa_fe" model="res.country.state">
+            <field name="name">Santa Fe</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">21</field>
+        </record>
+
+        <record id="state_sgo_del_estero" model="res.country.state">
+            <field name="name">Santiago del Estero</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">22</field>
+        </record>
+
+        <record id="state_tierra_del_fuego" model="res.country.state">
+            <field name="name">Tierra del Fuego, Antártida e Islas del Atlántico Sur</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">23</field>
+        </record>
+
+        <record id="state_tucuman" model="res.country.state">
+            <field name="name">Tucumán</field>
+            <field name="country_id" ref="base.ar"/>
+            <field name="code">24</field>
+        </record>
+
+    </data>
+</openerp>

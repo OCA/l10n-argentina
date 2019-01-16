@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_partner_perception_form" model="ir.ui.view">
+            <field name="name">res.partner.perception.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <page name="accounting_disabled" position="after">
+                <page string="Perceptions">
+                    <group colspan="4" col="4">
+                        <group colspan="4">
+                            <field colspan="2" name="perception_ids" nolabel="1">
+                                <tree string="Perceptions to Apply" editable="bottom">
+                                    <field name="perception_id" domain="[('type_tax_use','=','sale')]"/>
+                                    <field name="activity_id"/>
+                                    <field name="percent"/>
+                                    <field name="excluded_percent" />
+                                    <field name="ex_date_from" />
+                                    <field name="ex_date_to" />
+                                    <field name="exclusion_certificate" />
+                                    <field name="sit_iibb" />
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+                </page>
+                <group name="accounting_entries" position="after">
+                    <group>
+                        <field name="nro_insc_iibb"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+        <record id="view_account_position_perception_form" model="ir.ui.view">
+            <field name="name">account.fiscal.position.perception.form</field>
+            <field name="model">account.fiscal.position</field>
+            <field name="inherit_id" ref="account.view_account_position_form"/>
+            <field name="arch" type="xml">
+                <page name="tax_mapping" position="after">
+                    <page name="applied_perceptions" string="Applied Perceptions">
+                        <group>
+                            <field name="perception_ids" widget="one2many_list" nolabel="1" domain="[('tax_id.type_tax_use','=','sale')]">
+                                <tree string="Perception">
+                                    <field name="name" />
+                                    <field name="tax_id" />
+                                    <field name="state_id" />
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_cash_box_in_form_inherit_add_concept_id" model="ir.ui.view">
+        <field name="name">cash.box.in.form.inherit.add_concept_id</field>
+        <field name="model">cash.box.in</field>
+        <field name="inherit_id" ref="account.cash_box_in_form"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="concept_id" domain="[('concept_type', '=', 'in')]" class="oe_inline"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_cash_box_out_form_inherit_add_concept_id" model="ir.ui.view">
+        <field name="name">cash.box.out.form.inherit.add_concept_id</field>
+        <field name="model">cash.box.out</field>
+        <field name="inherit_id" ref="account.cash_box_out_form"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="concept_id" domain="[('concept_type', '=', 'out')]" class="oe_inline"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

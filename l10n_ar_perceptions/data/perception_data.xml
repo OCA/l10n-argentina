@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Actividades para Percepcion de II BB -->
+        <record forcecreate="0" id="perception_activity_alic_general" model="perception.activity">
+            <field name="name">Alicuota General</field>
+            <field name="type">gross_income</field>
+        </record>
+
+        <record forcecreate="0" id="perception_activity_fab_comestibles" model="perception.activity">
+            <field name="name">Fabricantes, productores, mayoristas y distribuidores de productos comestibles y bebidas</field>
+            <field name="type">gross_income</field>
+        </record>
+
+        <!-- Actividades para Percepcion de IVA -->
+        <record forcecreate="0" id="perception_activity_prod_fracc_gas" model="perception.activity">
+            <field name="name">Venta a empresas productoras y a fraccionadores incorporados en el "Registro de Productores de Gas Licuado" o en el "Registro de Fraccionadores de Gas Licuado"</field>
+            <field name="type">vat</field>
+        </record>
+
+        <record forcecreate="0" id="perception_activity_distribuidores_gas" model="perception.activity">
+            <field name="name">Venta a distribuidores y a otros compradores de "gas licuado", efectuadas por fraccionadores incorporados en el "Registro de Fraccionadores de Gas Licuado"</field>
+            <field name="type">vat</field>
+        </record>
+
+        <!-- Conceptos para Percepcion de II BB -->
+        <record forcecreate="0" id="perception_concept_medicamentos" model="perception.concept">
+            <field name="name">Fabricación y Comercialización de Medicamentos para Uso Humano</field>
+            <field name="type">gross_income</field>
+        </record>
+
+        <record forcecreate="0" id="perception_concept_act_industrial" model="perception.concept">
+            <field name="name">Actividad Principal Industrial No Exenta</field>
+            <field name="type">gross_income</field>
+        </record>
+
+        <record forcecreate="0" id="perception_concept_prod_comest" model="perception.concept">
+            <field name="name">Venta de productos comestibles</field>
+            <field name="type">gross_income</field>
+        </record>
+
+        <record forcecreate="0" id="perception_concept_vinos_cerv" model="perception.concept">
+            <field name="name">Venta de Vinos, Cervezas, Bebidas Alcohólicas, Analcohólicas, Jarabes, Extractos y Concentrados Industria Elaboradora</field>
+            <field name="type">gross_income</field>
+        </record>
+
+        <!-- Conceptos para Percepcion de IVA -->
+        <record forcecreate="0" id="perception_concept_venta" model="perception.concept">
+            <field name="name">Venta de Cosas Muebles Locaciones y Prestaciones Gravadas</field>
+            <field name="type">vat</field>
+        </record>
+
+        <record forcecreate="0" id="perception_concept_gas_licuado" model="perception.concept">
+            <field name="name">Venta de gas licuado de petróleo (GLP) comercial</field>
+            <field name="type">vat</field>
+        </record>
+
+    </data>
+</odoo>

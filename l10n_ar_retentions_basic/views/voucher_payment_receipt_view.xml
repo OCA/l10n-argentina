@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Customer Payment -->
+        <record id="view_payment_retention_receipt_form" model="ir.ui.view">
+            <field name="name">account.payment.order.form.retentions</field>
+            <field name="model">account.payment.order</field>
+            <field name="inherit_id" ref="l10n_ar_account_payment_order.view_payment_order_receipt_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='journal_items']" position="before">
+                    <page string="Retentions">
+                        <field name="retention_ids" nolabel="1">
+                            <tree string="Retention Lines">
+                                <field name="name" invisible="1"/>
+                                <field name="state_id" invisible="1"/>
+                                <field name="date"/>
+                                <field name="retention_id" string="Retention Type"/>
+                                <field name="partner_id" invisible="1"/>
+                                <field name="certificate_no"/>
+                                <field name="base"/>
+                                <field name="amount"/>
+                                <field name="account_id" invisible="1"/>
+                            </tree>
+                            <form string="Retention Lines">
+                                <h1>
+                                    <field name="name" class="oe_inline"/>
+                                </h1>
+                                <group>
+                                    <group string="Information" name="info">
+                                        <field name="state_id" invisible="1"/>
+
+                                        <field name="retention_id" domain="[('type_tax_use', '=', 'sale')]" />
+                                        <field name="certificate_no"/>
+                                        <field name="state_id"/>
+                                        <field name="date"/>
+                                        <label string="Keep it empty if the date is the same as the voucher." class="oe_grey"/>
+                                    </group>
+                                    <group string="Amounts" name="amount">
+                                        <field name="base"/>
+                                        <field name="amount"/>
+                                        <field name="account_id" invisible="1"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Supplier Payment -->
+        <record id="view_vendor_payment_retention_form" model="ir.ui.view">
+            <field name="name">account.payment.order.form.retentions</field>
+            <field name="model">account.payment.order</field>
+            <field name="inherit_id" ref="l10n_ar_account_payment_order.view_vendor_payment_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='journal_items']" position="before">
+                    <page string="Retentions">
+                        <field name="retention_ids" nolabel="1">
+                            <tree string="Retention Lines">
+                                <field name="name" invisible="1"/>
+                                <field name="state_id" invisible="1"/>
+                                <field name="date"/>
+                                <field name="retention_id" string="Retention Type"/>
+                                <field name="partner_id" invisible="1"/>
+                                <field name="certificate_no"/>
+                                <field name="base"/>
+                                <field name="amount"/>
+                                <field name="account_id" invisible="1"/>
+                            </tree>
+                            <form string="Retention Lines">
+                                <h1>
+                                    <field name="name" class="oe_inline"/>
+                                </h1>
+                                <group>
+                                    <group string="Information" name="info">
+                                        <field name="state_id" invisible="1"/>
+                                        <field name="retention_id" domain="[('type_tax_use', '=', 'sale')]" />
+                                        <field name="certificate_no"/>
+                                        <field name="state_id"/>
+                                        <field name="date"/>
+                                        <label string="Keep it empty if the date is the same as the voucher." class="oe_grey"/>
+                                    </group>
+                                    <group string="Amounts" name="amount">
+                                        <field name="base"/>
+                                        <field name="amount"/>
+                                        <field name="account_id" invisible="1"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

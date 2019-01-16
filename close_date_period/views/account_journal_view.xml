@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+        <record id="account_journal_form_inherit" model="ir.ui.view">
+            <field name="name">account.journal.form.inherit</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="%(close_date_period.close_account_journal_wizard_action)d" class="btn-primary"
+                                string="Open/Close Period" type="action" groups='account.group_account_manager'/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_wizard_import_account_bank_statement_line_form" model="ir.ui.view">
+        <field name="name">wizard.import.account.bank.statement.line.form</field>
+        <field name="model">wizard.import.account.bank.statement.line</field>
+        <field name="type">form</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <form string="Import Bank Statement Lines">
+            <group col="4" colspan="2">
+                <field name="filedata" filename="filename"/>
+                <field name="filename" invisible="1"/>
+                <field name="statement_id" invisible="1"/>
+            </group>
+        </form>
+        <footer>
+            <button string="Process File" type="object" name="button_process_file" class="oe_highlight"/>
+            <button string="Cancel" special="cancel"/>
+        </footer>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_wizard_import_account_bank_statement_line_view">
+        <field name="name">Import Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wizard.import.account.bank.statement.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="binding_type">action_form_only</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

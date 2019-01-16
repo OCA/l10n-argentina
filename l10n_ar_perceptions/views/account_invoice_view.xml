@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_invoice_perception_concept_form" model="ir.ui.view">
+      <field name="name">invoice.perception.concept.form.inherit</field>
+      <field name="model">account.invoice</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="l10n_ar_perceptions_basic.view_invoice_perception_form"/>
+      <field name="arch" type="xml">
+          <data>
+              <xpath expr="//field[@name='perception_ids']/tree/field[@name='perception_id']" position="after">
+                  <field name="concept_id"/>
+              </xpath>
+              <xpath expr="//field[@name='perception_ids']/form/group/group[@name='amount']/field[@name='account_id']" position="before">
+                  <separator string="Concept" colspan="2"/>
+                  <field name="concept_id" colspan="2"/>
+              </xpath>
+              <field name="move_id" position="after">
+                  <field name="address_shipping_id" context="{'show_address': 1}"
+                         options='{"always_reload": True}'
+                         attrs="{'invisible': [('partner_id', '=', False)]}"
+                         domain="[('parent_id','=',partner_id)]"/>
+              </field>
+           </data>
+        </field>
+    </record>
+
+  <!-- Supported perceptions     -->
+    <record id="view_invoice_supplier_perception_form_inherit" model="ir.ui.view">
+      <field name="name">invoice.supplier.perception.form.inherit</field>
+      <field name="model">account.invoice</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="l10n_ar_perceptions_basic.view_invoice_supplier_perception_form"/>
+      <field name="arch" type="xml">
+          <data>
+              <xpath expr="//field[@name='perception_ids']/tree/field[@name='perception_id']" position="after">
+                  <field name="concept_id"/>
+              </xpath>
+              <xpath expr="//field[@name='perception_ids']/form/group/group[@name='amount']/field[@name='account_id']" position="before">
+                  <separator string="Concept" colspan="2"/>
+                  <field name="concept_id" colspan="2"/>
+              </xpath>
+           </data>
+        </field>
+    </record>
+
+    <record id="view_perception_tax_line_form_inherit" model="ir.ui.view">
+      <field name="name">perception.tax.line.form.inherit</field>
+      <field name="model">perception.tax.line</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="l10n_ar_perceptions_basic.view_perception_tax_line_form"/>
+      <field name="arch" type="xml">
+          <data>
+            <field name="vat" position="after">
+              <field name="concept_id" />
+              <field name="perception_id" invisible="True"/>
+            </field>
+           </data>
+        </field>
+    </record>
+
+  </data>
+</odoo>

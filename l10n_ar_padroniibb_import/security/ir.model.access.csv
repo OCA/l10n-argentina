@@ -1,0 +1,4 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_padron_agip_percentages_user","padron.agip_percentages user","l10n_ar_padroniibb_import.model_padron_agip_percentages","base.group_user",1,1,1,1
+"access_padron_arba_perception_user","padron.arba_perception user","l10n_ar_padroniibb_import.model_padron_arba_perception","base.group_user",1,1,1,1
+"access_padron_arba_retention_user","padron.arba_retention user","l10n_ar_padroniibb_import.model_padron_arba_retention","base.group_user",1,1,1,1

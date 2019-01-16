@@ -88,7 +88,13 @@ msgstr "Última actualización el"
 #: code:addons/base_vat_ar/models/partner.py:69
 #, python-format
 msgid "The Vat does not seems to be correct."
-msgstr "El Nro. de documento no parece ser correcto."
+msgstr "El Número de Identificación ingresado no es correcto."
+
+#. module: base_vat_ar
+#: code:addons/base_vat_ar/models/partner.py:74
+#, python-format
+msgid "The Vat only supports numbers."
+msgstr "El Número de Identificación solo soporta numeros"
 
 #. module: base_vat_ar
 #: code:addons/base_vat_ar/models/partner.py:46

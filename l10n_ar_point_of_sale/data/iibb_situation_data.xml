@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Situaciones de IIBB -->
+        <record forcecreate="1" id="iibb_situation_local" model="iibb.situation">
+            <field name="name">Local</field>
+        </record>
+
+        <record forcecreate="1" id="iibb_situation_multilateral" model="iibb.situation">
+            <field name="name">Convenio Multilateral</field>
+        </record>
+
+        <record forcecreate="1" id="iibb_situation_not_inscribed" model="iibb.situation">
+            <field name="name">No Inscripto</field>
+        </record>
+
+        <record forcecreate="1" id="iibb_situation_simplified_regime" model="iibb.situation">
+            <field name="name">Régimen Simpligicado</field>
+        </record>
+
+    </data>
+</odoo>

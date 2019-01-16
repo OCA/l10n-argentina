@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="retention_retention_concepts_menu"
+            name="Concepts"
+            parent="l10n_ar_retentions_basic.retention_root_menu"
+            sequence="20"
+            action="action_retention_concept_tree"/>
+        <menuitem id="retention_retention_activities_menu"
+            name="Activities"
+            parent="l10n_ar_retentions_basic.retention_root_menu"
+            sequence="25"
+            action="action_retention_activity_tree"/>
+        <menuitem id="retention_retention_scales_menu"
+            name="Scales"
+            parent="l10n_ar_retentions_basic.retention_root_menu"
+            sequence="30"
+            action="action_retention_scale_tree"/>
+
+    </data>
+</odoo>

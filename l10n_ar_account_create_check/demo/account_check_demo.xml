@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="company_bank_account" model="res.partner.bank">
+            <field name="name">Checkbook Bank Account</field>
+            <field name="acc_number">104/8 310-4</field>
+            <field name="partner_id" ref="base.main_partner"></field>
+            <field name="state">bank</field>
+            <field name="bank" ref="base.res_bank_1"/>
+            <field name="bank_name">Reserve</field>
+            <field name="account_id" ref="account.bnk"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_perception_manager,res.partner.perception manager,model_res_partner_perception,account.group_account_manager,1,1,1,1
+access_res_partner_perception_user,res.partner.perception user,model_res_partner_perception,account.group_account_user,1,1,1,0
+access_res_partner_perception_payment,res.partner.perception payment,model_res_partner_perception,account.group_account_invoice,1,0,0,0
+access_perception_concept_payment,perception.concept payment,model_perception_concept,account.group_account_invoice,1,0,0,0
+access_perception_concept_user,perception.concept user,model_perception_concept,account.group_account_user,1,1,1,0
+access_perception_concept_manager,perception.concept manager,model_perception_concept,account.group_account_manager,1,1,1,1
+access_perception_activity_payment,perception.activity payment,model_perception_activity,account.group_account_invoice,1,0,0,0
+access_perception_activity_user,perception.activity user,model_perception_activity,account.group_account_user,1,1,1,0
+access_perception_activity_manager,perception.activity manager,model_perception_activity,account.group_account_manager,1,1,1,1
+access_perception_tax_application_payment,perception.tax.application payment,model_perception_tax_application,account.group_account_invoice,1,1,0,0
+access_perception_tax_application_user,perception.tax.application user,model_perception_tax_application,account.group_account_user,1,1,1,0
+access_perception_tax_application_manager,perception.tax.application manager,model_perception_tax_application,account.group_account_manager,1,1,1,1
+access_perception_perception_vat_tax_payment,perception.vat.tax payment,model_perception_vat_tax,account.group_account_invoice,1,1,0,0
+access_perception_perception_vat_tax_user,perception.vat.tax user,model_perception_vat_tax,account.group_account_user,1,1,0,0
+access_perception_perception_vat_tax_manager,perception.vat.tax manager,model_perception_vat_tax,account.group_account_manager,1,1,1,1

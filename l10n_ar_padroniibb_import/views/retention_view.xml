@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="view_retention_padron_form">
+        <field name="name">retention.padron.form</field>
+        <field name="model">retention.retention</field>
+        <field name="inherit_id" ref="l10n_ar_retentions.view_retention_retention_form"/>
+        <field name="arch" type="xml">
+            <field name="applicable_state" position="after">
+                <field name="from_register_ARBA"/>
+                <field name="from_register_AGIP"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_partner_retention_form_from_padron" model="ir.ui.view">
+        <field name="name">res.partner.retention.from.padron</field>
+        <field name="model">res.partner</field>
+        <field name="type">form</field>
+        <field name="priority">20</field>
+        <field name="inherit_id" ref="l10n_ar_retentions.view_partner_retention_form"/>
+        <field name="arch" type="xml">
+            <field name="sit_iibb" position="after">
+                <field name="from_padron" readonly="True"/>
+            </field>
+        </field>
+    </record>
+
+  </data>
+</odoo>

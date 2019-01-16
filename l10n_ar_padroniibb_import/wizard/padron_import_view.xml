@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="padron_import_wizard" model="ir.ui.view">
+            <field name="name">Import zip file with percentages of retentions and perceptions</field>
+            <field name="model">padron.import</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Import zip" version="7.0">
+                    <label string="This wizard allows you to upload zip files from ARBA / AGIP Agency and process it" colspan="4"/>
+                    <separator string="AGIP Zip File" colspan="4"/>
+                    <group>
+                        <group>
+                            <field name="datas_agip" filename="filename_agip"/>
+                        </group>
+                        <group>
+                            <field name="filename_agip"
+                                attrs="{'readonly': True, 'invisible': True}" force_save="True"/>
+                        </group>
+                    </group>
+                    <br/>
+                    <separator string="ARBA Zip File" colspan="4"/>
+                    <group>
+                        <group>
+                            <field name="datas_arba" filename="filename_arba"/>
+                        </group>
+                        <group>
+                            <field name="filename_arba"
+                                attrs="{'readonly': True, 'invisible': True}" force_save="True"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="import_zip_file" string="Import" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Import zip file/s"
+            res_model="padron.import"
+            src_model="padron.import"
+            view_mode="form"
+            target="new"
+            id="action_load_padron_zip_file"/>
+
+        <menuitem id="menu_action_menu_agip_load"
+            name="Import ARBA / AGIP"
+            parent="padrones_root_menu"
+            sequence="1"
+            action="action_load_padron_zip_file"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,286 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_wsaa
+#
+msgid ""
+msgstr ""
+"Language: es\n"
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-06 12:54+0000\n"
+"PO-Revision-Date: 2018-08-06 12:03-0300\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 2.1.1\n"
+
+#. module: l10n_ar_wsaa
+#: model:ir.ui.menu,name:l10n_ar_wsaa.base_afipws
+msgid "AFIP WebServices"
+msgstr "AFIP WebServices"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+#: field:wsaa.config,service_ids:0
+msgid "Authorized Services"
+msgstr "Servicios Autorizados"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.load.config:l10n_ar_wsaa.certificate_renewal_wizard
+#: view:wsaa.load.config:l10n_ar_wsaa.key_renewal_wizard
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.load.config,cert_name:0
+msgid "Cert FileName"
+msgstr "Cert FileName"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+#: field:wsaa.config,certificate:0
+msgid "Certificate"
+msgstr "Certificado"
+
+#. module: l10n_ar_wsaa
+#: model:ir.actions.act_window,name:l10n_ar_wsaa.certificate_renewal_wizard_action
+msgid "Certificate Renewal"
+msgstr "Certificado de Renovación"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.load.config,certificate:0
+msgid "Certificate of Approval"
+msgstr "Certificado de Aprobación"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.load.config:l10n_ar_wsaa.certificate_renewal_wizard
+msgid "Choose your WSAA Certificate"
+msgstr "Elija su Certificado WSAA"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.load.config:l10n_ar_wsaa.key_renewal_wizard
+msgid "Choose your WSAA Key"
+msgstr "Elija su clave WSAA"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.config,company_id:0 field:wsaa.ta,company_id:0
+msgid "Company Name"
+msgstr "Nombre de la Empresa"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.ta,config_id:0
+msgid "Config id"
+msgstr "Config id"
+
+#. module: l10n_ar_wsaa
+#: model:ir.model,name:l10n_ar_wsaa.model_wsaa_config
+msgid "Configuration for WSAA"
+msgstr "Configuración para WSAA"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,create_uid:0 field:wsaa.config,create_uid:0
+#: field:wsaa.load.config,create_uid:0 field:wsaa.ta,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,create_date:0 field:wsaa.config,create_date:0
+#: field:wsaa.load.config,create_date:0 field:wsaa.ta,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,description:0 field:wsaa.config,name:0
+msgid "Description"
+msgstr "Descripción"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,display_name:0 field:wsaa.config,display_name:0
+#: field:wsaa.load.config,display_name:0 field:wsaa.ta,display_name:0
+msgid "Display Name"
+msgstr "Nombre para Mostrar"
+
+#. module: l10n_ar_wsaa
+#: code:addons/l10n_ar_wsaa/wizard/wsaa_load_config.py:38
+#: code:addons/l10n_ar_wsaa/wizard/wsaa_load_config.py:42
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.ta,expiration_time:0
+msgid "Expiration Time"
+msgstr "Tiempo de Expiración"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,id:0 field:wsaa.config,id:0 field:wsaa.load.config,id:0
+#: field:wsaa.ta,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+msgid "Key"
+msgstr "Llave"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.load.config,key_name:0
+msgid "Key FileName"
+msgstr "Llave FileName"
+
+#. module: l10n_ar_wsaa
+#: model:ir.actions.act_window,name:l10n_ar_wsaa.key_renewal_wizard_action
+msgid "Key Renewal"
+msgstr "Renovación de Llave"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,__last_update:0 field:wsaa.config,__last_update:0
+#: field:wsaa.load.config,__last_update:0 field:wsaa.ta,__last_update:0
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,write_uid:0 field:wsaa.config,write_uid:0
+#: field:wsaa.load.config,write_uid:0 field:wsaa.ta,write_uid:0
+msgid "Last Updated by"
+msgstr "Última Actualización por"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,write_date:0 field:wsaa.config,write_date:0
+#: field:wsaa.load.config,write_date:0 field:wsaa.ta,write_date:0
+msgid "Last Updated on"
+msgstr "Última Actaulización en"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+msgid "Load Certificate"
+msgstr "Cargar Certificado"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+msgid "Load Key"
+msgstr "Cargar Llave"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.config,key:0 field:wsaa.load.config,key:0
+msgid "Private Key"
+msgstr "Llave Privada"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+msgid "Renew TA"
+msgstr "Renovar TA"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.load.config:l10n_ar_wsaa.certificate_renewal_wizard
+msgid "Save Certificate"
+msgstr "Guardar Certificado"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.load.config:l10n_ar_wsaa.key_renewal_wizard
+msgid "Save Key"
+msgstr "Guardar Llave"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+msgid "Security Info"
+msgstr "Información de Seguridad"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.ta,name:0
+msgid "Service"
+msgstr "Servicio"
+
+#. module: l10n_ar_wsaa
+#: field:afipws.service,name:0
+msgid "Service Name"
+msgstr "Nombre de Servicio"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.ta,sign:0
+msgid "Sign"
+msgstr "Firmar"
+
+#. module: l10n_ar_wsaa
+#: code:addons/l10n_ar_wsaa/wizard/wsaa_load_config.py:43
+#, python-format
+msgid "The Filename should end in \".%s\""
+msgstr "El Nombre de Archivo debe terminar en \".%s\""
+
+#. module: l10n_ar_wsaa
+#: sql_constraint:wsaa.config:0
+msgid "The configuration must be unique per company !"
+msgstr "El nombre de archivo debe terminar en !"
+
+#. module: l10n_ar_wsaa
+#: sql_constraint:afipws.service:0
+msgid "The name of the service must be unique!"
+msgstr "El nombre de servicio debe ser único!"
+
+#. module: l10n_ar_wsaa
+#: sql_constraint:wsaa.ta:0
+msgid "The service must be unique per company!"
+msgstr "El servicio debe ser único por empresa!"
+
+#. module: l10n_ar_wsaa
+#: model:ir.model,name:l10n_ar_wsaa.model_wsaa_ta
+msgid "Ticket Access for WSAA"
+msgstr "Acceso a Entradas para WSAA"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.ta,token:0
+msgid "Token"
+msgstr "Simbólico"
+
+#. module: l10n_ar_wsaa
+#: field:wsaa.config,url:0
+msgid "URL for WSAA"
+msgstr "URL para WSAA"
+
+#. module: l10n_ar_wsaa
+#: model:ir.model,name:l10n_ar_wsaa.model_afipws_service
+msgid "WS Services"
+msgstr "Servicios WS"
+
+#. module: l10n_ar_wsaa
+#: model:ir.actions.act_window,name:l10n_ar_wsaa.action_wsaa_config_tree
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_form
+#: view:wsaa.config:l10n_ar_wsaa.view_wsaa_config_tree
+msgid "WSAA Config"
+msgstr "Config de WSAA"
+
+#. module: l10n_ar_wsaa
+#: model:ir.ui.menu,name:l10n_ar_wsaa.wsaa_config_menu
+msgid "WSAA Configuration"
+msgstr "Configuración de WSAA"
+
+#. module: l10n_ar_wsaa
+#: code:addons/l10n_ar_wsaa/models/wsaa.py:97
+#, python-format
+msgid "WSAA Error!"
+msgstr "Error de WSAA!"
+
+#. module: l10n_ar_wsaa
+#: help:wsaa.load.config,key:0
+msgid "You Privary Key Here"
+msgstr "Tu Privacidad Aquí"
+
+#. module: l10n_ar_wsaa
+#: help:wsaa.load.config,certificate:0
+msgid "You certificate (.crt)"
+msgstr "Tu certificado (.crt)"
+
+#. module: l10n_ar_wsaa
+#: code:addons/l10n_ar_wsaa/wizard/wsaa_load_config.py:39
+#, python-format
+msgid "You must enter a File"
+msgstr "Debes ingresar un Archivo"
+
+#. module: l10n_ar_wsaa
+#: view:wsaa.load.config:l10n_ar_wsaa.certificate_renewal_wizard
+#: view:wsaa.load.config:l10n_ar_wsaa.key_renewal_wizard
+msgid "or"
+msgstr "o"

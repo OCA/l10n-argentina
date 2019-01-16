@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_payment_order_concept_line_emp,access_account_payment_order_concept_line emp,model_account_payment_order_concept_line,base.group_user,1,0,0,0
+access_account_payment_order_concept_line_user,access_account_payment_order_concept_line user,model_account_payment_order_concept_line,account.group_account_user,1,1,1,1

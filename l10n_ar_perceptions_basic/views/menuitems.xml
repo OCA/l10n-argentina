@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+      <menuitem id="perception_root_menu"
+          name="Perceptions"
+          parent="l10n_ar_point_of_sale.menu_tax_subroot"
+          sequence="20"/>
+          <menuitem id="perception_perception_menu"
+              name="Perceptions"
+              parent="perception_root_menu"
+              sequence="10"
+              action="action_perception_perception_tree"/>
+
+      <menuitem id="perception_tax_line_applied_menu"
+          name="Perception Applied"
+          parent="l10n_ar_point_of_sale.menu_taxes_receivables"
+          sequence="30"
+          action="action_perception_tax_tree"/>
+
+      <menuitem id="perception_tax_line_supported_menu"
+          name="Perception Supported"
+          parent="l10n_ar_point_of_sale.menu_taxes_payables"
+          sequence="30"
+          action="action_perception_tax_supported_tree"/>
+
+  </data>
+</odoo>

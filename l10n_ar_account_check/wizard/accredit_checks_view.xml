@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_wizard_accredit_checks_form" model="ir.ui.view">
+            <field name="name">wizard.accredit.checks.form</field>
+            <field name="model">wizard.accredit.checks</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <form string="Accredit Checks">
+                <group colspan="8" col="8">
+                    <field name="issued_checks" widget="many2many_checkboxes" colspan="8"/>
+                </group>
+                <footer>
+                    <button type="special" special="cancel" string="Cancel" icon="gtk-cancel"/>
+                    <button type="object" string="Accredit Checks" name="button_accredit_checks"
+                        class="oe_highlight" icon="gtk-apply"/>
+                </footer>
+            </form>
+            </field>
+        </record>
+
+        <act_window id="wizard_accredit_checks_action"
+            name="Accredit Checks"
+            res_model="wizard.accredit.checks"
+            src_model="account.issued.check"
+            multi="True"
+            target="new"
+            view_mode="form"
+            />
+
+    </data>
+</odoo>

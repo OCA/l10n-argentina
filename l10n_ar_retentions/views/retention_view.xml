@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- *************************** -->
+        <!-- * Retention Configuration * -->
+        <!-- *************************** -->
+        <!-- Form View for retention.retention -->
+        <record id="view_retention_retention_form" model="ir.ui.view">
+            <field name="name">retention.retention.form</field>
+            <field name="model">retention.retention</field>
+            <field name="type">form</field>
+            <field name="priority" eval="14" />
+            <field name="arch" type="xml">
+                <form string="Retention">
+                    <sheet>
+                        <h1 style="width: 100%%">
+                            <field name="name" class="oe_inline" style="width: 100%% !important"/>
+                        </h1>
+                        <group>
+                            <group string="Tax Information">
+                                <field name="tax_id" select="1"/>
+                                <field name="type_tax_use" select="1"/>
+                            </group>
+                            <group string="Jurisdiction Information">
+                                <field name="jurisdiccion" select="1"/>
+                                <field name="state_id" select="1" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
+                                <field name="applicable_state" attrs="{'invisible':[('jurisdiccion','!=','provincial')], 'required':[('jurisdiccion','=','provincial')]}"/>
+                            </group>
+                            <group string="Usability Configuration">
+                                <field name="check_sit_iibb" attrs="{'invisible':[('jurisdiccion','!=','provincial')]}"/>
+                                <field name="always_apply_padron"/>
+                            </group>
+                            <!-- <group string="Other Info"> -->
+                                <!--     <field name="code"/> -->
+                                <!-- </group> -->
+                        </group>
+                        <notebook colspan="4">
+                            <page string="Tax Application">
+                                <group colspan="4" col="6">
+                                    <field name="type" colspan="2"/>
+                                </group>
+                                <separator string="Tax Application"/>
+                                <field name="vat_application_ids" nolabel="1" colspan="4" attrs="{'invisible':[('type','!=','vat')]}" context="{'default_type':'vat'}">
+                                    <tree string="VAT Tax Application">
+                                        <field name="reg_code"/>
+                                        <field name="concept_id"/>
+                                        <field name="activity_id"/>
+                                        <field name="tax_allowance"/>
+                                        <field name="exclude_tax_allowance"/>
+                                        <field name="calculation_base" required="1"/>
+                                        <field name="tax_minimum" />
+                                        <field name="aliq_type" required="1"/>
+                                        <field name="percent"/>
+                                        <field name="scale_id"/>
+                                        <field name="type" invisible="1"/>
+                                    </tree>
+                                    <form string="VAT Tax Application">
+                                        <group>
+                                            <field name="concept_id" domain="[('type', '=', 'vat')]"/>
+                                            <field name="activity_id" domain="[('type', '=', 'vat')]"/>
+                                            <field name="tax_allowance" />
+                                            <field name="exclude_tax_allowance" />
+                                            <field name="calculation_base" required="1"/>
+                                            <field name="tax_minimum" />
+                                            <field name="aliq_type" required="1"/>
+                                            <field name="percent" attrs="{'invisible':[('aliq_type', '=', 'scale')]}"/>
+                                            <field name="scale_id" attrs="{'invisible':[('aliq_type', '=', 'percent')], 'required':[('aliq_type', '=', 'scale')]}"/>
+                                            <field name="name" />
+                                            <field name="reg_code"/>
+                                            <field name="type" invisible="1"/>
+                                        </group>
+                                    </form>
+                                </field>
+                                <field name="gi_application_ids" nolabel="1" colspan="4" attrs="{'invisible':[('type','!=','gross_income')]}" context="{'default_type':'gross_income'}">
+                                    <tree string="Gross Income Tax Application">
+                                        <field name="reg_code"/>
+                                        <field name="concept_id"/>
+                                        <field name="activity_id"/>
+                                        <field name="tax_allowance"/>
+                                        <field name="exclude_tax_allowance"/>
+                                        <field name="calculation_base" required="1"/>
+                                        <field name="tax_minimum" />
+                                        <field name="aliq_type" required="1"/>
+                                        <field name="percent"/>
+                                        <field name="scale_id"/>
+                                        <field name="sit_iibb"/>
+                                        <field name="type" invisible="1"/>
+                                    </tree>
+                                    <form string="Gross Income Tax Application">
+                                        <group>
+                                            <field name="concept_id" domain="[('type', '=', 'gross_income')]"/>
+                                            <field name="activity_id" domain="[('type', '=', 'gross_income')]"/>
+                                            <field name="tax_allowance" />
+                                            <field name="exclude_tax_allowance" />
+                                            <field name="calculation_base" required="1"/>
+                                            <field name="tax_minimum" />
+                                            <field name="aliq_type" required="1"/>
+                                            <field name="percent" attrs="{'invisible':[('aliq_type', '=', 'scale')]}"/>
+                                            <field name="scale_id" attrs="{'invisible':[('aliq_type', '=', 'percent')], 'required':[('aliq_type', '=', 'scale')]}"/>
+                                            <field name="name" />
+                                            <field name="reg_code"/>
+                                            <field name="sit_iibb"/>
+                                            <field name="type" invisible="1"/>
+                                        </group>
+                                    </form>
+                                </field>
+                                <field name="profit_application_ids" nolabel="1" colspan="4" attrs="{'invisible':[('type','!=','profit')]}" context="{'default_type':'profit'}" >
+                                    <tree string="Profit Tax Application">
+                                        <field name="reg_code"/>
+                                        <field name="concept_id"/>
+                                        <field name="activity_id"/>
+                                        <field name="tax_allowance"/>
+                                        <field name="exclude_tax_allowance"/>
+                                        <field name="calculation_base" required="1"/>
+                                        <field name="tax_minimum" />
+                                        <field name="aliq_type" required="1"/>
+                                        <field name="percent"/>
+                                        <field name="scale_id"/>
+                                        <field name="type" invisible="1"/>
+                                    </tree>
+                                    <form string="Profit Tax Application">
+                                        <group>
+                                            <field name="concept_id" domain="[('type', '=', 'profit')]"/>
+                                            <field name="activity_id" domain="[('type', '=', 'profit')]"/>
+                                            <field name="tax_allowance" />
+                                            <field name="exclude_tax_allowance" />
+                                            <field name="calculation_base" required="1"/>
+                                            <field name="tax_minimum" />
+                                            <field name="aliq_type" required="1"/>
+                                            <field name="percent" attrs="{'invisible':[('aliq_type', '=', 'scale')]}"/>
+                                            <field name="scale_id" attrs="{'invisible':[('aliq_type', '=', 'percent')], 'required':[('aliq_type', '=', 'scale')]}"/>
+                                            <field name="name" />
+                                            <field name="reg_code"/>
+                                            <field name="type" invisible="1"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Other Information">
+                                <group>
+                                    <field name="general_resolution" string="General Resolution Associated"/>
+                                </group>
+                                <newline/>
+                                <separator string="Notes" colspan="4"/>
+                                <field name="notes" nolabel="1" colspan="4"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ********************** -->
+        <!-- * Retention Concepts * -->
+        <!-- ********************** -->
+        <record id="view_retention_concept_form" model="ir.ui.view">
+            <field name="name">retention.concept.form</field>
+            <field name="model">retention.concept</field>
+            <field name="arch" type="xml">
+                <form string="Retention Concept" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="code" select="1"/>
+                                <field name="type" select="1"/>
+                            </group>
+                            <group>
+                                <field name="name" select="1"/>
+                                <field name="no_subject"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Accounts Associated" name="accounts">
+                                <field name="account_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="internal_type"/>
+                                        <field name="user_type_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <separator string="Notes" name="notes"/>
+                        <field name="notes" colspan="4" nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_retention_concept_tree" model="ir.ui.view">
+            <field name="name">retention.concept.tree</field>
+            <field name="model">retention.concept</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Retention Concepts">
+                    <field name="code"/>
+                    <field name="type"/>
+                    <field name="name"/>
+                    <field name="no_subject"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_retention_concept_tree">
+            <field name="name">Concepts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">retention.concept</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ************************ -->
+        <!-- * Retention Activities * -->
+        <!-- ************************ -->
+        <record id="view_retention_activity_form" model="ir.ui.view">
+            <field name="name">retention.activity.form</field>
+            <field name="model">retention.activity</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Retention Activity">
+                    <sheet>
+                        <h1 style="width: 100%%">
+                            <field name="name" select="1" style="width: 100%%"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="code" select="1"/>
+                            </group>
+                            <group>
+                                <field name="type" select="1"/>
+                            </group>
+                        </group>
+                        <separator string="Notes" colspan="4"/>
+                        <field name="notes" colspan="4" nolabel="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_retention_activity_tree" model="ir.ui.view">
+            <field name="name">retention.activity.tree</field>
+            <field name="model">retention.activity</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Retention Activities" editable="bottom">
+                    <field name="code"/>
+                    <field name="type"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_retention_activity_tree">
+            <field name="name">Activities</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">retention.activity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ************************ -->
+        <!-- * Retention Scales * -->
+        <!-- ************************ -->
+        <record id="view_retention_scale_form" model="ir.ui.view">
+            <field name="name">retention.scale.form</field>
+            <field name="model">retention.scale</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Retention Scale">
+                    <sheet>
+                        <h1 style="width: 100%%">
+                            <field name="name" select="1" style="width: 100%%"/>
+                        </h1>
+                        <notebook>
+                            <page string="Lines" name="lines">
+                                <field name="line_ids" colspan="4" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="name" />
+                                        <field name="limit" />
+                                        <field name="percent" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_retention_scale_tree" model="ir.ui.view">
+            <field name="name">retention.scale.tree</field>
+            <field name="model">retention.scale</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Retention Scale">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_retention_scale_tree">
+            <field name="name">Retention Scales</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">retention.scale</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- *********************** -->
+        <!-- * Retention Tax Lines * -->
+        <!-- *********************** -->
+        <record id="view_retention_tax_line_concept_tree" model="ir.ui.view">
+            <field name="name">retention.tax.line.concept.tree</field>
+            <field name="model">retention.tax.line</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="l10n_ar_retentions_basic.view_retention_tax_line_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="date" position="after">
+                        <field name="date_applied"/>
+                        <field name="reg_code"/>
+                    </field>
+                    <field name="voucher_number" position="after">
+                        <field name="concept_id"/>
+                    </field>
+                    <field name="state_id" position="before">
+                        <field name="unlinkable"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_retention_tax_line_form" model="ir.ui.view">
+            <field name="name">retention.tax.line.form</field>
+            <field name="model">retention.tax.line</field>
+            <field name="inherit_id" ref="l10n_ar_retentions_basic.view_retention_tax_line_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="state_id" position="after">
+                        <field name="unlinkable"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_retention_tax_line_concept_search" model="ir.ui.view">
+            <field name="name">retention.tax.line.concept.search</field>
+            <field name="model">retention.tax.line</field>
+            <field name="inherit_id" ref="l10n_ar_retentions_basic.view_retention_tax_line_search"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="voucher_number" position="after">
+                        <field name="concept_id"/>
+                        <field name="reg_code"/>
+                    </field>
+                    <filter name="group_date" position="after">
+                        <filter string="Date Applied" name="group_date_applied" icon="terp-go-month" domain="[]"  context="{'group_by':'date_applied'}"/>
+                        <filter string="Concept" name="group_concept" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'concept_id'}"/>
+                        <filter string="Reg. Code" name="group_code" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'reg_code'}"/>
+                    </filter>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</odoo>
