@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data>
+
+        <record id="view_period_form" model="ir.ui.view">
+            <field name="name">date.period.form</field>
+            <field name="model">date.period</field>
+            <field name="arch" type="xml">
+                <form string="Period">
+                <!-- <header> -->
+                        <!-- TODO -->
+                <!-- </header> -->
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                            </group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_period_tree" model="ir.ui.view">
+            <field name="name">date.period.tree</field>
+            <field name="model">date.period</field>
+            <field name="arch" type="xml">
+                <tree string="Period">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_period_search" model="ir.ui.view">
+            <field name="name">date.period.search</field>
+            <field name="model">date.period</field>
+            <field name="arch" type="xml">
+                <search string="Search Period">
+                    <field name="name" filter_domain="[('name','ilike',self)]" string="Period"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Partner" domain="[]" context="{'group_by':'code'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_period" model="ir.actions.act_window">
+            <field name="name">Period</field>
+            <field name="res_model">date.period</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_period" name="Periods" parent="account.menu_account_config" sequence="5" />
+        <menuitem id="menu_action_period" parent="menu_period" action="action_period"/>
+    </data>
+</odoo>
+

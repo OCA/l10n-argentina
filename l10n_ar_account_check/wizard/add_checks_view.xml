@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--Para los Supplier Payments-->
+        <record model="ir.ui.view" id="add_issued_checks_form_view">
+            <field name="name">account.add.issued.checks.wizard.form</field>
+            <field name="model">account.add.issued.check</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Add New Issued Check" version="7.0">
+                    <group>
+                        <group>
+                            <field name="number"/>
+                            <field name="date_out"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="bank_id"/>
+                            <field name="account_bank_id"/>
+                            <field name="amount"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="add_issued_checks" type="object" string="Add Checks" class="oe_highlight"/>
+                        <button type="special" special="cancel"  string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_add_issued_check" model="ir.actions.act_window">
+            <field name="name">Add New Check</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.add.issued.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="add_issued_checks_form_view"/>
+            <field name="target">new</field>
+        </record>
+        
+        <!--Para los Customer Payments-->
+        <record model="ir.ui.view" id="add_third_checks_form_view">
+            <field name="name">account.add.third.checks.wizard.form</field>
+            <field name="model">account.add.third.check</field>
+            <field name="type">form</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Third Checks" version="7.0">
+                    <group>
+                        <group>
+                            <field name="number"/>
+                            <field name="amount"/>
+                            <field name="date_in"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="vat"/>
+                            <field name="bank_id"/>
+                            <field name="clearing"/>
+                            <field name="account_bank_id"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button type="object" name="add_third_checks" string="Add Checks" class="oe_highlight"/>
+                        <button type="special" special="cancel"  string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_add_third_check" model="ir.actions.act_window">
+            <field name="name">Add Check</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.add.third.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="add_third_checks_form_view"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

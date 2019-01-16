@@ -1,10 +1,10 @@
-##############################################################################
-
+###############################################################################
+#
 #   Copyright (c) 2017-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
 #   Copyright (c) 2014-2018 Aconcagua Team
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-
-##############################################################################
+#
+###############################################################################
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
@@ -66,7 +66,8 @@ class ResPartner(models.Model):
                 return True
             check = getattr(self, 'check_vat_' + vat_country)
             if not check(vat_number):
-                raise ValidationError(_('The Vat does not seems to be correct.'))
+                raise ValidationError(
+                    _('The Vat does not seems to be correct.'))
         return True
 
     @api.model

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+
+  <!-- TODO: Hacer esto como templates para luego ser instalado, deberia estar en el modulo de localizacion -->
+  <!-- Percepciones Tax Code -->
+
+  <record id="percepcion_iva_efectuada" model="account.tax.code" forcecreate="0">
+    <field name="name">Percepcion IVA Efectuada (Ventas)</field>
+    <field name="code">511</field>
+    <!--<field name="parent_id" ref="percepcion_iva"/>-->
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="percepcion_iva_sufrida" model="account.tax.code" forcecreate="0">
+    <field name="name">Percepcion IVA Sufrida (Compras)</field>
+    <field name="code">512</field>
+    <!--<field name="parent_id" ref="percepcion_iva"/>-->
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="percepcion_iibb_caba_efectuada" model="account.tax.code" forcecreate="0">
+    <field name="name">Percepcion IIBB CABA Efectuada</field>
+    <field name="code">513</field>
+    <!--<field name="parent_id" ref="percepcion_iibb"/>-->
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="percepcion_iibb_caba_sufrida" model="account.tax.code" forcecreate="0">
+    <field name="name">Percepcion IIBB CABA Sufrida</field>
+    <field name="code">514</field>
+    <!--<field name="parent_id" ref="percepcion_iibb"/>-->
+    <field name="sign">1.0</field>
+  </record>
+
+  <!-- Operaciones con Percepcion -->
+  <record id="operaciones_con_percepcion_sufrida" model="account.tax.code" forcecreate="0">
+    <field name="name">Operaciones con Percepcion Sufrida</field>
+    <field name="code">710</field>
+    <!--<field name="parent_id" ref="l10n_ar_chart_of_account.vat_code_chart_root"/>-->
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="operaciones_con_percepcion_efectuada" model="account.tax.code" forcecreate="0">
+    <field name="name">Operaciones con Percepcion Efectuada</field>
+    <field name="code">610</field>
+    <!--<field name="parent_id" ref="operaciones_con_percepcion"/>-->
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="operaciones_con_percepcion_iva_sufrida" model="account.tax.code" forcecreate="0">
+    <field name="name">Operaciones con Percepcion IVA Sufrida</field>
+    <field name="code">711</field>
+    <field name="parent_id" ref="operaciones_con_percepcion_sufrida"/>
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="operaciones_con_percepcion_iva_efectuada" model="account.tax.code" forcecreate="0">
+    <field name="name">Operaciones con Percepcion IVA Efectuada</field>
+    <field name="code">611</field>
+    <field name="parent_id" ref="operaciones_con_percepcion_efectuada"/>
+    <field name="sign">1.0</field>
+  </record>
+
+ <record id="operaciones_con_percepcion_iibb_caba_sufrida" model="account.tax.code" forcecreate="0">
+    <field name="name">Operaciones con Percepcion IIBB CABA Sufrida</field>
+    <field name="code">712</field>
+    <field name="parent_id" ref="operaciones_con_percepcion_sufrida"/>
+    <field name="sign">1.0</field>
+  </record>
+
+  <record id="operaciones_con_percepcion_iibb_caba_efectuada" model="account.tax.code" forcecreate="0">
+    <field name="name">Operaciones con Percepcion IIBB CABA Efectuada</field>
+    <field name="code">612</field>
+    <field name="parent_id" ref="operaciones_con_percepcion_efectuada"/>
+    <field name="sign">1.0</field>
+  </record>
+
+  <!-- Percepciones Accounts -->
+  <!-- Cuenta de percepcion de iva efectuada al momento de hacer una factura de cliente (Ventas) -->
+  <record id="percepcion_iva_a_depositar" model="account.account" forcecreate="0">
+    <field name="code">212151</field>
+    <field name="reconcile" eval="False"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
+    <field name="type">other</field>
+    <field name="name">Percepcion IVA a Depositar</field>
+    <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
+  </record>
+
+  <!-- Cuenta de percepcion de iva sufrida al momento de hacer una factura de proveedor (Compras) -->
+  <record id="percepcion_iva" model="account.account" forcecreate="0">
+    <field name="code">114151</field>
+    <field name="reconcile" eval="False"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>  <!-- Otros Creditos -->
+    <field name="type">other</field>
+    <field name="name">Percepcion IVA</field>
+    <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
+  </record>
+
+  <!-- Cuenta de percepcion de iibb efectuada al momento de hacer una factura de cliente (Ventas) -->
+  <record id="percepcion_iibb_caba_a_depositar" model="account.account" forcecreate="0">
+    <field name="code">212161</field>
+    <field name="reconcile" eval="False"/>
+    <field name="parent_id" search="[('name', '=', 'DEUDAS FISCALES')]"/>
+    <field name="type">other</field>
+    <field name="name">Percepcion IIBB CABA a Depositar</field>
+    <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
+  </record>
+
+  <!-- Cuenta de percepcion de iibb sufrida al momento de hacer una factura de proveedor (Compras) -->
+  <record id="percepcion_iibb_caba" model="account.account" forcecreate="0">
+    <field name="code">114161</field>
+    <field name="reconcile" eval="False"/>
+    <field name="parent_id" search="[('code', '=', '114*')]"/>
+    <field name="type">other</field>
+    <field name="name">Percepcion IIBB CABA</field>
+    <field name="user_type" ref="l10n_ar_chart_of_account.account_type_tax"/>
+  </record>
+
+  <!-- Percepciones Taxes -->
+  <record id="tax_percepcion_iva_sufrida" model="account.tax" forcecreate="0">
+    <field name="name">Percepciones IVA Sufrida</field>
+    <field name="description">Percepciones IVA Sufrida</field>
+    <field name="sequence">30</field>
+    <field name="type">none</field>
+    <field name="tax_group">perception</field>
+    <field name="account_collected_id" ref="percepcion_iva"/>
+    <field name="account_paid_id" ref="percepcion_iva"/>
+    <field name="base_code_id" ref="operaciones_con_percepcion_iva_sufrida"/>
+    <field name="tax_code_id" ref="percepcion_iva_sufrida"/>
+    <field eval="1.0" name="tax_sign"/>
+    <field eval="1.0" name="base_sign"/>
+    <!--
+    <field name="ref_base_code_id" ref="operaciones_con_percepcion_iva"/>
+    <field name="ref_tax_code_id" ref="percepcion_iva_compras"/>
+    <field eval="-1.0" name="ref_tax_sign"/>
+    <field eval="-1.0" name="ref_base_sign"/>
+    -->
+    <field name="type_tax_use">purchase</field>
+  </record>
+
+  <record id="tax_percepcion_iva_efectuada" model="account.tax" forcecreate="0">
+    <field name="name">Percepciones IVA Efectuada</field>
+    <field name="description">Percepciones IVA Efectuada</field>
+    <field name="sequence">31</field>
+    <field name="type">none</field>
+    <field name="tax_group">perception</field>
+    <field name="account_collected_id" ref="percepcion_iva_a_depositar"/>
+    <field name="account_paid_id" ref="percepcion_iva_a_depositar"/>
+    <field name="base_code_id" ref="operaciones_con_percepcion_iva_efectuada"/>
+    <field name="tax_code_id" ref="percepcion_iva_efectuada"/>
+    <field eval="1.0" name="tax_sign"/>
+    <field eval="1.0" name="base_sign"/>
+    <!--
+    <field name="ref_base_code_id" ref="venta_con_percepcion_iva"/>
+    <field name="ref_tax_code_id" ref="percepcion_iva_ventas"/>
+    <field eval="-1.0" name="ref_tax_sign"/>
+    <field eval="-1.0" name="ref_base_sign"/>
+    -->
+    <field name="type_tax_use">sale</field>
+  </record>
+
+  <record id="tax_percepcion_iibb_caba_sufrida" model="account.tax" forcecreate="0">
+    <field name="name">Percepciones IIBB CABA Sufrida</field>
+    <field name="description">Percep IIBB CABA Sufrida</field>
+    <field name="sequence">31</field>
+    <field name="type">none</field>
+    <field name="tax_group">perception</field>
+    <field name="account_collected_id" ref="percepcion_iibb_caba"/>
+    <field name="account_paid_id" ref="percepcion_iibb_caba"/>
+    <field name="base_code_id" ref="operaciones_con_percepcion_iibb_caba_sufrida"/>
+    <field name="tax_code_id" ref="percepcion_iibb_caba_sufrida"/>
+    <field eval="1.0" name="tax_sign"/>
+    <field eval="1.0" name="base_sign"/>
+    <!--
+    <field name="ref_base_code_id" ref="operaciones_con_percepcion_iva"/>
+    <field name="ref_tax_code_id" ref="percepcion_iva_compras"/>
+    <field eval="-1.0" name="ref_tax_sign"/>
+    <field eval="-1.0" name="ref_base_sign"/>
+    -->
+    <field name="type_tax_use">purchase</field>
+  </record>
+
+  <record id="tax_percepcion_iibb_caba_efectuada" model="account.tax" forcecreate="0">
+    <field name="name">Percepciones IIBB CABA Efectuada</field>
+    <field name="description">Percepciones IIBB CABA Efectuada</field>
+    <field name="sequence">32</field>
+    <field name="type">none</field>
+    <field name="tax_group">perception</field>
+    <field name="account_collected_id" ref="percepcion_iibb_caba_a_depositar"/>
+    <field name="account_paid_id" ref="percepcion_iibb_caba_a_depositar"/>
+    <field name="base_code_id" ref="operaciones_con_percepcion_iibb_caba_efectuada"/>
+    <field name="tax_code_id" ref="percepcion_iibb_caba_efectuada"/>
+    <field eval="1.0" name="tax_sign"/>
+    <field eval="1.0" name="base_sign"/>
+    <!--
+    <field name="ref_base_code_id" ref="venta_con_percepcion_iva"/>
+    <field name="ref_tax_code_id" ref="percepcion_iva_ventas"/>
+    <field eval="-1.0" name="ref_tax_sign"/>
+    <field eval="-1.0" name="ref_base_sign"/>
+    -->
+    <field name="type_tax_use">sale</field>
+  </record>
+
+  <!-- Configuracion de Percepciones (perception.perception) -->
+  <record id="perception_perception_iva_efectuada" model="perception.perception" forcecreate="0">
+    <field name="name">Percepcion IVA Efectuada</field>
+    <field name="type">vat</field>
+    <field name="tax_id" ref="tax_percepcion_iva_efectuada" />
+  </record>
+
+  <record id="perception_perception_iva_sufrida" model="perception.perception" forcecreate="0">
+    <field name="name">Percepcion IVA Sufrida</field>
+    <field name="type">vat</field>
+    <field name="tax_id" ref="tax_percepcion_iva_sufrida" />
+  </record>
+
+  <record id="perception_perception_iibb_caba_efectuada" model="perception.perception" forcecreate="0">
+    <field name="name">Percepcion IIBB CABA Efectuada</field>
+    <field name="type">gross_income</field>
+    <field name="tax_id" ref="tax_percepcion_iibb_caba_efectuada" />
+  </record>
+
+  <record id="perception_perception_iibb_caba_sufrida" model="perception.perception" forcecreate="0">
+    <field name="name">Percepcion IIBB CABA Sufrida</field>
+    <field name="type">gross_income</field>
+    <field name="tax_id" ref="tax_percepcion_iibb_caba_sufrida" />
+  </record>
+
+  </data>
+</openerp>
