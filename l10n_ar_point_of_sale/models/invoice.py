@@ -465,7 +465,7 @@ class AccountInvoice(models.Model):
                 self.denomination_id = self.fiscal_position_id.denomination_id
                 sorted_pos = self.denomination_id.pos_ar_ids.sorted(
                     key=lambda x: x.priority)
-                if sorted_pos:
+                if sorted_pos and not self.pos_ar_id:
                     self.pos_ar_id = sorted_pos[0]
             self.local = self.fiscal_position_id.local
         else:
