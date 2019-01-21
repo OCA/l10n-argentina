@@ -19,7 +19,7 @@
 ##############################################################################
 
 {
-    "name": "Bank Statements",
+    "name": "Bank Statements for Argentina",
     "version": "11.0.1.0.0",
     "author": "Eynes",
     "website": "http://www.eynes.com.ar",

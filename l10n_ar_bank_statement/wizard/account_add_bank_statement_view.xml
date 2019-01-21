@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
         <form string="Add Statement lines">
             <field name="do_confirm" class="oe_inline" default_focus="1"/>
-            <label for="do_confirm" class="oe_inline" string="Add lines and validate Statement too"/>
+            <label for="do_confirm" class="oe_inline" string="Add lines and validate them too"/>
             <group colspan="4" col="4">
                 <field name="statement_id" invisible="1"/>
                 <field name="journal_id" invisible="1"/>
