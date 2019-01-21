@@ -33,10 +33,11 @@ class DatePeriod(models.Model):
     @api.depends('journal_ids')
     def _compute_period_state(self):
         journal_model = self.env['account.journal']
-        if len(self.journal_ids) == journal_model.search_count([]):
-            self.period_state = 'closed'
-        elif self.journal_ids:
-            self.period_state = 'partial'
-        else:
-            self.period_state = 'open'
+        for rec in self:
+            if len(rec.journal_ids) == journal_model.search_count([]):
+                rec.period_state = 'closed'
+            elif rec.journal_ids:
+                rec.period_state = 'partial'
+            else:
+                rec.period_state = 'open'
 
