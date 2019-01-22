@@ -67,21 +67,15 @@ class AccountInvoice(models.Model):
             'draft': [('readonly', False)],
         })
 
-    @api.multi
-    def onchange_partner_id(self, type, partner_id, date_invoice=False,
-                            payment_term=False, partner_bank_id=False,
-                            company_id=False):
-
-        res = super(AccountInvoice, self).onchange_partner_id(
-            type, partner_id, date_invoice=False, payment_term=False,
-            partner_bank_id=False, company_id=False)
-
+    @api.onchange('partner_id', 'company_id')
+    def _onchange_partner_id(self):
+        res = super(AccountInvoice, self)._onchange_partner_id()
         shipping_addr_id = False
-        if partner_id:
-            p = self.env['res.partner'].browse(partner_id)
-            addresses = p.address_get(['delivery'])
+        partner = self.partner_id
+        if partner:
+            addresses = partner.address_get(['delivery'])
             shipping_addr_id = addresses['delivery']
-            res['value']['address_shipping_id'] = shipping_addr_id
+            self.address_shipping_id = shipping_addr_id
 
         return res
 

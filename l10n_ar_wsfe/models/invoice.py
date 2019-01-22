@@ -60,23 +60,18 @@ class AccountInvoice(models.Model):
     wsfe_request_ids = fields.One2many('wsfe.request.detail', 'name')
     wsfex_request_ids = fields.One2many('wsfex.request.detail', 'invoice_id')
 
-    @api.multi
-    def onchange_partner_id(self, type, partner_id, date_invoice=False,
-                            payment_term=False, partner_bank_id=False,
-                            company_id=False):
-        res = super(AccountInvoice, self).onchange_partner_id(
-            type, partner_id, date_invoice=False, payment_term=False,
-            partner_bank_id=False, company_id=False)
-
-        if partner_id:
-            partner = self.env['res.partner'].browse(partner_id)
+    @api.onchange('partner_id', 'company_id')
+    def _onchange_partner_id(self):
+        res = super(AccountInvoice, self)._onchange_partner_id()
+        partner = self.partner_id
+        if partner:
             country_id = partner.country_id.id or False
             if country_id:
                 dst_country = self.env['wsfex.dst_country.codes'].search(
                     [('country_id', '=', country_id)])
 
                 if dst_country:
-                    res['value'].update({'dst_country_id': dst_country[0].id})
+                    self.dst_country_id = dst_country[0]
         return res
 
     # Esto lo hacemos porque al hacer una nota de credito,
@@ -301,8 +296,8 @@ class AccountInvoice(models.Model):
                     raise UserError(_('Error\n') + err)
 
                 if local:
-                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', obj_inv.internal_number)	   
-                   
+                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', obj_inv.internal_number)
+
                     if not m:
                         err = _('The Invoice Number should be ' +
                                 'the format XXXX[X]-XXXXXXXX')
