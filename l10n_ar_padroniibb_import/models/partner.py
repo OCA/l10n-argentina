@@ -27,7 +27,7 @@ class res_partner(models.Model):
     def _compute_allowed_padron_tax_commands(self, old_commands, new_commands):
         allowed_to_keep_comms = []
         to_remove_new_comm = []
-        padron_tax_ids = map(lambda x: x[1], new_commands)
+        padron_tax_ids = [x[1] for x in new_commands]
         for command in old_commands:
             if command[1] not in padron_tax_ids:
                 allowed_to_keep_comms.append(command)
@@ -263,7 +263,7 @@ class res_partner(models.Model):
                     if vat_changed:
                         old_perceps = partner.read(
                             ['perception_ids'])[0]['perception_ids']
-                        old_comms = map(lambda x: (2, x, False), old_perceps)
+                        old_comms = [(2, x, False) for x in old_perceps]
                         keep_percep_comms = []
                         for comm in perception_ids_lst:
                             if comm[1] not in old_perceps:
@@ -295,7 +295,7 @@ class res_partner(models.Model):
                     if vat_changed:
                         old_retent = partner.read(
                             ['retention_ids'])[0]['retention_ids']
-                        old_comms = map(lambda x: (2, x, False), old_retent)
+                        old_comms = [(2, x, False) for x in old_retent]
                         keep_retent_comms = []
                         for comm in retention_ids_lst:
                             if comm[1] not in old_retent:
