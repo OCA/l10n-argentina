@@ -48,7 +48,7 @@
                 <page name="tax_mapping" position="after">
                     <page name="applied_retentions" string="Applied Retentions">
                         <group>
-                            <field name="retention_ids" nolabel="1" domain="[('tax_id.type_tax_use','=','sale')]">
+                            <field name="retention_ids" nolabel="1" domain="[('tax_id.type_tax_use','=','purchase')]">
                                 <tree string="Perception">
                                     <field name="name" />
                                     <field name="tax_id" />
