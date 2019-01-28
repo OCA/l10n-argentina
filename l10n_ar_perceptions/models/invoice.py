@@ -86,7 +86,7 @@ class AccountInvoice(models.Model):
             invoice, date_invoice=date_invoice, date=date,
             description=description, journal_id=journal_id)
         vals.update({
-            'address_shipping_id': invoice.address_shipping_id,
+            'address_shipping_id': invoice.address_shipping_id.id,
         })
         return vals
 
