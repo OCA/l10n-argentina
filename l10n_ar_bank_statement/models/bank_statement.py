@@ -111,6 +111,18 @@ class AccountBankStatementLine(models.Model):
 
         return self.write({"statement_id": False})
 
+    @api.model
+    def create(self, vals):
+        if not vals.get('company_id'):
+            journal_id = vals.get('journal_id')
+            if journal_id:
+                company_id = self.env['account.journal'].browse(journal_id).company_id.id
+            else:
+                company_id = self.env['res.company']._company_default_get('account.bank.statement').id
+            vals['company_id'] = company_id
+        res = super().create(vals)
+        return res
+
     @api.multi
     def unlink(self):
         if self.env.context.get("force_unlink_statement_line", False):
