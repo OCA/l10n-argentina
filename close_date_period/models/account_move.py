@@ -7,11 +7,8 @@
 import logging
 from datetime import datetime
 
-from odoo import models, api, fields, _, exceptions
-# from odoo.exceptions import except_orm
-# from odoo.addons.decimal_precision import decimal_precision as dp
-# from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, \
-#         DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 _logger = logging.getLogger(__name__)
@@ -23,34 +20,43 @@ class AccountMove(models.Model):
     @api.model
     def create(self, vals):
         period_model = self.env['date.period']
-        period_date = fields.Datetime.context_timestamp(self, datetime.strptime(vals['date'], '%Y-%m-%d'))
+        period_date = fields.Datetime.context_timestamp(
+            self, datetime.strptime(vals['date'], '%Y-%m-%d'))
         period = period_model._get_period(period_date)
         if vals['journal_id'] in period.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't create an account move on a closed period."))
+            raise ValidationError(
+                _("Can't create an account move on a closed period."))
         return super(AccountMove, self).create(vals)
 
     @api.multi
     def write(self, vals):
         if self.journal_id.id in self.period_id.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't edit an account move on a closed period."))
+            raise ValidationError(
+                _("Can't edit an account move on a closed period."))
         period_model = self.env['date.period']
         date = vals.get('date')
         if not date:
             date = self.date
-        period_date = fields.Datetime.context_timestamp(self, datetime.strptime(date, '%Y-%m-%d'))
+        if not date:
+            return super(AccountMove, self).write(vals)
+        period_date = fields.Datetime.context_timestamp(
+            self, datetime.strptime(date, '%Y-%m-%d'))
         period = period_model._get_period(period_date)
         journal_id = vals.get('journal_id')
         if not journal_id:
             journal_id = self.journal_id
         if journal_id in period.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't edit an account move to a closed period."))
+            raise ValidationError(
+                _("Can't edit an account move to a closed period."))
         return super(AccountMove, self).write(vals)
 
     @api.multi
     def unlink(self):
         if self.journal_id.id in self.period_id.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't delete an account move on a closed period."))
- 
+            raise ValidationError(
+                _("Can't delete an account move on a closed period."))
+
+
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
@@ -59,20 +65,28 @@ class AccountMoveLine(models.Model):
         move_model = self.env['account.move']
         move_id = move_model.browse(vals['move_id'])
         period_model = self.env['date.period']
-        period_date = fields.Datetime.context_timestamp(self, datetime.strptime(move_id.date, '%Y-%m-%d'))
+        period_date = fields.Datetime.context_timestamp(
+            self, datetime.strptime(move_id.date, '%Y-%m-%d'))
         period = period_model._get_period(period_date)
         if move_id.journal_id.id in period.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't create an account move line on a closed period."))
+            raise ValidationError(
+                _("Can't create an account move line on a closed period."))
         return super(AccountMoveLine, self).create(vals)
 
     @api.multi
     def write(self, vals):
-        if self.move_id.journal_id.id in self.move_id.period_id.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't edit an account move line on a closed period."))
+        for rec in self:
+            if rec.move_id.journal_id.id in \
+                    rec.move_id.period_id.journal_ids.ids:
+                raise ValidationError(
+                    _("Can't edit an account move line on a closed period."))
         return super(AccountMoveLine, self).write(vals)
 
     @api.multi
     def unlink(self):
-        if self.move_id.journal_id.id in self.move_id.period_id.journal_ids.ids:
-            raise exceptions.ValidationError(_("Can't delete an account move line on a closed period."))
+        for rec in self:
+            if rec.move_id.journal_id.id in \
+                    rec.move_id.period_id.journal_ids.ids:
+                raise ValidationError(
+                    _("Can't delete an account move line on a closed period."))
         return super(AccountMoveLine, self).unlink()
