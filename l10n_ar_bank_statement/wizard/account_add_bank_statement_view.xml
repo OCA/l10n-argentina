@@ -12,6 +12,7 @@
                 <field name="statement_id" invisible="1"/>
                 <field name="journal_id" invisible="1"/>
                 <field name="statement_line_ids" colspan="4" nolabel="1" options="{'no_create': true}"
+                    context="{'form_view_ref': 'l10n_ar_bank_statement.view_account_bank_statement_line_form_readonly'}"
                     domain="[('state', '=', 'open'), ('statement_id', '=', False), ('journal_id','=', journal_id)]">
                     <search>
                         <field name="date"/>
