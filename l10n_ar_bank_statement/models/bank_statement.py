@@ -120,6 +120,12 @@ class AccountBankStatementLine(models.Model):
             else:
                 company_id = self.env['res.company']._company_default_get('account.bank.statement').id
             vals['company_id'] = company_id
+            # Not journal here? gather the one defined in the statement
+            # Done to handle differences in cash amount
+            if not journal_id and vals.get('statement_id'):
+                touse_journal = self.env['account.bank.statement'].browse(vals['statement_id']).journal_id
+                if touse_journal:
+                    vals['journal_id'] = touse_journal.id
         res = super().create(vals)
         return res
 
