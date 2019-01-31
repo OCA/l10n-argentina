@@ -125,8 +125,7 @@ class AccountBankStatementLine(models.Model):
         # Done to handle differences in cash amount
         if not journal_id and statement_id:
             touse_journal = self.env['account.bank.statement'].browse(statement_id).journal_id
-            if touse_journal:
-                vals['journal_id'] = touse_journal.id
+            vals['journal_id'] = touse_journal and touse_journal.id or False
         res = super().create(vals)
         return res
 
