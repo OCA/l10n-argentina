@@ -34,7 +34,7 @@ class AccountPaymentOrder(models.Model):
         for payment_order in self:
             for concept in payment_order.concept_line_ids:
                 journal = concept.journal_id or payment_order.journal_id
-                if journal.type != 'bank':
+                if not journal.detach_statement_lines():
                     continue
 
                 st_line_data = concept._prepare_statement_line_data()

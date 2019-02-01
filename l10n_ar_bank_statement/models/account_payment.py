@@ -97,7 +97,8 @@ class AccountPayment(models.Model):
 
         for payment in self:
             payment_type = payment.payment_type
-            if payment.journal_id.type != "bank" or payment_type not in ("inbound", "outbound"):
+            if not payment.journal_id.detach_statement_lines() or \
+                    payment_type not in ("inbound", "outbound"):
                 continue
 
             st_line_data = payment._prepare_statement_line_data()

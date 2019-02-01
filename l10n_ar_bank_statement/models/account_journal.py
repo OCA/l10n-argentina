@@ -1,8 +1,8 @@
 ##############################################################################
 #
-#    Copyright (C) 2004-2010 Pexego Sistemas Informáticos. All Rights Reserved
 #    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
 #    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
+#    All Rights Reserved. See AUTHORS for details.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,8 +19,11 @@
 #
 ##############################################################################
 
-from . import pos_box_concept  # noqa
-from . import bank_statement  # noqa
-from . import account_journal  # noqa
-from . import account_payment  # noqa
-from . import account_payment_order  # noqa
+from odoo import models
+
+
+class AccountJournal(models.Model):
+    _inherit = 'account.journal'
+
+    def detach_statement_lines(self):
+        return self.type == "bank"
