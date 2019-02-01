@@ -30,7 +30,7 @@ class PoSBoxConcept(models.Model):
     def check_code_not_dup(self):
         for concept in self:
             code = concept.code
-            count = self.search_count([("name", "ilike", code)])
+            count = self.search_count([("code", "ilike", code)])
             if count > 1:
                 raise exceptions.ValidationError(_("Concept duplicated: %s") % code)
 
@@ -60,10 +60,10 @@ class PoSBoxConcept(models.Model):
         required=True,
     )
 
-    _sql_constraints = [
-        (
-            "account_id_uniq_by_type",
-            "UNIQUE(account_id, concept_type)",
-            _("This account is already assigned to another concept")
-        )
-    ]
+    #_sql_constraints = [
+    #    (
+    #        "account_id_uniq_by_type",
+    #        "UNIQUE(account_id, concept_type)",
+    #        _("This account is already assigned to another concept")
+    #    )
+    #]
