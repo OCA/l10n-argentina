@@ -43,6 +43,7 @@
         'views/account_view.xml',
         'views/iibb_situation_view.xml',
         'views/menuitems.xml',
+        'views/res_users_view.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,

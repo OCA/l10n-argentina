@@ -10,3 +10,4 @@ from . import invoice  # noqa
 from . import partner  # noqa
 from . import account  # noqa
 from . import iibb_situation  # noqa
+from . import res_users  # noqa
