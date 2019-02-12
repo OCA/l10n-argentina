@@ -54,7 +54,7 @@ class AccountPaymentOrder(models.Model):
         for payment_order in self:
             for line in payment_order.payment_mode_line_ids:
                 journal = line.payment_mode_id or payment_order.journal_id
-                if journal.detach_statement_lines():
+                if not journal.detach_statement_lines():
                     continue
 
                 st_line_data = line._prepare_statement_line_data()
