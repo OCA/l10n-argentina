@@ -19,8 +19,6 @@
                         <group invisible="context.get('line_type', False)">
                             <group>
                                 <field name="partner_id"
-                                    required="1"
-                                    string="Customer"
                                     context="{'search_default_customer': 1}"
                                     attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="currency_id" invisible="1"/>
