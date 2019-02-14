@@ -16,7 +16,6 @@
             </field>
         </record>
 
-3
         <record id="wsaa_certificate_request_view_form" model="ir.ui.view">
             <field name="name">wsaa.certificate.request.form</field>
             <field name="model">wsaa.certificate.request</field>
@@ -30,7 +29,7 @@
                     </header>
                     <sheet>
                         <h1>
-                            Name: 
+                            Name:
                             <field name="name" class="oe_inline"/>
                         </h1>
                         <group>
@@ -145,7 +144,6 @@
                 </form>
             </field>
         </record>
-        
 
         <record id="action_wsaa_certificate_request" model="ir.actions.act_window">
             <field name="name">Certificate Request</field>
