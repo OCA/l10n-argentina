@@ -4,9 +4,18 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ###############################################################################
 
+import logging
+
 from odoo import _, api, models, fields
 
-from OpenSSL import crypto
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from OpenSSL import crypto
+except (ImportError, IOError) as e:
+    _logger.debug("Cannot import crypto from OpenSSL: \n%s" %
+                  repr(e))
 
 
 class WSAACertificateRequest(models.Model):
@@ -61,7 +70,7 @@ class WSAACertificateRequest(models.Model):
         PrivKey = crypto.load_privatekey(crypto.FILETYPE_PEM, self.key)
         PubK_bytes = crypto.dump_publickey(crypto.FILETYPE_PEM, PrivKey)
         PubK = crypto.load_publickey(crypto.FILETYPE_PEM, PubK_bytes.decode())
-        Cert = crypto.load_certificate(crypto.FILETYPE_PEM, self.certificate)
+        Cert = crypto.load_certificate(crypto.FILETYPE_PEM, self.old_certificate)
         CertSubj = Cert.get_subject()
         CReq = crypto.X509Req()
         CReqSubj = CReq.get_subject()
