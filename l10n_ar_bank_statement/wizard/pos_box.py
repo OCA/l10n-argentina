@@ -23,9 +23,11 @@ from odoo import api, fields, models
 from odoo.addons.account.wizard.pos_box import CashBox
 
 
+# Disabled to force users to set a proper reason
 @api.onchange("concept_id")
 def onchange_concept_id(self):
-    self.name = self.concept_id.name
+    pass
+    # self.name = self.concept_id.name
 
 
 #_original_run = CashBox._run
@@ -41,6 +43,10 @@ def onchange_concept_id(self):
 #
 #    return ret
 
+CashBox.name = fields.Text(
+    string="Name",
+    required=True,
+)
 CashBox.concept_id = fields.Many2one(
     'pos.box.concept',
     string='Concept',
@@ -59,6 +65,7 @@ class CashBoxIn(models.TransientModel):
         # TODO: remove super() transfer_account_id check (see: addons/account/wizard/pos_box.py:49)
         vals = super(CashBoxIn, self)._calculate_values_for_statement_line(record)
         former_account_id = vals.get("account_id", False)
+        vals["concept_id"] = self.concept_id.id
         vals["account_id"] = self.concept_id.account_id.id or former_account_id
         vals["line_type"] = "in"
         vals["state"] = "confirm"
@@ -73,6 +80,7 @@ class CashBoxOut(models.TransientModel):
         # TODO: remove super() transfer_account_id check (see: addons/account/wizard/pos_box.py:67)
         vals = super(CashBoxOut, self)._calculate_values_for_statement_line(record)
         former_account_id = vals.get("account_id", False)
+        vals["concept_id"] = self.concept_id.id
         vals["account_id"] = self.concept_id.account_id.id or former_account_id
         vals["line_type"] = "out"
         vals["state"] = "confirm"

@@ -102,6 +102,9 @@ class AccountBankStatementLine(models.Model):
         required=True,
     )
 
+    concept_id = fields.Many2one(
+        comodel_name='pos.box.concept', string='Concept')
+
     def open_line(self):
         return self.write({"state": "open"})
 
