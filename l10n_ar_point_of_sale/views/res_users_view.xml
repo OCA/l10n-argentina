@@ -5,7 +5,7 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='avail_picking_type_ids']" position="after">
+            <xpath expr="//field[@name='barcode']" position="after">
                 <field name="default_pos"/>
             </xpath>
         </field>
