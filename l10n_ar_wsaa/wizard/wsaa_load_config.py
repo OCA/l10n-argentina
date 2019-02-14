@@ -40,12 +40,14 @@ class wsaa_load_config(models.TransientModel):
         certificate = wiz.certificate
         cert_name = wiz.cert_name
         filedata = self.read_file(cert_name, certificate, 'crt')
-        wsaa_config_model = self.env['wsaa.config']
-        wsaa_config = wsaa_config_model.browse(form_id)
+        model = self.env[self.env.context.get(
+            'active_model', 'wsaa.config')]
+        obj = model.browse(form_id)
+        field = self.env.context.get('field', 'certificate')
         write_vals = {
-            'certificate': filedata,
+            field: filedata,
         }
-        wsaa_config.write(write_vals)
+        obj.write(write_vals)
 
     @api.multi
     def load_key(self):
@@ -56,12 +58,14 @@ class wsaa_load_config(models.TransientModel):
         key = wiz.key
         key_name = wiz.key_name
         filedata = self.read_file(key_name, key, 'key')
-        wsaa_config_model = self.env['wsaa.config']
-        wsaa_config = wsaa_config_model.browse(form_id)
+        model = self.env[self.env.context.get(
+            'active_model', 'wsaa.config')]
+        obj = model.browse(form_id)
+        field = self.env.context.get('field', 'key')
         write_vals = {
-            'key': filedata,
+            field: filedata,
         }
-        wsaa_config.write(write_vals)
+        obj.write(write_vals)
 
     certificate = fields.Binary('Certificate of Approval',
                                 help="You certificate (.crt)",

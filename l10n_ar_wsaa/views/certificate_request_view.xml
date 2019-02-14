@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="wsaa_certficate_request_view_tree" model="ir.ui.view">
+            <field name="name">wsaa.certificate.request.tree</field>
+            <field name="model">wsaa.certificate.request</field>
+            <field name="arch" type="xml">
+                <tree string="Certificate Request">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="due_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+3
+        <record id="wsaa_certificate_request_view_form" model="ir.ui.view">
+            <field name="name">wsaa.certificate.request.form</field>
+            <field name="model">wsaa.certificate.request</field>
+            <field name="arch" type="xml">
+                <form string="Wsaa Certificate Request">
+                    <header>
+                        <button name="generate_certificate_request"
+                            string="Generate Request" class="oe_highlight"
+                            type="object"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <h1>
+                            Name: 
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="due_date"/>
+                            </group>
+                        </group>
+                        <group string="Request Information" name="req_info">
+                            <group>
+                                <field name="subj_c"/>
+                                <field name="subj_o"/>
+                                <field name="subj_cn"/>
+                                <field name="subj_cuit"/>
+                            </group>
+                        </group>
+                        <notebook colspan="4">
+                            <page string="Key">
+                                <div class="oe_right oe_button_box oe_inline">
+                                    <button type="object"
+                                        context="{
+                                            'field': 'key',
+                                            'filename': 'priv.key',
+                                        }"
+                                        class="oe_stat_button"
+                                        icon="fa-download"
+                                        attrs="{'invisible': [('key', '=', False)]}"
+                                        name="download_file">
+                                        <div><strong>Download</strong></div>
+                                    </button>
+                                    <button type="action"
+                                        class="oe_stat_button"
+                                        id="wsaa_certificate_request_key_loading"
+                                        icon="fa-key"
+                                        name="%(key_renewal_wizard_action)d">
+                                        <div><strong>Load Key</strong></div>
+                                    </button>
+                                </div>
+                                <field name="key" colspan="4" nolabel="1" height="200"/>
+                            </page>
+                            <page string="Old Certificate">
+                                <div class="oe_right oe_button_box oe_inline">
+                                    <button type="object"
+                                        context="{
+                                            'field': 'old_certificate',
+                                            'filename': 'old_cert.crt',
+                                        }"
+                                        class="oe_stat_button"
+                                        id="wsaa_certificate_request_download"
+                                        icon="fa-download"
+                                        attrs="{'invisible': [('old_certificate', '=', False)]}"
+                                        name="download_file">
+                                        <div><strong>Download</strong></div>
+                                    </button>
+                                    <button type="action"
+                                        context="{'field': 'old_certificate'}"
+                                        class="oe_stat_button"
+                                        id="wsaa_certificate_request_old_cert_loading"
+                                        icon="fa-certificate"
+                                        name="%(certificate_renewal_wizard_action)d">
+                                        <div><strong>Load Old Certificate</strong></div>
+                                    </button>
+                                </div>
+                                <field name="old_certificate" colspan="4" nolabel="1" height="200"/>
+                            </page>
+                            <page string="Certificate Request">
+                                <div class="oe_right oe_button_box oe_inline">
+                                    <button type="object"
+                                        context="{
+                                            'field': 'cert_request',
+                                            'filename': 'request.csr',
+                                        }"
+                                        class="oe_stat_button"
+                                        id="wsaa_certificate_request_download"
+                                        icon="fa-download"
+                                        attrs="{'invisible': [('cert_request', '=', False)]}"
+                                        name="download_file">
+                                        <div><strong>Download</strong></div>
+                                    </button>
+                                </div>
+                                <field name="cert_request" colspan="4" nolabel="1" height="200"/>
+                            </page>
+                            <page string="Certificate">
+                                <div class="oe_right oe_button_box oe_inline">
+                                    <button type="object"
+                                        context="{
+                                            'field': 'certificate',
+                                            'filename': 'cert.crt',
+                                        }"
+                                        class="oe_stat_button"
+                                        id="wsaa_certificate_request_download"
+                                        icon="fa-download"
+                                        attrs="{'invisible': [('certificate', '=', False)]}"
+                                        name="download_file">
+                                        <div><strong>Download</strong></div>
+                                    </button>
+                                    <button type="action"
+                                        class="oe_stat_button"
+                                        id="wsaa_certificate_request_cert_loading"
+                                        icon="fa-certificate"
+                                        name="%(certificate_renewal_wizard_action)d">
+                                        <div><strong>Load Certificate</strong></div>
+                                    </button>
+                                </div>
+                                <field name="certificate" colspan="4" nolabel="1" height="200"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+        <record id="action_wsaa_certificate_request" model="ir.actions.act_window">
+            <field name="name">Certificate Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wsaa.certificate.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="wsaa_certificate_request_menu"
+            name="Certificate Requests"
+            parent="base_afipws"
+            sequence="55"
+            action="action_wsaa_certificate_request"/>
+
+    </data>
+</odoo>

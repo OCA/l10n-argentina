@@ -32,6 +32,25 @@ class wsaa_config(models.Model):
          'The configuration must be unique per company !')
     ]
 
+    @api.multi
+    def download_file(self):
+        self.ensure_one()
+        field = self.env.context.get('field')
+        fname = self.env.context.get('filename')
+        vals = {
+            'model': self._name,
+            'field': field,
+            'id': self.id,
+            'fname': fname,
+        }
+        action = {
+            'type': 'ir.actions.act_url',
+            'url': ('/web/binary/download_document?model=%(model)s&' +
+                    'field=%(field)s&id=%(id)s&filename=%(fname)s') % vals,
+            'target': 'new',
+        }
+        return action
+
 
 class afipws_service(models.Model):
     _name = "afipws.service"

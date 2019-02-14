@@ -46,6 +46,7 @@ python-m2crypto
     'data': [
         'wizard/wsaa_config_renewal.xml',
         'views/wsaa_view.xml',
+        'views/certificate_request_view.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [
