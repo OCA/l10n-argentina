@@ -99,6 +99,7 @@ msgstr "Configurar la Cuenta Contable usada para Poner/Sacar dinero de un Extrac
 #. module: l10n_ar_bank_statement
 #: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_cash_box_in_concept_id
 #: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_cash_box_out_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_bank_statement_line_concept_id
 msgid "Concept"
 msgstr "Concepto"
 
