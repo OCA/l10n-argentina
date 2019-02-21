@@ -63,7 +63,7 @@ class ResPartner(models.Model):
         'res.partner.perception', 'partner_id', 'Defined Perceptions',
         help="Here you have to configure perception exceptions for this " +
         "partner with this Fiscal Position")
-    nro_insc_iibb = fields.Char('Number of IIBB Registration', size=11)
+    nro_insc_iibb = fields.Char('Number of IIBB Registration', size=15)
 
     def _get_perceptions_to_apply(self):
 
