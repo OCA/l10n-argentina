@@ -24,6 +24,9 @@
                     <header>
                         <button name="generate_certificate_request"
                             string="Generate Request" class="oe_highlight"
+                            attrs="{
+                                'invisible': [('key', '=', False)],
+                            }"
                             type="object"/>
                         <field name="state" widget="statusbar"/>
                     </header>
