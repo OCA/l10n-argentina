@@ -63,6 +63,13 @@
                                         name="download_file">
                                         <div><strong>Download</strong></div>
                                     </button>
+                                    <button type="object"
+                                        confirm="Are you sure you want to generate a new random key?"
+                                        class="oe_stat_button"
+                                        icon="fa-key"
+                                        name="generate_key">
+                                        <div><strong>Generate Key</strong></div>
+                                    </button>
                                     <button type="action"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_request_key_loading"

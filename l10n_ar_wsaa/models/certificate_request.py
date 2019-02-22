@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from OpenSSL import crypto
+    from cryptography.hazmat.primitives import serialization
 except (ImportError, IOError) as e:
     _logger.debug("Cannot import crypto from OpenSSL: \n%s" %
                   repr(e))
@@ -70,7 +71,8 @@ class WSAACertificateRequest(models.Model):
         PrivKey = crypto.load_privatekey(crypto.FILETYPE_PEM, self.key)
         PubK_bytes = crypto.dump_publickey(crypto.FILETYPE_PEM, PrivKey)
         PubK = crypto.load_publickey(crypto.FILETYPE_PEM, PubK_bytes.decode())
-        Cert = crypto.load_certificate(crypto.FILETYPE_PEM, self.old_certificate)
+        Cert = crypto.load_certificate(
+            crypto.FILETYPE_PEM, self.old_certificate)
         CertSubj = Cert.get_subject()
         CReq = crypto.X509Req()
         CReqSubj = CReq.get_subject()
@@ -82,6 +84,18 @@ class WSAACertificateRequest(models.Model):
         CReq.sign(PrivKey, "sha256")
         CReq_bytes = crypto.dump_certificate_request(crypto.FILETYPE_PEM, CReq)
         self.cert_request = CReq_bytes.decode()
+
+    @api.multi
+    def generate_key(self):
+        PKey = crypto.PKey()
+        PKey.generate_key(crypto.TYPE_RSA, 2048)
+        cryp_PKey = PKey.to_cryptography_key()
+        serialized_key = cryp_PKey.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.NoEncryption()
+        )
+        self.key = serialized_key
 
     @api.multi
     def download_file(self):
