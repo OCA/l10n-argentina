@@ -5,8 +5,10 @@
 ###############################################################################
 
 import logging
+import re
 
 from odoo import _, api, models, fields
+from odoo.exceptions import ValidationError
 
 
 _logger = logging.getLogger(__name__)
@@ -66,16 +68,42 @@ class WSAACertificateRequest(models.Model):
             rec.state = 'new'
 
     @api.multi
+    def write(self, vals):
+        if 'subj_cuit' in vals:
+            normalized_cuit = self._normalize_subj_cuit(vals.get('subj_cuit'))
+            vals.update({
+                'subj_cuit': normalized_cuit,
+            })
+        if 'subj_c' in vals:
+            vals.update({
+                'subj_c': vals.get('subj_c').upper(),
+            })
+        res = super().write(vals)
+        return res
+
+    @api.model
+    def _normalize_subj_cuit(self, cuit):
+        pattern = '((?!\d).)*'
+        cuit_number = re.sub(pattern, '', cuit)
+        return 'CUIT ' + cuit_number
+
+    @api.multi
     def generate_certificate_request(self):
         self.ensure_one()
         PrivKey = crypto.load_privatekey(crypto.FILETYPE_PEM, self.key)
         PubK_bytes = crypto.dump_publickey(crypto.FILETYPE_PEM, PrivKey)
         PubK = crypto.load_publickey(crypto.FILETYPE_PEM, PubK_bytes.decode())
-        Cert = crypto.load_certificate(
-            crypto.FILETYPE_PEM, self.old_certificate)
-        CertSubj = Cert.get_subject()
         CReq = crypto.X509Req()
         CReqSubj = CReq.get_subject()
+        if not all([self.subj_c, self.subj_o, self.subj_cn, self.subj_cuit]):
+            try:
+                Cert = crypto.load_certificate(
+                    crypto.FILETYPE_PEM, self.old_certificate)
+                CertSubj = Cert.get_subject()
+            except Exception:
+                raise ValidationError(
+                    _("Either the Request Information or the " +
+                      "Old Certificate must be complete!"))
         CReqSubj.C = self.subj_c or CertSubj.C
         CReqSubj.O = self.subj_o or CertSubj.O  # noqa
         CReqSubj.CN = self.subj_cn or CertSubj.CN
@@ -96,6 +124,21 @@ class WSAACertificateRequest(models.Model):
             encryption_algorithm=serialization.NoEncryption()
         )
         self.key = serialized_key
+
+    @api.multi
+    def gather_from_cert(self):
+        field = self.env.context.get('field', 'certificate')
+        cert_string = getattr(self, field)
+        Cert = crypto.load_certificate(
+            crypto.FILETYPE_PEM, cert_string)
+        CertSubj = Cert.get_subject()
+        vals = {
+            'subj_c': CertSubj.C,
+            'subj_o': CertSubj.O,
+            'subj_cn': CertSubj.CN,
+            'subj_cuit': CertSubj.serialNumber,
+        }
+        return self.write(vals)
 
     @api.multi
     def download_file(self):

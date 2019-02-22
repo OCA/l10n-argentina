@@ -42,6 +42,28 @@
                             </group>
                         </group>
                         <group string="Request Information" name="req_info">
+                            <div class="oe_right oe_button_box oe_inline">
+                                <button type="object"
+                                    context="{
+                                        'field': 'old_certificate',
+                                    }"
+                                    class="oe_stat_button"
+                                    icon="fa-refresh"
+                                    attrs="{'invisible': [('old_certificate', '=', False)]}"
+                                    name="gather_from_cert">
+                                    <div class="pull-right"><strong>Gather from<br/>Old Certificate</strong></div>
+                                </button>
+                                <button type="object"
+                                    context="{
+                                        'field': 'certificate',
+                                    }"
+                                    class="oe_stat_button"
+                                    icon="fa-refresh"
+                                    attrs="{'invisible': [('certificate', '=', False)]}"
+                                    name="gather_from_cert">
+                                    <div class="pull-right"><strong>Gather from<br/>New Certificate</strong></div>
+                                </button>
+                            </div>
                             <group>
                                 <field name="subj_c"/>
                                 <field name="subj_o"/>
@@ -61,21 +83,21 @@
                                         icon="fa-download"
                                         attrs="{'invisible': [('key', '=', False)]}"
                                         name="download_file">
-                                        <div><strong>Download</strong></div>
+                                        <div class="pull-right"><strong>Download</strong></div>
                                     </button>
                                     <button type="object"
                                         confirm="Are you sure you want to generate a new random key?"
                                         class="oe_stat_button"
                                         icon="fa-key"
                                         name="generate_key">
-                                        <div><strong>Generate Key</strong></div>
+                                        <div class="pull-right"><strong>Generate Key</strong></div>
                                     </button>
                                     <button type="action"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_request_key_loading"
                                         icon="fa-key"
                                         name="%(key_renewal_wizard_action)d">
-                                        <div><strong>Load Key</strong></div>
+                                        <div class="pull-right"><strong>Load Key</strong></div>
                                     </button>
                                 </div>
                                 <field name="key" colspan="4" nolabel="1" height="200"/>
@@ -92,7 +114,7 @@
                                         icon="fa-download"
                                         attrs="{'invisible': [('old_certificate', '=', False)]}"
                                         name="download_file">
-                                        <div><strong>Download</strong></div>
+                                        <div class="pull-right"><strong>Download</strong></div>
                                     </button>
                                     <button type="action"
                                         context="{'field': 'old_certificate'}"
@@ -100,7 +122,7 @@
                                         id="wsaa_certificate_request_old_cert_loading"
                                         icon="fa-certificate"
                                         name="%(certificate_renewal_wizard_action)d">
-                                        <div><strong>Load Old Certificate</strong></div>
+                                        <div class="pull-right"><strong>Load Old Certificate</strong></div>
                                     </button>
                                 </div>
                                 <field name="old_certificate" colspan="4" nolabel="1" height="200"/>
@@ -117,7 +139,7 @@
                                         icon="fa-download"
                                         attrs="{'invisible': [('cert_request', '=', False)]}"
                                         name="download_file">
-                                        <div><strong>Download</strong></div>
+                                        <div class="pull-right"><strong>Download</strong></div>
                                     </button>
                                 </div>
                                 <field name="cert_request" colspan="4" nolabel="1" height="200"/>
@@ -134,14 +156,14 @@
                                         icon="fa-download"
                                         attrs="{'invisible': [('certificate', '=', False)]}"
                                         name="download_file">
-                                        <div><strong>Download</strong></div>
+                                        <div class="pull-right"><strong>Download</strong></div>
                                     </button>
                                     <button type="action"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_request_cert_loading"
                                         icon="fa-certificate"
                                         name="%(certificate_renewal_wizard_action)d">
-                                        <div><strong>Load Certificate</strong></div>
+                                        <div class="pull-right"><strong>Load Certificate</strong></div>
                                     </button>
                                 </div>
                                 <field name="certificate" colspan="4" nolabel="1" height="200"/>
