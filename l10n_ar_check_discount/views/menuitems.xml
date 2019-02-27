@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_third_check_discount"
+            name="Check Discount"
+            sequence="5"
+            action="l10n_ar_check_discount.action_check_discount"
+            parent="l10n_ar_account_check.menu_treasury_third_check_menu"/>
+
+    </data>
+</odoo>
