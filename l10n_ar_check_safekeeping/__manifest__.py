@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Copyright (c) 2019 Eynes/E-MIPS
@@ -18,7 +19,7 @@
 ###############################################################################
 
 {
-    "name": "L10N AR Check Discount",
+    "name": "l10n_ar_check_safekeeping",
     "category": "Accounting & Finance",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
@@ -28,12 +29,10 @@
         "l10n_ar_account_check",
     ],
     "data": [
-        "security/ir.model.access.csv",
-        "views/account_check_view.xml",
-        "views/check_discount_view.xml",
-        "views/check_discount_settings_view.xml",
+        "views/check_safekeeping_view.xml",
         "views/menuitems.xml",
     ],
+    "qweb": ['static/src/xml/*.xml'],
     "installable": True,
     "application": True,
 }

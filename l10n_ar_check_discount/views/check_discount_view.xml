@@ -15,30 +15,59 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,discounted,cancel"/>
                     </header>
                     <sheet string="Check Discount">
+                        <field name="expense_invoice_id" invisible="1"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': [('expense_invoice_id', '=', False)]}">
+                                <strong>Expense Invoice</strong>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="True"/>
                             </h1>
                         </div>
-                        <group>
-                            <field name="journal_id" domain="[('type', '=', 'bank')]"
+                        <group string="Expense Invoice Infomation">
+                            <group>
+                                <field name="invoice_number" placeholder="XXXX[X]-XXXXXXXX"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+                                <field name="expense_invoice_date"/>
+                                <field name="expense_invoice_accounting_date"/>
+                            </group>
+                        </group>
+                        <group string="Accreditation Information">
+                            <field name="journal_id" domain="[('type', 'in', ['bank', 'cash'])]"
                                 attrs="{
-                                    'readonly': [('state', 'not in', ['draft'])],
+                                'readonly': [('state', 'not in', ['draft'])],
                                 }"/>
-                            <field name="currency_id" attrs="{'readonly':[('state', 'not in', ['draft'])]}"/>
                             <field name="allowed_product_ids" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="discount_date"/>
+                            <field name="currency_id" attrs="{'readonly':[('state', 'not in', ['draft'])]}"/>
                         </group>
                         <notebook>
                             <page string="Checks">
                                 <field name="check_ids" readonly="0" force_save="True"
-                                    domain="[('state', 'in', ['wallet'])]"
+                                    domain="[
+                                    ('state', 'in', ['wallet']),
+                                    ('type', '=', 'common'),
+                                    ('discount_id', '=', False)
+                                    ]"
                                     attrs="{
-                                        'readonly': [('state', 'not in', ['draft'])],
+                                    'readonly': [('state', 'not in', ['draft'])],
                                     }">
                                     <tree create="true">
                                         <field name="number" readonly="1"/>
                                         <field name="source_partner_id" readonly="1"/>
+                                        <field name="payment_date" readonly="1"/>
                                         <field name="receipt_date" readonly="1"/>
+                                        <field name="discount_date" readonly="1"/>
                                         <field name="amount" readonly="1"/>
                                         <field name="state" readonly="1"/>
                                     </tree>
@@ -47,14 +76,15 @@
                             <page string="Concepts">
                                 <field name="check_discount_line_ids"
                                     attrs="{
-                                        'readonly': [('state', 'not in', ['draft'])],
+                                    'readonly': [('state', 'not in', ['draft'])],
                                     }">
                                     <tree editable='bottom'>
                                         <field name="product_id" domain="[('id', 'in', parent.allowed_product_ids)]"
                                             attrs="{
-                                                'required': True,
+                                            'required': True,
                                             }"
                                             options="{'no_create_edit': true, 'no_quick_create': true,}"/>
+                                        <field name="account_id" required="True"/>
                                         <field name="amount_untaxed"/>
                                         <field name="tax_id"/>
                                         <field name="amount" readonly="True" force_save="True"/>
@@ -79,12 +109,12 @@
         </record>
 
         <record id="seq_check_disc" model="ir.sequence">
-			<field name="name">Check Discount</field>
-			<field name="code">seq.check.disc</field>
-			<field name="prefix">DESC</field>
-			<field name="padding">6</field>
+            <field name="name">Check Discount</field>
+            <field name="code">seq.check.disc</field>
+            <field name="prefix">DESC</field>
+            <field name="padding">6</field>
             <field eval="1" name="number_increment"/>
-		</record>
+        </record>
 
         <record id="action_check_discount" model="ir.actions.act_window">
             <field name="name">Check Discount</field>
