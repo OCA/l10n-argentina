@@ -44,6 +44,9 @@ class CheckDiscount(models.Model):
         inverse_name='check_discount_id',
         string='Concepts')
     discount_date = fields.Date(string="Discount Date")
+    company_id = fields.Many2one(
+        'res.company',
+        default=lambda s: s.get_default_company())
     currency_id = fields.Many2one(
         'res.currency',
         default=lambda s: s.get_default_currency())
@@ -64,8 +67,28 @@ class CheckDiscount(models.Model):
     expense_invoice_id = fields.Many2one(
         comodel_name='account.invoice',
         string="Expense Invoice")
+    expense_payment_id = fields.Many2one(
+        comodel_name='account.payment.order',
+        string="Expense Payment")
+    accredit_move_id = fields.Many2one(
+        comodel_name='account.move',
+        string="Accredit Move")
+    check_config_id = fields.Many2one(
+        comodel_name='account.check.config',
+        string="Check Config", store=True,
+        compute="_compute_check_config")
     note = fields.Text(
         string='Note')
+
+    @api.depends("company_id")
+    def _compute_check_config(self):
+        check_config_obj = self.env['account.check.config']
+        config = check_config_obj.search(
+            [('company_id', '=', self.company_id.id)], limit=1)
+        if not len(config):
+            err = _('There is no check configuration for this Company!')
+            raise ValidationError(err)
+        self.check_config_id = config
 
     @api.model
     def create(self, vals):
@@ -76,6 +99,10 @@ class CheckDiscount(models.Model):
     @api.model
     def get_default_currency(self):
         return self.env.user.company_id.currency_id
+
+    @api.model
+    def get_default_company(self):
+        return self.env.user.company_id
 
     @api.depends('check_ids')
     def _compute_amount_checks(self):
@@ -102,17 +129,104 @@ class CheckDiscount(models.Model):
         if not self.check_ids:
             raise ValidationError(
                 _("Some Checks must be loaded!"))
-        self._discount_checks()
         if self.check_discount_line_ids:
+            if not self.partner_id:
+                raise ValidationError(
+                    _("The Receptor Bank should be set in order to " +
+                      "generate an Invoice!"))
+            if not self.invoice_number:
+                raise ValidationError(
+                    _("The Invoice Number must be set!"))
+            # Expense Invoice
             invoice = self._generate_expense_invoice()
             invoice.action_invoice_open()
             self.expense_invoice_id = invoice
-        # TODO
-        # move = self._generate_check_discount_move()
-        # self.accredit_move_id = move
+
+            # Expense Invoice Payment
+            payment = self._generate_expense_payment_order()
+            payment.onchange_partner_id()
+            payment.onchange_payment_line()
+            payment.gather_debt_lines()
+            payment_line = payment.debt_line_ids.filtered(
+                lambda pml: pml.invoice_id == invoice)
+            if not payment_line:
+                raise ValidationError(
+                    _("The Payment of the Expense Invoice " +
+                      "could not be completed."))
+            payment_line.amount = self.amount_concepts  # TODO + self.amount_perceptions  # noqa
+            payment.proforma_voucher()
+            self.expense_payment_id = payment
+
+        move = self._generate_check_discount_move()
+        move.post()
+        self.accredit_move_id = move
+        self._discount_checks()
         return self.write({
             'state': 'discounted',
         })
+
+    @api.multi
+    def _generate_expense_payment_order(self):
+        payment_order_model = self.env['account.payment.order']
+        pmls = self._prepare_payment_mode_lines_for_payment()
+        po_vals = {
+            'type': 'payment',
+            'journal_id': self.check_config_id.discount_payment_journal_id.id,
+            'partner_id': self.partner_id.id,
+            'payment_mode_line_ids': [(0, False, pml) for pml in pmls],
+        }
+        payment = payment_order_model.create(po_vals)
+        return payment
+
+    @api.multi
+    def _prepare_payment_mode_lines_for_payment(self):
+        pmls = []
+        pml = {
+            'amount': self.amount_concepts,  # TODO + self.amount_perceptions,
+            'currency_id': self.currency_id,
+            'payment_mode_id': self.journal_id.id,
+        }
+        pmls.append(pml)
+        return pmls
+
+    @api.multi
+    def _generate_check_discount_move(self):
+        move_model = self.env['account.move']
+        bank_line_vals = self._prepare_bank_line_vals_for_move()
+        check_line_vals = self._prepare_check_line_vals_for_move()
+        move_line_vals = bank_line_vals + check_line_vals
+        move_vals = {
+            'journal_id': self.check_config_id.discount_move_journal_id.id,
+            'line_ids': [(0, False, mlv) for mlv in move_line_vals],
+        }
+        move = move_model.create(move_vals)
+        return move
+
+    @api.multi
+    def _prepare_bank_line_vals_for_move(self):
+        blvs = []
+        blv = {
+            'account_id': self.journal_id.default_debit_account_id.id,
+            'debit': self.amount_total + self.amount_concepts,
+            'credit': 0.0,
+            'currency_id': self.currency_id.id,
+        }
+        blvs.append(blv)
+        return blvs
+
+    @api.multi
+    def _prepare_check_line_vals_for_move(self):
+        clvs = []
+        wallet_checks = self.check_ids.filtered(
+            lambda c: c.state == 'wallet')
+        wc_vals = {
+            'account_id': self.check_config_id.account_id.id,
+            'credit': sum(wallet_checks.mapped('amount')),
+            'debit': 0.0,
+            'currency_id': self.currency_id.id,
+        }
+        clvs.append(wc_vals)
+        return clvs
 
     @api.multi
     def _generate_expense_invoice(self):
@@ -120,6 +234,7 @@ class CheckDiscount(models.Model):
         invoice_vals = self._prepare_expense_invoice_vals()
         invoice = invoice_model.new(invoice_vals)
         default_vals = invoice.default_get(invoice._fields)
+        default_vals.update(invoice_vals)
         [setattr(invoice, fname, val)
          for fname, val in default_vals.items()]
         invoice._onchange_partner_id()
@@ -136,15 +251,17 @@ class CheckDiscount(models.Model):
         for expense_line in self.check_discount_line_ids:
             lv = expense_line._prepare_expense_invoice_line_vals()
             line_vals.append(lv)
+        config = self.check_config_id
         vals = {
-            'internal_number': self.invoice_number,
-            'date_invoice': self.expense_invoice_date,
+            'currency_id': self.currency_id.id,
             'date': self.expense_invoice_accounting_date,
+            'date_invoice': self.expense_invoice_date,
+            'internal_number': self.invoice_number,
+            'invoice_line_ids': [(0, False, l) for l in line_vals],
+            'journal_id': config.discount_invoice_journal_id.id,
             'name': self.name,
             'partner_id': self.partner_id.id,
             'type': 'in_invoice',
-            'currency_id': self.currency_id.id,
-            'invoice_line_ids': [(0, False, l) for l in line_vals],
         }
         return vals
 
@@ -161,8 +278,44 @@ class CheckDiscount(models.Model):
         for check in self.check_ids:
             check.state = 'wallet'
             check.discount_date = False
+        if self.accredit_move_id:
+            try:
+                self.accredit_move_id.button_cancel()
+                self.accredit_move_id.unlink()
+            except BaseException as e:
+                try:
+                    err_str = e.name.replace('\\n', '\n')
+                except BaseException:
+                    err_str = e
+                raise ValidationError(
+                    _("Could not cancel the Accredit Move. " +
+                      "The error was:\n%s" % err_str))
+        if self.expense_payment_id:
+            try:
+                self.expense_payment_id.cancel_voucher()
+                self.expense_payment_id.unlink()
+            except BaseException as e:
+                try:
+                    err_str = e.name.replace('\\n', '\n')
+                except BaseException:
+                    err_str = e
+                raise ValidationError(
+                    _("Could not cancel the Expense Invoice. " +
+                      "The error was:\n%s" % err_str))
         if self.expense_invoice_id:
-            self.expense_invoice_id.unlink()
+            try:
+                self.expense_invoice_id.action_cancel()
+                self.expense_invoice_id.action_invoice_draft()
+                self.expense_invoice_id.move_name = False
+                self.expense_invoice_id.unlink()
+            except BaseException as e:
+                try:
+                    err_str = e.name.replace('\\n', '\n')
+                except BaseException:
+                    err_str = e
+                raise ValidationError(
+                    _("Could not cancel the Expense Invoice. " +
+                      "The error was:\n%s" % err_str))
         return self.write({
             'state': 'cancel',
         })
@@ -179,6 +332,24 @@ class CheckDiscount(models.Model):
         action['views'] = [(self.env.ref('account.invoice_supplier_form').id,
                             'form')]
         action['res_id'] = self.expense_invoice_id.id
+        return action
+
+    @api.multi
+    def action_view_payment(self):
+        action = self.env.ref(
+            'l10n_ar_account_payment_order.action_vendor_payment_order').read(
+            )[0]
+        action['views'] = [(self.env.ref(
+            'l10n_ar_account_payment_order.view_vendor_payment_order_form').id,
+            'form')]
+        action['res_id'] = self.expense_payment_id.id
+        return action
+
+    @api.multi
+    def action_view_move(self):
+        action = self.env.ref('account.action_move_journal_line').read()[0]
+        action['views'] = [(self.env.ref('account.view_move_form').id, 'form')]
+        action['res_id'] = self.accredit_move_id.id
         return action
 
 
@@ -207,6 +378,9 @@ class CheckDiscountLine(models.Model):
     def onchange_product_id(self):
         for line in self:
             line.account_id = line.product_id.property_account_expense_id
+            line.tax_id = line.product_id.supplier_taxes_id and \
+                (line.product_id.supplier_taxes_id[0] or
+                 line.account_id.tax_ids and line.account_id.tax_ids[0])
 
     @api.depends('amount_untaxed', 'tax_id')
     def _compute_amount(self):

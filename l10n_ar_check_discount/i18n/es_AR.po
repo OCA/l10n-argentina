@@ -1,0 +1,445 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_check_discount
+# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Language: Spanish\n"
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-01 01:57+0000\n"
+"PO-Revision-Date: 2019-02-28 23:06-0300\n"
+"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
+"Language-Team: Spanish; Castilian <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "<strong>Accredit Move</strong>"
+msgstr "<strong>Asiento de Acreditación</strong>"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "<strong>Expense Invoice</strong>"
+msgstr "<strong>Factura de Gastos</strong>"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "<strong>Expense Payment</strong>"
+msgstr "<strong>Pago de Gastos</strong>"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:128
+#, python-format
+msgid "A Journal must be set!"
+msgstr "Un diario debe ser elegido!"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "A beautiful Note"
+msgstr "Una hermosa nota :)"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_account_id
+msgid "Account"
+msgstr "Cuenta"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_accredit_move_id
+msgid "Accredit Move"
+msgstr "Asiento de Acreditación"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Accreditation Information"
+msgstr "Información de Acreditación"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_allowed_product_ids
+msgid "Allowed products"
+msgstr "Productos Permitidos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_amount
+msgid "Amount"
+msgstr "Importe"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_amount_untaxed
+msgid "Amount Untaxed"
+msgstr "Importe sin Impuestos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Back to Draft"
+msgstr "Volver a Borrador"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:22
+#: selection:check.discount,state:0
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+#, python-format
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:87
+#, python-format
+msgid "Check '%s' [Amount: %s] in Discount '%s'"
+msgstr "Cheque '%s' [Monto: %s] en Descuento '%s'"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:96
+#, python-format
+msgid "Check '%s' [Amount: %s] with State '%s'"
+msgstr "Cheque '%s' [Monto: %s] con Estado '%s'"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:105
+#, python-format
+msgid "Check '%s' [Amount: %s] with Type '%s'"
+msgstr "Cheque '%s' [Monto: %s] con Tipo '%s'"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model,name:l10n_ar_check_discount.model_account_check_config
+msgid "Check Account Configuration"
+msgstr "Configuración Cuentas de Cheques"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_check_config_id
+msgid "Check Config"
+msgstr "Configuración de Cheques"
+
+#. module: l10n_ar_check_discount
+#: model:ir.actions.act_window,name:l10n_ar_check_discount.action_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_check_discount_id
+#: model:ir.ui.menu,name:l10n_ar_check_discount.menu_third_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Check Discount"
+msgstr "Descuento de Cheques"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_account_check_config_discount_invoice_journal_id
+msgid "Check Discount Invoice Journal"
+msgstr "Diario de Factura de Gastos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_account_check_config_discount_move_journal_id
+msgid "Check Discount Move Journal"
+msgstr "Diario del Asiento de Acred."
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_account_check_config_discount_payment_journal_id
+msgid "Check Discount Payment Journal"
+msgstr "Diario del Pago de Gastos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_settings_view_form
+msgid "Check Discount Settings"
+msgstr "Configuración de Descuento de Cheques"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_check_ids
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Checks"
+msgstr "Cheques"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_product_id
+msgid "Concept"
+msgstr "Concepto"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_check_discount_line_ids
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_res_config_settings_product_ids
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Concepts"
+msgstr "Conceptos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_settings_view_form
+msgid "Concepts to Show"
+msgstr "Conceptos a Mostrar"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:291
+#, python-format
+msgid ""
+"Could not cancel the Accredit Move. The error was:\n"
+"%s"
+msgstr ""
+"No se pudo cancelar el Asiento de Acreditación. El error fue:\n"
+"%s"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:303
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:317
+#, python-format
+msgid ""
+"Could not cancel the Expense Invoice. The error was:\n"
+"%s"
+msgstr ""
+"No se pudo cancelar la Factura de Gastos. El error fue:\n"
+"%s"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_create_date
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_currency_id
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:52
+#, python-format
+msgid "Current Inventory"
+msgstr "Inventario Actual"
+
+#. module: l10n_ar_check_discount
+#: model:ir.actions.server,name:l10n_ar_check_discount.action_move_to_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Discount"
+msgstr "Descontar"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.view_account_check_config_form
+msgid "Discount Configuration"
+msgstr "Configuración de Descuento"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_account_third_check_discount_date
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_discount_date
+msgid "Discount Date"
+msgstr "Fecha de Descuento"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_account_third_check_discount_id
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_account_third_check_discount_ids
+msgid "Discount Document"
+msgstr "Documento de Descuento"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:19
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:21
+#: selection:check.discount,state:0
+#, python-format
+msgid "Discounted"
+msgstr "Descontado"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model,name:l10n_ar_check_discount.model_check_discount
+msgid "Discounts checks"
+msgstr "Cheques Descontados"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model,name:l10n_ar_check_discount.model_check_discount_line
+msgid "Discounts checks Line"
+msgstr "Líneas de Cheques Descontados"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_display_name
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:20
+#: selection:check.discount,state:0
+#, python-format
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_expense_invoice_id
+msgid "Expense Invoice"
+msgstr "Factura de Gastos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_expense_invoice_accounting_date
+msgid "Expense Invoice Accounting Date"
+msgstr "Fecha de Contabilización de la Factura"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_expense_invoice_date
+msgid "Expense Invoice Date"
+msgstr "Fecha de la Factura de Gastos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Expense Invoice Infomation"
+msgstr "Información de la Factura de Gastos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_expense_payment_id
+msgid "Expense Payment"
+msgstr "Pago de Gastos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_id
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_id
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_invoice_number
+msgid "Invoice Number"
+msgstr "Número de Factura"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount___last_update
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line___last_update
+msgid "Last Modified on"
+msgstr "Última Modificación en"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_write_uid
+msgid "Last Updated by"
+msgstr "Última actualización de"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_write_date
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_write_date
+msgid "Last Updated on"
+msgstr "Última Actualización el"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:18
+#, python-format
+msgid "New"
+msgstr "Nuevo"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_note
+msgid "Note"
+msgstr "Nota"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_journal_id
+msgid "Reception Journal"
+msgstr "Diario de Recepción"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_partner_id
+msgid "Receptor Bank"
+msgstr "Banco Receptor"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_settings_view_form
+msgid "Select the concepts to show in the check discount."
+msgstr "Seleccione los conceptos a mostrar en el Descuento de Cheques."
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:131
+#, python-format
+msgid "Some Checks must be loaded!"
+msgstr "Algunos cheques deben ser cargados!"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:83
+#, python-format
+msgid "Some checks are already in a Discount:\n"
+msgstr "Algunos cheques ya están en un Descuento:\n"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:92
+#, python-format
+msgid "Some checks can't be Discounted because of the state:\n"
+msgstr "Algunos cheques no pueden ser Decontados debido al estado:\n"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/account_check.py:100
+#, python-format
+msgid "Some checks can't be Discounted because of their Type:\n"
+msgstr "Algunos cheques no pueden ser Decontados debido a su Tipo:\n"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_state
+msgid "Status"
+msgstr "Estado"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_amount_checks
+msgid "T. Checks"
+msgstr "Total de Cheques"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_amount_concepts
+msgid "T. Concepts"
+msgstr "Total de Conceptos"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_tax_id
+msgid "Tax"
+msgstr "Impuesto"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:139
+#, python-format
+msgid "The Invoice Number must be set!"
+msgstr "El número de factura debe ser ingresado!"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:154
+#, python-format
+msgid "The Payment of the Expense Invoice could not be completed."
+msgstr "El Pago de la Factura de Gastos no pudo ser completado."
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:135
+#, python-format
+msgid "The Receptor Bank should be set in order to generate an Invoice!"
+msgstr ""
+"El Banco Receptor debería estar completo para generar una Factura de Gastos!"
+
+#. module: l10n_ar_check_discount
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:89
+#, python-format
+msgid "There is no check configuration for this Company!"
+msgstr "No hay configuración de cheques para esta compañía!"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model,name:l10n_ar_check_discount.model_account_third_check
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_amount_total
+msgid "Total"
+msgstr "Total"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "XXXX[X]-XXXXXXXX"
+msgstr "XXXX[X]-XXXXXXXX"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model,name:l10n_ar_check_discount.model_res_config_settings
+msgid "res.config.settings"
+msgstr "res.config.settings"

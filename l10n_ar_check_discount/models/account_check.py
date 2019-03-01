@@ -103,6 +103,22 @@ class AccountThirdCheck(models.Model):
             for wt_check in wrong_type:
                 err_lines.append(
                     _("Check '%s' [Amount: %s] with Type '%s'") %
-                    (wt_check.number, wt_check.amount, wt_check.common))
+                    (wt_check.number, wt_check.amount, wt_check.type))
             err += ("\n").join(err_lines) + "\n\n"
         return err
+
+
+class AccountCheckConfig(models.Model):
+    _inherit = 'account.check.config'
+
+    discount_invoice_journal_id = fields.Many2one(
+        comodel_name='account.journal',
+        string='Check Discount Invoice Journal')
+
+    discount_move_journal_id = fields.Many2one(
+        comodel_name='account.journal',
+        string='Check Discount Move Journal')
+
+    discount_payment_journal_id = fields.Many2one(
+        comodel_name='account.journal',
+        string='Check Discount Payment Journal')

@@ -22,7 +22,25 @@
                         </group>
                         <notebook>
                             <page string="Checks">
-                                <field name="check_ids" widget="many2many"/>
+                                <field name="check_ids" widget="many2many"
+                                    domain="[
+                                    ('state', 'in', ['wallet']),
+                                    ('type', '=', 'postdated'),
+                                    ('safekeeping_lot_id', '=', False)
+                                    ]"
+                                    attrs="{
+                                    'readonly': [('state', 'not in', ['new'])],
+                                    }">
+                                    <tree create="true">
+                                        <field name="number" readonly="1"/>
+                                        <field name="source_partner_id" readonly="1"/>
+                                        <field name="payment_date" readonly="1"/>
+                                        <field name="receipt_date" readonly="1"/>
+                                        <field name="discount_date" readonly="1"/>
+                                        <field name="amount" readonly="1"/>
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                         <group>
@@ -53,30 +71,42 @@
 
         <record id="action_checks_by_safekeeping" model="ir.actions.act_window">
             <field name="name">Checks by Safekeeping</field>
-            <field name="res_model">account.check.safekeeping.lot</field>
+            <field name="res_model">account.third.check</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_safekeeping_lot': 1}</field>
+            <field name="domain">[('safekeeping_lot_id', '!=', False)]</field>
         </record>
 
-        <record id="action_move_to_safekeeping" model="ir.actions.server">
-            <field name="name">Safekeep</field>
+        <!-- <record id="action_move_to_safekeeping" model="ir.actions.server"> -->
+        <!--     <field name="name">Safekeep</field> -->
+        <!--     <field name="type">ir.actions.server</field> -->
+        <!--     <field name="state">code</field> -->
+        <!--     <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
+        <!--     <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
+        <!--     <field name="code">records.move_to_safekeeped()</field> -->
+        <!-- </record> -->
+
+        <record id="action_move_to_wallet" model="ir.actions.server">
+            <field name="name">Move to Wallet</field>
             <field name="type">ir.actions.server</field>
             <field name="state">code</field>
             <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/>
             <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/>
-            <field name="code">records.move_to_safekeeped()</field>
+            <field name="code">action = records.move_to_wallet()</field>
         </record>
 
-       <!-- <record id="view_third_checks_search_inherit" model="ir.ui.view"> -->
-       <!--      <field name="name">third.check.search</field> -->
-       <!--      <field name="model">account.third.check</field> -->
-       <!--      <field name="inherit_id" ref="l10n_ar_account_check.view_third_checks_search"/> -->
-       <!--      <field name="arch" type="xml"> -->
-       <!--          <xpath expr="//filter[@context='&#38;quot;{&#38;apos;group_by&#38;apos;:&#38;apos;state&#38;apos;}&#38;quot;']" position="after"> -->
-       <!--              <filter string="Safekeeping Lot" name="search_default_group_safekeeping_lot" domain="[]" context="{'group_by':'safekeeping_lot_id'}"/> -->
-       <!--          </xpath> -->
-       <!--      </field> -->
-       <!--  </record> -->
+       <record id="view_third_checks_search_inherit" model="ir.ui.view">
+            <field name="name">third.check.search</field>
+            <field name="model">account.third.check</field>
+            <field name="inherit_id" ref="l10n_ar_account_check.view_third_checks_search"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//filter[@context='&#38;quot;{&#38;apos;group_by&#38;apos;:&#38;apos;state&#38;apos;}&#38;quot;']" position="after"> -->
+                <xpath expr="//group[3]" position="inside">
+                    <filter string="Safekeeping Lot" name="group_safekeeping_lot" domain="[]" context="{'group_by':'safekeeping_lot_id'}"/>
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </odoo>

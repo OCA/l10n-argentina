@@ -61,7 +61,7 @@ class AccountPaymentOrder(models.Model):
                 raise RedirectWarning(
                   msg, action.id, _('Go to the journal configuration'))
             res = rec[0] or False
-        return res.id
+        return res and res.id
 
     @api.depends('debt_line_ids', 'income_line_ids', 'amount')
     def _get_writeoff_amount(self):
@@ -301,20 +301,21 @@ class AccountPaymentOrder(models.Model):
                                 compute='_compute_period',
                                 store=True, required=False)
 
-    def basic_onchange_partner(self):
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
         if self.journal_id.type in ('sale', 'sale_refund'):
-            account_id = self.partner_id.property_account_receivable_id.id
+            account_id = self.partner_id.property_account_receivable_id
         elif self.journal_id.type in \
                 ('purchase', 'purchase_refund', 'expense'):
-            account_id = self.partner_id.property_account_payable_id.id
+            account_id = self.partner_id.property_account_payable_id
         elif self.type in ('sale', 'receipt'):
-            account_id = self.journal_id.default_debit_account_id.id
+            account_id = self.journal_id.default_debit_account_id
         elif self.type in ('purchase', 'payment'):
-            account_id = self.journal_id.default_credit_account_id.id
+            account_id = self.journal_id.default_credit_account_id
         else:
-            account_id = self.journal_id.default_credit_account_id.id or \
-                self.journal_id.default_debit_account_id.id
-        return account_id
+            account_id = self.journal_id.default_credit_account_id or \
+                self.journal_id.default_debit_account_id
+        self.account_id = account_id
 
     @api.multi
     def get_payment_lines_amount(self):

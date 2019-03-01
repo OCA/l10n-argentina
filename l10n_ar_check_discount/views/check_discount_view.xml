@@ -16,6 +16,9 @@
                     </header>
                     <sheet string="Check Discount">
                         <field name="expense_invoice_id" invisible="1"/>
+                        <field name="expense_payment_id" invisible="1"/>
+                        <field name="accredit_move_id" invisible="1"/>
+                        <field name="check_config_id" invisible="1"/>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_invoice"
                                 type="object"
@@ -23,6 +26,20 @@
                                 icon="fa-pencil-square-o"
                                 attrs="{'invisible': [('expense_invoice_id', '=', False)]}">
                                 <strong>Expense Invoice</strong>
+                            </button>
+                            <button name="action_view_payment"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-credit-card"
+                                attrs="{'invisible': [('expense_payment_id', '=', False)]}">
+                                <strong>Expense Payment</strong>
+                            </button>
+                            <button name="action_view_move"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-usd"
+                                attrs="{'invisible': [('accredit_move_id', '=', False)]}">
+                                <strong>Accredit Move</strong>
                             </button>
                         </div>
                         <div class="oe_title">
@@ -56,7 +73,7 @@
                                 <field name="check_ids" readonly="0" force_save="True"
                                     domain="[
                                     ('state', 'in', ['wallet']),
-                                    ('type', '=', 'common'),
+                                    ('type', '=', 'postdated'),
                                     ('discount_id', '=', False)
                                     ]"
                                     attrs="{
