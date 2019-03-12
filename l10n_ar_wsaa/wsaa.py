@@ -120,7 +120,14 @@ class wsaa_ta(models.Model):
         #service = ticket.name.name
         #vals = self._renew_ticket(ticket.config_id, service)
         vals = self._renew_ticket()
-        self.write(vals)
+        wsaa_id = self.id
+        new_cr = self.pool.cursor()
+        user_id = self.env.user.id
+        with api.Environment.manage():
+            env = api.Environment(new_cr, user_id, {})
+            wsaa = env['wsaa.ta'].browse(wsaa_id)
+            wsaa.write(vals)
+            env.cr.commit()
         return vals['token'], vals['sign']
 
     @api.multi
