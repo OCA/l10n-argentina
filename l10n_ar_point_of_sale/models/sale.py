@@ -16,10 +16,12 @@ class sale_order(models.Model):
     @api.model
     def _get_pos_ar(self, denom):
         pos_ar_obj = self.env['pos.ar']
-        res_pos = pos_ar_obj.search([
-            ('shop_id', '=', self.warehouse_id.id),
-            ('denomination_ids', 'in', denom.id)],
-            order='priority', limit=1)
+        res_pos = self.env.user.default_pos
+        if not res_pos:
+            res_pos = pos_ar_obj.search([
+                ('shop_id', '=', self.warehouse_id.id),
+                ('denomination_ids', 'in', denom.id)],
+                order='priority', limit=1)
 
         if not len(res_pos):
             raise UserError(
