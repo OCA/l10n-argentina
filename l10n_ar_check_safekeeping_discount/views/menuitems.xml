@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_third_check_safekeeping_group"
+            name="Check Safekeeping"
+            sequence="6"
+            parent="l10n_ar_account_check.menu_treasury_third_check_menu"/>
+
+        <menuitem id="menu_third_check_safekeeping"
+            name="Check Safekeeping"
+            sequence="1"
+            action="l10n_ar_check_safekeeping.action_check_safekeeping"
+            parent="l10n_ar_check_safekeeping.menu_third_check_safekeeping_group"/>
+
+        <menuitem id="menu_third_checks_by_safekeeping"
+            name="Checks by Safekeeping"
+            sequence="2"
+            action="l10n_ar_check_safekeeping.action_checks_by_safekeeping"
+            parent="l10n_ar_check_safekeeping.menu_third_check_safekeeping_group"/>
+    </data>
+</odoo>

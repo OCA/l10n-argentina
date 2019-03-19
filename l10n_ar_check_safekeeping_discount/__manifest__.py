@@ -19,22 +19,18 @@
 ###############################################################################
 
 {
-    "name": "l10n_ar_check_safekeeping",
+    "name": "l10n_ar_check_safekeeping_discount",
     "category": "Accounting & Finance",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
     "description": "Module Description",
     "depends": [
-        "l10n_ar_account_check",
+        "l10n_ar_check_safekeeping",
+        "l10n_ar_check_discount",
     ],
-    "data": [
-        "views/check_safekeeping_view.xml",
-        "views/menuitems.xml",
-        "wizard/check_safekeeping_view.xml",
-        "views/check_config_view.xml",
-    ],
-    "qweb": ['static/src/xml/*.xml'],
+    "data": [],
+    "qweb": [],
     "installable": True,
     "application": True,
 }

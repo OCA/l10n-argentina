@@ -23,6 +23,7 @@
                             </group>
                             <group>
                                 <field name="safekeep_date" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+                                <field name="move_id" attrs="{'invisible': [('move_id', '=', False)], 'readonly': True}"/>
                             </group>
                         </group>
                         <notebook>
@@ -101,19 +102,16 @@
             <field name="code">action = records.move_to_wallet()</field>
         </record>
 
-        <record id="view_third_checks_form_inherit" model="ir.ui.view">
-            <field name="name">third.check.form</field>
-            <field name="model">account.third.check</field>
-            <field name="inherit_id" ref="l10n_ar_account_check.view_account_third_check_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='dest']" position="after">
-                    <field name="safekeeping_lot_id"/>
-                    <field name="safekeeping_move_id"/>
-                </xpath>
-            </field>
+        <record id="action_create_safekeeping_lot" model="ir.actions.server">
+            <field name="name">Create Safekeeping Lot</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/>
+            <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/>
+            <field name="code">action = records.create_safekeeping_lot()</field>
         </record>
 
-        <record id="view_third_checks_search_inherit" model="ir.ui.view">
+       <record id="view_third_checks_search_inherit" model="ir.ui.view">
             <field name="name">third.check.search</field>
             <field name="model">account.third.check</field>
             <field name="inherit_id" ref="l10n_ar_account_check.view_third_checks_search"/>
