@@ -257,8 +257,8 @@ msgstr "Cheques de Terceros"
 #. module: l10n_ar_check_safekeeping
 #: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:50
 #, python-format
-msgid "You cannot delete lot %s because this has check that not in wallet"
-msgstr "No se puede eliminar el lote %s porque este tiene cheques que no estan en cartera"
+msgid "You cannot delete the lot %s because it has checks that are not in wallet"
+msgstr "No se puede eliminar el lote %s porque posee cheques que no estan en cartera"
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model,name:l10n_ar_check_safekeeping.model_account_check_safekeeping_lot

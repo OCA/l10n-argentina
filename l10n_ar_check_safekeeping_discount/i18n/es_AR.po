@@ -69,23 +69,21 @@ msgstr "Descuentos de Cheques"
 #. module: l10n_ar_check_safekeeping_discount
 #: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:20
 #, python-format
-msgid ""
-"Error! The selected checks must be                     in wallet.\n"
+msgid "Error! The selected checks must be                     in wallet or safekeeped.\n"
 "Check %s is not in wallet or safekeeped"
 msgstr ""
 "Error!  Los cheques seleccionados deben estar en cartera o en cartera o en "
 "custodia.\n"
-"Cheque %s no esta en cartera o en custodia"
+"El Cheque %s no esta en cartera o en custodia"
 
 #. module: l10n_ar_check_safekeeping_discount
 #: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:90
 #, python-format
-msgid ""
-"Error! The selected checks must to be in                     cartera.\n"
+msgid "Error! The selected checks must to be in                     wallet or safekeeped.\n"
 "Check %s is not in wallet or safekeeped"
 msgstr ""
 "Error! Los cheques seleccionados deben estar en cartera o en custodia.\n"
-"Cheque %s no esta en cartera o en custodia."
+"El Cheque %s no esta en cartera o en custodia."
 
 #. module: l10n_ar_check_safekeeping_discount
 #: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:78

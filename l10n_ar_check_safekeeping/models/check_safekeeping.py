@@ -47,8 +47,8 @@ class AccountCheckSafekeepingLot(models.Model):
             bad_checks = reg.check_ids.filtered(
                     lambda x: x.state != 'wallet')
             if bad_checks:
-                msg = _("You cannot delete lot %s because this " \
-                       "has check that not in wallet") %(reg.name)
+                msg = _("You cannot delete the lot %s because it " \
+                       "has checks that are not in wallet") %(reg.name)
                 raise ValidationError(msg)
         res = super(AccountCheckSafekeepingLot, self).unlink()
         return res

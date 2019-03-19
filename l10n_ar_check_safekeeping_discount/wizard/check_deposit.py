@@ -18,7 +18,7 @@ class AccountCheckDeposit(models.Model):
         for check in check_obj.browse(record_ids):
             if check.state not in ['wallet', 'safekeeped']:
                 raise UserError(_("Error! The selected checks must be \
-                    in wallet.\nCheck %s is not in wallet or safekeeped") % (check.number))
+                    in wallet or safekeeped.\nCheck %s is not in wallet or safekeeped") % (check.number))
         pass
 
     @api.multi
@@ -88,7 +88,7 @@ class AccountCheckDeposit(models.Model):
         for check in check_objs:
             if check.state not in ['wallet', 'safekeeped']:
                 raise UserError(_("Error! The selected checks must to be in \
-                    cartera.\nCheck %s is not in wallet or safekeeped") % (check.number))
+                    wallet or safekeeped.\nCheck %s is not in wallet or safekeeped") % (check.number))
 
             if check.payment_date > deposit_date:
                 raise UserError(_("Cannot deposit! You cannot deposit check %s \
