@@ -41,7 +41,6 @@
                                         <field name="source_partner_id" readonly="1"/>
                                         <field name="payment_date" readonly="1"/>
                                         <field name="receipt_date" readonly="1"/>
-                                        <field name="discount_date" readonly="1"/>
                                         <field name="amount" readonly="1"/>
                                         <field name="state" readonly="1"/>
                                     </tree>

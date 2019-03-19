@@ -31,7 +31,7 @@ class CheckSafekeepingWizard(models.Model):
             checks_name = ', '.join(wrong_checks.mapped('number'))
             msg = _("Error! The selected checks must be \
                     in wallet.\nChecks %s is not in wallet") % (checks_name)
-            raise UserError(msg)
+            raise ValidationError(msg)
         lot_reg = self.safekeeping_lot_id
         if lot_reg:
             checks.write({'safekeeping_lot_id': lot_reg.id})

@@ -104,7 +104,7 @@ class AccountCheckSafekeepingLot(models.Model):
             raise ValidationError(_("Invalid Safekept Account"))
         #Counterpart vals
         counterpart_vals = {
-            'name': _('Counterpart Check Safekeeping %s') % (check.number),
+            'name': _('Safekeeped Check %s ') % (check.number),
             # 'centralisation': 'normal',
             'account_id': safekept_account.id,
             'journal_id': self.journal_id.id,

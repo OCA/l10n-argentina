@@ -1,173 +1,131 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* l10n_ar_check_safekeeping
-# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2019.
+# 	* l10n_ar_check_safekeeping_discount
 #
 msgid ""
 msgstr ""
-"Language: Spanish\n"
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-01 02:06+0000\n"
-"PO-Revision-Date: 2019-02-28 23:08-0300\n"
-"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
-"Language-Team: Spanish; Castilian <>\n"
+"POT-Creation-Date: 2019-03-19 19:27+0000\n"
+"PO-Revision-Date: 2019-03-19 16:34-0300\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Language: es_AR\n"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.account_check_safekeeping_lot_form
-msgid "A beautiful Note"
-msgstr "Una hermosa nota :)"
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:37
+#, python-format
+msgid "Check '%s' [Amount: %s] in Discount '%s'"
+msgstr "Cheque '%s' [Monto: %s] en Descuento '%s'"
 
-#. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:87
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:46
 #, python-format
 msgid "Check '%s' [Amount: %s] with State '%s'"
-msgstr "Cheque '%s' [Monto: %s] con Estado '%s'"
+msgstr "Cheque '%s' [Monto: %s] con estado '%s'"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.actions.act_window,name:l10n_ar_check_safekeeping.action_check_safekeeping
-#: model:ir.ui.menu,name:l10n_ar_check_safekeeping.menu_third_check_safekeeping
-#: model:ir.ui.menu,name:l10n_ar_check_safekeeping.menu_third_check_safekeeping_group
-#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.account_check_safekeeping_lot_form
-msgid "Check Safekeeping"
-msgstr "Custodia de Cheques"
-
-#. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:31
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_check_ids
-#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.account_check_safekeeping_lot_form
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:55
 #, python-format
-msgid "Checks"
-msgstr "Cheques"
+msgid "Check '%s' [Amount: %s] with Type '%s'"
+msgstr "Cheque '%s' [Monto: %s] con tipo '%s'"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.actions.act_window,name:l10n_ar_check_safekeeping.action_checks_by_safekeeping
-#: model:ir.ui.menu,name:l10n_ar_check_safekeeping.menu_third_checks_by_safekeeping
-msgid "Checks by Safekeeping"
-msgstr "Cheques por Custodia"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_create_uid
-msgid "Created by"
-msgstr "Creado por"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_create_date
-msgid "Created on"
-msgstr "Creado en"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_display_name
-msgid "Display Name"
-msgstr "Nombre mostrado"
-
-#. module: l10n_ar_check_safekeeping
-#: selection:account.check.safekeeping.lot,state:0
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:23
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:28
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:45
 #, python-format
-msgid "Done"
-msgstr "Realizado"
+msgid "Check Deposit"
+msgstr "Depósito de Cheque"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_id
-msgid "ID"
-msgstr "ID"
-
-#. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:106
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:53
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:107
 #, python-format
-msgid "Incompatible checks."
-msgstr "Cheques incompatibles."
+msgid "Deposit Check %s"
+msgstr "Depósito de cheque %s"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot___last_update
-msgid "Last Modified on"
-msgstr "Última Modificación en"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_write_uid
-msgid "Last Updated by"
-msgstr "Última actualización de"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_write_date
-msgid "Last Updated on"
-msgstr "Última Actualización el"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.actions.server,name:l10n_ar_check_safekeeping.action_move_to_wallet
-msgid "Move to Wallet"
-msgstr "Mover a Cartera"
-
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_name
-msgid "Name"
-msgstr "Nombre"
-
-#. module: l10n_ar_check_safekeeping
-#: selection:account.check.safekeeping.lot,state:0
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:19
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:21
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:104
 #, python-format
-msgid "New"
-msgstr "Nuevo"
+msgid "Deposit Check %s [%s]"
+msgstr "Depósito de cheque [%s]"
 
-#. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:33
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_note
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:36
 #, python-format
-msgid "Note"
-msgstr "Nota"
+msgid "Deposit Check %s on %s"
+msgstr "Depósito de cheque %s en %s"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.account_check_safekeeping_lot_form
-msgid "Safekeep"
-msgstr "Custodia"
+#. module: l10n_ar_check_safekeeping_discount
+#: model:ir.model,name:l10n_ar_check_safekeeping_discount.model_check_discount
+msgid "Discounts checks"
+msgstr "Descuentos de Cheques"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_safekeep_date
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_third_check_safekeep_date
-msgid "Safekeep Date"
-msgstr "Fecha de Custodia"
-
-#. module: l10n_ar_check_safekeeping
-#: selection:account.check.safekeeping.lot,state:0
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:22
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:63
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:20
 #, python-format
-msgid "Safekeeped"
-msgstr "Custodiado"
+msgid ""
+"Error! The selected checks must be                     in wallet.\n"
+"Check %s is not in wallet or safekeeped"
+msgstr ""
+"Error!  Los cheques seleccionados deben estar en cartera o en cartera o en "
+"custodia.\n"
+"Cheque %s no esta en cartera o en custodia"
 
-#. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:68
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_third_check_safekeeping_lot_id
-#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.view_third_checks_search_inherit
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:90
 #, python-format
-msgid "Safekeeping Lot"
-msgstr "Lote de Custodia"
+msgid ""
+"Error! The selected checks must to be in                     cartera.\n"
+"Check %s is not in wallet or safekeeped"
+msgstr ""
+"Error! Los cheques seleccionados deben estar en cartera o en custodia.\n"
+"Cheque %s no esta en cartera o en custodia."
 
-#. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:83
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:78
 #, python-format
-msgid "Some checks can't be Safekeeped because of the state:\n"
-msgstr "Algunos cheques no pueden ser Custodiados debido al Estado:\n"
+msgid ""
+"Error! You have to configure an account on                 Bank Account %s: "
+"%s"
+msgstr ""
+"Error! Es necesario configurar una cuenta para Cuenta Bancaria  %s: %s"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_state
-msgid "Status"
-msgstr "Estado"
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:33
+#, python-format
+msgid "Some checks are already in a Discount:\n"
+msgstr "Algunos cheques ya estan en un descuento:\n"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model,name:l10n_ar_check_safekeeping.model_account_third_check
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:42
+#, python-format
+msgid "Some checks can't be Discounted because of the state:\n"
+msgstr "Algunos cheques no pueden ser Decontados debido al estado::\n"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:50
+#, python-format
+msgid "Some checks can't be Discounted because of their Type:\n"
+msgstr "Algunos cheques no pueden ser Decontados debido a su Tipo:\n"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:66
+#, python-format
+msgid "There is not check configuration for this company"
+msgstr "No hay una configuración de cheques para esta compañía"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: model:ir.model,name:l10n_ar_check_safekeeping_discount.model_account_third_check
 msgid "Third Checks"
 msgstr "Cheques de Terceros"
 
-#. module: l10n_ar_check_safekeeping
-#: model:ir.model,name:l10n_ar_check_safekeeping.model_account_check_safekeeping_lot
-msgid "check safekeeping"
-msgstr "Custodia de Cheques"
+#. module: l10n_ar_check_safekeeping_discount
+#: model:ir.model,name:l10n_ar_check_safekeeping_discount.model_account_check_deposit
+msgid "account.check.deposit"
+msgstr "account.check.deposit"

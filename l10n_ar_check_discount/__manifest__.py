@@ -26,6 +26,7 @@
     "description": "Module Description",
     "depends": [
         "l10n_ar_account_check",
+        "l10n_ar_perceptions_basic",
     ],
     "data": [
         "security/ir.model.access.csv",

@@ -24,13 +24,34 @@ msgid "A beautiful Note"
 msgstr "Una hermosa nota :)"
 
 #. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:87
+#: model:ir.model.fields,help:l10n_ar_check_safekeeping.field_account_check_config_safekept_account_id
+msgid "Account for checks in safekeeping"
+msgstr "Cuenta de custodia"
+
+#. module: l10n_ar_check_safekeeping
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_journal_id
+msgid "Bank"
+msgstr "Banco"
+
+#. module: l10n_ar_check_safekeeping
+#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.check_safekeeping_wizard_form_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/account_check.py:46
 #, python-format
 msgid "Check '%s' [Amount: %s] with State '%s'"
 msgstr "Cheque '%s' [Monto: %s] con Estado '%s'"
 
 #. module: l10n_ar_check_safekeeping
+#: model:ir.model,name:l10n_ar_check_safekeeping.model_account_check_config
+msgid "Check Account Configuration"
+msgstr "Configuración Cuentas de Cheques"
+
+#. module: l10n_ar_check_safekeeping
 #: model:ir.actions.act_window,name:l10n_ar_check_safekeeping.action_check_safekeeping
+#: model:ir.actions.act_window,name:l10n_ar_check_safekeeping.action_create_check_safekeeping_lot
 #: model:ir.ui.menu,name:l10n_ar_check_safekeeping.menu_third_check_safekeeping
 #: model:ir.ui.menu,name:l10n_ar_check_safekeeping.menu_third_check_safekeeping_group
 #: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.account_check_safekeeping_lot_form
@@ -38,7 +59,7 @@ msgid "Check Safekeeping"
 msgstr "Custodia de Cheques"
 
 #. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:31
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:32
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_check_ids
 #: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.account_check_safekeeping_lot_form
 #, python-format
@@ -52,50 +73,77 @@ msgid "Checks by Safekeeping"
 msgstr "Cheques por Custodia"
 
 #. module: l10n_ar_check_safekeeping
+#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.check_safekeeping_wizard_form_view
+msgid "Create Check Safekeeping Lot"
+msgstr "Crear Lote de Cheques en Custodia"
+
+#. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_create_uid
 msgid "Created by"
 msgstr "Creado por"
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_create_date
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_create_date
 msgid "Created on"
 msgstr "Creado en"
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_display_name
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_display_name
 msgid "Display Name"
 msgstr "Nombre mostrado"
 
 #. module: l10n_ar_check_safekeeping
 #: selection:account.check.safekeeping.lot,state:0
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:23
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:24
+#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.check_safekeeping_wizard_form_view
 #, python-format
 msgid "Done"
 msgstr "Realizado"
 
 #. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/wizard/check_safekeeping.py:32
+#, python-format
+msgid "Error! The selected checks must be                     in wallet.\n"
+"Checks %s is not in wallet"
+msgstr "Error! Los cheques seleccionados deben estar en cartera.\n"
+"Los cheques %s no estan en cartera"
+
+#. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_id
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_id
 msgid "ID"
 msgstr "ID"
 
 #. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:106
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:87
 #, python-format
-msgid "Incompatible checks."
-msgstr "Cheques incompatibles."
+msgid "Invalid Account"
+msgstr "Cuenta Contable Invalida"
+
+#. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:104
+#, python-format
+msgid "Invalid Safekept Account"
+msgstr "Cuenta de configuración de cheques inválida"
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot___last_update
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard___last_update
 msgid "Last Modified on"
 msgstr "Última Modificación en"
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_write_uid
 msgid "Last Updated by"
 msgstr "Última actualización de"
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_write_date
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_write_date
 msgid "Last Updated on"
 msgstr "Última Actualización el"
 
@@ -111,14 +159,14 @@ msgstr "Nombre"
 
 #. module: l10n_ar_check_safekeeping
 #: selection:account.check.safekeeping.lot,state:0
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:19
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:21
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:20
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:22
 #, python-format
 msgid "New"
 msgstr "Nuevo"
 
 #. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:33
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:35
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_note
 #, python-format
 msgid "Note"
@@ -137,25 +185,52 @@ msgstr "Fecha de Custodia"
 
 #. module: l10n_ar_check_safekeeping
 #: selection:account.check.safekeeping.lot,state:0
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:22
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:63
+#: code:addons/l10n_ar_check_safekeeping/models/account_check.py:21
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:23
 #, python-format
 msgid "Safekeeped"
 msgstr "Custodiado"
 
 #. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:68
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:89
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:107
+#, python-format
+msgid "Safekeeped Check %s "
+msgstr "Cheque en custodia %s "
+
+#. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/account_check.py:26
+#: code:addons/l10n_ar_check_safekeeping/wizard/check_safekeeping.py:45
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_third_check_safekeeping_lot_id
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_check_safekeeping_wizard_safekeeping_lot_id
 #: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.view_third_checks_search_inherit
 #, python-format
 msgid "Safekeeping Lot"
 msgstr "Lote de Custodia"
 
 #. module: l10n_ar_check_safekeeping
-#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:83
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:126
+#, python-format
+msgid "Safekeeping Lot %s"
+msgstr "Lote de Custodia %s"
+
+#. module: l10n_ar_check_safekeeping
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_third_check_safekeeping_move_id
+msgid "Safekeeping Move"
+msgstr "Asiento de Custodia"
+
+#. module: l10n_ar_check_safekeeping
+#: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_config_safekept_account_id
+msgid "Safekept Check Account"
+msgstr "Cuenta de Custodia"
+
+#. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/account_check.py:42
 #, python-format
 msgid "Some checks can't be Safekeeped because of the state:\n"
+""
 msgstr "Algunos cheques no pueden ser Custodiados debido al Estado:\n"
+""
 
 #. module: l10n_ar_check_safekeeping
 #: model:ir.model.fields,field_description:l10n_ar_check_safekeeping.field_account_check_safekeeping_lot_state
@@ -163,11 +238,40 @@ msgid "Status"
 msgstr "Estado"
 
 #. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:79
+#, python-format
+msgid "There is not check configuration for this company"
+msgstr "No hay una configuración de cheques para esta compañía"
+
+#. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:146
+#, python-format
+msgid "There is not third check related"
+msgstr "No hay cheques de terceros relacionados"
+
+#. module: l10n_ar_check_safekeeping
 #: model:ir.model,name:l10n_ar_check_safekeeping.model_account_third_check
 msgid "Third Checks"
 msgstr "Cheques de Terceros"
 
 #. module: l10n_ar_check_safekeeping
+#: code:addons/l10n_ar_check_safekeeping/models/check_safekeeping.py:50
+#, python-format
+msgid "You cannot delete lot %s because this has check that not in wallet"
+msgstr "No se puede eliminar el lote %s porque este tiene cheques que no estan en cartera"
+
+#. module: l10n_ar_check_safekeeping
 #: model:ir.model,name:l10n_ar_check_safekeeping.model_account_check_safekeeping_lot
 msgid "check safekeeping"
 msgstr "Custodia de Cheques"
+
+#. module: l10n_ar_check_safekeeping
+#: model:ir.model,name:l10n_ar_check_safekeeping.model_check_safekeeping_wizard
+msgid "check.safekeeping.wizard"
+msgstr "check.safekeeping.wizard"
+
+#. module: l10n_ar_check_safekeeping
+#: model:ir.ui.view,arch_db:l10n_ar_check_safekeeping.check_safekeeping_wizard_form_view
+msgid "or"
+msgstr "o"
+

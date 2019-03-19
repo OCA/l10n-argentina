@@ -17,5 +17,5 @@ class AccountCheckConfig(models.Model):
     _inherit = 'account.check.config'
 
     safekept_account_id = fields.Many2one('account.account', 'Safekept Check Account',
-            required=True, help="Account for cheks safekeeping")
+            required=True, help="Account for checks in safekeeping")
 

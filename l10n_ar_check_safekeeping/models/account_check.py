@@ -51,5 +51,5 @@ class AccountThirdCheck(models.Model):
             move = check.safekeeping_move_id
             move.button_cancel()
             move.unlink()
-            move.safekeeping_lot_id = False
+            check.safekeeping_lot_id = False
             check.state = 'wallet'
