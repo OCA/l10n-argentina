@@ -1,0 +1,129 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_check_safekeeping_discount
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-19 19:27+0000\n"
+"PO-Revision-Date: 2019-03-19 16:34-0300\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Language: es_AR\n"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:37
+#, python-format
+msgid "Check '%s' [Amount: %s] in Discount '%s'"
+msgstr "Cheque '%s' [Monto: %s] en Descuento '%s'"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:46
+#, python-format
+msgid "Check '%s' [Amount: %s] with State '%s'"
+msgstr "Cheque '%s' [Monto: %s] con estado '%s'"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:55
+#, python-format
+msgid "Check '%s' [Amount: %s] with Type '%s'"
+msgstr "Cheque '%s' [Monto: %s] con tipo '%s'"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:28
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:45
+#, python-format
+msgid "Check Deposit"
+msgstr "Depósito de Cheque"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:53
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:107
+#, python-format
+msgid "Deposit Check %s"
+msgstr "Depósito de cheque %s"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:104
+#, python-format
+msgid "Deposit Check %s [%s]"
+msgstr "Depósito de cheque [%s]"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:36
+#, python-format
+msgid "Deposit Check %s on %s"
+msgstr "Depósito de cheque %s en %s"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: model:ir.model,name:l10n_ar_check_safekeeping_discount.model_check_discount
+msgid "Discounts checks"
+msgstr "Descuentos de Cheques"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:20
+#, python-format
+msgid "Error! The selected checks must be                     in wallet or safekeeped.\n"
+"Check %s is not in wallet or safekeeped"
+msgstr ""
+"Error!  Los cheques seleccionados deben estar en cartera o en cartera o en "
+"custodia.\n"
+"El Cheque %s no esta en cartera o en custodia"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:90
+#, python-format
+msgid "Error! The selected checks must to be in                     wallet or safekeeped.\n"
+"Check %s is not in wallet or safekeeped"
+msgstr ""
+"Error! Los cheques seleccionados deben estar en cartera o en custodia.\n"
+"El Cheque %s no esta en cartera o en custodia."
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:78
+#, python-format
+msgid ""
+"Error! You have to configure an account on                 Bank Account %s: "
+"%s"
+msgstr ""
+"Error! Es necesario configurar una cuenta para Cuenta Bancaria  %s: %s"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:33
+#, python-format
+msgid "Some checks are already in a Discount:\n"
+msgstr "Algunos cheques ya estan en un descuento:\n"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:42
+#, python-format
+msgid "Some checks can't be Discounted because of the state:\n"
+msgstr "Algunos cheques no pueden ser Decontados debido al estado::\n"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/models/account_check.py:50
+#, python-format
+msgid "Some checks can't be Discounted because of their Type:\n"
+msgstr "Algunos cheques no pueden ser Decontados debido a su Tipo:\n"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: code:addons/l10n_ar_check_safekeeping_discount/wizard/check_deposit.py:66
+#, python-format
+msgid "There is not check configuration for this company"
+msgstr "No hay una configuración de cheques para esta compañía"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: model:ir.model,name:l10n_ar_check_safekeeping_discount.model_account_third_check
+msgid "Third Checks"
+msgstr "Cheques de Terceros"
+
+#. module: l10n_ar_check_safekeeping_discount
+#: model:ir.model,name:l10n_ar_check_safekeeping_discount.model_account_check_deposit
+msgid "account.check.deposit"
+msgstr "account.check.deposit"

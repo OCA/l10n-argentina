@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="check_safekeeping_wizard_form_view" model="ir.ui.view">
+            <field name="name">check.safekeeping.wizard.form</field>
+            <field name="model">check.safekeeping.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create Check Safekeeping Lot">
+                    <group>
+                        <group>
+                            <field name="safekeeping_lot_id"
+                                domain="[('state', '!=', 'done')]"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button type="object" name="action_done" string="Done" class="oe_highlight"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_create_check_safekeeping_lot"
+            name="Check Safekeeping"
+            res_model="check.safekeeping.wizard"
+            src_model="account.third.check"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
+
+    </data>
+</odoo>

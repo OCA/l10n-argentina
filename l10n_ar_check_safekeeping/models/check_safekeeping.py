@@ -8,6 +8,7 @@ import logging
 
 from odoo import models, api, fields, _, exceptions
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class AccountCheckSafekeepingLot(models.Model):
         inverse_name='safekeeping_lot_id',
         string=_('Checks'))
     safekeep_date = fields.Date(string='Safekeep Date')
+    journal_id = fields.Many2one('account.journal', 'Bank')
     note = fields.Text(string=_('Note'))
 
     @api.model
@@ -39,68 +41,116 @@ class AccountCheckSafekeepingLot(models.Model):
         vals['name'] = seq
         return super().create(vals)
 
-    @api.depends('check_ids', 'check_ids.state')
+    @api.multi
+    def unlink(self):
+        for reg in self:
+            bad_checks = reg.check_ids.filtered(
+                    lambda x: x.state != 'wallet')
+            if bad_checks:
+                msg = _("You cannot delete the lot %s because it " \
+                       "has checks that are not in wallet") %(reg.name)
+                raise ValidationError(msg)
+        res = super(AccountCheckSafekeepingLot, self).unlink()
+        return res
+
+    @api.depends('check_ids', 'check_ids.state',
+            'check_ids.safekeeping_move_id')
     def _compute_state(self):
-        if self.check_ids.filtered(lambda s: s.state == 'safekeeped'):
-            self.state = 'safekeeped'
-        elif sorted(self.check_ids.mapped('state')) == \
-                sorted(['deposited', 'delivered']):
-            self.state = 'done'
-        else:
-            self.state = 'new'
+        for lot in self:
+            checks = lot.check_ids
+            if checks.filtered(
+                    lambda x: x.state == 'safekeeped'):
+                lot.state = 'safekeeped'
+            elif checks.filtered(
+                    lambda x: x.state in ['deposited','delivered']):
+                lot.state = 'done'
+            else:
+                lot.state = 'new'
+
+    @api.model
+    def get_check_config(self):
+        check_config_obj = self.env['account.check.config']
+        company = self.env.user.company_id
+        configs = check_config_obj.search([
+            ('company_id', '=', company.id)
+        ])
+        if not configs:
+            raise ValidationError(
+                    _("There is not check configuration for this company"))
+        return configs[0]
+
+    @api.multi
+    def _prepare_move_line_vals(self, check):
+        check_config = self.get_check_config()
+        account = check_config.account_id
+        if not account:
+            raise ValidationError(_("Invalid Account"))
+        line_vals = {
+            'name': _('Safekeeped Check %s ') %(check.number),
+            # 'centralisation': 'normal',
+            'account_id': account.id,
+            'journal_id': self.journal_id.id,
+            'date': self.safekeep_date,
+            'credit': check.amount,
+            'debit': 0.0,
+        }
+        return line_vals
+
+    @api.multi
+    def _prepare_counterpart_line(self, check):
+        check_config = self.get_check_config()
+        safekept_account = check_config.safekept_account_id
+        if not safekept_account:
+            raise ValidationError(_("Invalid Safekept Account"))
+        #Counterpart vals
+        counterpart_vals = {
+            'name': _('Safekeeped Check %s ') % (check.number),
+            # 'centralisation': 'normal',
+            'account_id': safekept_account.id,
+            'journal_id': self.journal_id.id,
+            'date': self.safekeep_date,
+            'credit': 0.0,
+            'debit': check.amount,
+        }
+        return counterpart_vals
+
+    @api.multi
+    def create_move(self, check):
+        period_obj = self.env['date.period']
+        move_obj = self.env['account.move']
+        period_date = datetime.strptime(self.safekeep_date, '%Y-%m-%d')
+        period_id = period_obj._get_period(period_date).id
+        line_vals = self._prepare_move_line_vals(check)
+        counterpart_vals = self._prepare_counterpart_line(check)
+        all_line_lst = [line_vals] + [counterpart_vals]
+        move_ref = _('Safekeeping Lot %s') % (self.name)
+        move_vals = {
+            'name': '/',
+            'journal_id': self.journal_id.id,
+            'state': 'draft',
+            'period_id': period_id,
+            'date': self.safekeep_date,
+            'line_ids': [(0, False, mvl) for mvl in all_line_lst],
+            # 'to_check': True,
+            'ref': move_ref,
+        }
+        move = move_obj.create(move_vals)
+        move.post()
+        return move
 
     @api.multi
     def action_safekeep(self):
-        self.safekeep_date = fields.Date.context_today(self)
+        move_obj = self.env['account.move']
+        move_line_obj = self.env['account.move.line']
+        if not self.check_ids:
+            raise ValidationError(_("There is not third check related"))
+        if not self.safekeep_date:
+            self.safekeep_date = fields.Date.context_today(self)
+        checks = self.check_ids.filtered(
+                lambda x: x.state == 'wallet'or \
+                        not x.safekeeping_move_id)
+        for check in checks:
+            move = self.create_move(check)
+            check.write({'safekeeping_move_id': move.id})
         self.check_ids.action_safekeep()
-
-
-class AccountThirdCheck(models.Model):
-    _name = 'account.third.check'
-    _inherit = 'account.third.check'
-
-    state = fields.Selection(
-        selection_add=[('safekeeped', _('Safekeeped'))])
-    safekeep_date = fields.Date(
-        string='Safekeep Date')
-    safekeeping_lot_id = fields.Many2one(
-        'account.check.safekeeping.lot',
-        string=_('Safekeeping Lot'))
-
-    @api.multi
-    def action_safekeep(self):
-        for check in self:
-            check.state = 'safekeeped'
-            check.safekeep_date = fields.Date.context_today(self)
-
-    @api.multi
-    def move_to_wallet(self):
-        wrong_state = self.env['account.third.check']
-        for check in self:
-            if check.state != 'safekeeped':
-                wrong_state += check
-        if wrong_state:
-            err = _("Some checks can't be Safekeeped because of the state:\n")
-            err_lines = []
-            for ws_check in wrong_state:
-                err_lines.append(
-                    _("Check '%s' [Amount: %s] with State '%s'") %
-                    (ws_check.number, ws_check.amount, ws_check.state))
-            err += ("\n").join(err_lines) + "\n\n"
-            raise ValidationError(err)
-        for check in self:
-            check.state = 'wallet'
-
-    @api.multi
-    def move_to_safekeeped(self):
-        # TODO
-        if self.filtered(lambda s: s.safekeeping_lot_id.ids == []) and \
-                not self.filtered(lambda s: s.safekeeping_lot_id.ids != []):
-            __import__('ipdb').set_trace()
-        elif not self.filtered(lambda s: s.safekeeping_lot_id.ids == []) and \
-                self.filtered(lambda s: s.safekeeping_lot_id.ids != []):
-            for check in self:
-                if check.state == 'wallet':
-                    check.action_safekeep()
-        else:
-            raise exceptions.ValidationError(_('Incompatible checks.'))
+        return True

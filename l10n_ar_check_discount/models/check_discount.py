@@ -79,6 +79,11 @@ class CheckDiscount(models.Model):
         compute="_compute_check_config")
     note = fields.Text(
         string='Note')
+    perception_ids = fields.One2many(
+        comodel_name='perception.tax.line',
+        inverse_name='discount_id',
+        string='Perception', readonly=True,
+        states={'draft': [('readonly', False)]})
 
     @api.depends("company_id")
     def _compute_check_config(self):
@@ -89,6 +94,16 @@ class CheckDiscount(models.Model):
             err = _('There is no check configuration for this Company!')
             raise ValidationError(err)
         self.check_config_id = config
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        """
+        If partner changes set the partner_id for existent perceptions
+        """
+        perceptions = self.perception_ids
+        if self.partner_id and perceptions:
+            for perception in perceptions:
+                perception.partner_id = self.partner_id
 
     @api.model
     def create(self, vals):
@@ -139,6 +154,9 @@ class CheckDiscount(models.Model):
                     _("The Invoice Number must be set!"))
             # Expense Invoice
             invoice = self._generate_expense_invoice()
+            #Perceptions
+            self.perception_ids.write({'invoice_id': invoice.id})
+            invoice.compute_taxes()
             invoice.action_invoice_open()
             self.expense_invoice_id = invoice
 

@@ -18,7 +18,12 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="safekeep_date" readonly="True"/>
+                            <group>
+                                <field name="journal_id" attrs="{'readonly': [('state', '!=', 'new')], 'required': 1}" domain="[('type', '=', 'bank')]"/>
+                            </group>
+                            <group>
+                                <field name="safekeep_date" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+                            </group>
                         </group>
                         <notebook>
                             <page string="Checks">
@@ -36,7 +41,6 @@
                                         <field name="source_partner_id" readonly="1"/>
                                         <field name="payment_date" readonly="1"/>
                                         <field name="receipt_date" readonly="1"/>
-                                        <field name="discount_date" readonly="1"/>
                                         <field name="amount" readonly="1"/>
                                         <field name="state" readonly="1"/>
                                     </tree>
@@ -51,6 +55,21 @@
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="account_check_safekeeping_lot_tree" model="ir.ui.view">
+            <field name="name">account.check.safekeeping.lot.tree</field>
+            <field name="model">account.check.safekeeping.lot</field>
+            <field name="arch" type="xml">
+                <tree string="Check Safekeeping"
+                    decoration-info="state == 'new'"
+                    decoration-bf="state == 'safekeeped'">
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="safekeep_date"/>
+                    <field name="state"/>
+                </tree>
             </field>
         </record>
 
@@ -96,7 +115,19 @@
             <field name="code">action = records.move_to_wallet()</field>
         </record>
 
-       <record id="view_third_checks_search_inherit" model="ir.ui.view">
+        <record id="view_third_checks_form_inherit" model="ir.ui.view">
+            <field name="name">third.check.form</field>
+            <field name="model">account.third.check</field>
+            <field name="inherit_id" ref="l10n_ar_account_check.view_account_third_check_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='dest']" position="after">
+                    <field name="safekeeping_lot_id"/>
+                    <field name="safekeeping_move_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_third_checks_search_inherit" model="ir.ui.view">
             <field name="name">third.check.search</field>
             <field name="model">account.third.check</field>
             <field name="inherit_id" ref="l10n_ar_account_check.view_third_checks_search"/>

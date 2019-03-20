@@ -34,7 +34,7 @@ msgid "<strong>Expense Payment</strong>"
 msgstr "<strong>Pago de Gastos</strong>"
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:128
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:143
 #, python-format
 msgid "A Journal must be set!"
 msgstr "Un diario debe ser elegido!"
@@ -76,8 +76,13 @@ msgstr "Importe sin Impuestos"
 
 #. module: l10n_ar_check_discount
 #: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Amounts"
+msgstr "Cantidad"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
 msgid "Back to Draft"
-msgstr "Volver a Borrador"
+msgstr "Devolver a borrador"
 
 #. module: l10n_ar_check_discount
 #: code:addons/l10n_ar_check_discount/models/check_discount.py:22
@@ -118,6 +123,7 @@ msgstr "Configuración de Cheques"
 #. module: l10n_ar_check_discount
 #: model:ir.actions.act_window,name:l10n_ar_check_discount.action_check_discount
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_check_discount_id
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_perception_tax_line_discount_id
 #: model:ir.ui.menu,name:l10n_ar_check_discount.menu_third_check_discount
 #: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
 msgid "Check Discount"
@@ -172,24 +178,20 @@ msgid "Concepts to Show"
 msgstr "Conceptos a Mostrar"
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:291
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:309
 #, python-format
-msgid ""
-"Could not cancel the Accredit Move. The error was:\n"
+msgid "Could not cancel the Accredit Move. The error was:\n"
 "%s"
-msgstr ""
-"No se pudo cancelar el Asiento de Acreditación. El error fue:\n"
+msgstr "No se pudo cancelar el Asiento de Acreditación. El error fue:\n"
 "%s"
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:303
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:317
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:321
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:335
 #, python-format
-msgid ""
-"Could not cancel the Expense Invoice. The error was:\n"
+msgid "Could not cancel the Expense Invoice. The error was:\n"
 "%s"
-msgstr ""
-"No se pudo cancelar la Factura de Gastos. El error fue:\n"
+msgstr "No se pudo cancelar la Factura de Gastos. El error fue:\n"
 "%s"
 
 #. module: l10n_ar_check_discount
@@ -208,7 +210,7 @@ msgstr "Creado en"
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_currency_id
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_line_currency_id
 msgid "Currency"
-msgstr "Moneda"
+msgstr "Divisa"
 
 #. module: l10n_ar_check_discount
 #: code:addons/l10n_ar_check_discount/models/account_check.py:52
@@ -302,9 +304,19 @@ msgid "ID"
 msgstr "ID"
 
 #. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Information"
+msgstr "Información"
+
+#. module: l10n_ar_check_discount
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_invoice_number
 msgid "Invoice Number"
 msgstr "Número de Factura"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Keep date empty if the date is the same as the invoice."
+msgstr "Dejar vacío si la fecha es la misma que la de la factura."
 
 #. module: l10n_ar_check_discount
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount___last_update
@@ -341,6 +353,31 @@ msgid "Note"
 msgstr "Nota"
 
 #. module: l10n_ar_check_discount
+#: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_perception_ids
+msgid "Perception"
+msgstr "Percepción"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Perception Lines"
+msgstr "Líneas de percepciones"
+
+#. module: l10n_ar_check_discount
+#: model:ir.model,name:l10n_ar_check_discount.model_perception_tax_line
+msgid "Perception Tax Line"
+msgstr "Línea de impuesto de la percepción"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Perception Type"
+msgstr "Tipo de percepción"
+
+#. module: l10n_ar_check_discount
+#: model:ir.ui.view,arch_db:l10n_ar_check_discount.check_discount_form
+msgid "Perceptions"
+msgstr "Percepciones"
+
+#. module: l10n_ar_check_discount
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_journal_id
 msgid "Reception Journal"
 msgstr "Diario de Recepción"
@@ -356,7 +393,7 @@ msgid "Select the concepts to show in the check discount."
 msgstr "Seleccione los conceptos a mostrar en el Descuento de Cheques."
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:131
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:146
 #, python-format
 msgid "Some Checks must be loaded!"
 msgstr "Algunos cheques deben ser cargados!"
@@ -365,19 +402,25 @@ msgstr "Algunos cheques deben ser cargados!"
 #: code:addons/l10n_ar_check_discount/models/account_check.py:83
 #, python-format
 msgid "Some checks are already in a Discount:\n"
+""
 msgstr "Algunos cheques ya están en un Descuento:\n"
+""
 
 #. module: l10n_ar_check_discount
 #: code:addons/l10n_ar_check_discount/models/account_check.py:92
 #, python-format
 msgid "Some checks can't be Discounted because of the state:\n"
+""
 msgstr "Algunos cheques no pueden ser Decontados debido al estado:\n"
+""
 
 #. module: l10n_ar_check_discount
 #: code:addons/l10n_ar_check_discount/models/account_check.py:100
 #, python-format
 msgid "Some checks can't be Discounted because of their Type:\n"
+""
 msgstr "Algunos cheques no pueden ser Decontados debido a su Tipo:\n"
+""
 
 #. module: l10n_ar_check_discount
 #: model:ir.model.fields,field_description:l10n_ar_check_discount.field_check_discount_state
@@ -400,26 +443,25 @@ msgid "Tax"
 msgstr "Impuesto"
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:139
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:154
 #, python-format
 msgid "The Invoice Number must be set!"
 msgstr "El número de factura debe ser ingresado!"
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:154
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:172
 #, python-format
 msgid "The Payment of the Expense Invoice could not be completed."
 msgstr "El Pago de la Factura de Gastos no pudo ser completado."
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:135
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:150
 #, python-format
 msgid "The Receptor Bank should be set in order to generate an Invoice!"
-msgstr ""
-"El Banco Receptor debería estar completo para generar una Factura de Gastos!"
+msgstr "El Banco Receptor debería estar completo para generar una Factura de Gastos!"
 
 #. module: l10n_ar_check_discount
-#: code:addons/l10n_ar_check_discount/models/check_discount.py:89
+#: code:addons/l10n_ar_check_discount/models/check_discount.py:94
 #, python-format
 msgid "There is no check configuration for this Company!"
 msgstr "No hay configuración de cheques para esta compañía!"
@@ -443,3 +485,4 @@ msgstr "XXXX[X]-XXXXXXXX"
 #: model:ir.model,name:l10n_ar_check_discount.model_res_config_settings
 msgid "res.config.settings"
 msgstr "res.config.settings"
+
