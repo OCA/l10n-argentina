@@ -58,6 +58,21 @@
             </field>
         </record>
 
+        <record id="account_check_safekeeping_lot_tree" model="ir.ui.view">
+            <field name="name">account.check.safekeeping.lot.tree</field>
+            <field name="model">account.check.safekeeping.lot</field>
+            <field name="arch" type="xml">
+                <tree string="Check Safekeeping"
+                    decoration-info="state == 'new'"
+                    decoration-bf="state == 'safekeeped'">
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="safekeep_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="seq_check_safekeeping" model="ir.sequence">
             <field name="name">Account Check Safekeeping Lot</field>
             <field name="code">seq.check.safekeeping</field>

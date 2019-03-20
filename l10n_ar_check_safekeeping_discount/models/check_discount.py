@@ -24,7 +24,7 @@ class CheckDiscount(models.Model):
         if not other_checks:
             res = []
         if safekeeped_checks:
-            {
+            wc_vals = {
                 'account_id': self.check_config_id.safekept_account_id.id,
                 'credit': sum(safekeeped_checks.mapped('amount')),
                 'debit': 0.0,
