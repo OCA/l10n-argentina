@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="check_discount_form" model="ir.ui.view">
+            <field name="name">check.discount.form</field>
+            <field name="model">check.discount</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <form string="Check Discount">
+                    <header>
+                        <button name="action_discount" type="object" states="draft" string="Discount" class="oe_highlight"/>
+                        <button name="action_cancel" type="object" states="discounted" string="Cancel"/>
+                        <button name="action_back_to_draft" type="object" states="cancel" string="Back to Draft"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,discounted,cancel"/>
+                    </header>
+                    <sheet string="Check Discount">
+                        <field name="expense_invoice_id" invisible="1"/>
+                        <field name="expense_payment_id" invisible="1"/>
+                        <field name="accredit_move_id" invisible="1"/>
+                        <field name="check_config_id" invisible="1"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': [('expense_invoice_id', '=', False)]}">
+                                <strong>Expense Invoice</strong>
+                            </button>
+                            <button name="action_view_payment"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-credit-card"
+                                attrs="{'invisible': [('expense_payment_id', '=', False)]}">
+                                <strong>Expense Payment</strong>
+                            </button>
+                            <button name="action_view_move"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-usd"
+                                attrs="{'invisible': [('accredit_move_id', '=', False)]}">
+                                <strong>Accredit Move</strong>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="True"/>
+                            </h1>
+                        </div>
+                        <group string="Expense Invoice Infomation">
+                            <group>
+                                <field name="invoice_number" placeholder="XXXX[X]-XXXXXXXX"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+                                <field name="expense_invoice_date"/>
+                                <field name="expense_invoice_accounting_date"/>
+                            </group>
+                        </group>
+                        <group string="Accreditation Information">
+                            <field name="journal_id" domain="[('type', 'in', ['bank', 'cash'])]"
+                                attrs="{
+                                'readonly': [('state', 'not in', ['draft'])],
+                                }"/>
+                            <field name="allowed_product_ids" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="discount_date"/>
+                            <field name="currency_id" attrs="{'readonly':[('state', 'not in', ['draft'])]}"/>
+                        </group>
+                        <notebook>
+                            <page string="Checks">
+                                <field name="check_ids" readonly="0" force_save="True"
+                                    domain="[
+                                    ('state', 'in', ['wallet']),
+                                    ('type', '=', 'postdated'),
+                                    ('discount_id', '=', False)
+                                    ]"
+                                    attrs="{
+                                    'readonly': [('state', 'not in', ['draft'])],
+                                    }">
+                                    <tree create="true">
+                                        <field name="number" readonly="1"/>
+                                        <field name="source_partner_id" readonly="1"/>
+                                        <field name="payment_date" readonly="1"/>
+                                        <field name="receipt_date" readonly="1"/>
+                                        <field name="discount_date" readonly="1"/>
+                                        <field name="amount" readonly="1"/>
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Concepts">
+                                <field name="check_discount_line_ids"
+                                    attrs="{
+                                    'readonly': [('state', 'not in', ['draft'])],
+                                    }">
+                                    <tree editable='bottom'>
+                                        <field name="product_id" domain="[('id', 'in', parent.allowed_product_ids)]"
+                                            attrs="{
+                                            'required': True,
+                                            }"
+                                            options="{'no_create_edit': true, 'no_quick_create': true,}"/>
+                                        <field name="account_id" required="True"/>
+                                        <field name="amount_untaxed"/>
+                                        <field name="tax_id"/>
+                                        <field name="amount" readonly="True" force_save="True"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Perceptions">
+                                <field name="perception_ids" nolabel="1" colspan="4"
+                                        context="{'default_partner_id': partner_id}">
+                                    <tree string="Perception Lines">
+                                        <field name="date" />
+                                        <field name="perception_id" string="Perception Type"/>
+                                        <field name="base" />
+                                        <field name="amount" />
+                                        <field name="state_id" />
+                                    </tree>
+                                    <form string="Perception Lines">
+                                        <h1>
+                                            <field name="perception_id" class="oe_inline"
+                                                domain="[('type_tax_use', '=', 'sale')]" />
+                                        </h1>
+                                        <group>
+                                            <group string="Information" name="info">
+                                                <field name="name"/>
+                                                <field name="partner_id" invisible="1"/>
+                                                <field name="state_id" />
+                                                <field name="date" />
+                                                <label string="Keep date empty if the date is the same as the invoice." class="oe_grey"/>
+                                            </group>
+                                            <group string="Amounts" name="amount">
+                                                <field name="base" />
+                                                <field name="amount" />
+                                                <field name="account_id" invisible="1" />
+                                                <!-- <field name="base_code_id" invisible="1" /> -->
+                                                <!-- <field name="tax_code_id" invisible="1" /> -->
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_checks"/>
+                                <field name="amount_concepts"/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                            </group>
+                            <div class="oe_clear">
+                                <label for="note"/>
+                                <field name="note" nolabel="1" placeholder="A beautiful Note"/>
+                            </div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="seq_check_disc" model="ir.sequence">
+            <field name="name">Check Discount</field>
+            <field name="code">seq.check.disc</field>
+            <field name="prefix">DESC</field>
+            <field name="padding">6</field>
+            <field eval="1" name="number_increment"/>
+        </record>
+
+        <record id="action_check_discount" model="ir.actions.act_window">
+            <field name="name">Check Discount</field>
+            <field name="res_model">check.discount</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

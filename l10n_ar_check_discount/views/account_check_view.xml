@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="action_move_to_discount" model="ir.actions.server">
+            <field name="name">Discount</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/>
+            <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/>
+            <field name="code">action = records.discount_checks()</field>
+        </record>
+
+        <record id="view_account_check_config_form" model="ir.ui.view">
+            <field name="name">account.check.config.form</field>
+            <field name="model">account.check.config</field>
+            <field name="inherit_id" ref="l10n_ar_account_check.view_account_check_config_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="after">
+                    <group string="Discount Configuration">
+                        <field name="discount_invoice_journal_id"/>
+                        <field name="discount_move_journal_id"/>
+                        <field name="discount_payment_journal_id"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

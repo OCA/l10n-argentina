@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="check_discount_settings_view_form" model="ir.ui.view">
+            <field name="name">check.discount.settings.form</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="120"/>
+            <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@data-key='account_invoicing']" position="inside">
+                    <h2>Check Discount Settings</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-xs-12 col-md-12 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label string="Concepts to Show"/>
+                                <div class="text-muted">
+                                    Select the concepts to show in the check discount.
+                                </div>
+                                <div class="content-group">
+                                    <div class="row mt16" colspan="8">
+                                        <label for="product_ids" class="col-xs-2 o_light_label" col="1"/>
+                                        <field name="product_ids" widget="many2many_tags" col="7"
+                                            nolabel="1" options="{'no_create_edit': True, 'no_open': True}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

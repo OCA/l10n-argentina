@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="view_account_check_config_inherit" model="ir.ui.view">
+            <field name="name">account.check.config.form.inherit.safekeeping</field>
+            <field name="model">account.check.config</field>
+            <field name="inherit_id" ref="l10n_ar_account_check.view_account_check_config_form"/>
+            <field name="arch" type="xml">
+                <field name="account_id" position="after">
+                    <field name="safekept_account_id" required="True"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

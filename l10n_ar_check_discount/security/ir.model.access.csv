@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_check_discount_account_user,check.discount AccountUser,l10n_ar_check_discount.model_check_discount,account.group_account_invoice,1,1,1,1
+access_check_discount_line_account_user,check.discount.line AccountUser,l10n_ar_check_discount.model_check_discount_line,account.group_account_invoice,1,1,1,1
