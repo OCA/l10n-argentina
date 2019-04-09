@@ -46,6 +46,9 @@ class AccountPaymentOrder(models.Model):
             )
             payment.statement_count = statement_count
 
+    def no_statement_redirect(self):
+        return self.env["account.payment"].no_statement_redirect()
+
     @api.multi
     def proforma_voucher(self):
         ret = super(AccountPaymentOrder, self).proforma_voucher()
@@ -58,6 +61,15 @@ class AccountPaymentOrder(models.Model):
                     continue
 
                 st_line_data = line._prepare_statement_line_data()
+
+                if journal.type == "cash":
+                    statement_id = bank_st_line_obj.find_open_statement_id()
+                    if not statement_id:
+                        return self.no_statement_redirect()
+
+                    st_line_data["statement_id"] = statement_id
+                    st_line_data["state"] = "confirm"
+
                 bank_st_line_obj.create(st_line_data)
 
             #for issued_check in vou.issued_check_ids:

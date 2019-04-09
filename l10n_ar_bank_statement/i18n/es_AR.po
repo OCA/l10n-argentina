@@ -231,6 +231,20 @@ msgid "Name..."
 msgstr "Nombre..."
 
 #. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/models/account_payment.py:94
+#, python-format
+msgid "No open 'Cash' Bank Statement! Go to the dashboard and open it"
+msgstr ""
+"¡No hay un Extracto Bancario de tipo 'Efectivo' abierto!"
+"Diríjase al Tablero de Contabilidad para abrir uno."
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/models/account_payment.py:96
+#, python-format
+msgid "Open Dashboard"
+msgstr "Ir al Tablero"
+
+#. module: l10n_ar_bank_statement
 #: selection:account.bank.statement.line,line_type:0
 msgid "Payment"
 msgstr "Pago"

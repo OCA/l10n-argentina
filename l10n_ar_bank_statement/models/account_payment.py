@@ -90,6 +90,11 @@ class AccountPayment(models.Model):
 
         return st_line_data
 
+    def no_statement_redirect(self):
+        err = _("No open 'Cash' Bank Statement! Go to the dashboard and open it")
+        action_id = self.env.ref("account.open_account_journal_dashboard_kanban")
+        raise exceptions.RedirectWarning(err, action_id, _("Open Dashboard"))
+
     @api.multi
     def post(self):
         ret = super(AccountPayment, self).post()
@@ -97,11 +102,20 @@ class AccountPayment(models.Model):
 
         for payment in self:
             payment_type = payment.payment_type
-            if not payment.journal_id.detach_statement_lines() or \
-                    payment_type not in ("inbound", "outbound"):
+            journal = payment.journal_id
+            if not journal.detach_statement_lines() or payment_type not in ("inbound", "outbound"):
                 continue
 
             st_line_data = payment._prepare_statement_line_data()
+
+            if journal.type == "cash":
+                statement_id = bank_st_line_obj.find_open_statement_id()
+                if not statement_id:
+                    raise exceptions.RedirectWarning()
+
+                st_line_data["statement_id"] = statement_id
+                st_line_data["state"] = "confirm"
+
             bank_st_line_obj.create(st_line_data)
 
         return ret

@@ -26,4 +26,4 @@ class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
     def detach_statement_lines(self):
-        return self.type == "bank"
+        return self.type in ("bank", "cash")
