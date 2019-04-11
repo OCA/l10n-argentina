@@ -50,19 +50,23 @@ class CashBoxIn(CashBox):
     def onchange_statement_type(self, cr, uid, ids, statement_type_id, context=None):
         if not statement_type_id:
             return {'name': ''}
-            
+
         aux = self.pool.get('cash.statement.line.type').browse(cr, uid, statement_type_id, context=None)
         if aux:
             return {'value':{'name': aux.name}}
 
     def _compute_values_for_statement_line(self, cr, uid, box, record, context=None):
+        name = box.statement_line_type_id.name
+        voucher = box.voucher
+        if voucher:
+            name += (' [%s]' % voucher)
         return {
-            'statement_id' : record.id,
-            'journal_id' : record.journal_id.id,
-            'account_id' : box.statement_line_type_id.account_id.id,
-            'amount' : box.amount or 0.0,
-            'ref' : '%s' % (box.ref or ''),
-            'name' : box.statement_line_type_id.name,
+            'statement_id': record.id,
+            'journal_id': record.journal_id.id,
+            'account_id': box.statement_line_type_id.account_id.id,
+            'amount': box.amount or 0.0,
+            'ref': '%s' % (box.ref or ''),
+            'name': name,
             'type': 'income',
             'state': 'conciliated',
             'ref': box.voucher,
@@ -82,19 +86,23 @@ class CashBoxOut(CashBox):
     def onchange_statement_type(self, cr, uid, ids, statement_type_id, context=None):
         if not statement_type_id:
             return {'name': ''}
-            
+
         aux = self.pool.get('cash.statement.line.type').browse(cr, uid, statement_type_id, context=None)
         if aux:
             return {'value':{'name': aux.name}}
 
     def _compute_values_for_statement_line(self, cr, uid, box, record, context=None):
         amount = box.amount or 0.0
+        name = box.statement_line_type_id.name
+        voucher = box.voucher
+        if voucher:
+            name += (' [%s]' % voucher)
         return {
-            'statement_id' : record.id,
-            'journal_id' : record.journal_id.id,
-            'account_id' : box.statement_line_type_id.account_id.id,
-            'amount' : -amount if amount > 0.0 else amount,
-            'name' : box.statement_line_type_id.name,
+            'statement_id': record.id,
+            'journal_id': record.journal_id.id,
+            'account_id': box.statement_line_type_id.account_id.id,
+            'amount': -amount if amount > 0.0 else amount,
+            'name': name,
             'type': 'expenses',
             'state': 'conciliated',
             'ref': box.voucher,
