@@ -25,7 +25,11 @@ import time
 from openerp.osv import fields, osv
 from openerp import api
 from openerp.tools.translate import _
-import openerp.addons.decimal_precision as dp
+from openerp.addons.account.account_cash_statement import account_cash_statement as ACS
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class account_bank_statement(osv.osv):
 
@@ -127,35 +131,40 @@ class account_bank_statement(osv.osv):
         return vals
 
 
+def _update_balances(self, cr, uid, ids, context=None):
+    """
+        Set starting and ending balances according to pieces count
+    """
+    logger.info('_update_balances patched')
+    res = {}
+    for statement in self.browse(cr, uid, ids, context=context):
+        if (statement.journal_id.type not in ('cash',)):
+            continue
+        if not statement.journal_id.cash_control:
+            # Quitamos el codigo original que escribia el
+            # balance final real con el balance final teorico
+            # Esto permite registrar una diferencia de caja
+            continue
+        start = end = 0
+        for line in statement.details_ids:
+            start += line.subtotal_opening
+            end += line.subtotal_closing
+        data = {
+            'balance_start': start,
+            'balance_end_real': end,
+        }
+        res[statement.id] = data
+        super(ACS, self).write(cr, uid, [statement.id], data, context=context)
+    return res
+
+
 class account_cash_statement(osv.osv):
 
     _inherit = "account.bank.statement"
 
-    def _update_balances(self, cr, uid, ids, context=None):
-        """
-            Set starting and ending balances according to pieces count
-        """
-        res = {}
-        for statement in self.browse(cr, uid, ids, context=context):
-            if (statement.journal_id.type not in ('cash',)):
-                continue
-            if not statement.journal_id.cash_control:
-                # Quitamos el codigo original que escribia el
-                # balance final real con el balance final teorico
-                # Esto permite registrar una diferencia de caja
-                continue
-            start = end = 0
-            for line in statement.details_ids:
-                start += line.subtotal_opening
-                end += line.subtotal_closing
-            data = {
-                'balance_start': start,
-                'balance_end_real': end,
-            }
-            res[statement.id] = data
-            super(account_cash_statement, self).write(cr, uid, [statement.id], data, context=context)
-        return res
-
+    def _register_hook(self, cr):
+        ACS._patch_method('_update_balances', _update_balances)
+        return super(account_cash_statement, self)._register_hook(cr)
 
     def button_confirm_cash(self, cr, uid, ids, context=None):
         absl_proxy = self.pool.get('account.bank.statement.line')
