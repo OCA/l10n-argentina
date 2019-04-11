@@ -350,7 +350,7 @@ class WSFE(WebService):
                     inv.partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
                 if comp['DocNro'] == 0:
-                    doc_num = inv.partner_id.vat in [False, '', '0']
+                    doc_num = inv.partner_id.vat in [False, '', '0'] or doc_type == '99'
                 else:
                     try:
                         doc_num = bool(int(inv.partner_id.vat))
