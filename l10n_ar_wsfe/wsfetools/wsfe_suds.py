@@ -324,6 +324,150 @@ class WSFEv1:
 
         return res
 
+    def _prepare_tax_trib(self, tg_lst):
+        match_vals = {
+            'amount': 'Importe',
+            'base': 'BaseImp',
+            'code': 'Id'
+        }
+        res = []
+        if not tg_lst:
+            return res
+        for line in tg_lst:
+            new_line = {}
+            for key, value in line.iteritems():
+                if key not in match_vals:
+                    raise Exception(_("Key: %s is not in tribute or tax values" %(key)))
+                new_line.update({match_vals[key]: value})
+            res.append(new_line)
+        return res
+
+    def _prepare_details(self, detail_vals):
+        match_vals = {
+            'sequence_from': 'CbteDesde',
+            'sequence_to': 'CbteHasta',
+            'concept': 'Concepto',
+            'amount_net': 'ImpNeto',
+            'amount_exempt': 'ImpOpEx',
+            'amount_net_grab': 'ImpTotConc',
+            'amount_trib': 'ImpTrib',
+            'amount_iva': 'ImpIVA',
+            'total_amount': 'ImpTotal',
+            'currency_rate': 'MonCotiz',
+            'currency_code': 'MonId',
+            'doc_type': 'DocTipo', #El suds deja los tags vacios si es None
+            'doc_num': 'DocNro',
+            'date': 'CbteFch'
+        }
+        cond_match = {
+            'serv_date_from': 'FchServDesde',
+            'serv_date_to': 'FchServHasta',
+            'due_payment_date':'FchVtoPago'
+        }
+        if not detail_vals:
+            raise Exception(_("There is not values to send in details"))
+        res = {}
+        for key, value in match_vals.iteritems():
+            if key not in detail_vals:
+                raise Exception(_("Key: %s is not in detail values" %(key)))
+            res.update({value: detail_vals[key]})
+        concept = detail_vals.get('concept', '0')
+        if str(concept) in ['2','3']:
+            for key, value in cond_match.iteritems():
+                if key not in detail_vals:
+                    raise Exception(_("Key: %s is not in detail values" %(key)))
+                res.update({value: detail_vals[key]})
+        tax_lst = detail_vals.get('taxes', [])
+        new_tax_lst = self._prepare_tax_trib(tax_lst)
+        res.update({'taxes': new_tax_lst})
+        trib_lst = detail_vals.get('tributes', [])
+        new_tribute_lst = self._prepare_tax_trib(trib_lst)
+        res.update({'tributes': new_tribute_lst})
+        return res
+
+    def get_multi_doc_CAE(self, pos, voucher_type,  values):
+        argcaereq = self.client.factory.create('ns0:FECAERequest')
+        # FECAECabRequest
+        detail = self._prepare_details(values)
+        seq_from = detail.get('CbteDesde')
+        seq_to = detail.get('CbteHasta')
+
+        argcaereq.FeCabReq.CantReg = 1
+        argcaereq.FeCabReq.PtoVta = pos
+        argcaereq.FeCabReq.CbteTipo = voucher_type
+
+        tax_lst = detail.pop('taxes')
+        trib_lst = detail.pop('tributes')
+
+        argdetreq = self.client.factory.create('ns0:FECAEDetRequest')
+
+        if tax_lst:
+            tax_det_lst = []
+            for tax_vals in tax_lst:
+                argiva = self.client.factory.create('ns0:AlicIva')
+                for key, val in tax_vals.iteritems():
+                    argiva[key] = None
+                    if key in argiva:
+                        argiva[key] = val
+                tax_det_lst.append(argiva)
+            argdetreq.Iva.AlicIva.append(tax_det_lst)
+
+        if trib_lst:
+            trib_det_lst = []
+            for trib_vals in trib_lst:
+                argtrib = self.client.factory.create('ns0:Tributo')
+                for key, val in trib_vals.iteritems():
+                    argtrib[key] = None
+                    if key not in argtrib:
+                        argtrib[key] = val
+                    trib_det_lst.append(argtrib)
+            argdetreq.Tributos.Tributo.append(trib_det_lst)
+
+        for key, det_val in detail.iteritems():
+            if key in argdetreq:
+                argdetreq[key] = det_val
+
+        argcaereq.FeDetReq.FECAEDetRequest.append(argdetreq)
+        result = self.client.service.FECAESolicitar(self.argauth, argcaereq)
+
+        error_lst = []
+        voucher_lst = []
+
+        if 'Errors' in result:
+            for e in result.Errors.Err:
+                error = '%s (Err. %s)' % (e.Msg, e.Code)
+                error_lst.append(error)
+
+        for det_response in result.FeDetResp.FECAEDetResponse:
+            observation_lst = []
+            voucher = {}
+
+            if 'Observaciones' in det_response:
+                for o in det_response.Observaciones.Obs:
+                    observation = '%s (Err. %s)' % (o.Msg, o.Code)
+                    observation_lst.append(observation)
+
+            voucher['Concepto'] = det_response.Concepto
+            voucher['DocTipo'] = det_response.DocTipo
+            voucher['DocNro'] = det_response.DocNro
+            voucher['CbteDesde'] = det_response.CbteDesde
+            voucher['CbteHasta'] = det_response.CbteHasta
+            voucher['CbteFch'] = det_response.CbteFch
+            voucher['Resultado'] = det_response.Resultado
+            voucher['CAE'] = det_response.CAE
+            voucher['CAEFchVto'] = det_response.CAEFchVto
+            voucher['Observaciones'] = observation_lst
+            voucher_lst.append(voucher)
+
+        res = {
+            'Comprobantes': voucher_lst,
+            'Errores': error_lst,
+            'Pos': pos,
+            'Resultado': result.FeCabResp.Resultado,
+            'Reproceso': result.FeCabResp.Reproceso
+        }
+        return res
+
     def fe_CAE_solicitar(self, pto_vta, cbte_tipo, detalles):
 
         argcaereq = self.client.factory.create('ns0:FECAERequest')

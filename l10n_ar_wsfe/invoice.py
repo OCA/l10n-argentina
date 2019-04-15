@@ -348,7 +348,6 @@ class account_invoice(models.Model):
             # Derivamos a la configuracion correspondiente
             fe_det_req = conf.prepare_details([inv])
             result = conf.get_invoice_CAE(pos, tipo_cbte, fe_det_req)
-
             new_cr = False
             try:
                 invoices_approbed = conf._parse_result([inv], result)
@@ -361,9 +360,9 @@ class account_invoice(models.Model):
                 self.env.cr.rollback()
                 raise e
             finally:
-                # Creamos el wsfe.request con otro cursor, porque puede pasar que
+                # creamos el wsfe.request con otro cursor, porque puede pasar que
                 # tengamos una excepcion e igualmente, tenemos que escribir la request
-                # Sino al hacer el rollback se pierde hasta el wsfe.request
+                # sino al hacer el rollback se pierde hasta el wsfe.request
                 if new_cr:
                     cr2 = pooler.get_db(new_cr).cursor()
                 else:

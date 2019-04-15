@@ -51,6 +51,7 @@ class wsfe_request_detail(models.Model):
     doctype = fields.Integer('Document Type', readonly=True)
     docnum = fields.Char('Document Number', size=32, readonly=True)
     voucher_number = fields.Integer('Voucher Number', readonly=True)
+    voucher_number_from = fields.Integer('Voucher Number From', readonly=True)
     voucher_date = fields.Date('Voucher Date', readonly=True)
     amount_total = fields.Char('Amount Total', size=64, readonly=True)
     cae = fields.Char('CAE', required=False, readonly=True, size=64)

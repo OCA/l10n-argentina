@@ -155,6 +155,66 @@ class wsfe_config(models.Model):
         return res
 
     @api.multi
+    def get_document_CAE(self, pos, voucher_type, detail):
+        wsfe_req_obj = self.env['wsfe.request']
+        voucher_type_obj = self.env['wsfe.voucher_type']
+        voucher_type_obj = self.env['wsfe.voucher_type']
+        voucher_type_reg = voucher_type_obj.search([
+            ('code', '=', voucher_type)
+        ])
+        voucher_type_name = voucher_type_reg.name
+
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
+        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+        res = _wsfe.get_multi_doc_CAE(pos, voucher_type, detail)
+
+        if res['Resultado'] == 'R':
+            msg = ''
+            if res['Errores']:
+                msg = _('Errors: ') + '\n'.join(res['Errores']) + '\n'
+
+            if self._context.get('raise-exception', True):
+                raise osv.except_osv(_('AFIP Web Service Error'),
+                                     _('The documents was not approved. \n%s') % msg)
+
+        req_details = []
+        for det in res['Comprobantes']:
+            req_vals = {
+                'concept': str(det['Concepto']),
+                'doctype': det['DocTipo'],
+                'docnum': str(det['DocNro']),
+                'voucher_number_from': det['CbteDesde'],
+                'voucher_number': det['CbteHasta'],
+                'voucher_date': det['CbteFch'],
+                'result': det['Resultado'],
+                'cae': det['CAE'],
+                'cae_duedate': det['CAEFchVto'],
+                'observations': det['Observaciones'],
+                'currency': detail['currency_code'],
+                'currency_rate': detail['currency_rate'],
+                'amount_total': detail['total_amount'],
+            }
+            req_details.append((0, 0, req_vals))
+
+        reprocess = False
+        if res['Reproceso'] == 'S':
+            reprocess = True
+
+        vals = {
+            'voucher_type': voucher_type_name,
+            'nregs': len(req_details),
+            'pos_ar': '%04d' % pos,
+            'date_request': time.strftime('%Y-%m-%d %H:%M:%S'),
+            'result': res['Resultado'],
+            'reprocess': reprocess,
+            'errors': '\n'.join(res['Errores']),
+            'detail_ids': req_details,
+        }
+        request = wsfe_req_obj.create(vals)
+        return request
+
+    @api.multi
     def _parse_result(self, invoices, result):
 
         invoices_approbed = {}
@@ -230,6 +290,7 @@ class wsfe_config(models.Model):
                 'concept': str(detail['Concepto']),
                 'doctype': detail['DocTipo'],  # TODO: Poner aca el nombre del tipo de documento
                 'docnum': str(detail['DocNro']),
+                'voucher_number_from': comp['CbteDesde'],
                 'voucher_number': comp['CbteHasta'],
                 'voucher_date': comp['CbteFch'],
                 'amount_total': detail['ImpTotal'],
