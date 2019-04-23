@@ -1,0 +1,3107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record  id="51600000016" model="dst_cuit.codes">
+      <field name="code" eval="51600000016"/>
+      <field name="name">URUGUAY  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000000018" model="dst_cuit.codes">
+      <field name="code" eval="55000000018"/>
+      <field name="name">URUGUAY  - Persona Jurídica</field>
+    </record>
+    <record  id="50000000024" model="dst_cuit.codes">
+      <field name="code" eval="50000000024"/>
+      <field name="name">PARAGUAY  - Persona Física</field>
+    </record>
+    <record  id="51600000024" model="dst_cuit.codes">
+      <field name="code" eval="51600000024"/>
+      <field name="name">PARAGUAY  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000000026" model="dst_cuit.codes">
+      <field name="code" eval="55000000026"/>
+      <field name="name">PARAGUAY  - Persona Jurídica</field>
+    </record>
+    <record  id="50000000032" model="dst_cuit.codes">
+      <field name="code" eval="50000000032"/>
+      <field name="name">CHILE  - Persona Física</field>
+    </record>
+    <record  id="51600000032" model="dst_cuit.codes">
+      <field name="code" eval="51600000032"/>
+      <field name="name">CHILE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000000034" model="dst_cuit.codes">
+      <field name="code" eval="55000000034"/>
+      <field name="name">CHILE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000000040" model="dst_cuit.codes">
+      <field name="code" eval="50000000040"/>
+      <field name="name">BOLIVIA  - Persona Física</field>
+    </record>
+    <record  id="51600000040" model="dst_cuit.codes">
+      <field name="code" eval="51600000040"/>
+      <field name="name">BOLIVIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000000042" model="dst_cuit.codes">
+      <field name="code" eval="55000000042"/>
+      <field name="name">BOLIVIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000000059" model="dst_cuit.codes">
+      <field name="code" eval="50000000059"/>
+      <field name="name">BRASIL  - Persona Física</field>
+    </record>
+    <record  id="51600000059" model="dst_cuit.codes">
+      <field name="code" eval="51600000059"/>
+      <field name="name">BRASIL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000000050" model="dst_cuit.codes">
+      <field name="code" eval="55000000050"/>
+      <field name="name">BRASIL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001012" model="dst_cuit.codes">
+      <field name="code" eval="50000001012"/>
+      <field name="name">BURKINA FASO  - Persona Física</field>
+    </record>
+    <record  id="51600001012" model="dst_cuit.codes">
+      <field name="code" eval="51600001012"/>
+      <field name="name">BURKINA FASO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001014" model="dst_cuit.codes">
+      <field name="code" eval="55000001014"/>
+      <field name="name">BURKINA FASO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001020" model="dst_cuit.codes">
+      <field name="code" eval="50000001020"/>
+      <field name="name">ARGELIA  - Persona Física</field>
+    </record>
+    <record  id="51600001020" model="dst_cuit.codes">
+      <field name="code" eval="51600001020"/>
+      <field name="name">ARGELIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001022" model="dst_cuit.codes">
+      <field name="code" eval="55000001022"/>
+      <field name="name">ARGELIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001039" model="dst_cuit.codes">
+      <field name="code" eval="50000001039"/>
+      <field name="name">BOTSWANA  - Persona Física</field>
+    </record>
+    <record  id="51600001039" model="dst_cuit.codes">
+      <field name="code" eval="51600001039"/>
+      <field name="name">BOTSWANA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001030" model="dst_cuit.codes">
+      <field name="code" eval="55000001030"/>
+      <field name="name">BOTSWANA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001047" model="dst_cuit.codes">
+      <field name="code" eval="50000001047"/>
+      <field name="name">BURUNDI  - Persona Física</field>
+    </record>
+    <record  id="51600001047" model="dst_cuit.codes">
+      <field name="code" eval="51600001047"/>
+      <field name="name">BURUNDI  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001049" model="dst_cuit.codes">
+      <field name="code" eval="55000001049"/>
+      <field name="name">BURUNDI  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001055" model="dst_cuit.codes">
+      <field name="code" eval="50000001055"/>
+      <field name="name">CAMERUN  - Persona Física</field>
+    </record>
+    <record  id="51600001055" model="dst_cuit.codes">
+      <field name="code" eval="51600001055"/>
+      <field name="name">CAMERUN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001057" model="dst_cuit.codes">
+      <field name="code" eval="55000001057"/>
+      <field name="name">CAMERUN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001071" model="dst_cuit.codes">
+      <field name="code" eval="50000001071"/>
+      <field name="name">CENTRO AFRICANO, REP.  - Persona Física</field>
+    </record>
+    <record  id="51600001071" model="dst_cuit.codes">
+      <field name="code" eval="51600001071"/>
+      <field name="name">CENTRO AFRICANO, REP.  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001073" model="dst_cuit.codes">
+      <field name="code" eval="55000001073"/>
+      <field name="name">CENTRO AFRICANO, REP.  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001101" model="dst_cuit.codes">
+      <field name="code" eval="50000001101"/>
+      <field name="name">COSTA DE MARFIL  - Persona Física</field>
+    </record>
+    <record  id="51600001101" model="dst_cuit.codes">
+      <field name="code" eval="51600001101"/>
+      <field name="name">COSTA DE MARFIL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001103" model="dst_cuit.codes">
+      <field name="code" eval="55000001103"/>
+      <field name="name">COSTA DE MARFIL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001136" model="dst_cuit.codes">
+      <field name="code" eval="50000001136"/>
+      <field name="name">EGIPTO  - Persona Física</field>
+    </record>
+    <record  id="51600001136" model="dst_cuit.codes">
+      <field name="code" eval="51600001136"/>
+      <field name="name">EGIPTO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001138" model="dst_cuit.codes">
+      <field name="code" eval="55000001138"/>
+      <field name="name">EGIPTO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001144" model="dst_cuit.codes">
+      <field name="code" eval="50000001144"/>
+      <field name="name">ETIOPIA  - Persona Física</field>
+    </record>
+    <record  id="51600001144" model="dst_cuit.codes">
+      <field name="code" eval="51600001144"/>
+      <field name="name">ETIOPIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001146" model="dst_cuit.codes">
+      <field name="code" eval="55000001146"/>
+      <field name="name">ETIOPIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001152" model="dst_cuit.codes">
+      <field name="code" eval="50000001152"/>
+      <field name="name">GABON  - Persona Física</field>
+    </record>
+    <record  id="51600001152" model="dst_cuit.codes">
+      <field name="code" eval="51600001152"/>
+      <field name="name">GABON  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001154" model="dst_cuit.codes">
+      <field name="code" eval="55000001154"/>
+      <field name="name">GABON  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001160" model="dst_cuit.codes">
+      <field name="code" eval="50000001160"/>
+      <field name="name">GAMBIA  - Persona Física</field>
+    </record>
+    <record  id="51600001160" model="dst_cuit.codes">
+      <field name="code" eval="51600001160"/>
+      <field name="name">GAMBIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001162" model="dst_cuit.codes">
+      <field name="code" eval="55000001162"/>
+      <field name="name">GAMBIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001179" model="dst_cuit.codes">
+      <field name="code" eval="50000001179"/>
+      <field name="name">GHANA  - Persona Física</field>
+    </record>
+    <record  id="51600001179" model="dst_cuit.codes">
+      <field name="code" eval="51600001179"/>
+      <field name="name">GHANA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001170" model="dst_cuit.codes">
+      <field name="code" eval="55000001170"/>
+      <field name="name">GHANA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001187" model="dst_cuit.codes">
+      <field name="code" eval="50000001187"/>
+      <field name="name">GUINEA  - Persona Física</field>
+    </record>
+    <record  id="51600001187" model="dst_cuit.codes">
+      <field name="code" eval="51600001187"/>
+      <field name="name">GUINEA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001189" model="dst_cuit.codes">
+      <field name="code" eval="55000001189"/>
+      <field name="name">GUINEA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001195" model="dst_cuit.codes">
+      <field name="code" eval="50000001195"/>
+      <field name="name">GUINEA ECUATORIAL  - Persona Física</field>
+    </record>
+    <record  id="51600001195" model="dst_cuit.codes">
+      <field name="code" eval="51600001195"/>
+      <field name="name">GUINEA ECUATORIAL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001197" model="dst_cuit.codes">
+      <field name="code" eval="55000001197"/>
+      <field name="name">GUINEA ECUATORIAL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001209" model="dst_cuit.codes">
+      <field name="code" eval="50000001209"/>
+      <field name="name">KENIA  - Persona Física</field>
+    </record>
+    <record  id="51600001209" model="dst_cuit.codes">
+      <field name="code" eval="51600001209"/>
+      <field name="name">KENIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001200" model="dst_cuit.codes">
+      <field name="code" eval="55000001200"/>
+      <field name="name">KENIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001217" model="dst_cuit.codes">
+      <field name="code" eval="50000001217"/>
+      <field name="name">LESOTHO  - Persona Física</field>
+    </record>
+    <record  id="51600001217" model="dst_cuit.codes">
+      <field name="code" eval="51600001217"/>
+      <field name="name">LESOTHO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001219" model="dst_cuit.codes">
+      <field name="code" eval="55000001219"/>
+      <field name="name">LESOTHO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001225" model="dst_cuit.codes">
+      <field name="code" eval="50000001225"/>
+      <field name="name">REPUBLICA DE LIBERIA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600001225" model="dst_cuit.codes">
+      <field name="code" eval="51600001225"/>
+      <field name="name">REPUBLICA DE LIBERIA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001227" model="dst_cuit.codes">
+      <field name="code" eval="55000001227"/>
+      <field name="name">REPUBLICA DE LIBERIA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001233" model="dst_cuit.codes">
+      <field name="code" eval="50000001233"/>
+      <field name="name">LIBIA  - Persona Física</field>
+    </record>
+    <record  id="51600001233" model="dst_cuit.codes">
+      <field name="code" eval="51600001233"/>
+      <field name="name">LIBIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001235" model="dst_cuit.codes">
+      <field name="code" eval="55000001235"/>
+      <field name="name">LIBIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001241" model="dst_cuit.codes">
+      <field name="code" eval="50000001241"/>
+      <field name="name">MADAGASCAR  - Persona Física</field>
+    </record>
+    <record  id="51600001241" model="dst_cuit.codes">
+      <field name="code" eval="51600001241"/>
+      <field name="name">MADAGASCAR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001243" model="dst_cuit.codes">
+      <field name="code" eval="55000001243"/>
+      <field name="name">MADAGASCAR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001276" model="dst_cuit.codes">
+      <field name="code" eval="50000001276"/>
+      <field name="name">MARRUECOS  - Persona Física</field>
+    </record>
+    <record  id="51600001276" model="dst_cuit.codes">
+      <field name="code" eval="51600001276"/>
+      <field name="name">MARRUECOS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001278" model="dst_cuit.codes">
+      <field name="code" eval="55000001278"/>
+      <field name="name">MARRUECOS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001284" model="dst_cuit.codes">
+      <field name="code" eval="50000001284"/>
+      <field name="name">REPUBLICA DE MAURICIO  - Persona Física</field>
+    </record>
+    <record  id="51600001284" model="dst_cuit.codes">
+      <field name="code" eval="51600001284"/>
+      <field name="name">REPUBLICA DE MAURICIO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001286" model="dst_cuit.codes">
+      <field name="code" eval="55000001286"/>
+      <field name="name">REPUBLICA DE MAURICIO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001292" model="dst_cuit.codes">
+      <field name="code" eval="50000001292"/>
+      <field name="name">MAURITANIA  - Persona Física</field>
+    </record>
+    <record  id="51600001292" model="dst_cuit.codes">
+      <field name="code" eval="51600001292"/>
+      <field name="name">MAURITANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001294" model="dst_cuit.codes">
+      <field name="code" eval="55000001294"/>
+      <field name="name">MAURITANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001306" model="dst_cuit.codes">
+      <field name="code" eval="50000001306"/>
+      <field name="name">NIGER  - Persona Física</field>
+    </record>
+    <record  id="51600001306" model="dst_cuit.codes">
+      <field name="code" eval="51600001306"/>
+      <field name="name">NIGER  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001308" model="dst_cuit.codes">
+      <field name="code" eval="55000001308"/>
+      <field name="name">NIGER  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001314" model="dst_cuit.codes">
+      <field name="code" eval="50000001314"/>
+      <field name="name">NIGERIA  - Persona Física</field>
+    </record>
+    <record  id="51600001314" model="dst_cuit.codes">
+      <field name="code" eval="51600001314"/>
+      <field name="name">NIGERIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001316" model="dst_cuit.codes">
+      <field name="code" eval="55000001316"/>
+      <field name="name">NIGERIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001322" model="dst_cuit.codes">
+      <field name="code" eval="50000001322"/>
+      <field name="name">ZIMBABWE  - Persona Física</field>
+    </record>
+    <record  id="51600001322" model="dst_cuit.codes">
+      <field name="code" eval="51600001322"/>
+      <field name="name">ZIMBABWE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001324" model="dst_cuit.codes">
+      <field name="code" eval="55000001324"/>
+      <field name="name">ZIMBABWE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001330" model="dst_cuit.codes">
+      <field name="code" eval="50000001330"/>
+      <field name="name">RUANDA  - Persona Física</field>
+    </record>
+    <record  id="51600001330" model="dst_cuit.codes">
+      <field name="code" eval="51600001330"/>
+      <field name="name">RUANDA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001332" model="dst_cuit.codes">
+      <field name="code" eval="55000001332"/>
+      <field name="name">RUANDA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001349" model="dst_cuit.codes">
+      <field name="code" eval="50000001349"/>
+      <field name="name">SENEGAL  - Persona Física</field>
+    </record>
+    <record  id="51600001349" model="dst_cuit.codes">
+      <field name="code" eval="51600001349"/>
+      <field name="name">SENEGAL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001340" model="dst_cuit.codes">
+      <field name="code" eval="55000001340"/>
+      <field name="name">SENEGAL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001357" model="dst_cuit.codes">
+      <field name="code" eval="50000001357"/>
+      <field name="name">SIERRA LEONA  - Persona Física</field>
+    </record>
+    <record  id="51600001357" model="dst_cuit.codes">
+      <field name="code" eval="51600001357"/>
+      <field name="name">SIERRA LEONA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001359" model="dst_cuit.codes">
+      <field name="code" eval="55000001359"/>
+      <field name="name">SIERRA LEONA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001365" model="dst_cuit.codes">
+      <field name="code" eval="50000001365"/>
+      <field name="name">SOMALIA  - Persona Física</field>
+    </record>
+    <record  id="51600001365" model="dst_cuit.codes">
+      <field name="code" eval="51600001365"/>
+      <field name="name">SOMALIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001367" model="dst_cuit.codes">
+      <field name="code" eval="55000001367"/>
+      <field name="name">SOMALIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001373" model="dst_cuit.codes">
+      <field name="code" eval="50000001373"/>
+      <field name="name">REINO DE SWAZILANDIA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600001373" model="dst_cuit.codes">
+      <field name="code" eval="51600001373"/>
+      <field name="name">REINO DE SWAZILANDIA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001375" model="dst_cuit.codes">
+      <field name="code" eval="55000001375"/>
+      <field name="name">REINO DE SWAZILANDIA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001381" model="dst_cuit.codes">
+      <field name="code" eval="50000001381"/>
+      <field name="name">SUDAN  - Persona Física</field>
+    </record>
+    <record  id="51600001381" model="dst_cuit.codes">
+      <field name="code" eval="51600001381"/>
+      <field name="name">SUDAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001383" model="dst_cuit.codes">
+      <field name="code" eval="55000001383"/>
+      <field name="name">SUDAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001403" model="dst_cuit.codes">
+      <field name="code" eval="50000001403"/>
+      <field name="name">TOGO  - Persona Física</field>
+    </record>
+    <record  id="51600001403" model="dst_cuit.codes">
+      <field name="code" eval="51600001403"/>
+      <field name="name">TOGO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001405" model="dst_cuit.codes">
+      <field name="code" eval="55000001405"/>
+      <field name="name">TOGO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001411" model="dst_cuit.codes">
+      <field name="code" eval="50000001411"/>
+      <field name="name">REPUBLICA TUNECINA  - Persona Física</field>
+    </record>
+    <record  id="51600001411" model="dst_cuit.codes">
+      <field name="code" eval="51600001411"/>
+      <field name="name">REPUBLICA TUNECINA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001413" model="dst_cuit.codes">
+      <field name="code" eval="55000001413"/>
+      <field name="name">REPUBLICA TUNECINA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001446" model="dst_cuit.codes">
+      <field name="code" eval="50000001446"/>
+      <field name="name">ZAMBIA  - Persona Física</field>
+    </record>
+    <record  id="51600001446" model="dst_cuit.codes">
+      <field name="code" eval="51600001446"/>
+      <field name="name">ZAMBIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001448" model="dst_cuit.codes">
+      <field name="code" eval="55000001448"/>
+      <field name="name">ZAMBIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001454" model="dst_cuit.codes">
+      <field name="code" eval="50000001454"/>
+      <field name="name">POS.BRITANICA (AFRICA)  - Persona Física</field>
+    </record>
+    <record  id="51600001454" model="dst_cuit.codes">
+      <field name="code" eval="51600001454"/>
+      <field name="name">POS.BRITANICA (AFRICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001456" model="dst_cuit.codes">
+      <field name="code" eval="55000001456"/>
+      <field name="name">POS.BRITANICA (AFRICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001462" model="dst_cuit.codes">
+      <field name="code" eval="50000001462"/>
+      <field name="name">POS.ESPAÑOLA (AFRICA)  - Persona Física</field>
+    </record>
+    <record  id="51600001462" model="dst_cuit.codes">
+      <field name="code" eval="51600001462"/>
+      <field name="name">POS.ESPAÑOLA (AFRICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001464" model="dst_cuit.codes">
+      <field name="code" eval="55000001464"/>
+      <field name="name">POS.ESPAÑOLA (AFRICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001470" model="dst_cuit.codes">
+      <field name="code" eval="50000001470"/>
+      <field name="name">POS.FRANCESA (AFRICA)  - Persona Física</field>
+    </record>
+    <record  id="51600001470" model="dst_cuit.codes">
+      <field name="code" eval="51600001470"/>
+      <field name="name">POS.FRANCESA (AFRICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001472" model="dst_cuit.codes">
+      <field name="code" eval="55000001472"/>
+      <field name="name">POS.FRANCESA (AFRICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001489" model="dst_cuit.codes">
+      <field name="code" eval="50000001489"/>
+      <field name="name">POS.PORTUGUESA (AFRICA)  - Persona Física</field>
+    </record>
+    <record  id="51600001489" model="dst_cuit.codes">
+      <field name="code" eval="51600001489"/>
+      <field name="name">POS.PORTUGUESA (AFRICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001480" model="dst_cuit.codes">
+      <field name="code" eval="55000001480"/>
+      <field name="name">POS.PORTUGUESA (AFRICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001497" model="dst_cuit.codes">
+      <field name="code" eval="50000001497"/>
+      <field name="name">REPUBLICA DE ANGOLA  - Persona Física</field>
+    </record>
+    <record  id="51600001497" model="dst_cuit.codes">
+      <field name="code" eval="51600001497"/>
+      <field name="name">REPUBLICA DE ANGOLA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001499" model="dst_cuit.codes">
+      <field name="code" eval="55000001499"/>
+      <field name="name">REPUBLICA DE ANGOLA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001500" model="dst_cuit.codes">
+      <field name="code" eval="50000001500"/>
+      <field name="name">REPUBLICA DE CABO VERDE (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600001500" model="dst_cuit.codes">
+      <field name="code" eval="51600001500"/>
+      <field name="name">REPUBLICA DE CABO VERDE (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001502" model="dst_cuit.codes">
+      <field name="code" eval="55000001502"/>
+      <field name="name">REPUBLICA DE CABO VERDE (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001519" model="dst_cuit.codes">
+      <field name="code" eval="50000001519"/>
+      <field name="name">MOZAMBIQUE  - Persona Física</field>
+    </record>
+    <record  id="51600001519" model="dst_cuit.codes">
+      <field name="code" eval="51600001519"/>
+      <field name="name">MOZAMBIQUE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001510" model="dst_cuit.codes">
+      <field name="code" eval="55000001510"/>
+      <field name="name">MOZAMBIQUE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001527" model="dst_cuit.codes">
+      <field name="code" eval="50000001527"/>
+      <field name="name">CONGO REP.POPULAR  - Persona Física</field>
+    </record>
+    <record  id="51600001527" model="dst_cuit.codes">
+      <field name="code" eval="51600001527"/>
+      <field name="name">CONGO REP.POPULAR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001529" model="dst_cuit.codes">
+      <field name="code" eval="55000001529"/>
+      <field name="name">CONGO REP.POPULAR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001535" model="dst_cuit.codes">
+      <field name="code" eval="50000001535"/>
+      <field name="name">CHAD  - Persona Física</field>
+    </record>
+    <record  id="51600001535" model="dst_cuit.codes">
+      <field name="code" eval="51600001535"/>
+      <field name="name">CHAD  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001537" model="dst_cuit.codes">
+      <field name="code" eval="55000001537"/>
+      <field name="name">CHAD  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001543" model="dst_cuit.codes">
+      <field name="code" eval="50000001543"/>
+      <field name="name">MALAWI  - Persona Física</field>
+    </record>
+    <record  id="51600001543" model="dst_cuit.codes">
+      <field name="code" eval="51600001543"/>
+      <field name="name">MALAWI  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001545" model="dst_cuit.codes">
+      <field name="code" eval="55000001545"/>
+      <field name="name">MALAWI  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001551" model="dst_cuit.codes">
+      <field name="code" eval="50000001551"/>
+      <field name="name">TANZANIA  - Persona Física</field>
+    </record>
+    <record  id="51600001551" model="dst_cuit.codes">
+      <field name="code" eval="51600001551"/>
+      <field name="name">TANZANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001553" model="dst_cuit.codes">
+      <field name="code" eval="55000001553"/>
+      <field name="name">TANZANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001586" model="dst_cuit.codes">
+      <field name="code" eval="50000001586"/>
+      <field name="name">COSTA RICA  - Persona Física</field>
+    </record>
+    <record  id="51600001586" model="dst_cuit.codes">
+      <field name="code" eval="51600001586"/>
+      <field name="name">COSTA RICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001588" model="dst_cuit.codes">
+      <field name="code" eval="55000001588"/>
+      <field name="name">COSTA RICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001616" model="dst_cuit.codes">
+      <field name="code" eval="50000001616"/>
+      <field name="name">ZAIRE  - Persona Física</field>
+    </record>
+    <record  id="51600001616" model="dst_cuit.codes">
+      <field name="code" eval="51600001616"/>
+      <field name="name">ZAIRE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001618" model="dst_cuit.codes">
+      <field name="code" eval="55000001618"/>
+      <field name="name">ZAIRE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001624" model="dst_cuit.codes">
+      <field name="code" eval="50000001624"/>
+      <field name="name">BENIN  - Persona Física</field>
+    </record>
+    <record  id="51600001624" model="dst_cuit.codes">
+      <field name="code" eval="51600001624"/>
+      <field name="name">BENIN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001626" model="dst_cuit.codes">
+      <field name="code" eval="55000001626"/>
+      <field name="name">BENIN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001632" model="dst_cuit.codes">
+      <field name="code" eval="50000001632"/>
+      <field name="name">MALI  - Persona Física</field>
+    </record>
+    <record  id="51600001632" model="dst_cuit.codes">
+      <field name="code" eval="51600001632"/>
+      <field name="name">MALI  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001634" model="dst_cuit.codes">
+      <field name="code" eval="55000001634"/>
+      <field name="name">MALI  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001705" model="dst_cuit.codes">
+      <field name="code" eval="50000001705"/>
+      <field name="name">UGANDA  - Persona Física</field>
+    </record>
+    <record  id="51600001705" model="dst_cuit.codes">
+      <field name="code" eval="51600001705"/>
+      <field name="name">UGANDA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001707" model="dst_cuit.codes">
+      <field name="code" eval="55000001707"/>
+      <field name="name">UGANDA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001713" model="dst_cuit.codes">
+      <field name="code" eval="50000001713"/>
+      <field name="name">SUDAFRICA, REP. DE  - Persona Física</field>
+    </record>
+    <record  id="51600001713" model="dst_cuit.codes">
+      <field name="code" eval="51600001713"/>
+      <field name="name">SUDAFRICA, REP. DE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001715" model="dst_cuit.codes">
+      <field name="code" eval="55000001715"/>
+      <field name="name">SUDAFRICA, REP. DE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001810" model="dst_cuit.codes">
+      <field name="code" eval="50000001810"/>
+      <field name="name">REPUBLICA DE SEYCHELLES (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600001810" model="dst_cuit.codes">
+      <field name="code" eval="51600001810"/>
+      <field name="name">REPUBLICA DE SEYCHELLES (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001812" model="dst_cuit.codes">
+      <field name="code" eval="55000001812"/>
+      <field name="name">REPUBLICA DE SEYCHELLES (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001829" model="dst_cuit.codes">
+      <field name="code" eval="50000001829"/>
+      <field name="name">SANTO TOME Y PRINCIPE  - Persona Física</field>
+    </record>
+    <record  id="51600001829" model="dst_cuit.codes">
+      <field name="code" eval="51600001829"/>
+      <field name="name">SANTO TOME Y PRINCIPE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001820" model="dst_cuit.codes">
+      <field name="code" eval="55000001820"/>
+      <field name="name">SANTO TOME Y PRINCIPE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001837" model="dst_cuit.codes">
+      <field name="code" eval="50000001837"/>
+      <field name="name">NAMIBIA  - Persona Física</field>
+    </record>
+    <record  id="51600001837" model="dst_cuit.codes">
+      <field name="code" eval="51600001837"/>
+      <field name="name">NAMIBIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001839" model="dst_cuit.codes">
+      <field name="code" eval="55000001839"/>
+      <field name="name">NAMIBIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001845" model="dst_cuit.codes">
+      <field name="code" eval="50000001845"/>
+      <field name="name">GUINEA BISSAU  - Persona Física</field>
+    </record>
+    <record  id="51600001845" model="dst_cuit.codes">
+      <field name="code" eval="51600001845"/>
+      <field name="name">GUINEA BISSAU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001847" model="dst_cuit.codes">
+      <field name="code" eval="55000001847"/>
+      <field name="name">GUINEA BISSAU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001853" model="dst_cuit.codes">
+      <field name="code" eval="50000001853"/>
+      <field name="name">ERITREA  - Persona Física</field>
+    </record>
+    <record  id="51600001853" model="dst_cuit.codes">
+      <field name="code" eval="51600001853"/>
+      <field name="name">ERITREA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001855" model="dst_cuit.codes">
+      <field name="code" eval="55000001855"/>
+      <field name="name">ERITREA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001861" model="dst_cuit.codes">
+      <field name="code" eval="50000001861"/>
+      <field name="name">REPUBLICA DE DJIBUTI (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600001861" model="dst_cuit.codes">
+      <field name="code" eval="51600001861"/>
+      <field name="name">REPUBLICA DE DJIBUTI (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001863" model="dst_cuit.codes">
+      <field name="code" eval="55000001863"/>
+      <field name="name">REPUBLICA DE DJIBUTI (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001896" model="dst_cuit.codes">
+      <field name="code" eval="50000001896"/>
+      <field name="name">COMORAS  - Persona Física</field>
+    </record>
+    <record  id="51600001896" model="dst_cuit.codes">
+      <field name="code" eval="51600001896"/>
+      <field name="name">COMORAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001898" model="dst_cuit.codes">
+      <field name="code" eval="55000001898"/>
+      <field name="name">COMORAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000001985" model="dst_cuit.codes">
+      <field name="code" eval="50000001985"/>
+      <field name="name">INDETERMINADO (AFRICA)  - Persona Física</field>
+    </record>
+    <record  id="51600001985" model="dst_cuit.codes">
+      <field name="code" eval="51600001985"/>
+      <field name="name">INDETERMINADO (AFRICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000001987" model="dst_cuit.codes">
+      <field name="code" eval="55000001987"/>
+      <field name="name">INDETERMINADO (AFRICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002019" model="dst_cuit.codes">
+      <field name="code" eval="50000002019"/>
+      <field name="name">BARBADOS (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002019" model="dst_cuit.codes">
+      <field name="code" eval="51600002019"/>
+      <field name="name">BARBADOS (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002010" model="dst_cuit.codes">
+      <field name="code" eval="55000002010"/>
+      <field name="name">BARBADOS (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002043" model="dst_cuit.codes">
+      <field name="code" eval="50000002043"/>
+      <field name="name">CANADA  - Persona Física</field>
+    </record>
+    <record  id="51600002043" model="dst_cuit.codes">
+      <field name="code" eval="51600002043"/>
+      <field name="name">CANADA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002045" model="dst_cuit.codes">
+      <field name="code" eval="55000002045"/>
+      <field name="name">CANADA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002051" model="dst_cuit.codes">
+      <field name="code" eval="50000002051"/>
+      <field name="name">COLOMBIA  - Persona Física</field>
+    </record>
+    <record  id="51600002051" model="dst_cuit.codes">
+      <field name="code" eval="51600002051"/>
+      <field name="name">COLOMBIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002053" model="dst_cuit.codes">
+      <field name="code" eval="55000002053"/>
+      <field name="name">COLOMBIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002094" model="dst_cuit.codes">
+      <field name="code" eval="50000002094"/>
+      <field name="name">DOMINICANA, REPUBLICA  - Persona Física</field>
+    </record>
+    <record  id="51600002094" model="dst_cuit.codes">
+      <field name="code" eval="51600002094"/>
+      <field name="name">DOMINICANA, REPUBLICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002096" model="dst_cuit.codes">
+      <field name="code" eval="55000002096"/>
+      <field name="name">DOMINICANA, REPUBLICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002116" model="dst_cuit.codes">
+      <field name="code" eval="50000002116"/>
+      <field name="name">EL SALVADOR  - Persona Física</field>
+    </record>
+    <record  id="51600002116" model="dst_cuit.codes">
+      <field name="code" eval="51600002116"/>
+      <field name="name">EL SALVADOR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002118" model="dst_cuit.codes">
+      <field name="code" eval="55000002118"/>
+      <field name="name">EL SALVADOR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002124" model="dst_cuit.codes">
+      <field name="code" eval="50000002124"/>
+      <field name="name">ESTADOS UNIDOS  - Persona Física</field>
+    </record>
+    <record  id="51600002124" model="dst_cuit.codes">
+      <field name="code" eval="51600002124"/>
+      <field name="name">ESTADOS UNIDOS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002126" model="dst_cuit.codes">
+      <field name="code" eval="55000002126"/>
+      <field name="name">ESTADOS UNIDOS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002132" model="dst_cuit.codes">
+      <field name="code" eval="50000002132"/>
+      <field name="name">GUATEMALA  - Persona Física</field>
+    </record>
+    <record  id="51600002132" model="dst_cuit.codes">
+      <field name="code" eval="51600002132"/>
+      <field name="name">GUATEMALA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002134" model="dst_cuit.codes">
+      <field name="code" eval="55000002134"/>
+      <field name="name">GUATEMALA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002140" model="dst_cuit.codes">
+      <field name="code" eval="50000002140"/>
+      <field name="name">REPUBLICA COOPERATIVA DE GUYANA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002140" model="dst_cuit.codes">
+      <field name="code" eval="51600002140"/>
+      <field name="name">REPUBLICA COOPERATIVA DE GUYANA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002142" model="dst_cuit.codes">
+      <field name="code" eval="55000002142"/>
+      <field name="name">REPUBLICA COOPERATIVA DE GUYANA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002159" model="dst_cuit.codes">
+      <field name="code" eval="50000002159"/>
+      <field name="name">HAITI  - Persona Física</field>
+    </record>
+    <record  id="51600002159" model="dst_cuit.codes">
+      <field name="code" eval="51600002159"/>
+      <field name="name">HAITI  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002150" model="dst_cuit.codes">
+      <field name="code" eval="55000002150"/>
+      <field name="name">HAITI  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002167" model="dst_cuit.codes">
+      <field name="code" eval="50000002167"/>
+      <field name="name">HONDURAS  - Persona Física</field>
+    </record>
+    <record  id="51600002167" model="dst_cuit.codes">
+      <field name="code" eval="51600002167"/>
+      <field name="name">HONDURAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002169" model="dst_cuit.codes">
+      <field name="code" eval="55000002169"/>
+      <field name="name">HONDURAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002175" model="dst_cuit.codes">
+      <field name="code" eval="50000002175"/>
+      <field name="name">JAMAICA  - Persona Física</field>
+    </record>
+    <record  id="51600002175" model="dst_cuit.codes">
+      <field name="code" eval="51600002175"/>
+      <field name="name">JAMAICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002177" model="dst_cuit.codes">
+      <field name="code" eval="55000002177"/>
+      <field name="name">JAMAICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002183" model="dst_cuit.codes">
+      <field name="code" eval="50000002183"/>
+      <field name="name">MEXICO  - Persona Física</field>
+    </record>
+    <record  id="51600002183" model="dst_cuit.codes">
+      <field name="code" eval="51600002183"/>
+      <field name="name">MEXICO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002185" model="dst_cuit.codes">
+      <field name="code" eval="55000002185"/>
+      <field name="name">MEXICO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002191" model="dst_cuit.codes">
+      <field name="code" eval="50000002191"/>
+      <field name="name">NICARAGUA  - Persona Física</field>
+    </record>
+    <record  id="51600002191" model="dst_cuit.codes">
+      <field name="code" eval="51600002191"/>
+      <field name="name">NICARAGUA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002193" model="dst_cuit.codes">
+      <field name="code" eval="55000002193"/>
+      <field name="name">NICARAGUA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002205" model="dst_cuit.codes">
+      <field name="code" eval="50000002205"/>
+      <field name="name">REPUBLICA DE PANAMA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002205" model="dst_cuit.codes">
+      <field name="code" eval="51600002205"/>
+      <field name="name">REPUBLICA DE PANAMA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002207" model="dst_cuit.codes">
+      <field name="code" eval="55000002207"/>
+      <field name="name">REPUBLICA DE PANAMA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002213" model="dst_cuit.codes">
+      <field name="code" eval="50000002213"/>
+      <field name="name">ESTADO LIBRE ASOCIADO DE PUERTO RICO (Estado asoc. a EEUU)  - Persona Física</field>
+    </record>
+    <record  id="51600002213" model="dst_cuit.codes">
+      <field name="code" eval="51600002213"/>
+      <field name="name">ESTADO LIBRE ASOCIADO DE PUERTO RICO (Estado asoc. a EEUU)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002215" model="dst_cuit.codes">
+      <field name="code" eval="55000002215"/>
+      <field name="name">ESTADO LIBRE ASOCIADO DE PUERTO RICO (Estado asoc. a EEUU)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002221" model="dst_cuit.codes">
+      <field name="code" eval="50000002221"/>
+      <field name="name">PERU  - Persona Física</field>
+    </record>
+    <record  id="51600002221" model="dst_cuit.codes">
+      <field name="code" eval="51600002221"/>
+      <field name="name">PERU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002223" model="dst_cuit.codes">
+      <field name="code" eval="55000002223"/>
+      <field name="name">PERU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002256" model="dst_cuit.codes">
+      <field name="code" eval="50000002256"/>
+      <field name="name">ANTIGUA Y BARBUDA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002256" model="dst_cuit.codes">
+      <field name="code" eval="51600002256"/>
+      <field name="name">ANTIGUA Y BARBUDA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002258" model="dst_cuit.codes">
+      <field name="code" eval="55000002258"/>
+      <field name="name">ANTIGUA Y BARBUDA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002264" model="dst_cuit.codes">
+      <field name="code" eval="50000002264"/>
+      <field name="name">VENEZUELA  - Persona Física</field>
+    </record>
+    <record  id="51600002264" model="dst_cuit.codes">
+      <field name="code" eval="51600002264"/>
+      <field name="name">VENEZUELA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002266" model="dst_cuit.codes">
+      <field name="code" eval="55000002266"/>
+      <field name="name">VENEZUELA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002272" model="dst_cuit.codes">
+      <field name="code" eval="50000002272"/>
+      <field name="name">POS.BRITANICA (AMERICA)  - Persona Física</field>
+    </record>
+    <record  id="51600002272" model="dst_cuit.codes">
+      <field name="code" eval="51600002272"/>
+      <field name="name">POS.BRITANICA (AMERICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002274" model="dst_cuit.codes">
+      <field name="code" eval="55000002274"/>
+      <field name="name">POS.BRITANICA (AMERICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002280" model="dst_cuit.codes">
+      <field name="code" eval="50000002280"/>
+      <field name="name">POS.DANESA (AMERICA)  - Persona Física</field>
+    </record>
+    <record  id="51600002280" model="dst_cuit.codes">
+      <field name="code" eval="51600002280"/>
+      <field name="name">POS.DANESA (AMERICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002282" model="dst_cuit.codes">
+      <field name="code" eval="55000002282"/>
+      <field name="name">POS.DANESA (AMERICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002299" model="dst_cuit.codes">
+      <field name="code" eval="50000002299"/>
+      <field name="name">POS.FRANCESA (AMERICA)  - Persona Física</field>
+    </record>
+    <record  id="51600002299" model="dst_cuit.codes">
+      <field name="code" eval="51600002299"/>
+      <field name="name">POS.FRANCESA (AMERICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002290" model="dst_cuit.codes">
+      <field name="code" eval="55000002290"/>
+      <field name="name">POS.FRANCESA (AMERICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002302" model="dst_cuit.codes">
+      <field name="code" eval="50000002302"/>
+      <field name="name">POS.PAISES BAJOS (AMERICA)  - Persona Física</field>
+    </record>
+    <record  id="51600002302" model="dst_cuit.codes">
+      <field name="code" eval="51600002302"/>
+      <field name="name">POS.PAISES BAJOS (AMERICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002304" model="dst_cuit.codes">
+      <field name="code" eval="55000002304"/>
+      <field name="name">POS.PAISES BAJOS (AMERICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002310" model="dst_cuit.codes">
+      <field name="code" eval="50000002310"/>
+      <field name="name">POS.E.E.U.U. (AMERICA)  - Persona Física</field>
+    </record>
+    <record  id="51600002310" model="dst_cuit.codes">
+      <field name="code" eval="51600002310"/>
+      <field name="name">POS.E.E.U.U. (AMERICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002312" model="dst_cuit.codes">
+      <field name="code" eval="55000002312"/>
+      <field name="name">POS.E.E.U.U. (AMERICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002329" model="dst_cuit.codes">
+      <field name="code" eval="50000002329"/>
+      <field name="name">SURINAME  - Persona Física</field>
+    </record>
+    <record  id="51600002329" model="dst_cuit.codes">
+      <field name="code" eval="51600002329"/>
+      <field name="name">SURINAME  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002320" model="dst_cuit.codes">
+      <field name="code" eval="55000002320"/>
+      <field name="name">SURINAME  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002337" model="dst_cuit.codes">
+      <field name="code" eval="50000002337"/>
+      <field name="name">EL COMMONWEALTH DE DOMINICA (Estado Asociado)  - Persona Física</field>
+    </record>
+    <record  id="51600002337" model="dst_cuit.codes">
+      <field name="code" eval="51600002337"/>
+      <field name="name">EL COMMONWEALTH DE DOMINICA (Estado Asociado)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002339" model="dst_cuit.codes">
+      <field name="code" eval="55000002339"/>
+      <field name="name">EL COMMONWEALTH DE DOMINICA (Estado Asociado)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002345" model="dst_cuit.codes">
+      <field name="code" eval="50000002345"/>
+      <field name="name">SANTA LUCIA  - Persona Física</field>
+    </record>
+    <record  id="51600002345" model="dst_cuit.codes">
+      <field name="code" eval="51600002345"/>
+      <field name="name">SANTA LUCIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002347" model="dst_cuit.codes">
+      <field name="code" eval="55000002347"/>
+      <field name="name">SANTA LUCIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002353" model="dst_cuit.codes">
+      <field name="code" eval="50000002353"/>
+      <field name="name">SAN VICENTE Y LAS GRANADINAS (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002353" model="dst_cuit.codes">
+      <field name="code" eval="51600002353"/>
+      <field name="name">SAN VICENTE Y LAS GRANADINAS (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002355" model="dst_cuit.codes">
+      <field name="code" eval="55000002355"/>
+      <field name="name">SAN VICENTE Y LAS GRANADINAS (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002361" model="dst_cuit.codes">
+      <field name="code" eval="50000002361"/>
+      <field name="name">BELICE (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002361" model="dst_cuit.codes">
+      <field name="code" eval="51600002361"/>
+      <field name="name">BELICE (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002363" model="dst_cuit.codes">
+      <field name="code" eval="55000002363"/>
+      <field name="name">BELICE (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002396" model="dst_cuit.codes">
+      <field name="code" eval="50000002396"/>
+      <field name="name">CUBA  - Persona Física</field>
+    </record>
+    <record  id="51600002396" model="dst_cuit.codes">
+      <field name="code" eval="51600002396"/>
+      <field name="name">CUBA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002398" model="dst_cuit.codes">
+      <field name="code" eval="55000002398"/>
+      <field name="name">CUBA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002426" model="dst_cuit.codes">
+      <field name="code" eval="50000002426"/>
+      <field name="name">ECUADOR  - Persona Física</field>
+    </record>
+    <record  id="51600002426" model="dst_cuit.codes">
+      <field name="code" eval="51600002426"/>
+      <field name="name">ECUADOR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002428" model="dst_cuit.codes">
+      <field name="code" eval="55000002428"/>
+      <field name="name">ECUADOR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002434" model="dst_cuit.codes">
+      <field name="code" eval="50000002434"/>
+      <field name="name">REPUBLICA DE TRINIDAD Y TOBAGO  - Persona Física</field>
+    </record>
+    <record  id="51600002434" model="dst_cuit.codes">
+      <field name="code" eval="51600002434"/>
+      <field name="name">REPUBLICA DE TRINIDAD Y TOBAGO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002436" model="dst_cuit.codes">
+      <field name="code" eval="55000002436"/>
+      <field name="name">REPUBLICA DE TRINIDAD Y TOBAGO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002825" model="dst_cuit.codes">
+      <field name="code" eval="50000002825"/>
+      <field name="name">BUTAN  - Persona Física</field>
+    </record>
+    <record  id="51600002825" model="dst_cuit.codes">
+      <field name="code" eval="51600002825"/>
+      <field name="name">BUTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002827" model="dst_cuit.codes">
+      <field name="code" eval="55000002827"/>
+      <field name="name">BUTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002841" model="dst_cuit.codes">
+      <field name="code" eval="50000002841"/>
+      <field name="name">MYANMAR (EX BIRMANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600002841" model="dst_cuit.codes">
+      <field name="code" eval="51600002841"/>
+      <field name="name">MYANMAR (EX BIRMANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002843" model="dst_cuit.codes">
+      <field name="code" eval="55000002843"/>
+      <field name="name">MYANMAR (EX BIRMANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002876" model="dst_cuit.codes">
+      <field name="code" eval="50000002876"/>
+      <field name="name">ISRAEL  - Persona Física</field>
+    </record>
+    <record  id="51600002876" model="dst_cuit.codes">
+      <field name="code" eval="51600002876"/>
+      <field name="name">ISRAEL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002878" model="dst_cuit.codes">
+      <field name="code" eval="55000002878"/>
+      <field name="name">ISRAEL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002882" model="dst_cuit.codes">
+      <field name="code" eval="50000002882"/>
+      <field name="name">ESTADO ASOCIADO DE GRANADA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002884" model="dst_cuit.codes">
+      <field name="code" eval="51600002884"/>
+      <field name="name">ESTADO ASOCIADO DE GRANADA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002884" model="dst_cuit.codes">
+      <field name="code" eval="55000002884"/>
+      <field name="name">ESTADO ASOCIADO DE GRANADA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002892" model="dst_cuit.codes">
+      <field name="code" eval="50000002892"/>
+      <field name="name">FEDERACION DE SAN CRISTOBAL (Islas Saint Kitts and Nevis)  - Persona Física</field>
+    </record>
+    <record  id="51600002892" model="dst_cuit.codes">
+      <field name="code" eval="51600002892"/>
+      <field name="name">FEDERACION DE SAN CRISTOBAL (Islas Saint Kitts and Nevis)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002894" model="dst_cuit.codes">
+      <field name="code" eval="55000002894"/>
+      <field name="name">FEDERACION DE SAN CRISTOBAL (Islas Saint Kitts and Nevis)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002906" model="dst_cuit.codes">
+      <field name="code" eval="50000002906"/>
+      <field name="name">COMUNIDAD DE LAS BAHAMAS (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002906" model="dst_cuit.codes">
+      <field name="code" eval="51600002906"/>
+      <field name="name">COMUNIDAD DE LAS BAHAMAS (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002908" model="dst_cuit.codes">
+      <field name="code" eval="55000002908"/>
+      <field name="name">COMUNIDAD DE LAS BAHAMAS (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002914" model="dst_cuit.codes">
+      <field name="code" eval="50000002914"/>
+      <field name="name">TAILANDIA  - Persona Física</field>
+    </record>
+    <record  id="51600002914" model="dst_cuit.codes">
+      <field name="code" eval="51600002914"/>
+      <field name="name">TAILANDIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002916" model="dst_cuit.codes">
+      <field name="code" eval="55000002916"/>
+      <field name="name">TAILANDIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002922" model="dst_cuit.codes">
+      <field name="code" eval="50000002922"/>
+      <field name="name">INDETERMINADO (AMERICA)  - Persona Física</field>
+    </record>
+    <record  id="51600002922" model="dst_cuit.codes">
+      <field name="code" eval="51600002922"/>
+      <field name="name">INDETERMINADO (AMERICA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002924" model="dst_cuit.codes">
+      <field name="code" eval="55000002924"/>
+      <field name="name">INDETERMINADO (AMERICA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002930" model="dst_cuit.codes">
+      <field name="code" eval="50000002930"/>
+      <field name="name">IRAN  - Persona Física</field>
+    </record>
+    <record  id="51600002930" model="dst_cuit.codes">
+      <field name="code" eval="51600002930"/>
+      <field name="name">IRAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002932" model="dst_cuit.codes">
+      <field name="code" eval="55000002932"/>
+      <field name="name">IRAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000002981" model="dst_cuit.codes">
+      <field name="code" eval="50000002981"/>
+      <field name="name">ESTADO DE QATAR (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600002981" model="dst_cuit.codes">
+      <field name="code" eval="51600002981"/>
+      <field name="name">ESTADO DE QATAR (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000002983" model="dst_cuit.codes">
+      <field name="code" eval="55000002983"/>
+      <field name="name">ESTADO DE QATAR (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003007" model="dst_cuit.codes">
+      <field name="code" eval="50000003007"/>
+      <field name="name">REINO HACHEMITA DE JORDANIA  - Persona Física</field>
+    </record>
+    <record  id="51600003007" model="dst_cuit.codes">
+      <field name="code" eval="51600003007"/>
+      <field name="name">REINO HACHEMITA DE JORDANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003009" model="dst_cuit.codes">
+      <field name="code" eval="55000003009"/>
+      <field name="name">REINO HACHEMITA DE JORDANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003015" model="dst_cuit.codes">
+      <field name="code" eval="50000003015"/>
+      <field name="name">AFGANISTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003015" model="dst_cuit.codes">
+      <field name="code" eval="51600003015"/>
+      <field name="name">AFGANISTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003017" model="dst_cuit.codes">
+      <field name="code" eval="55000003017"/>
+      <field name="name">AFGANISTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003023" model="dst_cuit.codes">
+      <field name="code" eval="50000003023"/>
+      <field name="name">ARABIA SAUDITA  - Persona Física</field>
+    </record>
+    <record  id="51600003023" model="dst_cuit.codes">
+      <field name="code" eval="51600003023"/>
+      <field name="name">ARABIA SAUDITA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003025" model="dst_cuit.codes">
+      <field name="code" eval="55000003025"/>
+      <field name="name">ARABIA SAUDITA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003031" model="dst_cuit.codes">
+      <field name="code" eval="50000003031"/>
+      <field name="name">ESTADO DE BAHREIN (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600003031" model="dst_cuit.codes">
+      <field name="code" eval="51600003031"/>
+      <field name="name">ESTADO DE BAHREIN (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003033" model="dst_cuit.codes">
+      <field name="code" eval="55000003033"/>
+      <field name="name">ESTADO DE BAHREIN (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003066" model="dst_cuit.codes">
+      <field name="code" eval="50000003066"/>
+      <field name="name">CAMBOYA (EX KAMPUCHEA)  - Persona Física</field>
+    </record>
+    <record  id="51600003066" model="dst_cuit.codes">
+      <field name="code" eval="51600003066"/>
+      <field name="name">CAMBOYA (EX KAMPUCHEA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003068" model="dst_cuit.codes">
+      <field name="code" eval="55000003068"/>
+      <field name="name">CAMBOYA (EX KAMPUCHEA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003074" model="dst_cuit.codes">
+      <field name="code" eval="50000003074"/>
+      <field name="name">REPUBLICA DEMOCRATICA SOCIALISTA DE SRI LANKA  - Persona Física</field>
+    </record>
+    <record  id="51600003074" model="dst_cuit.codes">
+      <field name="code" eval="51600003074"/>
+      <field name="name">REPUBLICA DEMOCRATICA SOCIALISTA DE SRI LANKA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003076" model="dst_cuit.codes">
+      <field name="code" eval="55000003076"/>
+      <field name="name">REPUBLICA DEMOCRATICA SOCIALISTA DE SRI LANKA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003082" model="dst_cuit.codes">
+      <field name="code" eval="50000003082"/>
+      <field name="name">COREA DEMOCRATICA   - Persona Física</field>
+    </record>
+    <record  id="51600003082" model="dst_cuit.codes">
+      <field name="code" eval="51600003082"/>
+      <field name="name">COREA DEMOCRATICA   - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003084" model="dst_cuit.codes">
+      <field name="code" eval="55000003084"/>
+      <field name="name">COREA DEMOCRATICA   - Persona Jurídica</field>
+    </record>
+    <record  id="50000003090" model="dst_cuit.codes">
+      <field name="code" eval="50000003090"/>
+      <field name="name">COREA REPUBLICANA  - Persona Física</field>
+    </record>
+    <record  id="51600003090" model="dst_cuit.codes">
+      <field name="code" eval="51600003090"/>
+      <field name="name">COREA REPUBLICANA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003092" model="dst_cuit.codes">
+      <field name="code" eval="55000003092"/>
+      <field name="name">COREA REPUBLICANA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003104" model="dst_cuit.codes">
+      <field name="code" eval="50000003104"/>
+      <field name="name">CHINA REP.POPULAR  - Persona Física</field>
+    </record>
+    <record  id="51600003104" model="dst_cuit.codes">
+      <field name="code" eval="51600003104"/>
+      <field name="name">CHINA REP.POPULAR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003106" model="dst_cuit.codes">
+      <field name="code" eval="55000003106"/>
+      <field name="name">CHINA REP.POPULAR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003112" model="dst_cuit.codes">
+      <field name="code" eval="50000003112"/>
+      <field name="name">REPUBLICA DE CHIPRE (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600003112" model="dst_cuit.codes">
+      <field name="code" eval="51600003112"/>
+      <field name="name">REPUBLICA DE CHIPRE (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003114" model="dst_cuit.codes">
+      <field name="code" eval="55000003114"/>
+      <field name="name">REPUBLICA DE CHIPRE (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003120" model="dst_cuit.codes">
+      <field name="code" eval="50000003120"/>
+      <field name="name">FILIPINAS  - Persona Física</field>
+    </record>
+    <record  id="51600003120" model="dst_cuit.codes">
+      <field name="code" eval="51600003120"/>
+      <field name="name">FILIPINAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003122" model="dst_cuit.codes">
+      <field name="code" eval="55000003122"/>
+      <field name="name">FILIPINAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003139" model="dst_cuit.codes">
+      <field name="code" eval="50000003139"/>
+      <field name="name">TAIWAN  - Persona Física</field>
+    </record>
+    <record  id="51600003139" model="dst_cuit.codes">
+      <field name="code" eval="51600003139"/>
+      <field name="name">TAIWAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003130" model="dst_cuit.codes">
+      <field name="code" eval="55000003130"/>
+      <field name="name">TAIWAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003147" model="dst_cuit.codes">
+      <field name="code" eval="50000003147"/>
+      <field name="name">GAZA  - Persona Física</field>
+    </record>
+    <record  id="51600003147" model="dst_cuit.codes">
+      <field name="code" eval="51600003147"/>
+      <field name="name">GAZA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003149" model="dst_cuit.codes">
+      <field name="code" eval="55000003149"/>
+      <field name="name">GAZA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003155" model="dst_cuit.codes">
+      <field name="code" eval="50000003155"/>
+      <field name="name">INDIA  - Persona Física</field>
+    </record>
+    <record  id="51600003155" model="dst_cuit.codes">
+      <field name="code" eval="51600003155"/>
+      <field name="name">INDIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003157" model="dst_cuit.codes">
+      <field name="code" eval="55000003157"/>
+      <field name="name">INDIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003163" model="dst_cuit.codes">
+      <field name="code" eval="50000003163"/>
+      <field name="name">INDONESIA  - Persona Física</field>
+    </record>
+    <record  id="51600003163" model="dst_cuit.codes">
+      <field name="code" eval="51600003163"/>
+      <field name="name">INDONESIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003165" model="dst_cuit.codes">
+      <field name="code" eval="55000003165"/>
+      <field name="name">INDONESIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003171" model="dst_cuit.codes">
+      <field name="code" eval="50000003171"/>
+      <field name="name">IRAK  - Persona Física</field>
+    </record>
+    <record  id="51600003171" model="dst_cuit.codes">
+      <field name="code" eval="51600003171"/>
+      <field name="name">IRAK  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003173" model="dst_cuit.codes">
+      <field name="code" eval="55000003173"/>
+      <field name="name">IRAK  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003201" model="dst_cuit.codes">
+      <field name="code" eval="50000003201"/>
+      <field name="name">JAPON  - Persona Física</field>
+    </record>
+    <record  id="51600003201" model="dst_cuit.codes">
+      <field name="code" eval="51600003201"/>
+      <field name="name">JAPON  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003203" model="dst_cuit.codes">
+      <field name="code" eval="55000003203"/>
+      <field name="name">JAPON  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003236" model="dst_cuit.codes">
+      <field name="code" eval="50000003236"/>
+      <field name="name">ESTADO DE KUWAIT (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600003236" model="dst_cuit.codes">
+      <field name="code" eval="51600003236"/>
+      <field name="name">ESTADO DE KUWAIT (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003238" model="dst_cuit.codes">
+      <field name="code" eval="55000003238"/>
+      <field name="name">ESTADO DE KUWAIT (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003244" model="dst_cuit.codes">
+      <field name="code" eval="50000003244"/>
+      <field name="name">LAOS  - Persona Física</field>
+    </record>
+    <record  id="51600003244" model="dst_cuit.codes">
+      <field name="code" eval="51600003244"/>
+      <field name="name">LAOS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003246" model="dst_cuit.codes">
+      <field name="code" eval="55000003246"/>
+      <field name="name">LAOS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003252" model="dst_cuit.codes">
+      <field name="code" eval="50000003252"/>
+      <field name="name">LIBANO  - Persona Física</field>
+    </record>
+    <record  id="51600003252" model="dst_cuit.codes">
+      <field name="code" eval="51600003252"/>
+      <field name="name">LIBANO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003254" model="dst_cuit.codes">
+      <field name="code" eval="55000003254"/>
+      <field name="name">LIBANO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003260" model="dst_cuit.codes">
+      <field name="code" eval="50000003260"/>
+      <field name="name">MALASIA  - Persona Física</field>
+    </record>
+    <record  id="51600003260" model="dst_cuit.codes">
+      <field name="code" eval="51600003260"/>
+      <field name="name">MALASIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003262" model="dst_cuit.codes">
+      <field name="code" eval="55000003262"/>
+      <field name="name">MALASIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003279" model="dst_cuit.codes">
+      <field name="code" eval="50000003279"/>
+      <field name="name">REPUBLICA DE MALDIVAS (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600003279" model="dst_cuit.codes">
+      <field name="code" eval="51600003279"/>
+      <field name="name">REPUBLICA DE MALDIVAS (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003270" model="dst_cuit.codes">
+      <field name="code" eval="55000003270"/>
+      <field name="name">REPUBLICA DE MALDIVAS (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003287" model="dst_cuit.codes">
+      <field name="code" eval="50000003287"/>
+      <field name="name">SULTANATO DE OMAN  - Persona Física</field>
+    </record>
+    <record  id="51600003287" model="dst_cuit.codes">
+      <field name="code" eval="51600003287"/>
+      <field name="name">SULTANATO DE OMAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003289" model="dst_cuit.codes">
+      <field name="code" eval="55000003289"/>
+      <field name="name">SULTANATO DE OMAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003295" model="dst_cuit.codes">
+      <field name="code" eval="50000003295"/>
+      <field name="name">MONGOLIA  - Persona Física</field>
+    </record>
+    <record  id="51600003295" model="dst_cuit.codes">
+      <field name="code" eval="51600003295"/>
+      <field name="name">MONGOLIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003297" model="dst_cuit.codes">
+      <field name="code" eval="55000003297"/>
+      <field name="name">MONGOLIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003309" model="dst_cuit.codes">
+      <field name="code" eval="50000003309"/>
+      <field name="name">NEPAL  - Persona Física</field>
+    </record>
+    <record  id="51600003309" model="dst_cuit.codes">
+      <field name="code" eval="51600003309"/>
+      <field name="name">NEPAL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003300" model="dst_cuit.codes">
+      <field name="code" eval="55000003300"/>
+      <field name="name">NEPAL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003317" model="dst_cuit.codes">
+      <field name="code" eval="50000003317"/>
+      <field name="name">EMIRATOS ARABES UNIDOS (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600003317" model="dst_cuit.codes">
+      <field name="code" eval="51600003317"/>
+      <field name="name">EMIRATOS ARABES UNIDOS (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003319" model="dst_cuit.codes">
+      <field name="code" eval="55000003319"/>
+      <field name="name">EMIRATOS ARABES UNIDOS (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003325" model="dst_cuit.codes">
+      <field name="code" eval="50000003325"/>
+      <field name="name">PAKISTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003325" model="dst_cuit.codes">
+      <field name="code" eval="51600003325"/>
+      <field name="name">PAKISTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003327" model="dst_cuit.codes">
+      <field name="code" eval="55000003327"/>
+      <field name="name">PAKISTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003333" model="dst_cuit.codes">
+      <field name="code" eval="50000003333"/>
+      <field name="name">SINGAPUR  - Persona Física</field>
+    </record>
+    <record  id="51600003333" model="dst_cuit.codes">
+      <field name="code" eval="51600003333"/>
+      <field name="name">SINGAPUR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003335" model="dst_cuit.codes">
+      <field name="code" eval="55000003335"/>
+      <field name="name">SINGAPUR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003341" model="dst_cuit.codes">
+      <field name="code" eval="50000003341"/>
+      <field name="name">SIRIA  - Persona Física</field>
+    </record>
+    <record  id="51600003341" model="dst_cuit.codes">
+      <field name="code" eval="51600003341"/>
+      <field name="name">SIRIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003343" model="dst_cuit.codes">
+      <field name="code" eval="55000003343"/>
+      <field name="name">SIRIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003376" model="dst_cuit.codes">
+      <field name="code" eval="50000003376"/>
+      <field name="name">VIETNAM  - Persona Física</field>
+    </record>
+    <record  id="51600003376" model="dst_cuit.codes">
+      <field name="code" eval="51600003376"/>
+      <field name="name">VIETNAM  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003378" model="dst_cuit.codes">
+      <field name="code" eval="55000003378"/>
+      <field name="name">VIETNAM  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003392" model="dst_cuit.codes">
+      <field name="code" eval="50000003392"/>
+      <field name="name">REPUBLICA DEL YEMEN  - Persona Física</field>
+    </record>
+    <record  id="51600003392" model="dst_cuit.codes">
+      <field name="code" eval="51600003392"/>
+      <field name="name">REPUBLICA DEL YEMEN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003394" model="dst_cuit.codes">
+      <field name="code" eval="55000003394"/>
+      <field name="name">REPUBLICA DEL YEMEN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003414" model="dst_cuit.codes">
+      <field name="code" eval="50000003414"/>
+      <field name="name">POS.BRITANICA (HONG KONG)  - Persona Física</field>
+    </record>
+    <record  id="51600003414" model="dst_cuit.codes">
+      <field name="code" eval="51600003414"/>
+      <field name="name">POS.BRITANICA (HONG KONG)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003416" model="dst_cuit.codes">
+      <field name="code" eval="55000003416"/>
+      <field name="name">POS.BRITANICA (HONG KONG)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003422" model="dst_cuit.codes">
+      <field name="code" eval="50000003422"/>
+      <field name="name">POS.JAPONESA (ASIA)  - Persona Física</field>
+    </record>
+    <record  id="51600003422" model="dst_cuit.codes">
+      <field name="code" eval="51600003422"/>
+      <field name="name">POS.JAPONESA (ASIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003424" model="dst_cuit.codes">
+      <field name="code" eval="55000003424"/>
+      <field name="name">POS.JAPONESA (ASIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003449" model="dst_cuit.codes">
+      <field name="code" eval="50000003449"/>
+      <field name="name">MACAO  - Persona Física</field>
+    </record>
+    <record  id="51600003449" model="dst_cuit.codes">
+      <field name="code" eval="51600003449"/>
+      <field name="name">MACAO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003440" model="dst_cuit.codes">
+      <field name="code" eval="55000003440"/>
+      <field name="name">MACAO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003457" model="dst_cuit.codes">
+      <field name="code" eval="50000003457"/>
+      <field name="name">BANGLADESH  - Persona Física</field>
+    </record>
+    <record  id="51600003457" model="dst_cuit.codes">
+      <field name="code" eval="51600003457"/>
+      <field name="name">BANGLADESH  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003459" model="dst_cuit.codes">
+      <field name="code" eval="55000003459"/>
+      <field name="name">BANGLADESH  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003503" model="dst_cuit.codes">
+      <field name="code" eval="50000003503"/>
+      <field name="name">TURQUIA  - Persona Física</field>
+    </record>
+    <record  id="51600003503" model="dst_cuit.codes">
+      <field name="code" eval="51600003503"/>
+      <field name="name">TURQUIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003505" model="dst_cuit.codes">
+      <field name="code" eval="55000003505"/>
+      <field name="name">TURQUIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003546" model="dst_cuit.codes">
+      <field name="code" eval="50000003546"/>
+      <field name="name">ITALIA  - Persona Física</field>
+    </record>
+    <record  id="51600003546" model="dst_cuit.codes">
+      <field name="code" eval="51600003546"/>
+      <field name="name">ITALIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003548" model="dst_cuit.codes">
+      <field name="code" eval="55000003548"/>
+      <field name="name">ITALIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003554" model="dst_cuit.codes">
+      <field name="code" eval="50000003554"/>
+      <field name="name">TURKMENISTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003554" model="dst_cuit.codes">
+      <field name="code" eval="51600003554"/>
+      <field name="name">TURKMENISTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003556" model="dst_cuit.codes">
+      <field name="code" eval="55000003556"/>
+      <field name="name">TURKMENISTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003562" model="dst_cuit.codes">
+      <field name="code" eval="50000003562"/>
+      <field name="name">UZBEKISTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003562" model="dst_cuit.codes">
+      <field name="code" eval="51600003562"/>
+      <field name="name">UZBEKISTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003564" model="dst_cuit.codes">
+      <field name="code" eval="55000003564"/>
+      <field name="name">UZBEKISTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003570" model="dst_cuit.codes">
+      <field name="code" eval="50000003570"/>
+      <field name="name">TERRITORIOS AUTONOMOS PALESTINOS  - Persona Física</field>
+    </record>
+    <record  id="51600003570" model="dst_cuit.codes">
+      <field name="code" eval="51600003570"/>
+      <field name="name">TERRITORIOS AUTONOMOS PALESTINOS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003572" model="dst_cuit.codes">
+      <field name="code" eval="55000003572"/>
+      <field name="name">TERRITORIOS AUTONOMOS PALESTINOS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003813" model="dst_cuit.codes">
+      <field name="code" eval="50000003813"/>
+      <field name="name">ISLANDIA  - Persona Física</field>
+    </record>
+    <record  id="51600003813" model="dst_cuit.codes">
+      <field name="code" eval="51600003813"/>
+      <field name="name">ISLANDIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003815" model="dst_cuit.codes">
+      <field name="code" eval="55000003815"/>
+      <field name="name">ISLANDIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003880" model="dst_cuit.codes">
+      <field name="code" eval="50000003880"/>
+      <field name="name">GEORGIA  - Persona Física</field>
+    </record>
+    <record  id="51600003880" model="dst_cuit.codes">
+      <field name="code" eval="51600003880"/>
+      <field name="name">GEORGIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003882" model="dst_cuit.codes">
+      <field name="code" eval="55000003882"/>
+      <field name="name">GEORGIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003899" model="dst_cuit.codes">
+      <field name="code" eval="50000003899"/>
+      <field name="name">TAYIKISTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003899" model="dst_cuit.codes">
+      <field name="code" eval="51600003899"/>
+      <field name="name">TAYIKISTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003890" model="dst_cuit.codes">
+      <field name="code" eval="55000003890"/>
+      <field name="name">TAYIKISTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003902" model="dst_cuit.codes">
+      <field name="code" eval="50000003902"/>
+      <field name="name">AZERBAIDZHAN  - Persona Física</field>
+    </record>
+    <record  id="51600003902" model="dst_cuit.codes">
+      <field name="code" eval="51600003902"/>
+      <field name="name">AZERBAIDZHAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003904" model="dst_cuit.codes">
+      <field name="code" eval="55000003904"/>
+      <field name="name">AZERBAIDZHAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003910" model="dst_cuit.codes">
+      <field name="code" eval="50000003910"/>
+      <field name="name">BRUNEI DARUSSALAM (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600003910" model="dst_cuit.codes">
+      <field name="code" eval="51600003910"/>
+      <field name="name">BRUNEI DARUSSALAM (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003912" model="dst_cuit.codes">
+      <field name="code" eval="55000003912"/>
+      <field name="name">BRUNEI DARUSSALAM (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003929" model="dst_cuit.codes">
+      <field name="code" eval="50000003929"/>
+      <field name="name">KAZAJSTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003929" model="dst_cuit.codes">
+      <field name="code" eval="51600003929"/>
+      <field name="name">KAZAJSTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003920" model="dst_cuit.codes">
+      <field name="code" eval="55000003920"/>
+      <field name="name">KAZAJSTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003937" model="dst_cuit.codes">
+      <field name="code" eval="50000003937"/>
+      <field name="name">KIRGUISTAN  - Persona Física</field>
+    </record>
+    <record  id="51600003937" model="dst_cuit.codes">
+      <field name="code" eval="51600003937"/>
+      <field name="name">KIRGUISTAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003939" model="dst_cuit.codes">
+      <field name="code" eval="55000003939"/>
+      <field name="name">KIRGUISTAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000003961" model="dst_cuit.codes">
+      <field name="code" eval="50000003961"/>
+      <field name="name">INDETERMINADO (ASIA)  - Persona Física</field>
+    </record>
+    <record  id="51600003961" model="dst_cuit.codes">
+      <field name="code" eval="51600003961"/>
+      <field name="name">INDETERMINADO (ASIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000003963" model="dst_cuit.codes">
+      <field name="code" eval="55000003963"/>
+      <field name="name">INDETERMINADO (ASIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004011" model="dst_cuit.codes">
+      <field name="code" eval="50000004011"/>
+      <field name="name">REPUBLICA DE ALBANIA  - Persona Física</field>
+    </record>
+    <record  id="51600004011" model="dst_cuit.codes">
+      <field name="code" eval="51600004011"/>
+      <field name="name">REPUBLICA DE ALBANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004013" model="dst_cuit.codes">
+      <field name="code" eval="55000004013"/>
+      <field name="name">REPUBLICA DE ALBANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004046" model="dst_cuit.codes">
+      <field name="code" eval="50000004046"/>
+      <field name="name">PRINCIPADO DEL VALLE DE ANDORRA  - Persona Física</field>
+    </record>
+    <record  id="51600004046" model="dst_cuit.codes">
+      <field name="code" eval="51600004046"/>
+      <field name="name">PRINCIPADO DEL VALLE DE ANDORRA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004048" model="dst_cuit.codes">
+      <field name="code" eval="55000004048"/>
+      <field name="name">PRINCIPADO DEL VALLE DE ANDORRA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004054" model="dst_cuit.codes">
+      <field name="code" eval="50000004054"/>
+      <field name="name">AUSTRIA  - Persona Física</field>
+    </record>
+    <record  id="51600004054" model="dst_cuit.codes">
+      <field name="code" eval="51600004054"/>
+      <field name="name">AUSTRIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004056" model="dst_cuit.codes">
+      <field name="code" eval="55000004056"/>
+      <field name="name">AUSTRIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004062" model="dst_cuit.codes">
+      <field name="code" eval="50000004062"/>
+      <field name="name">BELGICA  - Persona Física</field>
+    </record>
+    <record  id="51600004062" model="dst_cuit.codes">
+      <field name="code" eval="51600004062"/>
+      <field name="name">BELGICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004064" model="dst_cuit.codes">
+      <field name="code" eval="55000004064"/>
+      <field name="name">BELGICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004070" model="dst_cuit.codes">
+      <field name="code" eval="50000004070"/>
+      <field name="name">BULGARIA  - Persona Física</field>
+    </record>
+    <record  id="51600004070" model="dst_cuit.codes">
+      <field name="code" eval="51600004070"/>
+      <field name="name">BULGARIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004072" model="dst_cuit.codes">
+      <field name="code" eval="55000004072"/>
+      <field name="name">BULGARIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004097" model="dst_cuit.codes">
+      <field name="code" eval="50000004097"/>
+      <field name="name">DINAMARCA  - Persona Física</field>
+    </record>
+    <record  id="51600004097" model="dst_cuit.codes">
+      <field name="code" eval="51600004097"/>
+      <field name="name">DINAMARCA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004099" model="dst_cuit.codes">
+      <field name="code" eval="55000004099"/>
+      <field name="name">DINAMARCA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004100" model="dst_cuit.codes">
+      <field name="code" eval="50000004100"/>
+      <field name="name">ESPAÑA  - Persona Física</field>
+    </record>
+    <record  id="51600004100" model="dst_cuit.codes">
+      <field name="code" eval="51600004100"/>
+      <field name="name">ESPAÑA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004102" model="dst_cuit.codes">
+      <field name="code" eval="55000004102"/>
+      <field name="name">ESPAÑA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004119" model="dst_cuit.codes">
+      <field name="code" eval="50000004119"/>
+      <field name="name">FINLANDIA  - Persona Física</field>
+    </record>
+    <record  id="51600004119" model="dst_cuit.codes">
+      <field name="code" eval="51600004119"/>
+      <field name="name">FINLANDIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004110" model="dst_cuit.codes">
+      <field name="code" eval="55000004110"/>
+      <field name="name">FINLANDIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004127" model="dst_cuit.codes">
+      <field name="code" eval="50000004127"/>
+      <field name="name">FRANCIA  - Persona Física</field>
+    </record>
+    <record  id="51600004127" model="dst_cuit.codes">
+      <field name="code" eval="51600004127"/>
+      <field name="name">FRANCIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004129" model="dst_cuit.codes">
+      <field name="code" eval="55000004129"/>
+      <field name="name">FRANCIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004135" model="dst_cuit.codes">
+      <field name="code" eval="50000004135"/>
+      <field name="name">GRECIA  - Persona Física</field>
+    </record>
+    <record  id="51600004135" model="dst_cuit.codes">
+      <field name="code" eval="51600004135"/>
+      <field name="name">GRECIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004137" model="dst_cuit.codes">
+      <field name="code" eval="55000004137"/>
+      <field name="name">GRECIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004143" model="dst_cuit.codes">
+      <field name="code" eval="50000004143"/>
+      <field name="name">HUNGRIA  - Persona Física</field>
+    </record>
+    <record  id="51600004143" model="dst_cuit.codes">
+      <field name="code" eval="51600004143"/>
+      <field name="name">HUNGRIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004145" model="dst_cuit.codes">
+      <field name="code" eval="55000004145"/>
+      <field name="name">HUNGRIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004151" model="dst_cuit.codes">
+      <field name="code" eval="50000004151"/>
+      <field name="name">IRLANDA (EIRE)  - Persona Física</field>
+    </record>
+    <record  id="51600004151" model="dst_cuit.codes">
+      <field name="code" eval="51600004151"/>
+      <field name="name">IRLANDA (EIRE)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004153" model="dst_cuit.codes">
+      <field name="code" eval="55000004153"/>
+      <field name="name">IRLANDA (EIRE)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004186" model="dst_cuit.codes">
+      <field name="code" eval="50000004186"/>
+      <field name="name">PRINCIPADO DE LIECHTENSTEIN (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600004186" model="dst_cuit.codes">
+      <field name="code" eval="51600004186"/>
+      <field name="name">PRINCIPADO DE LIECHTENSTEIN (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004188" model="dst_cuit.codes">
+      <field name="code" eval="55000004188"/>
+      <field name="name">PRINCIPADO DE LIECHTENSTEIN (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004194" model="dst_cuit.codes">
+      <field name="code" eval="50000004194"/>
+      <field name="name">GRAN DUCADO DE LUXEMBURGO  - Persona Física</field>
+    </record>
+    <record  id="51600004194" model="dst_cuit.codes">
+      <field name="code" eval="51600004194"/>
+      <field name="name">GRAN DUCADO DE LUXEMBURGO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004196" model="dst_cuit.codes">
+      <field name="code" eval="55000004196"/>
+      <field name="name">GRAN DUCADO DE LUXEMBURGO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004216" model="dst_cuit.codes">
+      <field name="code" eval="50000004216"/>
+      <field name="name">PRINCIPADO DE MONACO  - Persona Física</field>
+    </record>
+    <record  id="51600004216" model="dst_cuit.codes">
+      <field name="code" eval="51600004216"/>
+      <field name="name">PRINCIPADO DE MONACO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004218" model="dst_cuit.codes">
+      <field name="code" eval="55000004218"/>
+      <field name="name">PRINCIPADO DE MONACO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004224" model="dst_cuit.codes">
+      <field name="code" eval="50000004224"/>
+      <field name="name">NORUEGA  - Persona Física</field>
+    </record>
+    <record  id="51600004224" model="dst_cuit.codes">
+      <field name="code" eval="51600004224"/>
+      <field name="name">NORUEGA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004226" model="dst_cuit.codes">
+      <field name="code" eval="55000004226"/>
+      <field name="name">NORUEGA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004232" model="dst_cuit.codes">
+      <field name="code" eval="50000004232"/>
+      <field name="name">PAISES BAJOS  - Persona Física</field>
+    </record>
+    <record  id="51600004232" model="dst_cuit.codes">
+      <field name="code" eval="51600004232"/>
+      <field name="name">PAISES BAJOS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004234" model="dst_cuit.codes">
+      <field name="code" eval="55000004234"/>
+      <field name="name">PAISES BAJOS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004240" model="dst_cuit.codes">
+      <field name="code" eval="50000004240"/>
+      <field name="name">POLONIA  - Persona Física</field>
+    </record>
+    <record  id="51600004240" model="dst_cuit.codes">
+      <field name="code" eval="51600004240"/>
+      <field name="name">POLONIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004242" model="dst_cuit.codes">
+      <field name="code" eval="55000004242"/>
+      <field name="name">POLONIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004259" model="dst_cuit.codes">
+      <field name="code" eval="50000004259"/>
+      <field name="name">PORTUGAL  - Persona Física</field>
+    </record>
+    <record  id="51600004259" model="dst_cuit.codes">
+      <field name="code" eval="51600004259"/>
+      <field name="name">PORTUGAL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004250" model="dst_cuit.codes">
+      <field name="code" eval="55000004250"/>
+      <field name="name">PORTUGAL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004267" model="dst_cuit.codes">
+      <field name="code" eval="50000004267"/>
+      <field name="name">REINO UNIDO  - Persona Física</field>
+    </record>
+    <record  id="51600004267" model="dst_cuit.codes">
+      <field name="code" eval="51600004267"/>
+      <field name="name">REINO UNIDO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004269" model="dst_cuit.codes">
+      <field name="code" eval="55000004269"/>
+      <field name="name">REINO UNIDO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004275" model="dst_cuit.codes">
+      <field name="code" eval="50000004275"/>
+      <field name="name">RUMANIA  - Persona Física</field>
+    </record>
+    <record  id="51600004275" model="dst_cuit.codes">
+      <field name="code" eval="51600004275"/>
+      <field name="name">RUMANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004277" model="dst_cuit.codes">
+      <field name="code" eval="55000004277"/>
+      <field name="name">RUMANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004283" model="dst_cuit.codes">
+      <field name="code" eval="50000004283"/>
+      <field name="name">SERENISIMA REPUBLICA DE SAN MARINO (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600004283" model="dst_cuit.codes">
+      <field name="code" eval="51600004283"/>
+      <field name="name">SERENISIMA REPUBLICA DE SAN MARINO (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004285" model="dst_cuit.codes">
+      <field name="code" eval="55000004285"/>
+      <field name="name">SERENISIMA REPUBLICA DE SAN MARINO (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004291" model="dst_cuit.codes">
+      <field name="code" eval="50000004291"/>
+      <field name="name">SUECIA  - Persona Física</field>
+    </record>
+    <record  id="51600004291" model="dst_cuit.codes">
+      <field name="code" eval="51600004291"/>
+      <field name="name">SUECIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004293" model="dst_cuit.codes">
+      <field name="code" eval="55000004293"/>
+      <field name="name">SUECIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004305" model="dst_cuit.codes">
+      <field name="code" eval="50000004305"/>
+      <field name="name">SUIZA  - Persona Física</field>
+    </record>
+    <record  id="51600004305" model="dst_cuit.codes">
+      <field name="code" eval="51600004305"/>
+      <field name="name">SUIZA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004307" model="dst_cuit.codes">
+      <field name="code" eval="55000004307"/>
+      <field name="name">SUIZA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004313" model="dst_cuit.codes">
+      <field name="code" eval="50000004313"/>
+      <field name="name">SANTA SEDE (VATICANO)  - Persona Física</field>
+    </record>
+    <record  id="51600004313" model="dst_cuit.codes">
+      <field name="code" eval="51600004313"/>
+      <field name="name">SANTA SEDE (VATICANO)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004315" model="dst_cuit.codes">
+      <field name="code" eval="55000004315"/>
+      <field name="name">SANTA SEDE (VATICANO)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004321" model="dst_cuit.codes">
+      <field name="code" eval="50000004321"/>
+      <field name="name">YUGOSLAVIA  - Persona Física</field>
+    </record>
+    <record  id="51600004321" model="dst_cuit.codes">
+      <field name="code" eval="51600004321"/>
+      <field name="name">YUGOSLAVIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004323" model="dst_cuit.codes">
+      <field name="code" eval="55000004323"/>
+      <field name="name">YUGOSLAVIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004364" model="dst_cuit.codes">
+      <field name="code" eval="50000004364"/>
+      <field name="name">REPUBLICA DE MALTA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600004364" model="dst_cuit.codes">
+      <field name="code" eval="51600004364"/>
+      <field name="name">REPUBLICA DE MALTA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004366" model="dst_cuit.codes">
+      <field name="code" eval="55000004366"/>
+      <field name="name">REPUBLICA DE MALTA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004380" model="dst_cuit.codes">
+      <field name="code" eval="50000004380"/>
+      <field name="name">ALEMANIA, REP. FED.  - Persona Física</field>
+    </record>
+    <record  id="51600004380" model="dst_cuit.codes">
+      <field name="code" eval="51600004380"/>
+      <field name="name">ALEMANIA, REP. FED.  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004382" model="dst_cuit.codes">
+      <field name="code" eval="55000004382"/>
+      <field name="name">ALEMANIA, REP. FED.  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004399" model="dst_cuit.codes">
+      <field name="code" eval="50000004399"/>
+      <field name="name">BIELORUSIA  - Persona Física</field>
+    </record>
+    <record  id="51600004399" model="dst_cuit.codes">
+      <field name="code" eval="51600004399"/>
+      <field name="name">BIELORUSIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004390" model="dst_cuit.codes">
+      <field name="code" eval="55000004390"/>
+      <field name="name">BIELORUSIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004402" model="dst_cuit.codes">
+      <field name="code" eval="50000004402"/>
+      <field name="name">ESTONIA  - Persona Física</field>
+    </record>
+    <record  id="51600004402" model="dst_cuit.codes">
+      <field name="code" eval="51600004402"/>
+      <field name="name">ESTONIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004404" model="dst_cuit.codes">
+      <field name="code" eval="55000004404"/>
+      <field name="name">ESTONIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004410" model="dst_cuit.codes">
+      <field name="code" eval="50000004410"/>
+      <field name="name">LETONIA  - Persona Física</field>
+    </record>
+    <record  id="51600004410" model="dst_cuit.codes">
+      <field name="code" eval="51600004410"/>
+      <field name="name">LETONIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004412" model="dst_cuit.codes">
+      <field name="code" eval="55000004412"/>
+      <field name="name">LETONIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004429" model="dst_cuit.codes">
+      <field name="code" eval="50000004429"/>
+      <field name="name">LITUANIA  - Persona Física</field>
+    </record>
+    <record  id="51600004429" model="dst_cuit.codes">
+      <field name="code" eval="51600004429"/>
+      <field name="name">LITUANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004420" model="dst_cuit.codes">
+      <field name="code" eval="55000004420"/>
+      <field name="name">LITUANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004437" model="dst_cuit.codes">
+      <field name="code" eval="50000004437"/>
+      <field name="name">MOLDOVA  - Persona Física</field>
+    </record>
+    <record  id="51600004437" model="dst_cuit.codes">
+      <field name="code" eval="51600004437"/>
+      <field name="name">MOLDOVA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004439" model="dst_cuit.codes">
+      <field name="code" eval="55000004439"/>
+      <field name="name">MOLDOVA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004461" model="dst_cuit.codes">
+      <field name="code" eval="50000004461"/>
+      <field name="name">BOSNIA HERZEGOVINA  - Persona Física</field>
+    </record>
+    <record  id="51600004461" model="dst_cuit.codes">
+      <field name="code" eval="51600004461"/>
+      <field name="name">BOSNIA HERZEGOVINA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004463" model="dst_cuit.codes">
+      <field name="code" eval="55000004463"/>
+      <field name="name">BOSNIA HERZEGOVINA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004496" model="dst_cuit.codes">
+      <field name="code" eval="50000004496"/>
+      <field name="name">ESLOVENIA  - Persona Física</field>
+    </record>
+    <record  id="51600004496" model="dst_cuit.codes">
+      <field name="code" eval="51600004496"/>
+      <field name="name">ESLOVENIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004498" model="dst_cuit.codes">
+      <field name="code" eval="55000004498"/>
+      <field name="name">ESLOVENIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004909" model="dst_cuit.codes">
+      <field name="code" eval="50000004909"/>
+      <field name="name">MACEDONIA  - Persona Física</field>
+    </record>
+    <record  id="51600004909" model="dst_cuit.codes">
+      <field name="code" eval="51600004909"/>
+      <field name="name">MACEDONIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004900" model="dst_cuit.codes">
+      <field name="code" eval="55000004900"/>
+      <field name="name">MACEDONIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004917" model="dst_cuit.codes">
+      <field name="code" eval="50000004917"/>
+      <field name="name">POS.BRITANICA (EUROPA)  - Persona Física</field>
+    </record>
+    <record  id="51600004917" model="dst_cuit.codes">
+      <field name="code" eval="51600004917"/>
+      <field name="name">POS.BRITANICA (EUROPA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004919" model="dst_cuit.codes">
+      <field name="code" eval="55000004919"/>
+      <field name="name">POS.BRITANICA (EUROPA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004984" model="dst_cuit.codes">
+      <field name="code" eval="50000004984"/>
+      <field name="name">INDETERMINADO (EUROPA)  - Persona Física</field>
+    </record>
+    <record  id="51600004984" model="dst_cuit.codes">
+      <field name="code" eval="51600004984"/>
+      <field name="name">INDETERMINADO (EUROPA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004986" model="dst_cuit.codes">
+      <field name="code" eval="55000004986"/>
+      <field name="name">INDETERMINADO (EUROPA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000004992" model="dst_cuit.codes">
+      <field name="code" eval="50000004992"/>
+      <field name="name">AUSTRALIA  - Persona Física</field>
+    </record>
+    <record  id="51600004992" model="dst_cuit.codes">
+      <field name="code" eval="51600004992"/>
+      <field name="name">AUSTRALIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000004994" model="dst_cuit.codes">
+      <field name="code" eval="55000004994"/>
+      <field name="name">AUSTRALIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005034" model="dst_cuit.codes">
+      <field name="code" eval="50000005034"/>
+      <field name="name">REPUBLICA DE NAURU (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600005034" model="dst_cuit.codes">
+      <field name="code" eval="51600005034"/>
+      <field name="name">REPUBLICA DE NAURU (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005036" model="dst_cuit.codes">
+      <field name="code" eval="55000005036"/>
+      <field name="name">REPUBLICA DE NAURU (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005042" model="dst_cuit.codes">
+      <field name="code" eval="50000005042"/>
+      <field name="name">NUEVA ZELANDA  - Persona Física</field>
+    </record>
+    <record  id="51600005042" model="dst_cuit.codes">
+      <field name="code" eval="51600005042"/>
+      <field name="name">NUEVA ZELANDA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005044" model="dst_cuit.codes">
+      <field name="code" eval="55000005044"/>
+      <field name="name">NUEVA ZELANDA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005050" model="dst_cuit.codes">
+      <field name="code" eval="50000005050"/>
+      <field name="name">REPUBLICA DE VANUATU  - Persona Física</field>
+    </record>
+    <record  id="51600005050" model="dst_cuit.codes">
+      <field name="code" eval="51600005050"/>
+      <field name="name">REPUBLICA DE VANUATU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005052" model="dst_cuit.codes">
+      <field name="code" eval="55000005052"/>
+      <field name="name">REPUBLICA DE VANUATU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005069" model="dst_cuit.codes">
+      <field name="code" eval="50000005069"/>
+      <field name="name">SAMOA OCCIDENTAL  - Persona Física</field>
+    </record>
+    <record  id="51600005069" model="dst_cuit.codes">
+      <field name="code" eval="51600005069"/>
+      <field name="name">SAMOA OCCIDENTAL  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005069" model="dst_cuit.codes">
+      <field name="code" eval="55000005069"/>
+      <field name="name">SAMOA OCCIDENTAL  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005077" model="dst_cuit.codes">
+      <field name="code" eval="50000005077"/>
+      <field name="name">POS.AUSTRALIANA (OCEANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600005077" model="dst_cuit.codes">
+      <field name="code" eval="51600005077"/>
+      <field name="name">POS.AUSTRALIANA (OCEANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005079" model="dst_cuit.codes">
+      <field name="code" eval="55000005079"/>
+      <field name="name">POS.AUSTRALIANA (OCEANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005085" model="dst_cuit.codes">
+      <field name="code" eval="50000005085"/>
+      <field name="name">POS.BRITANICA (OCEANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600005085" model="dst_cuit.codes">
+      <field name="code" eval="51600005085"/>
+      <field name="name">POS.BRITANICA (OCEANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005087" model="dst_cuit.codes">
+      <field name="code" eval="55000005087"/>
+      <field name="name">POS.BRITANICA (OCEANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005093" model="dst_cuit.codes">
+      <field name="code" eval="50000005093"/>
+      <field name="name">POS.FRANCESA (OCEANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600005093" model="dst_cuit.codes">
+      <field name="code" eval="51600005093"/>
+      <field name="name">POS.FRANCESA (OCEANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005095" model="dst_cuit.codes">
+      <field name="code" eval="55000005095"/>
+      <field name="name">POS.FRANCESA (OCEANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005107" model="dst_cuit.codes">
+      <field name="code" eval="50000005107"/>
+      <field name="name">POS.NEOCELANDESA (OCEANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600005107" model="dst_cuit.codes">
+      <field name="code" eval="51600005107"/>
+      <field name="name">POS.NEOCELANDESA (OCEANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005109" model="dst_cuit.codes">
+      <field name="code" eval="55000005109"/>
+      <field name="name">POS.NEOCELANDESA (OCEANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005115" model="dst_cuit.codes">
+      <field name="code" eval="50000005115"/>
+      <field name="name">POS.E.E.U.U. (OCEANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600005115" model="dst_cuit.codes">
+      <field name="code" eval="51600005115"/>
+      <field name="name">POS.E.E.U.U. (OCEANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005117" model="dst_cuit.codes">
+      <field name="code" eval="55000005117"/>
+      <field name="name">POS.E.E.U.U. (OCEANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005123" model="dst_cuit.codes">
+      <field name="code" eval="50000005123"/>
+      <field name="name">FIJI, ISLAS  - Persona Física</field>
+    </record>
+    <record  id="51600005123" model="dst_cuit.codes">
+      <field name="code" eval="51600005123"/>
+      <field name="name">FIJI, ISLAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005125" model="dst_cuit.codes">
+      <field name="code" eval="55000005125"/>
+      <field name="name">FIJI, ISLAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005131" model="dst_cuit.codes">
+      <field name="code" eval="50000005131"/>
+      <field name="name">PAPUA, ISLAS  - Persona Física</field>
+    </record>
+    <record  id="51600005131" model="dst_cuit.codes">
+      <field name="code" eval="51600005131"/>
+      <field name="name">PAPUA, ISLAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005133" model="dst_cuit.codes">
+      <field name="code" eval="55000005133"/>
+      <field name="name">PAPUA, ISLAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005166" model="dst_cuit.codes">
+      <field name="code" eval="50000005166"/>
+      <field name="name">KIRIBATI  - Persona Física</field>
+    </record>
+    <record  id="51600005166" model="dst_cuit.codes">
+      <field name="code" eval="51600005166"/>
+      <field name="name">KIRIBATI  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005168" model="dst_cuit.codes">
+      <field name="code" eval="55000005168"/>
+      <field name="name">KIRIBATI  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005174" model="dst_cuit.codes">
+      <field name="code" eval="50000005174"/>
+      <field name="name">TUVALU  - Persona Física</field>
+    </record>
+    <record  id="51600005174" model="dst_cuit.codes">
+      <field name="code" eval="51600005174"/>
+      <field name="name">TUVALU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005176" model="dst_cuit.codes">
+      <field name="code" eval="55000005176"/>
+      <field name="name">TUVALU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005182" model="dst_cuit.codes">
+      <field name="code" eval="50000005182"/>
+      <field name="name">ISLAS SALOMON  - Persona Física</field>
+    </record>
+    <record  id="51600005182" model="dst_cuit.codes">
+      <field name="code" eval="51600005182"/>
+      <field name="name">ISLAS SALOMON  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005184" model="dst_cuit.codes">
+      <field name="code" eval="55000005184"/>
+      <field name="name">ISLAS SALOMON  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005190" model="dst_cuit.codes">
+      <field name="code" eval="50000005190"/>
+      <field name="name">REINO DE TONGA (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600005190" model="dst_cuit.codes">
+      <field name="code" eval="51600005190"/>
+      <field name="name">REINO DE TONGA (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005192" model="dst_cuit.codes">
+      <field name="code" eval="55000005192"/>
+      <field name="name">REINO DE TONGA (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005204" model="dst_cuit.codes">
+      <field name="code" eval="50000005204"/>
+      <field name="name">REPUBLICA DE LAS ISLAS MARSHALL (Estado independiente)  - Persona Física</field>
+    </record>
+    <record  id="51600005204" model="dst_cuit.codes">
+      <field name="code" eval="51600005204"/>
+      <field name="name">REPUBLICA DE LAS ISLAS MARSHALL (Estado independiente)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005206" model="dst_cuit.codes">
+      <field name="code" eval="55000005206"/>
+      <field name="name">REPUBLICA DE LAS ISLAS MARSHALL (Estado independiente)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005212" model="dst_cuit.codes">
+      <field name="code" eval="50000005212"/>
+      <field name="name">ISLAS MARIANAS  - Persona Física</field>
+    </record>
+    <record  id="51600005212" model="dst_cuit.codes">
+      <field name="code" eval="51600005212"/>
+      <field name="name">ISLAS MARIANAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005214" model="dst_cuit.codes">
+      <field name="code" eval="55000005214"/>
+      <field name="name">ISLAS MARIANAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005905" model="dst_cuit.codes">
+      <field name="code" eval="50000005905"/>
+      <field name="name">MICRONESIA ESTADOS FED.  - Persona Física</field>
+    </record>
+    <record  id="51600005905" model="dst_cuit.codes">
+      <field name="code" eval="51600005905"/>
+      <field name="name">MICRONESIA ESTADOS FEDERADOS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005907" model="dst_cuit.codes">
+      <field name="code" eval="55000005907"/>
+      <field name="name">MICRONESIA ESTADOS FED.  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005913" model="dst_cuit.codes">
+      <field name="code" eval="50000005913"/>
+      <field name="name">PALAU  - Persona Física</field>
+    </record>
+    <record  id="51600005913" model="dst_cuit.codes">
+      <field name="code" eval="51600005913"/>
+      <field name="name">PALAU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005915" model="dst_cuit.codes">
+      <field name="code" eval="55000005915"/>
+      <field name="name">PALAU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000005980" model="dst_cuit.codes">
+      <field name="code" eval="50000005980"/>
+      <field name="name">INDETERMINADO (OCEANIA)  - Persona Física</field>
+    </record>
+    <record  id="51600005980" model="dst_cuit.codes">
+      <field name="code" eval="51600005980"/>
+      <field name="name">INDETERMINADO (OCEANIA)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000005982" model="dst_cuit.codes">
+      <field name="code" eval="55000005982"/>
+      <field name="name">INDETERMINADO (OCEANIA)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006014" model="dst_cuit.codes">
+      <field name="code" eval="50000006014"/>
+      <field name="name">RUSA, FEDERACION  - Persona Física</field>
+    </record>
+    <record  id="51600006014" model="dst_cuit.codes">
+      <field name="code" eval="51600006014"/>
+      <field name="name">RUSA, FEDERACION  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006016" model="dst_cuit.codes">
+      <field name="code" eval="55000006016"/>
+      <field name="name">RUSA, FEDERACION  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006022" model="dst_cuit.codes">
+      <field name="code" eval="50000006022"/>
+      <field name="name">ARMENIA  - Persona Física</field>
+    </record>
+    <record  id="51600006022" model="dst_cuit.codes">
+      <field name="code" eval="51600006022"/>
+      <field name="name">ARMENIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006024" model="dst_cuit.codes">
+      <field name="code" eval="55000006024"/>
+      <field name="name">ARMENIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006030" model="dst_cuit.codes">
+      <field name="code" eval="50000006030"/>
+      <field name="name">CROACIA  - Persona Física</field>
+    </record>
+    <record  id="51600006030" model="dst_cuit.codes">
+      <field name="code" eval="51600006030"/>
+      <field name="name">CROACIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006032" model="dst_cuit.codes">
+      <field name="code" eval="55000006032"/>
+      <field name="name">CROACIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006049" model="dst_cuit.codes">
+      <field name="code" eval="50000006049"/>
+      <field name="name">UCRANIA  - Persona Física</field>
+    </record>
+    <record  id="51600006049" model="dst_cuit.codes">
+      <field name="code" eval="51600006049"/>
+      <field name="name">UCRANIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006040" model="dst_cuit.codes">
+      <field name="code" eval="55000006040"/>
+      <field name="name">UCRANIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006057" model="dst_cuit.codes">
+      <field name="code" eval="50000006057"/>
+      <field name="name">CHECA, REPUBLICA  - Persona Física</field>
+    </record>
+    <record  id="51600006057" model="dst_cuit.codes">
+      <field name="code" eval="51600006057"/>
+      <field name="name">CHECA, REPUBLICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006059" model="dst_cuit.codes">
+      <field name="code" eval="55000006059"/>
+      <field name="name">CHECA, REPUBLICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006065" model="dst_cuit.codes">
+      <field name="code" eval="50000006065"/>
+      <field name="name">ESLOVACA, REPUBLICA  - Persona Física</field>
+    </record>
+    <record  id="51600006065" model="dst_cuit.codes">
+      <field name="code" eval="51600006065"/>
+      <field name="name">ESLOVACA, REPUBLICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006067" model="dst_cuit.codes">
+      <field name="code" eval="55000006067"/>
+      <field name="name">ESLOVACA, REPUBLICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006529" model="dst_cuit.codes">
+      <field name="code" eval="50000006529"/>
+      <field name="name">ANGUILA (Territorio no autónomo del Reino Unido)  - Persona Física</field>
+    </record>
+    <record  id="51600006529" model="dst_cuit.codes">
+      <field name="code" eval="51600006529"/>
+      <field name="name">ANGUILA (Territorio no autónomo del Reino Unido)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006520" model="dst_cuit.codes">
+      <field name="code" eval="55000006520"/>
+      <field name="name">ANGUILA (Territorio no autónomo del Reino Unido)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006537" model="dst_cuit.codes">
+      <field name="code" eval="50000006537"/>
+      <field name="name">ARUBA (Territorio de Países Bajos)  - Persona Física</field>
+    </record>
+    <record  id="51600006537" model="dst_cuit.codes">
+      <field name="code" eval="51600006537"/>
+      <field name="name">ARUBA (Territorio de Países Bajos)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006539" model="dst_cuit.codes">
+      <field name="code" eval="55000006539"/>
+      <field name="name">ARUBA (Territorio de Países Bajos)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006545" model="dst_cuit.codes">
+      <field name="code" eval="50000006545"/>
+      <field name="name">ISLAS DE COOK (Territorio autónomo asociado a Nueva Zelanda)  - Persona Física</field>
+    </record>
+    <record  id="51600006545" model="dst_cuit.codes">
+      <field name="code" eval="51600006545"/>
+      <field name="name">ISLAS DE COOK (Territorio autónomo asociado a Nueva Zelanda)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006547" model="dst_cuit.codes">
+      <field name="code" eval="55000006547"/>
+      <field name="name">ISLAS DE COOK (Territorio autónomo asociado a Nueva Zelanda)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006553" model="dst_cuit.codes">
+      <field name="code" eval="50000006553"/>
+      <field name="name">PATAU  - Persona Física</field>
+    </record>
+    <record  id="51600006553" model="dst_cuit.codes">
+      <field name="code" eval="51600006553"/>
+      <field name="name">PATAU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006555" model="dst_cuit.codes">
+      <field name="code" eval="55000006555"/>
+      <field name="name">PATAU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006561" model="dst_cuit.codes">
+      <field name="code" eval="50000006561"/>
+      <field name="name">POLINESIA FRANCESA (Territorio de Ultramar de Francia)  - Persona Física</field>
+    </record>
+    <record  id="51600006561" model="dst_cuit.codes">
+      <field name="code" eval="51600006561"/>
+      <field name="name">POLINESIA FRANCESA (Territorio de Ultramar de Francia)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006563" model="dst_cuit.codes">
+      <field name="code" eval="55000006563"/>
+      <field name="name">POLINESIA FRANCESA (Territorio de Ultramar de Francia)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006596" model="dst_cuit.codes">
+      <field name="code" eval="50000006596"/>
+      <field name="name">ANTILLAS HOLANDESAS (Territorio de Países Bajos)  - Persona Física</field>
+    </record>
+    <record  id="51600006596" model="dst_cuit.codes">
+      <field name="code" eval="51600006596"/>
+      <field name="name">ANTILLAS HOLANDESAS (Territorio de Países Bajos)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006598" model="dst_cuit.codes">
+      <field name="code" eval="55000006598"/>
+      <field name="name">ANTILLAS HOLANDESAS (Territorio de Países Bajos)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006626" model="dst_cuit.codes">
+      <field name="code" eval="50000006626"/>
+      <field name="name">ASCENCION  - Persona Física</field>
+    </record>
+    <record  id="51600006626" model="dst_cuit.codes">
+      <field name="code" eval="51600006626"/>
+      <field name="name">ASCENCION  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006628" model="dst_cuit.codes">
+      <field name="code" eval="55000006628"/>
+      <field name="name">ASCENCION  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006634" model="dst_cuit.codes">
+      <field name="code" eval="50000006634"/>
+      <field name="name">BERMUDAS (Territorio no autónomo del Reino Unido)  - Persona Física</field>
+    </record>
+    <record  id="51600006634" model="dst_cuit.codes">
+      <field name="code" eval="51600006634"/>
+      <field name="name">BERMUDAS (Territorio no autónomo del Reino Unido)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006636" model="dst_cuit.codes">
+      <field name="code" eval="55000006636"/>
+      <field name="name">BERMUDAS (Territorio no autónomo del Reino Unido)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006642" model="dst_cuit.codes">
+      <field name="code" eval="50000006642"/>
+      <field name="name">CAMPIONE D@ITALIA  - Persona Física</field>
+    </record>
+    <record  id="51600006642" model="dst_cuit.codes">
+      <field name="code" eval="51600006642"/>
+      <field name="name">CAMPIONE D@ITALIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006644" model="dst_cuit.codes">
+      <field name="code" eval="55000006644"/>
+      <field name="name">CAMPIONE D@ITALIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006650" model="dst_cuit.codes">
+      <field name="code" eval="50000006650"/>
+      <field name="name">COLONIA DE GIBRALTAR  - Persona Física</field>
+    </record>
+    <record  id="51600006650" model="dst_cuit.codes">
+      <field name="code" eval="51600006650"/>
+      <field name="name">COLONIA DE GIBRALTAR  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006652" model="dst_cuit.codes">
+      <field name="code" eval="55000006652"/>
+      <field name="name">COLONIA DE GIBRALTAR  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006669" model="dst_cuit.codes">
+      <field name="code" eval="50000006669"/>
+      <field name="name">GROENLANDIA  - Persona Física</field>
+    </record>
+    <record  id="51600006669" model="dst_cuit.codes">
+      <field name="code" eval="51600006669"/>
+      <field name="name">GROENLANDIA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006660" model="dst_cuit.codes">
+      <field name="code" eval="55000006660"/>
+      <field name="name">GROENLANDIA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006677" model="dst_cuit.codes">
+      <field name="code" eval="50000006677"/>
+      <field name="name">GUAM (Territorio no autónomo de los EEUU)  - Persona Física</field>
+    </record>
+    <record  id="51600006677" model="dst_cuit.codes">
+      <field name="code" eval="51600006677"/>
+      <field name="name">GUAM (Territorio no autónomo de los EEUU)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006679" model="dst_cuit.codes">
+      <field name="code" eval="55000006679"/>
+      <field name="name">GUAM (Territorio no autónomo de los EEUU)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006685" model="dst_cuit.codes">
+      <field name="code" eval="50000006685"/>
+      <field name="name">HONK KONG (Territorio de China)  - Persona Física</field>
+    </record>
+    <record  id="51600006685" model="dst_cuit.codes">
+      <field name="code" eval="51600006685"/>
+      <field name="name">HONK KONG (Territorio de China)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006687" model="dst_cuit.codes">
+      <field name="code" eval="55000006687"/>
+      <field name="name">HONK KONG (Territorio de China)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006693" model="dst_cuit.codes">
+      <field name="code" eval="50000006693"/>
+      <field name="name">ISLAS AZORES  - Persona Física</field>
+    </record>
+    <record  id="51600006693" model="dst_cuit.codes">
+      <field name="code" eval="51600006693"/>
+      <field name="name">ISLAS AZORES  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006695" model="dst_cuit.codes">
+      <field name="code" eval="55000006695"/>
+      <field name="name">ISLAS AZORES  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006707" model="dst_cuit.codes">
+      <field name="code" eval="50000006707"/>
+      <field name="name">ISLAS DEL CANAL:Guernesey,Jersey,Alderney,G.Stark,L.Sark,etc  - Persona Física</field>
+    </record>
+    <record  id="51600006707" model="dst_cuit.codes">
+      <field name="code" eval="51600006707"/>
+      <field name="name">ISLAS DEL CANAL:Guernesey,Jersey,Alderney,G.Stark,L.Sark,etc  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006709" model="dst_cuit.codes">
+      <field name="code" eval="55000006709"/>
+      <field name="name">ISLAS DEL CANAL:Guernesey,Jersey,Alderney,G.Stark,L.Sark,etc  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006715" model="dst_cuit.codes">
+      <field name="code" eval="50000006715"/>
+      <field name="name">ISLAS CAIMAN (Territorio no autónomo del Reino Unido)  - Persona Física</field>
+    </record>
+    <record  id="51600006715" model="dst_cuit.codes">
+      <field name="code" eval="51600006715"/>
+      <field name="name">ISLAS CAIMAN (Territorio no autónomo del Reino Unido)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006717" model="dst_cuit.codes">
+      <field name="code" eval="55000006717"/>
+      <field name="name">ISLAS CAIMAN (Territorio no autónomo del Reino Unido)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006723" model="dst_cuit.codes">
+      <field name="code" eval="50000006723"/>
+      <field name="name">ISLA CHRISTMAS  - Persona Física</field>
+    </record>
+    <record  id="51600006723" model="dst_cuit.codes">
+      <field name="code" eval="51600006723"/>
+      <field name="name">ISLA CHRISTMAS  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006725" model="dst_cuit.codes">
+      <field name="code" eval="55000006725"/>
+      <field name="name">ISLA CHRISTMAS  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006731" model="dst_cuit.codes">
+      <field name="code" eval="50000006731"/>
+      <field name="name">ISLA DE COCOS O KEELING  - Persona Física</field>
+    </record>
+    <record  id="51600006731" model="dst_cuit.codes">
+      <field name="code" eval="51600006731"/>
+      <field name="name">ISLA DE COCOS O KEELING  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006733" model="dst_cuit.codes">
+      <field name="code" eval="55000006733"/>
+      <field name="name">ISLA DE COCOS O KEELING  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006766" model="dst_cuit.codes">
+      <field name="code" eval="50000006766"/>
+      <field name="name">ISLA DE MAN (Territorio del Reino Unido)  - Persona Física</field>
+    </record>
+    <record  id="51600006766" model="dst_cuit.codes">
+      <field name="code" eval="51600006766"/>
+      <field name="name">ISLA DE MAN (Territorio del Reino Unido)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006768" model="dst_cuit.codes">
+      <field name="code" eval="55000006768"/>
+      <field name="name">ISLA DE MAN (Territorio del Reino Unido)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006774" model="dst_cuit.codes">
+      <field name="code" eval="50000006774"/>
+      <field name="name">ISLA DE NORFOLK  - Persona Física</field>
+    </record>
+    <record  id="51600006774" model="dst_cuit.codes">
+      <field name="code" eval="51600006774"/>
+      <field name="name">ISLA DE NORFOLK  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006776" model="dst_cuit.codes">
+      <field name="code" eval="55000006776"/>
+      <field name="name">ISLA DE NORFOLK  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006782" model="dst_cuit.codes">
+      <field name="code" eval="50000006782"/>
+      <field name="name">ISLAS TURKAS Y CAICOS (Territorio no autónomo del R. Unido)  - Persona Física</field>
+    </record>
+    <record  id="51600006782" model="dst_cuit.codes">
+      <field name="code" eval="51600006782"/>
+      <field name="name">ISLAS TURKAS Y CAICOS (Territorio no autónomo del R. Unido)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006784" model="dst_cuit.codes">
+      <field name="code" eval="55000006784"/>
+      <field name="name">ISLAS TURKAS Y CAICOS (Territorio no autónomo del R. Unido)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006790" model="dst_cuit.codes">
+      <field name="code" eval="50000006790"/>
+      <field name="name">ISLAS PACIFICO  - Persona Física</field>
+    </record>
+    <record  id="51600006790" model="dst_cuit.codes">
+      <field name="code" eval="51600006790"/>
+      <field name="name">ISLAS PACIFICO  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006792" model="dst_cuit.codes">
+      <field name="code" eval="55000006792"/>
+      <field name="name">ISLAS PACIFICO  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006804" model="dst_cuit.codes">
+      <field name="code" eval="50000006804"/>
+      <field name="name">ISLA DE SAN PEDRO Y MIGUELON  - Persona Física</field>
+    </record>
+    <record  id="51600006804" model="dst_cuit.codes">
+      <field name="code" eval="51600006804"/>
+      <field name="name">ISLA DE SAN PEDRO Y MIGUELON  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006806" model="dst_cuit.codes">
+      <field name="code" eval="55000006806"/>
+      <field name="name">ISLA DE SAN PEDRO Y MIGUELON  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006812" model="dst_cuit.codes">
+      <field name="code" eval="50000006812"/>
+      <field name="name">ISLA QESHM  - Persona Física</field>
+    </record>
+    <record  id="51600006812" model="dst_cuit.codes">
+      <field name="code" eval="51600006812"/>
+      <field name="name">ISLA QESHM  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006814" model="dst_cuit.codes">
+      <field name="code" eval="55000006814"/>
+      <field name="name">ISLA QESHM  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006820" model="dst_cuit.codes">
+      <field name="code" eval="50000006820"/>
+      <field name="name">ISLAS VIRGENES BRITANICAS(Territorio no autónomo de R.UNIDO)  - Persona Física</field>
+    </record>
+    <record  id="51600006820" model="dst_cuit.codes">
+      <field name="code" eval="51600006820"/>
+      <field name="name">ISLAS VIRGENES BRITANICAS(Territorio no autónomo de R.UNIDO)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006822" model="dst_cuit.codes">
+      <field name="code" eval="55000006822"/>
+      <field name="name">ISLAS VIRGENES BRITANICAS(Territorio no autónomo de R.UNIDO)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006839" model="dst_cuit.codes">
+      <field name="code" eval="50000006839"/>
+      <field name="name">ISLAS VIRGENES DE ESTADOS UNIDOS DE AMERICA  - Persona Física</field>
+    </record>
+    <record  id="51600006839" model="dst_cuit.codes">
+      <field name="code" eval="51600006839"/>
+      <field name="name">ISLAS VIRGENES DE ESTADOS UNIDOS DE AMERICA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006830" model="dst_cuit.codes">
+      <field name="code" eval="55000006830"/>
+      <field name="name">ISLAS VIRGENES DE ESTADOS UNIDOS DE AMERICA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006847" model="dst_cuit.codes">
+      <field name="code" eval="50000006847"/>
+      <field name="name">LABUAN  - Persona Física</field>
+    </record>
+    <record  id="51600006847" model="dst_cuit.codes">
+      <field name="code" eval="51600006847"/>
+      <field name="name">LABUAN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006849" model="dst_cuit.codes">
+      <field name="code" eval="55000006849"/>
+      <field name="name">LABUAN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006855" model="dst_cuit.codes">
+      <field name="code" eval="50000006855"/>
+      <field name="name">MADEIRA (Territorio de Portugal)  - Persona Física</field>
+    </record>
+    <record  id="51600006855" model="dst_cuit.codes">
+      <field name="code" eval="51600006855"/>
+      <field name="name">MADEIRA (Territorio de Portugal)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006857" model="dst_cuit.codes">
+      <field name="code" eval="55000006857"/>
+      <field name="name">MADEIRA (Territorio de Portugal)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006863" model="dst_cuit.codes">
+      <field name="code" eval="50000006863"/>
+      <field name="name">MONTSERRAT (Territorio no autónomo del Reino Unido)  - Persona Física</field>
+    </record>
+    <record  id="51600006863" model="dst_cuit.codes">
+      <field name="code" eval="51600006863"/>
+      <field name="name">MONTSERRAT (Territorio no autónomo del Reino Unido)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006865" model="dst_cuit.codes">
+      <field name="code" eval="55000006865"/>
+      <field name="name">MONTSERRAT (Territorio no autónomo del Reino Unido)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006871" model="dst_cuit.codes">
+      <field name="code" eval="50000006871"/>
+      <field name="name">NIUE  - Persona Física</field>
+    </record>
+    <record  id="51600006871" model="dst_cuit.codes">
+      <field name="code" eval="51600006871"/>
+      <field name="name">NIUE  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006873" model="dst_cuit.codes">
+      <field name="code" eval="55000006873"/>
+      <field name="name">NIUE  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006901" model="dst_cuit.codes">
+      <field name="code" eval="50000006901"/>
+      <field name="name">PITCAIRN  - Persona Física</field>
+    </record>
+    <record  id="51600006901" model="dst_cuit.codes">
+      <field name="code" eval="51600006901"/>
+      <field name="name">PITCAIRN  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006903" model="dst_cuit.codes">
+      <field name="code" eval="55000006903"/>
+      <field name="name">PITCAIRN  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006936" model="dst_cuit.codes">
+      <field name="code" eval="50000006936"/>
+      <field name="name">REGIMEN APLICABLE A LAS SA FINANCIERAS(ley 11.073 de la ROU)  - Persona Física</field>
+    </record>
+    <record  id="51600006936" model="dst_cuit.codes">
+      <field name="code" eval="51600006936"/>
+      <field name="name">REGIMEN APLICABLE A LAS SA FINANCIERAS(ley 11.073 de la ROU)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006938" model="dst_cuit.codes">
+      <field name="code" eval="55000006938"/>
+      <field name="name">REGIMEN APLICABLE A LAS SA FINANCIERAS(ley 11.073 de la ROU)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006944" model="dst_cuit.codes">
+      <field name="code" eval="50000006944"/>
+      <field name="name">SANTA ELENA  - Persona Física</field>
+    </record>
+    <record  id="51600006944" model="dst_cuit.codes">
+      <field name="code" eval="51600006944"/>
+      <field name="name">SANTA ELENA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006946" model="dst_cuit.codes">
+      <field name="code" eval="55000006946"/>
+      <field name="name">SANTA ELENA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006952" model="dst_cuit.codes">
+      <field name="code" eval="50000006952"/>
+      <field name="name">SAMOA AMERICANA (Territorio no autónomo de los EEUU)  - Persona Física</field>
+    </record>
+    <record  id="51600006952" model="dst_cuit.codes">
+      <field name="code" eval="51600006952"/>
+      <field name="name">SAMOA AMERICANA (Territorio no autónomo de los EEUU)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006954" model="dst_cuit.codes">
+      <field name="code" eval="55000006954"/>
+      <field name="name">SAMOA AMERICANA (Territorio no autónomo de los EEUU)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006960" model="dst_cuit.codes">
+      <field name="code" eval="50000006960"/>
+      <field name="name">ARCHIPIELAGO DE SVBALBARD  - Persona Física</field>
+    </record>
+    <record  id="51600006960" model="dst_cuit.codes">
+      <field name="code" eval="51600006960"/>
+      <field name="name">ARCHIPIELAGO DE SVBALBARD  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006962" model="dst_cuit.codes">
+      <field name="code" eval="55000006962"/>
+      <field name="name">ARCHIPIELAGO DE SVBALBARD  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006979" model="dst_cuit.codes">
+      <field name="code" eval="50000006979"/>
+      <field name="name">TRISTAN DA CUNHA  - Persona Física</field>
+    </record>
+    <record  id="51600006979" model="dst_cuit.codes">
+      <field name="code" eval="51600006979"/>
+      <field name="name">TRISTAN DA CUNHA  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006970" model="dst_cuit.codes">
+      <field name="code" eval="55000006970"/>
+      <field name="name">TRISTAN DA CUNHA  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006987" model="dst_cuit.codes">
+      <field name="code" eval="50000006987"/>
+      <field name="name">TRIESTE (Italia)  - Persona Física</field>
+    </record>
+    <record  id="51600006987" model="dst_cuit.codes">
+      <field name="code" eval="51600006987"/>
+      <field name="name">TRIESTE (Italia)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006989" model="dst_cuit.codes">
+      <field name="code" eval="55000006989"/>
+      <field name="name">TRIESTE (Italia)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000006995" model="dst_cuit.codes">
+      <field name="code" eval="50000006995"/>
+      <field name="name">TOKELAU  - Persona Física</field>
+    </record>
+    <record  id="51600006995" model="dst_cuit.codes">
+      <field name="code" eval="51600006995"/>
+      <field name="name">TOKELAU  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000006997" model="dst_cuit.codes">
+      <field name="code" eval="55000006997"/>
+      <field name="name">TOKELAU  - Persona Jurídica</field>
+    </record>
+    <record  id="50000007002" model="dst_cuit.codes">
+      <field name="code" eval="50000007002"/>
+      <field name="name">ZONA LIBRE DE OSTRAVA (ciudad de la antigua Checoeslovaquia)  - Persona Física</field>
+    </record>
+    <record  id="51600007002" model="dst_cuit.codes">
+      <field name="code" eval="51600007002"/>
+      <field name="name">ZONA LIBRE DE OSTRAVA (ciudad de la antigua Checoeslovaquia)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000007004" model="dst_cuit.codes">
+      <field name="code" eval="55000007004"/>
+      <field name="name">ZONA LIBRE DE OSTRAVA (ciudad de la antigua Checoeslovaquia)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000009986" model="dst_cuit.codes">
+      <field name="code" eval="50000009986"/>
+      <field name="name">PARA PERSONAS FISICAS DE INDETERMINADO (CONTINENTE)  - Persona Física</field>
+    </record>
+    <record  id="51600009986" model="dst_cuit.codes">
+      <field name="code" eval="51600009986"/>
+      <field name="name">PARA PERSONAS FISICAS DE INDETERMINADO (CONTINENTE)  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000009988" model="dst_cuit.codes">
+      <field name="code" eval="55000009988"/>
+      <field name="name">PARA PERSONAS FISICAS DE INDETERMINADO (CONTINENTE)  - Persona Jurídica</field>
+    </record>
+    <record  id="50000009994" model="dst_cuit.codes">
+      <field name="code" eval="50000009994"/>
+      <field name="name">PARA PERSONAS FISICAS DE OTROS PAISES  - Persona Física</field>
+    </record>
+    <record  id="51600009994" model="dst_cuit.codes">
+      <field name="code" eval="51600009994"/>
+      <field name="name">PARA PERSONAS FISICAS DE OTROS PAISES  - Otro Tipo de Entidad</field>
+    </record>
+    <record  id="55000009996" model="dst_cuit.codes">
+      <field name="code" eval="55000009996"/>
+      <field name="name">PARA PERSONAS FISICAS DE OTROS PAISES  - Persona Jurídica</field>
+    </record>
+</odoo>

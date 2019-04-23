@@ -31,6 +31,7 @@
     "data": [
         'views/partner_view.xml',
         'data/partner_data.xml',
+        'data/dst_cuit_codes_data.xml',
         'security/ir.model.access.csv',
     ],
     "installable": True,
