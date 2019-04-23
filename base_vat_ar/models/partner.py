@@ -74,7 +74,7 @@ class ResPartner(models.Model):
     @api.onchange('document_type_id')
     def onchange_document_type(self):
         is_dst_cuit =  self.document_type_id.dst_cuit
-        if is_dst_cuit:
+        if not is_dst_cuit:
             self.dst_cuit_id = False
 
     @api.multi
