@@ -10,6 +10,13 @@ from odoo.exceptions import ValidationError
 __author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>,"\
              "Anibal Alejandro Guanca <aguanca@e-mips.com.ar>"
 
+class DstCuitCodes(models.Model):
+    _name = "dst_cuit.codes"
+    _description = "DST CUIT Codes"
+    _order = 'name'
+
+    code = fields.Float('Code', digits=(12, 0), required=True)
+    name = fields.Char('Desc', required=True, size=64)
 
 class ResDocumentType(models.Model):
     _name = "res.document.type"
@@ -19,6 +26,8 @@ class ResDocumentType(models.Model):
     afip_code = fields.Char(string='Afip code', size=10)
     verification_required = fields.Boolean(string='Verification required',
                                            default=lambda *a: False)
+    check_duplicated = fields.Boolean(string="Check Duplicated")
+    dst_cuit = fields.Boolean(string="Enable DST CUIT")
 
     def get_website_sale_documents(self, mode='billing'):
         cuit = self.sudo().env.ref(
@@ -37,6 +46,10 @@ class ResPartner(models.Model):
 
     document_type_id = fields.Many2one('res.document.type',
                                        string='Document type')
+    dst_cuit_id = fields.Many2one('dst_cuit.codes',
+                                  string='Country CUIT')
+    dst_cuit = fields.Boolean(string="Enable DST CUIT",
+                              related='document_type_id.dst_cuit')
 
     @api.constrains('vat', 'document_type_id')
     def check_vat_duplicated(self):
@@ -45,15 +58,24 @@ class ResPartner(models.Model):
                 continue
             if not partner.vat:
                 continue
-            search_param = [
-                ('vat', '=', partner.vat),
-                ('document_type_id', '=', partner.document_type_id.id),
-                ('parent_id', '=', False)
-            ]
-            res = self.search_count(search_param)
-            if res > 1:
-                raise ValidationError(
-                    _('There is another partner with same VAT Information'))
+            document_type = partner.document_type_id
+            to_check = document_type.check_duplicated
+            if to_check:
+                search_param = [
+                    ('vat', '=', partner.vat),
+                    ('document_type_id', '=', document_type.id),
+                    ('parent_id', '=', False)
+                ]
+                res = self.search_count(search_param)
+                if res > 1:
+                    raise ValidationError(
+                        _('There is another partner with same VAT Information'))
+
+    @api.onchange('document_type_id')
+    def onchange_document_type(self):
+        is_dst_cuit =  self.document_type_id.dst_cuit
+        if is_dst_cuit:
+            self.dst_cuit_id = False
 
     @api.multi
     def write(self, vals):

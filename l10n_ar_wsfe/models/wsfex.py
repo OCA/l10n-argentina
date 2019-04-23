@@ -95,13 +95,9 @@ class wsfex_incoterms_codes(models.Model):
     wsfex_config_id = fields.Many2one('wsfex.config')
 
 
-class WsfexDstCuitCodes(models.Model):
-    _name = "wsfex.dst_cuit.codes"
-    _description = "WSFEX DST CUIT Codes"
-    _order = 'name'
+class DstCuitCodes(models.Model):
+    _inherit = "dst_cuit.codes"
 
-    code = fields.Float('Code', digits=(12, 0), required=True)
-    name = fields.Char('Desc', required=True, size=64)
     wsfex_config_id = fields.Many2one('wsfex.config')
 
 
@@ -158,7 +154,7 @@ class WsfexConfig(models.Model):
     incoterms_ids = fields.One2many(comodel_name='wsfex.incoterms.codes',
                                     inverse_name='wsfex_config_id',
                                     string='Incoterms')
-    dst_cuit_ids = fields.One2many(comodel_name='wsfex.dst_cuit.codes',
+    dst_cuit_ids = fields.One2many(comodel_name='dst_cuit.codes',
                                    inverse_name='wsfex_config_id',
                                    string='DST CUIT')
     voucher_type_ids = fields.One2many(comodel_name='wsfex.voucher_type.codes',
@@ -441,7 +437,7 @@ class WsfexConfig(models.Model):
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("DST_CUIT")
 
-        wsfex_param_obj = self.env['wsfex.dst_cuit.codes']
+        param_obj = self.env['dst_cuit.codes']
 
         # Armo un lista con los codigos de los Impuestos
         for r in res['response'][0]:
@@ -449,11 +445,11 @@ class WsfexConfig(models.Model):
             # unos valores None
             if not r:
                 continue
-            res_c = wsfex_param_obj.search([('code', '=', r.DST_CUIT)])
+            res_c = param_obj.search([('code', '=', r.DST_CUIT)])
 
             # Si no tengo los codigos de esos Impuestos en la db, los creo
             if not len(res_c):
-                wsfex_param_obj.create({
+                param_obj.create({
                     'code': r.DST_CUIT,
                     'name': r.DST_Ds,
                     'wsfex_config_id': self.id,

@@ -51,7 +51,6 @@ class AccountInvoice(models.Model):
     # si es o no factura de exportacion
     export_type_id = fields.Many2one('wsfex.export_type.codes', 'Export Type')
     dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country')
-    dst_cuit_id = fields.Many2one('wsfex.dst_cuit.codes', 'Country CUIT')
     shipping_perm_ids = fields.One2many('wsfex.shipping.permission',
                                         'invoice_id', 'Shipping Permissions')
     incoterm_id = fields.Many2one(

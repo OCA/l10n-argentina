@@ -49,6 +49,7 @@ class AccountInvoice(models.Model):
                                          store=True, readonly=True,
                                          compute='_compute_amount')
     local = fields.Boolean(string='Local', default=True)
+    dst_cuit_id = fields.Many2one('dst_cuit.codes', 'Country CUIT')
     internal_number = fields.Char(string="Internal Number", default=False,
                                   copy=False, readonly=True,
                                   help="Unique number of the invoice, " +
@@ -468,6 +469,7 @@ class AccountInvoice(models.Model):
                 if sorted_pos and not self.pos_ar_id:
                     self.pos_ar_id = sorted_pos[0]
             self.local = self.fiscal_position_id.local
+            self.dst_cuit_id = self.partner_id.dst_cuit_id
             if self.user_id.default_pos:
                 self.pos_ar_id = self.user_id.default_pos.id
         else:
