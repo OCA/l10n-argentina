@@ -38,6 +38,11 @@ msgid "Activity Start Date"
 msgstr "Comienzo de Actividades"
 
 #. module: l10n_ar_point_of_sale
+#: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_pos_ar_image
+msgid "Image"
+msgstr "Logo a usar"
+
+#. module: l10n_ar_point_of_sale
 #: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_account_invoice_amount_exempt
 msgid "Amount Exempt"
 msgstr "Monto Exento"
