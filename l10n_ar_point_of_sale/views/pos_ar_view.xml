@@ -14,7 +14,9 @@
                         <group>
                             <group>
                                 <field name="name"/>
+                                <field name="desc" />
                                 <field name="shop_id"/>
+                                <field name="image" />
                                 <field name="activity_start_date"/>
                             </group>
                             <group>
@@ -26,11 +28,6 @@
                             <page string="Available Denominations" name="denominations">
                                 <field name="denomination_ids" string="Denominations">
                                 </field>
-                            </page>
-                            <page string="Description" name="description">
-                                <group string="Description">
-                                    <field name="desc" select="1" nolabel="1"/>
-                                </group>
                             </page>
                         </notebook>
                     </sheet>

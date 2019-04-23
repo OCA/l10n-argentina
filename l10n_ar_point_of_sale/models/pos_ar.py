@@ -53,6 +53,7 @@ class PosAr(models.Model):
     activity_start_date = fields.Date(string="Activity Start Date",
                                       required=True)
     active = fields.Boolean('Active', default=True)
+    image = fields.Binary("Image", attachment=True)
 
     @api.constrains('name')
     def _check_pos_name(self):
@@ -62,3 +63,13 @@ class PosAr(models.Model):
                 raise ValidationError(_("Error!\n") + err)
             if len(pos.name) < 4:
                 pos.name = pos.name.zfill(4)
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for item in self:
+            name = item.name
+            if item.desc:
+                name += ' (%s)' % item.desc
+            res.append((item.id, name))
+        return res
