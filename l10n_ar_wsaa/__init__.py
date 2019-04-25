@@ -7,3 +7,4 @@
 from . import models  # noqa
 from . import wizard  # noqa
 from . import utils  # noqa
+from . import controllers  # noqa

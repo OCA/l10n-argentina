@@ -7,7 +7,7 @@
 
 import time
 
-from odoo import _, api, exceptions, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -203,7 +203,6 @@ class AccountIssuedCheck(models.Model):
 
     @api.multi
     def accredit_checks(self):
-        #TODO: create the corresponding moves
         for check in self:
             if check.state != "waiting":
                 raise ValidationError(

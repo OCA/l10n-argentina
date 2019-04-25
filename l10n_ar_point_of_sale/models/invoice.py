@@ -468,6 +468,8 @@ class AccountInvoice(models.Model):
                 if sorted_pos and not self.pos_ar_id:
                     self.pos_ar_id = sorted_pos[0]
             self.local = self.fiscal_position_id.local
+            if self.user_id.default_pos:
+                self.pos_ar_id = self.user_id.default_pos.id
         else:
             self.local = True
             self.denomination_id = False

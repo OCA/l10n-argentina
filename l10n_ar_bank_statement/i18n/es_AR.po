@@ -99,6 +99,7 @@ msgstr "Configurar la Cuenta Contable usada para Poner/Sacar dinero de un Extrac
 #. module: l10n_ar_bank_statement
 #: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_cash_box_in_concept_id
 #: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_cash_box_out_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_bank_statement.field_account_bank_statement_line_concept_id
 msgid "Concept"
 msgstr "Concepto"
 
@@ -228,6 +229,20 @@ msgstr "Nombre"
 #: model:ir.ui.view,arch_db:l10n_ar_bank_statement.view_pos_box_concept_form
 msgid "Name..."
 msgstr "Nombre..."
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/models/account_payment.py:94
+#, python-format
+msgid "No open 'Cash' Bank Statement! Go to the dashboard and open it"
+msgstr ""
+"¡No hay un Extracto Bancario de tipo 'Efectivo' abierto!"
+"Diríjase al Tablero de Contabilidad para abrir uno."
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/models/account_payment.py:96
+#, python-format
+msgid "Open Dashboard"
+msgstr "Ir al Tablero"
 
 #. module: l10n_ar_bank_statement
 #: selection:account.bank.statement.line,line_type:0

@@ -44,10 +44,5 @@
         'wizard/wsfe_massive_sinchronize_view.xml',
         'security/ir.model.access.csv',
     ],
-    "external_dependencies": {
-        "python": [
-            "easywsy",
-        ],
-    },
     'installable': True,
 }

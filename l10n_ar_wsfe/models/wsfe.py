@@ -280,6 +280,9 @@ class WsfeConfig(models.Model):
         }
         ws.add(data)
         response = ws.request('FECompConsultar')
+        if not hasattr(response, 'ResultGet'):
+            raise UserError(
+                _("Error fetching voucher from AFIP!"))
         return response.ResultGet
 
     @api.multi

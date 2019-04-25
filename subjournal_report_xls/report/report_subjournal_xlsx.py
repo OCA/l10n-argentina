@@ -254,12 +254,12 @@ class SubjournalXlsx(models.AbstractModel):
                 l['taxes'] = [0] * len(self.columns)
                 l['no_taxed'] = not l['tax_line_id'] and not l['tax_ids'] and (
                     l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
-                l['total'] = abs(l['debit'] - l['credit']) * sign
+                l['total'] = (l['credit'] - l['debit'])
                 l['invoice_type'] = self.get_invoice_type(
                     l['invoice_type'], l['denomination'], l['is_debit_note'])
             else:
                 ll = lines[dict_hash]
-                ll['total'] += abs(l['debit'] - l['credit']) * sign
+                ll['total'] += (l['credit'] - l['debit'])
                 ll['no_taxed'] += not l['tax_line_id'] and not l['tax_ids'] and (
                     l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
 

@@ -44,6 +44,7 @@
         'views/iibb_situation_view.xml',
         'views/menuitems.xml',
         'security/pos_ar_rule.xml',
+        'views/res_users_view.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,

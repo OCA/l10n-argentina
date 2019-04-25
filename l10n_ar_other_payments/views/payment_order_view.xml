@@ -15,19 +15,17 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted" type="object" statusbar_colors='{"proforma":"blue"}'/>
                     </header>
                     <sheet>
-                        <h1 attrs="{'invisible': [('number','=',False)]}"><field name="number" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/></h1>
+                        <h1 attrs="{'invisible': [('number','=',False)]}"><field name="number" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/></h1>
                         <group invisible="context.get('line_type', False)">
                             <group>
                                 <field name="partner_id"
-                                    required="1"
-                                    string="Customer"
                                     context="{'search_default_customer': 1}"
-                                    attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                    attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="journal_id"
                                     widget="selection"
                                     string="Journal"
-                                    attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                    attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="other_payment" invisible="1"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
@@ -36,25 +34,25 @@
                                     attrs="{'readonly': True}"/>
                             </group>
                             <group>
-                                <field name="date" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                <field name="date" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="period_id"/>
-                                <field name="reference" string="Payment Ref" placeholder="e.g. 003/10" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-                                <field name="name" colspan="2" placeholder="e.g. Invoice SAJ/0042" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-                                <field name="company_id" widget="selection" groups="base.group_multi_company" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                <field name="reference" string="Payment Ref" placeholder="e.g. 003/10" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
+                                <field name="name" colspan="2" placeholder="e.g. Invoice SAJ/0042" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
+                                <field name="company_id" widget="selection" groups="base.group_multi_company" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="account_id"
                                     widget="selection"
                                     invisible="True"
-                                    attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                    attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="pre_line" invisible="1"/>
-                                <field name="type" invisible="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                <field name="type" invisible="1" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="currency_id" attrs="{'readonly': True}" force_save="True"/>
                             </group>
                             <group col="4" attrs="{'invisible':[('is_multi_currency','=',False)]}">
                                 <field name="is_multi_currency" invisible="1"/>
                                 <label for="payment_rate" colspan="1"/>
                                 <div>
-                                    <field name="payment_rate" required="1" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
-                                    <field name="payment_rate_currency_id" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft'))]}" groups="base.group_multi_currency"/>
+                                    <field name="payment_rate" required="1" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
+                                    <field name="payment_rate_currency_id" class="oe_inline" attrs="{'readonly': [('state', 'not in', ('draft',))]}" groups="base.group_multi_currency"/>
                                 </div>
                                 <!-- <field name="currency_help_label" colspan="2" nolabel="1" class="oe_grey"/> -->
                                 <field name="paid_amount_in_company_currency" colspan="4" invisible="1"/>
@@ -64,21 +62,21 @@
                                 <field name="writeoff_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 <field name="payment_option"
                                     required="1"
-                                    attrs="{'invisible':[('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
+                                    attrs="{'invisible':[('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="writeoff_acc_id"
-                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft'))]}"
+                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft',))]}"
                                        domain="[('type','=','other')]"/>
                                 <field name="comment"
-                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
+                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="analytic_id"
                                        groups="analytic.group_analytic_accounting"
-                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft'))]}"/>
+                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Payment Information" name="payment_information" groups="base.group_user">
                                 <label for="payment_mode_line_ids"/>
-                                <field name="payment_mode_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
+                                <field name="payment_mode_line_ids" attrs="{'readonly': [('state', 'not in', ('draft',))]}">
                                     <tree string="Payment Methods" editable="bottom" decoration-muted="amount == 0">
                                         <field name="payment_mode_id" invisible="0"
                                             attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
@@ -91,7 +89,7 @@
                                     </tree>
                                 </field>
                                 <label for="concept_line_ids"/>
-                                <field name="concept_line_ids" context="{'journal_id':journal_id}" >
+                                <field name="concept_line_ids" context="{'journal_id':journal_id}" attrs="{'readonly': [('state', 'not in', ('draft',))]}">
                                     <tree string="Lines" editable="bottom">
                                         <field name="name"/>
                                         <field name="account_id"/>
@@ -102,7 +100,7 @@
                                 </field>
                                 <group col="3">
                                     <group>
-                                        <field name="narration" colspan="2" nolabel="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
+                                        <field name="narration" colspan="2" nolabel="1" attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                     </group>
                                 </group>
                             </page>

@@ -123,12 +123,13 @@ class wsfe_sinchronize_voucher(models.TransientModel):
 
         domain = [
             ('amount_total', '=', self.amount_total),
-            ('partner_id.vat', 'in', doc_number),
             ('amount_exempt', '=', self.amount_exempt),
             ('amount_taxed', '=', self.amount_taxed),
             ('amount_no_taxed', '=', self.amount_no_taxed),
             ('state', 'in', ('draft', 'proforma2', 'proforma'))]
 
+        if document_type and document_type.afip_code != '99':
+            domain.append(('partner_id.vat', 'in', doc_number))
         invoice_ids = invoice_model.search(domain)
         if len(invoice_ids) == 1:
             self.invoice_id = invoice_ids and invoice_ids[0]

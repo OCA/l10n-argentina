@@ -42,14 +42,16 @@ demás módulos de Servicios Web de AFIP.
 Dependencias Python:
 ********************
 python-m2crypto
+pyopenssl
     """,
     'data': [
         'wizard/wsaa_config_renewal.xml',
         'views/wsaa_view.xml',
+        'views/certificate_request_view.xml',
         'security/ir.model.access.csv',
     ],
     'demo': [
         'demo/wsaa_demo.xml',
-        ],
+    ],
     'installable': True,
 }

@@ -85,11 +85,10 @@ class AccountBankStatementLine(models.Model):
     statement_id = fields.Many2one(required=False)
     journal_id = fields.Many2one(related=False)
     company_id = fields.Many2one(related=False)
-    state = fields.Selection(lambda l: l._get_state_select(), related=False, string='Status',
-                             readonly=False, default=lambda l: l._get_default_state_value())
     statement_state = fields.Selection(related="statement_id.state")
     payment_id = fields.Many2one('account.payment', string='Payment reference')
     payment_order_id = fields.Many2one('account.payment.order', string='Payment Order reference')
+    concept_id = fields.Many2one(comodel_name='pos.box.concept', string='Concept')
     line_type = fields.Selection(
         [
             ("in", "Income"),
@@ -101,6 +100,8 @@ class AccountBankStatementLine(models.Model):
         help="Type of the associated operation",
         required=True,
     )
+    state = fields.Selection(lambda l: l._get_state_select(), related=False, string='Status',
+                             readonly=False, default=lambda l: l._get_default_state_value())
 
     def open_line(self):
         return self.write({"state": "open"})
@@ -113,13 +114,22 @@ class AccountBankStatementLine(models.Model):
 
     @api.model
     def create(self, vals):
+        journal_id = vals.get('journal_id')
+        statement_id = vals.get('statement_id')
         if not vals.get('company_id'):
-            journal_id = vals.get('journal_id')
             if journal_id:
                 company_id = self.env['account.journal'].browse(journal_id).company_id.id
             else:
-                company_id = self.env['res.company']._company_default_get('account.bank.statement').id
-            vals['company_id'] = company_id
+                company_model = self.env['res.company']
+                company_id = company_model._company_default_get('account.bank.statement').id
+            if company_id:
+                vals['company_id'] = company_id
+        # Not journal here? gather the one defined in the statement
+        # Done to handle differences in cash amount
+        if not journal_id and statement_id:
+            touse_journal = self.env['account.bank.statement'].browse(statement_id).journal_id
+            if touse_journal:
+                vals['journal_id'] = touse_journal.id
         res = super().create(vals)
         return res
 
@@ -158,3 +168,14 @@ class AccountBankStatementLine(models.Model):
     @api.multi
     def button_open_line(self):
         return self.open_line()
+
+    def _build_open_statement_search_domain(self):
+        return [("journal_id.type", "=", "cash"), ("state", "=", "open")]
+
+    def find_open_statement_id(self):
+        statement_domain = self._build_open_statement_search_domain()
+        return self.env["account.bank.statement"].search(
+            statement_domain,
+            order="create_date",
+            limit=1,
+        ).id

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="account_check_safekeeping_lot_form" model="ir.ui.view">
+            <field name="name">account.check.safekeeping.lot.form</field>
+            <field name="model">account.check.safekeeping.lot</field>
+            <field name="arch" type="xml">
+                <form string="Check Safekeeping">
+                    <header>
+                        <button name="action_safekeep" type="object" states="new" string="Safekeep" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,safekeeped,done"/>
+                    </header>
+                    <sheet string="Check Safekeeping">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="True"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="journal_id" attrs="{'readonly': [('state', '!=', 'new')], 'required': 1}" domain="[('type', '=', 'bank')]"/>
+                            </group>
+                            <group>
+                                <field name="safekeep_date" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Checks">
+                                <field name="check_ids" widget="many2many"
+                                    domain="[
+                                    ('state', 'in', ['wallet']),
+                                    ('type', '=', 'postdated'),
+                                    ('safekeeping_lot_id', '=', False)
+                                    ]"
+                                    attrs="{
+                                    'readonly': [('state', 'not in', ['new'])],
+                                    }">
+                                    <tree create="true">
+                                        <field name="number" readonly="1"/>
+                                        <field name="source_partner_id" readonly="1"/>
+                                        <field name="payment_date" readonly="1"/>
+                                        <field name="receipt_date" readonly="1"/>
+                                        <field name="amount" readonly="1"/>
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group>
+                            <div class="oe_clear">
+                                <label for="note"/>
+                                <field name="note" nolabel="1" placeholder="A beautiful Note"/>
+                            </div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="account_check_safekeeping_lot_tree" model="ir.ui.view">
+            <field name="name">account.check.safekeeping.lot.tree</field>
+            <field name="model">account.check.safekeeping.lot</field>
+            <field name="arch" type="xml">
+                <tree string="Check Safekeeping"
+                    decoration-info="state == 'new'"
+                    decoration-bf="state == 'safekeeped'">
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="safekeep_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="seq_check_safekeeping" model="ir.sequence">
+            <field name="name">Account Check Safekeeping Lot</field>
+            <field name="code">seq.check.safekeeping</field>
+            <field name="prefix">CUST</field>
+            <field name="padding">6</field>
+            <field eval="1" name="number_increment"/>
+        </record>
+
+        <record id="action_check_safekeeping" model="ir.actions.act_window">
+            <field name="name">Check Safekeeping</field>
+            <field name="res_model">account.check.safekeeping.lot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_checks_by_safekeeping" model="ir.actions.act_window">
+            <field name="name">Checks by Safekeeping</field>
+            <field name="res_model">account.third.check</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_safekeeping_lot': 1}</field>
+            <field name="domain">[('safekeeping_lot_id', '!=', False)]</field>
+        </record>
+
+        <!-- <record id="action_move_to_safekeeping" model="ir.actions.server"> -->
+        <!--     <field name="name">Safekeep</field> -->
+        <!--     <field name="type">ir.actions.server</field> -->
+        <!--     <field name="state">code</field> -->
+        <!--     <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
+        <!--     <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
+        <!--     <field name="code">records.move_to_safekeeped()</field> -->
+        <!-- </record> -->
+
+        <record id="action_move_to_wallet" model="ir.actions.server">
+            <field name="name">Move to Wallet</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/>
+            <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/>
+            <field name="code">action = records.move_to_wallet()</field>
+        </record>
+
+        <record id="view_third_checks_form_inherit" model="ir.ui.view">
+            <field name="name">third.check.form</field>
+            <field name="model">account.third.check</field>
+            <field name="inherit_id" ref="l10n_ar_account_check.view_account_third_check_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='dest']" position="after">
+                    <field name="safekeeping_lot_id"/>
+                    <field name="safekeeping_move_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_third_checks_search_inherit" model="ir.ui.view">
+            <field name="name">third.check.search</field>
+            <field name="model">account.third.check</field>
+            <field name="inherit_id" ref="l10n_ar_account_check.view_third_checks_search"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//filter[@context='&#38;quot;{&#38;apos;group_by&#38;apos;:&#38;apos;state&#38;apos;}&#38;quot;']" position="after"> -->
+                <xpath expr="//group[3]" position="inside">
+                    <filter string="Safekeeping Lot" name="group_safekeeping_lot" domain="[]" context="{'group_by':'safekeeping_lot_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

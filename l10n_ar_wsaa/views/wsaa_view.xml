@@ -50,6 +50,17 @@
 							<page string="Security Info" groups="account.group_account_manager">
 								<separator string="Certificate" colspan="4" class="oe_inline"/>
                                 <div class="oe_right oe_button_box oe_inline">
+                                    <button type="object"
+                                        context="{
+                                            'field': 'certificate',
+                                            'filename': 'cert.crt',
+                                        }"
+                                        class="oe_stat_button"
+                                        icon="fa-download"
+                                        attrs="{'invisible': [('certificate', '=', False)]}"
+                                        name="download_file">
+                                        <div><strong>Download</strong></div>
+                                    </button>
                                     <button type="action"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_renewal"
@@ -61,6 +72,17 @@
 								<field name="certificate" colspan="4" nolabel="1" height="200"/>
 								<separator string="Key" colspan="4" class="oe_inline"/>
                                 <div class="oe_right oe_button_box oe_inline">
+                                    <button type="object"
+                                        context="{
+                                            'field': 'key',
+                                            'filename': 'priv.key',
+                                        }"
+                                        class="oe_stat_button"
+                                        icon="fa-download"
+                                        attrs="{'invisible': [('key', '=', False)]}"
+                                        name="download_file">
+                                        <div><strong>Download</strong></div>
+                                    </button>
                                     <button type="action"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_renewal"

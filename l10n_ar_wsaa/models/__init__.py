@@ -5,3 +5,4 @@
 ###############################################################################
 
 from . import wsaa  # noqa
+from . import certificate_request  # noqa

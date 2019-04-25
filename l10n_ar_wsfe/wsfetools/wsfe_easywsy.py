@@ -124,7 +124,7 @@ class WSFE(WebService):
 
         doc_type = invoice.partner_id.document_type_id and \
             invoice.partner_id.document_type_id.afip_code or '99'
-        doc_num = invoice.partner_id.vat or '0'
+        doc_num = (invoice.partner_id.vat or '0') if doc_type != '99' else '0'
 
         company_id = invoice.env.user.company_id
         company_currency_id = company_id.currency_id
@@ -350,7 +350,7 @@ class WSFE(WebService):
                     inv.partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
                 if comp['DocNro'] == 0:
-                    doc_num = inv.partner_id.vat in [False, '', '0']
+                    doc_num = inv.partner_id.vat in [False, '', '0'] or doc_type == '99'
                 else:
                     try:
                         doc_num = bool(int(inv.partner_id.vat))
@@ -565,8 +565,11 @@ class WSFE(WebService):
 
     @wsapi.check(['DocNro'], reraise=True, sequence=20)
     def validate_docnro(val, invoice, DocTipo):
-        tin_number = int(val)
         tin_type = int(DocTipo)
+        if tin_type != 99:
+            tin_number = int(val)
+        else:
+            tin_number = val
         if invoice.denomination_id.name == 'B':
             if tin_type != 99 and not tin_number:
                 return False
@@ -574,7 +577,7 @@ class WSFE(WebService):
                 if not tin_number:
                     return False
             else:
-                if tin_type == 99 and tin_number:
+                if tin_type == 99 and tin_number != '0':
                     return False
         if invoice.denomination_id.name == 'A':
             if not int(val):
