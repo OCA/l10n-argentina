@@ -22,6 +22,8 @@
                             <group>
                                 <field name="priority"/>
                                 <field name="show_in_reports"/>
+                                <field name="company_id" options="{'no_create': True}"
+                                    groups="base.group_multi_company"/>
                             </group>
                         </group>
                         <notebook>
@@ -34,7 +36,7 @@
                 </form>
             </field>
         </record>
-        
+
         <record id="pos_ar_view_tree" model="ir.ui.view">
             <field name="name">pos.ar.view.tree</field>
             <field name="model">pos.ar</field>
@@ -48,7 +50,7 @@
                 </tree>
             </field>
         </record>
-    
+
         <record id="action_pos_ar_view_tree" model="ir.actions.act_window">
             <field name="name">Point of Sale</field>
             <field name="type">ir.actions.act_window</field>
@@ -56,7 +58,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        
+
         <record id="action_pos_ar_view_form" model="ir.actions.act_window">
             <field name="name">Point of Sale</field>
             <field name="type">ir.actions.act_window</field>
@@ -64,10 +66,10 @@
             <field name="view_type">form</field>
             <field name="view_mode">form, tree</field>
         </record>
-        
-        
+
+
     <!--Views of Invoice Denomination-->
-              
+
         <record id="inv_den_view_form" model="ir.ui.view">
             <field name="name">inv.den.view.form</field>
             <field name="model">invoice.denomination</field>
@@ -87,7 +89,7 @@
                 </form>
             </field>
         </record>
-        
+
         <record id="inv_den_view_tree" model="ir.ui.view">
             <field name="name">inv.den.view.tree</field>
             <field name="model">invoice.denomination</field>
@@ -100,7 +102,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <record id="action_pos_ar_denomination_view_tree" model="ir.actions.act_window">
             <field name="name">Invoice Denomination</field>
             <field name="type">ir.actions.act_window</field>
@@ -108,6 +110,6 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        
+
     </data>
 </odoo>
