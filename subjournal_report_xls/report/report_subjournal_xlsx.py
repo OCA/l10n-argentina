@@ -97,7 +97,7 @@ class SubjournalXlsx(models.AbstractModel):
         q = """
         WITH all_lines AS (
             SELECT  l.move_id AS move_id,
-                    l.date AS date,
+                    i.date_invoice AS date,
                     i.id AS invoice_id,
                     i.internal_number AS invoice_number,
                     i.type AS invoice_type,
