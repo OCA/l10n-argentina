@@ -116,9 +116,9 @@ class PadronMassUpdate(models.TransientModel):
     @api.model
     def _update_perception_arba(self, perception_id):
         multilateral_record = self.env.ref(
-            'l10n_ar_perceptions.iibb_situation_multilateral')
+            'l10n_ar_point_of_sale.iibb_situation_multilateral')
         local_record = self.env.ref(
-            'l10n_ar_perceptions.iibb_situation_local')
+            'l10n_ar_point_of_sale.iibb_situation_local')
         cr = self.env.cr
         query = """
         WITH padron AS (
