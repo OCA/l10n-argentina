@@ -53,6 +53,11 @@ class PosAr(models.Model):
     activity_start_date = fields.Date(string="Activity Start Date",
                                       required=True)
     active = fields.Boolean('Active', default=True)
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.user.company_id.id,
+        required=True)
 
     @api.constrains('name')
     def _check_pos_name(self):

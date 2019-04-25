@@ -89,6 +89,7 @@
                                 <field name="pre_line" invisible="1"/>
                                 <field name="type" invisible="1" attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="currency_id" attrs="{'readonly': True}" force_save="True"/>
+                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                             </group>
                             <group col="4" attrs="{'invisible':[('is_multi_currency','=',False)]}">
                                 <field name="is_multi_currency" invisible="1"/>
