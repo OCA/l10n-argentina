@@ -12,11 +12,9 @@
             <field name="inherit_id" ref="l10n_ar_point_of_sale.view_pos_invoice_form"/>
             <field name="arch" type="xml">
                 <field name="fiscal_position_id" position="after">
-                    <field name="local" invisible="1"/>
 					<field name="aut_cae" invisible="1"/>
                     <field name="export_type_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
                     <field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
-                    <field name="dst_cuit_id" widget="selection" attrs="{'invisible': [('local','=', True)]}"/>
                 </field>
                 <field name="date_due" position="after">
                     <field name="cae" string="CAE" readonly="1"/>
@@ -115,11 +113,6 @@
                 <field name="date_due" position="after">
                     <field name="cae" string="CAI"/>
                     <field name="cae_due_date"/>
-                    <field name="local" invisible="1"/>
-                </field>
-                <field name="fiscal_position_id" position="after">
-                    <field name="dst_cuit_id" widget="selection"
-                        attrs="{'invisible': [('local','=', True)]}"/>
                 </field>
             </field>
         </record>

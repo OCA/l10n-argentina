@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
+    <record id="document_cuit_country" model="res.document.type">
+        <field name="name">CUIT País</field>
+        <field name="afip_code">80</field>
+        <field name="dst_cuit" eval="True"/>
+    </record>
+
     <record id="document_cuit" model="res.document.type">
         <field name="name">CUIT</field>
         <field name="afip_code">80</field>
         <field name="verification_required" eval="True"/>
+        <field name="check_duplicated" eval="True"/>
     </record>
 
     <record id="document_cuil" model="res.document.type">
         <field name="name">CUIL</field>
         <field name="afip_code">86</field>
         <field name="verification_required" eval="True"/>
+        <field name="check_duplicated" eval="True"/>
     </record>
 
     <record id="document_cdi" model="res.document.type">

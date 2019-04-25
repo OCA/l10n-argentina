@@ -9,8 +9,11 @@
             <field name="inherit_id" ref="base_vat.view_partner_form"/>
             <field name="arch" type="xml">
                 <field name="vat" position="before">
+                    <field name="dst_cuit" invisible="1"/>
                     <field name="document_type_id" placeholder="Document Type..."
                         widget="selection"/>
+                    <field name="dst_cuit_id" attrs="{
+                        'invisible': [('dst_cuit', '!=', True)]}"/>
                 </field>
             </field>
         </record>
@@ -41,6 +44,8 @@
                             <field name="name" select="1"/>
                             <field name="afip_code" select="1"/>
                             <field name="verification_required"/>
+                            <field name="check_duplicated"/>
+                            <field name="dst_cuit"/>
                         </group>
                     </sheet>
                 </form>
@@ -56,6 +61,8 @@
                     <field name="name"/>
                     <field name="afip_code"/>
                     <field name="verification_required"/>
+                    <field name="check_duplicated"/>
+                    <field name="dst_cuit"/>
                 </tree>
             </field>
         </record>

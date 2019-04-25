@@ -24,24 +24,53 @@ msgid "Afip code"
 msgstr "Código AFIP"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_check_duplicated
+msgid "Check Duplicated"
+msgstr "Chequear Duplicados"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_code
+msgid "Code"
+msgstr "Código"
+
+#. module: base_vat_ar
 #: model:ir.model,name:base_vat_ar.model_res_partner
 msgid "Contact"
 msgstr "Contacto"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_partner_dst_cuit_id
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_users_dst_cuit_id
+msgid "Country CUIT"
+msgstr "Países CUIT"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_create_uid
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_create_uid
 msgid "Created by"
 msgstr "Creado por"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_create_date
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_create_date
 msgid "Created on"
 msgstr "Creado en"
 
 #. module: base_vat_ar
+#: model:ir.model,name:base_vat_ar.model_dst_cuit_codes
+msgid "DST CUIT Codes"
+msgstr "Países CUIT"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_name
+msgid "Desc"
+msgstr "Descripción"
+
+#. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_display_name
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_display_name
 msgid "Display Name"
-msgstr "Mostrar Nombre"
+msgstr "Nombre mostrado"
 
 #. module: base_vat_ar
 #: model:ir.ui.view,arch_db:base_vat_ar.view_partner_document_type_form
@@ -60,49 +89,61 @@ msgid "Document type"
 msgstr "Tipo de documento"
 
 #. module: base_vat_ar
-#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
-msgid "Document types"
-msgstr "Tipos de Documento"
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_dst_cuit
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_partner_dst_cuit
+#: model:ir.model.fields,field_description:base_vat_ar.field_res_users_dst_cuit
+msgid "Enable DST CUIT"
+msgstr "Habilitar Países CUIT"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_id
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_id
 msgid "ID"
-msgstr "ID"
+msgstr "ID (identificación)"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes___last_update
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type___last_update
 msgid "Last Modified on"
 msgstr "Última modificación en"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_write_uid
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_write_uid
 msgid "Last Updated by"
-msgstr "Última actualización realizada por"
+msgstr "Última actualización de"
 
 #. module: base_vat_ar
+#: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_write_date
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_write_date
 msgid "Last Updated on"
-msgstr "Última actualización el"
+msgstr "Última actualización en"
 
 #. module: base_vat_ar
-#: code:addons/base_vat_ar/models/partner.py:69
+#: code:addons/base_vat_ar/models/partner.py:126
 #, python-format
 msgid "The Vat does not seems to be correct."
-msgstr "El Número de Identificación ingresado no es correcto."
+msgstr "El NIF no parece ser correcto."
 
 #. module: base_vat_ar
-#: code:addons/base_vat_ar/models/partner.py:74
+#: code:addons/base_vat_ar/models/partner.py:100
 #, python-format
 msgid "The Vat only supports numbers."
-msgstr "El Número de Identificación solo soporta numeros"
+msgstr "El NIF solo soporta números."
 
 #. module: base_vat_ar
-#: code:addons/base_vat_ar/models/partner.py:46
+#: code:addons/base_vat_ar/models/partner.py:72
 #, python-format
 msgid "There is another partner with same VAT Information"
-msgstr "Hay otro contacto con el mismo Nro. de Documento."
+msgstr "Existe otra compañía con la misma información de NIF"
 
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_verification_required
 msgid "Verification required"
 msgstr "Requiere Verificación"
+
+#. module: base_vat_ar
+#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
+msgid "base_vat_ar.menu_document_type"
+msgstr "base_vat_ar.menu_document_type"
+
