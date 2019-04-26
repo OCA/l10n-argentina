@@ -113,6 +113,15 @@ class AccountBankStatementLine(models.Model):
         return self.write({"statement_id": False})
 
     @api.model
+    def ensure_line_type(self, vals):
+        """ Lines from pos does not have line_type defined, set it """
+        line_type = vals.get('line_type')
+        if not line_type:
+            amount = vals.get('amount')
+            lt = 'in' if amount > 0 else 'out'
+            vals['line_type'] = lt
+
+    @api.model
     def create(self, vals):
         journal_id = vals.get('journal_id')
         statement_id = vals.get('statement_id')
@@ -130,6 +139,7 @@ class AccountBankStatementLine(models.Model):
             touse_journal = self.env['account.bank.statement'].browse(statement_id).journal_id
             if touse_journal:
                 vals['journal_id'] = touse_journal.id
+        self.ensure_line_type(vals)
         res = super().create(vals)
         return res
 
