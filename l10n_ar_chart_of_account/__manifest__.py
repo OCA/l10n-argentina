@@ -20,19 +20,15 @@
 ##############################################################################
 
 {
-    "name" : "Argentina - Chart of Account",
-    "version" : "8.0.1.0.0",
-    "author" : "E-MIPS / Eynesn,Odoo Community Association (OCA)",
-    "category" : "Localization/Account Charts",
-    "description": 
-'''
-Accounting chart for Argetina in Open ERP.
-''',
-    "depends" : [
-        "base",
-        ],
-    "demo_xml" : [],
-    "update_xml" : [
+    "name": "Argentina - Chart of Account",
+    "version": "11.0.1.0.0",
+    "author": "E-MIPS / Eynesn,Odoo Community Association (OCA)",
+    "category": "Localization/Account Charts",
+    "description": '''Accounting chart for Argetina in Open ERP.''',
+    "depends": [
+        "account",
+    ],
+    "data": [
         # "account_tax_code.xml",
         # "account_chart.xml",
         "account_tax.xml",
@@ -41,7 +37,6 @@ Accounting chart for Argetina in Open ERP.
     ],
     "active": False,
     "installable": True,
-    "certificate" : "",
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
