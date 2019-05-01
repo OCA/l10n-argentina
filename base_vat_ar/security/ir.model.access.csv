@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_res_document_type_user,access_res_document_type user,model_res_document_type,base.group_user,1,0,0,0
 access_res_document_type_account_manager,access_res_document_type manager,model_res_document_type,account.group_account_manager,1,1,1,1
+access_dst_cuit_codes_type_user,dst.cuit.codes: type_user,model_dst_cuit_codes,base.group_user,1,0,0,0
+access_dst_cuit_codes_type_account_manager,dst.cuit.codes: type_account_manager,model_dst_cuit_codes,account.group_account_manager,1,1,1,1
