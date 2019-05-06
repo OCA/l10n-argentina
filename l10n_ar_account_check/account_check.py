@@ -125,12 +125,19 @@ class account_issued_check(models.Model):
 
             account_id = config.deferred_account_id.id
             date_maturity = self.payment_date
+            err_msg = _(
+                "Deferred check account is not configured. Please, " +
+                "configure an account for the deferred checks in the " +
+                "company's check configuration!")
         else:
             account_id = self.account_bank_id.account_id.id
             date_maturity = voucher.date_due
+            err_msg = _(
+                "Bank Account has no account configured. Please, " +
+                "configure an account for the bank account used for checks!")
 
         if not account_id:
-            raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
+            raise osv.except_osv(_("Error"), err_msg)
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
