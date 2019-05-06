@@ -1,0 +1,134 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_invoice_from_barcode
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 12:33+0000\n"
+"PO-Revision-Date: 2019-04-01 09:37-0300\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es_AR\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,barcode:0
+msgid "Barcode"
+msgstr "Código de Barras"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,cae:0
+msgid "CAE"
+msgstr "CAE"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,cae_due_date:0
+msgid "CAE Due Date"
+msgstr "Vencimiento del CAE"
+
+#. module: l10n_ar_invoice_from_barcode
+#: view:invoice.from.barcode:l10n_ar_invoice_from_barcode.view_invoice_from_barcode
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,display_name:0
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: l10n_ar_invoice_from_barcode
+#: view:invoice.from.barcode:l10n_ar_invoice_from_barcode.view_invoice_from_barcode
+msgid "Generate Invoice"
+msgstr "Generar Factura"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_invoice_from_barcode
+#: code:addons/l10n_ar_invoice_from_barcode/wizard/invoice_from_barcode.py:49
+#, python-format
+msgid "Invalid Barcode"
+msgstr "Código de Barras Inválido"
+
+#. module: l10n_ar_invoice_from_barcode
+#: code:addons/l10n_ar_invoice_from_barcode/wizard/invoice_from_barcode.py:53
+#, python-format
+msgid "Invalid Invoice type"
+msgstr "Tipo de Factura Inválida"
+
+#. module: l10n_ar_invoice_from_barcode
+#: code:addons/l10n_ar_invoice_from_barcode/wizard/invoice_from_barcode.py:79
+#, python-format
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ar_invoice_from_barcode
+#: view:invoice.from.barcode:l10n_ar_invoice_from_barcode.view_invoice_from_barcode
+#: model:ir.actions.act_window,name:l10n_ar_invoice_from_barcode.action_invoice_from_barcode
+#: model:ir.ui.menu,name:l10n_ar_invoice_from_barcode.menu_invoice_from_barcode
+msgid "Invoice From Barcode"
+msgstr "Factura desde Código de Barras"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,inv_number:0
+msgid "Invoice Number"
+msgstr "Número de Factura"
+
+#. module: l10n_ar_invoice_from_barcode
+#: model:ir.model,name:l10n_ar_invoice_from_barcode.model_invoice_from_barcode
+msgid "InvoiceFromBarcode"
+msgstr "InvoiceFromBarcode"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,__last_update:0
+msgid "Last Modified on"
+msgstr "Last Modified on"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,partner_id:0
+msgid "Partner"
+msgstr "Proveedor"
+
+#. module: l10n_ar_invoice_from_barcode
+#: code:addons/l10n_ar_invoice_from_barcode/wizard/invoice_from_barcode.py:51
+#, python-format
+msgid "Partner not found. Please create it to proceed"
+msgstr "Proveedor no encontrado. Por favor crearlo para continuar"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,pos:0
+msgid "Point of Sale"
+msgstr "Punto de Venta"
+
+#. module: l10n_ar_invoice_from_barcode
+#: field:invoice.from.barcode,type_id:0
+msgid "Voucher Type"
+msgstr "Tipo de Comprobante"

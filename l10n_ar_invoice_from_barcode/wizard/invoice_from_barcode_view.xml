@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_invoice_from_barcode" model="ir.ui.view">
+            <field name="name">invoice.from.barcode</field>
+            <field name="model">invoice.from.barcode</field>
+            <field name="arch" type="xml">
+                <form string="Invoice From Barcode">
+                    <group>
+                        <field name="inv_number" required="True"/>
+                        <field name="barcode" required="True"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="type_id"/>
+                            <field name="pos"/>
+                        </group>
+                        <group>
+                            <field name="cae"/>
+                            <field name="cae_due_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string='Generate Invoice' name="generate_invoice" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_invoice_from_barcode" model="ir.actions.act_window">
+            <field name="name">Invoice From Barcode</field>
+            <field name="res_model">invoice.from.barcode</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+           <field name="view_id" ref="view_invoice_from_barcode"/>
+           <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_invoice_from_barcode"
+            name="Invoice From Barcode"
+            sequence="5"
+            action="action_invoice_from_barcode"
+            parent="account.menu_finance_payables"/>
+
+    </data>
+</openerp>
