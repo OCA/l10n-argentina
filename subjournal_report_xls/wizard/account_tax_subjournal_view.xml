@@ -52,7 +52,7 @@
 
         <menuitem id="menu_account_tax_subjournal"
             name="Taxes Subjournal"
-            parent="account.menu_finance_legal_statement"
+            parent="account.account_reports_management_menu"
             action="action_account_tax_subjournal"
             icon="STOCK_PRINT"/>
 

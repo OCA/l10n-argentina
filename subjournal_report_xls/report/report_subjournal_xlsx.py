@@ -40,10 +40,9 @@ class SubjournalXlsx(models.AbstractModel):
     def get_columns(self, types, obj):
         q = """
         SELECT DISTINCT at.id
-        FROM account_tax at
-        LEFT JOIN account_move_line l ON l.tax_line_id = at.id
-        LEFT JOIN account_move_line_account_tax_rel tr
-            ON tr.account_tax_id = at.id
+        FROM account_move_line l
+        LEFT JOIN account_move_line_account_tax_rel tr ON tr.account_move_line_id = l.id
+        LEFT JOIN account_tax at ON at.id = l.tax_line_id OR at.id = tr.account_tax_id
         LEFT JOIN account_invoice i ON i.move_id = l.move_id
         WHERE l.date BETWEEN %(date_from)s AND %(date_to)s
         AND i.type IN %(inv_type)s
@@ -53,6 +52,22 @@ class SubjournalXlsx(models.AbstractModel):
             WHERE report_config_id=%(report_id)s
         ) ORDER BY at.id
         """
+        # OLD QUERY
+        # q = """
+        # SELECT DISTINCT at.id
+        # FROM account_tax at
+        # LEFT JOIN account_move_line l ON l.tax_line_id = at.id
+        # LEFT JOIN account_move_line_account_tax_rel tr
+        #     ON tr.account_tax_id = at.id
+        # LEFT JOIN account_invoice i ON i.move_id = l.move_id
+        # WHERE l.date BETWEEN %(date_from)s AND %(date_to)s
+        # AND i.type IN %(inv_type)s
+        # AND at.id IN (
+        #     SELECT tax_code_id
+        #     FROM subjournal_report_taxcode_column
+        #     WHERE report_config_id=%(report_id)s
+        # ) ORDER BY at.id
+        # """
         q_vals = {
             'date_from': obj.date_from,
             'date_to': obj.date_to,
@@ -97,7 +112,7 @@ class SubjournalXlsx(models.AbstractModel):
         q = """
         WITH all_lines AS (
             SELECT  l.move_id AS move_id,
-                    l.date AS date,
+                    i.date_invoice AS date,
                     i.id AS invoice_id,
                     i.internal_number AS invoice_number,
                     i.type AS invoice_type,
@@ -264,7 +279,7 @@ class SubjournalXlsx(models.AbstractModel):
                     l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
 
             for i, tax in enumerate(self.columns):
-                if l['tax_line_id'] == tax['id']:
+                if l['tax_line_id'] == tax['id'] or l['tax_ids'] == tax['id']:
                     if lines[dict_hash]['taxes'][i] == 0:
                         if tax['type'] == 'tax':
                             lines[dict_hash]['taxes'][i] = abs(
