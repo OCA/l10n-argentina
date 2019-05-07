@@ -38,81 +38,60 @@ class SubjournalXlsx(models.AbstractModel):
         return '%s %s' % (fiscal_type, denom)
 
     def get_columns(self, types, obj):
-        q = """
-        SELECT DISTINCT at.id
-        FROM account_move_line l
-        LEFT JOIN account_move_line_account_tax_rel tr
-            ON tr.account_move_line_id = l.id
-        LEFT JOIN account_tax at
-            ON at.id = l.tax_line_id
-                OR at.id = tr.account_tax_id
-        LEFT JOIN account_invoice i
-            ON i.move_id = l.move_id
-        WHERE
-            l.date BETWEEN %(date_from)s AND %(date_to)s
-            AND i.type IN %(inv_type)s
-            AND at.id IN (
-                SELECT tax_code_id
-                FROM subjournal_report_taxcode_column
-                WHERE report_config_id=%(report_id)s
-            )
-        ORDER BY at.id
-        """
-        # OLD QUERY
-        # q = """
-        # SELECT DISTINCT at.id
-        # FROM account_tax at
-        # LEFT JOIN account_move_line l ON l.tax_line_id = at.id
-        # LEFT JOIN account_move_line_account_tax_rel tr
-        #     ON tr.account_tax_id = at.id
-        # LEFT JOIN account_invoice i ON i.move_id = l.move_id
-        # WHERE l.date BETWEEN %(date_from)s AND %(date_to)s
-        # AND i.type IN %(inv_type)s
-        # AND at.id IN (
-        #     SELECT tax_code_id
-        #     FROM subjournal_report_taxcode_column
-        #     WHERE report_config_id=%(report_id)s
-        # ) ORDER BY at.id
-        # """
-        q_vals = {
-            'date_from': obj.date_from,
-            'date_to': obj.date_to,
-            'inv_type': tuple(types),
-            'report_id': obj.report_config_id.id,
-        }
-        self._cr.execute(q, q_vals)
-        res = self._cr.dictfetchall()
+        invoice_model = self.env['account.invoice']
+        tax_model = self.env['account.tax']
+        invoices = invoice_model.search([
+            ('type', 'in', types),
+            ('move_id.line_ids.date', '>=', obj.date_from),
+            ('move_id.line_ids.date', '<=', obj.date_to)])
+        tax_ids = set(
+            invoices.mapped('move_id.line_ids.tax_ids').ids +
+            invoices.mapped('move_id.line_ids.tax_line_id').ids)
+        taxes = tax_model.browse(tax_ids)
 
-        ids = map(lambda x: x['id'], res)
-        tax_code_column_model = self.env['subjournal.report.taxcode.column']
-        taxes_config = tax_code_column_model.search(
-            [('report_config_id', '=', obj.report_config_id.id)])
-        taxes = self.env['account.tax'].browse(ids)
         all_taxes = []
         i = 0
-        for tax in taxes.sorted(key=lambda x: taxes_config.filtered(
-                lambda y: y.tax_code_id == x).sequence):
-            all_taxes.append({
-                'id': tax.id,
-                'is_exempt': tax.is_exempt,
-                'name': tax.name,
-                'type': 'tax',
-                'column': 72+i,
-            })
+        base_first = obj.base_position == 'first'
+
+        for tax in taxes.sorted(lambda t: getattr(t, obj.sort_by)):
             perception_tax_group = self.env.ref(
                 'l10n_ar_perceptions_basic.tax_group_perceptions')
-            i += 1
-            if tax.tax_group_id and tax.tax_group_id == perception_tax_group:
-                continue
-            else:
-                all_taxes.append({
+            if not (tax.tax_group_id and
+                    tax.tax_group_id == perception_tax_group) and \
+                    base_first:
+                base_vals = {
                     'id': tax.id,
                     'is_exempt': tax.is_exempt,
                     'name': 'Base '+tax.name,
                     'type': 'base',
                     'column': 72+i,
-                })
+                }
+                all_taxes.append(base_vals)
                 i += 1
+
+            tax_vals = {
+                'id': tax.id,
+                'is_exempt': tax.is_exempt,
+                'name': tax.name,
+                'type': 'tax',
+                'column': 72+i,
+            }
+            all_taxes.append(tax_vals)
+            i += 1
+
+            if not (tax.tax_group_id and
+                    tax.tax_group_id == perception_tax_group) and \
+                    not base_first:
+                base_vals = {
+                    'id': tax.id,
+                    'is_exempt': tax.is_exempt,
+                    'name': 'Base '+tax.name,
+                    'type': 'base',
+                    'column': 72+i,
+                }
+                all_taxes.append(base_vals)
+                i += 1
+
         self.columns = all_taxes
         return all_taxes
 
@@ -262,10 +241,14 @@ class SubjournalXlsx(models.AbstractModel):
         for l in res:
             sign = 1
             sign_no_taxed = 1
+            based_sign = 1
+
             if l['invoice_type'] in ('out_refund', 'in_refund'):
                 sign = -1
             if l['invoice_type'] in ('out_invoice', 'in_refund'):
                 sign_no_taxed = -1
+            if obj.based_on == 'purchase':
+                based_sign = -1
 
             dict_hash = (l['date'], l['invoice_type'],
                          l['pos'], l['invoice_id'])
@@ -280,12 +263,12 @@ class SubjournalXlsx(models.AbstractModel):
                 l['taxes'] = [0] * len(self.columns)
                 l['no_taxed'] = not l['tax_line_id'] and not l['tax_ids'] and (
                     l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
-                l['total'] = (l['credit'] - l['debit'])
+                l['total'] = (l['credit'] - l['debit']) * based_sign
                 l['invoice_type'] = self.get_invoice_type(
                     l['invoice_type'], l['denomination'], l['is_debit_note'])
             else:
                 ll = lines[dict_hash]
-                ll['total'] += (l['credit'] - l['debit'])
+                ll['total'] += (l['credit'] - l['debit']) * based_sign
                 ll['no_taxed'] += not l['tax_line_id'] and \
                     not l['tax_ids'] and \
                     (l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
@@ -295,15 +278,15 @@ class SubjournalXlsx(models.AbstractModel):
                         l['tax_ids'] == tax['id'] and tax.get('is_exempt')):
                     if lines[dict_hash]['taxes'][i] == 0:
                         if tax['type'] == 'tax':
-                            lines[dict_hash]['taxes'][i] = abs(
-                                l['debit'] - l['credit'])*sign
+                            lines[dict_hash]['taxes'][i] = (
+                                l['credit'] - l['debit']) * based_sign
                         elif tax['type'] == 'base':
                             lines[dict_hash]['taxes'][i] = \
                                 l['tax_amount'] * sign
                     else:
                         if tax['type'] == 'tax':
-                            lines[dict_hash]['taxes'][i] += abs(
-                                l['debit'] - l['credit'])*sign
+                            lines[dict_hash]['taxes'][i] += (
+                                l['credit'] - l['debit']) * based_sign
                         elif tax['type'] == 'base':
                             lines[dict_hash]['taxes'][i] += \
                                 l['tax_amount'] * sign
@@ -317,6 +300,18 @@ class SubjournalXlsx(models.AbstractModel):
                       ('0' if k['partner'].startswith('Agrupado') else '1') +
                       k['invoice_number'])
         return res2
+
+    def _report_xls_fields(self):
+        base_lst = [
+            'Fecha', 'Razon Social', 'Provincia', 'CUIT', 'Cond. IVA',
+            'Tipo', 'Numero', 'No Gravado', 'Total'
+        ]
+        config_obj = self.env['ir.config_parameter']
+        config_param = config_obj.sudo().get_param('subjournal_export_cae')
+        if config_param:
+            base_lst.insert(6, 'cae')
+            base_lst.insert(7, 'cae_due_date')
+        return base_lst
 
     def set_column(self, worksheet, index):
         worksheet.set_column('A:A', 10)
@@ -350,13 +345,14 @@ class SubjournalXlsx(models.AbstractModel):
                                          '#C0C0C0', '#ffffb3')
         date_format = self.create_format(workbook, False, 1,
                                          '#C0C0C0', '#ffffff')
+        gray_format = self.create_format(workbook, False, 1,
+                                         '#C0C0C0', '#eaeaea')
         footer_format = self.create_format(workbook, True, 1,
                                            '#C0C0C0', '#ffd6cc')
 
-        move_obj = self.env['account.move.line']
         wizard_obj = self.env['account.tax.subjournal'].browse(obj.id)
         types = self._get_types(wizard_obj)
-        wanted_list = move_obj._report_xls_fields()
+        wanted_list = self._report_xls_fields()
         title = self.get_title(wizard_obj)
         cols = self.get_columns(types, wizard_obj)
         lines = self.get_lines(types, wizard_obj)
@@ -367,66 +363,126 @@ class SubjournalXlsx(models.AbstractModel):
         sheet.set_column('A:L', 20)
         i = 65
         for column in wanted_list:
-            sheet.write(chr(i)+'3', column, head_format)
+            sheet.write(chr(i)+'1', column, head_format)
             i += 1
         self.set_column(sheet, i)
         for p, line in enumerate(lines):
-            p += 4
-            sheet.write('A'+str(p), line['date'], date_format)
-            sheet.write('B'+str(p), line['partner'], date_format)
-            sheet.write('C'+str(p), line['state'], date_format)
-            sheet.write('D'+str(p), line['vat'], date_format)
-            sheet.write('E'+str(p), line['fiscal_position'], date_format)
-            sheet.write('F'+str(p), line['invoice_type'], date_format)
-            sheet.write('G'+str(p), line['invoice_number'], date_format)
+            p += 2
+            cell_format = gray_format
+            if p % 2:
+                cell_format = date_format
+            sheet.write('A'+str(p), line['date'], cell_format)
+            sheet.write('B'+str(p), line['partner'], cell_format)
+            sheet.write('C'+str(p), line['state'], cell_format)
+            sheet.write('D'+str(p), line['vat'], cell_format)
+            sheet.write('E'+str(p), line['fiscal_position'], cell_format)
+            sheet.write('F'+str(p), line['invoice_type'], cell_format)
+            sheet.write('G'+str(p), line['invoice_number'], cell_format)
             i = 72
             for t, tax in enumerate(cols):
                 if self.c_taxes[t] > 0:
-                    sheet.write(chr(i)+str(p), line['taxes'][t], date_format)
+                    sheet.write(chr(i)+str(p), line['taxes'][t], cell_format)
                     i += 1
-            sheet.write(chr(i)+str(p), line['no_taxed'], date_format)
-            sheet.write(chr(i+1)+str(p), line['total'], date_format)
+            sheet.write(chr(i)+str(p), line['no_taxed'], cell_format)
+            sheet.write(chr(i+1)+str(p), line['total'], cell_format)
 
         # Formulas
+        fac_formula = '{=SUMIF(F2:F%(last_line)s,"F *",%(col)s2:%(col)s%(last_line)s) + SUMIF(F2:F%(last_line)s,"ND *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
+        nc_formula = '{=SUMIF(F2:F%(last_line)s,"NC *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
+        total_formula = '{=SUM(%(col)s2:%(col)s%(last_line)s)}'  # noqa
+
+        last_row_num = len(lines) + 1
+        last_row_char = str(last_row_num)
+        fac_row_char = str(last_row_num + 3)
+        nc_row_char = str(last_row_num + 4)
+        total_row_char = str(last_row_num + 5)
+
         i = 0
         for j, col in enumerate(cols):
             if self.c_taxes[j] > 0:
-                formula = '{=SUMIF('+chr(col['column']-i)+'4:'+chr(col['column']-i)+str(len(lines)+3)+',">0",'+chr(col['column']-i)+'4:'+chr(col['column']-i)+str(len(lines)+3)+')}'  # noqa
-                sheet.write_formula(chr(col['column']-i)+str(len(lines)+4), formula, footer_format)  # noqa
-                formula = '{=SUMIF('+chr(col['column']-i)+'4:'+chr(col['column']-i)+str(len(lines)+3)+',"<0",'+chr(col['column']-i)+'4:'+chr(col['column']-i)+str(len(lines)+3)+')}'  # noqa
-                sheet.write_formula(chr(col['column']-i)+str(len(lines)+5), formula, footer_format)  # noqa
-                formula = '{=SUM('+chr(col['column']-i)+'4:'+chr(col['column']-i)+str(len(lines)+3)+')}'  # noqa
-                sheet.write_formula(chr(col['column']-i)+str(len(lines)+6), formula, footer_format)  # noqa
+                col_char = chr(col['column']-i)
+                indexes = {
+                    'last_line': last_row_char,
+                    'col': col_char,
+                }
+
+                # Fac
+                sheet.write_formula(
+                    col_char + fac_row_char,
+                    fac_formula % indexes,
+                    footer_format)
+
+                # NC
+                sheet.write_formula(
+                    col_char + nc_row_char,
+                    nc_formula % indexes,
+                    footer_format)
+
+                # Totals
+                sheet.write_formula(
+                    col_char + total_row_char,
+                    total_formula % indexes,
+                    footer_format)
+
             else:
                 i += 1
-        # sumif '>0'
-        column = chr(72+len(cols)-i)
-        formula = '{=SUMIF('+column+'4:'+column+str(len(lines)+3)+',">0",'+column+'4:'+column+str(len(lines)+3)+')}'  # noqa
-        sheet.write_formula(column+str(len(lines)+4), formula, footer_format)
-        column = chr(73+len(cols)-i)
-        formula = '{=SUMIF('+column+'4:'+column+str(len(lines)+3)+',">0",'+column+'4:'+column+str(len(lines)+3)+')}'  # noqa
-        sheet.write_formula(column+str(len(lines)+4), formula, footer_format)
-        # sumif '<0'
-        column = chr(72+len(cols)-i)
-        formula = '{=SUMIF('+column+'4:'+column+str(len(lines)+3)+',"<0",'+column+'4:'+column+str(len(lines)+3)+')}'  # noqa
-        sheet.write_formula(column+str(len(lines)+5), formula, footer_format)
-        column = chr(73+len(cols)-i)
-        formula = '{=SUMIF('+column+'4:'+column+str(len(lines)+3)+',"<0",'+column+'4:'+column+str(len(lines)+3)+')}'  # noqa
-        sheet.write_formula(column+str(len(lines)+5), formula, footer_format)
-        # sum all
-        column = chr(72+len(cols)-i)
-        formula = '{=SUM('+column+'4:'+column+str(len(lines)+3)+')}'
-        sheet.write_formula(column+str(len(lines)+6), formula, footer_format)
-        column = chr(73+len(cols)-i)
-        formula = '{=SUM('+column+'4:'+column+str(len(lines)+3)+')}'
-        sheet.write_formula(column+str(len(lines)+6), formula, footer_format)
+
+        ng_col_char = chr(72+len(cols)-i)
+        tot_col_char = chr(73+len(cols)-i)
+
+        indexes = {
+            'last_line': last_row_char,
+        }
+        indexes.update({'col': ng_col_char})
+        # Fac NoGravado
+        sheet.write_formula(
+            ng_col_char + fac_row_char,
+            fac_formula % indexes,
+            footer_format)
+
+        # NC NoGravado
+        sheet.write_formula(
+            ng_col_char + nc_row_char,
+            nc_formula % indexes,
+            footer_format)
+
+        # Total NoGravado
+        sheet.write_formula(
+            ng_col_char + total_row_char,
+            total_formula % indexes,
+            footer_format)
+
+        indexes.update({'col': tot_col_char})
+        # Fac Total
+        sheet.write_formula(
+            tot_col_char + fac_row_char,
+            fac_formula % indexes,
+            footer_format)
+
+        # NC Total
+        sheet.write_formula(
+            tot_col_char + nc_row_char,
+            nc_formula % indexes,
+            footer_format)
+
+        # Total Final
+        sheet.write_formula(
+            tot_col_char + total_row_char,
+            total_formula % indexes,
+            footer_format)
+
         # formula labels
-        sheet.write('A'+str(len(lines)+4), 'Subtotal FC/ND', footer_format)
-        sheet.write('A'+str(len(lines)+5), 'Subtotal NC', footer_format)
-        sheet.write('A'+str(len(lines)+6), 'Total', footer_format)
+        sheet.write('A'+fac_row_char, 'Subtotal FC/ND', footer_format)
+        sheet.write('A'+nc_row_char, 'Subtotal NC', footer_format)
+        sheet.write('A'+total_row_char, 'Total', footer_format)
         # Footer format
-        c_range = 'A'+str(len(lines)+4)+':'+column+str(len(lines)+6)
-        sheet.conditional_format(c_range, {
+        indexes = {
+            'fac_row': fac_row_char,
+            'last_col': tot_col_char,
+            'last_row': total_row_char,
+        }
+        c_range = 'A%(fac_row)s:%(last_col)s%(last_row)s'
+        sheet.conditional_format(c_range % indexes, {
             'type': 'cell',
             'criteria': '=',
             'value': 0,

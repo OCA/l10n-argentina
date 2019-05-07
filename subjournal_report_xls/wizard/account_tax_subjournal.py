@@ -1,3 +1,8 @@
+###############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (Cardozo Nicolás Joaquin)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+###############################################################################
+
 from odoo import fields, models
 import time
 
@@ -15,8 +20,6 @@ class AccountTaxSubjournal(models.TransientModel):
                             default=time.strftime('%Y-%m-01'))
     date_to = fields.Date(string='End of period',
                           default=fields.Datetime.now)
-    report_config_id = fields.Many2one('tax.subjournal.report.config',
-                                       string='Configuration', required=True)
     report_id = fields.Many2one('ir.actions.report',
                                 default=_get_report_id,
                                 string='Report')
@@ -32,6 +35,16 @@ class AccountTaxSubjournal(models.TransientModel):
         string="Grouped Max Amount",
         help="If grouped is checked, this will determine the " +
         "grouping threshold")
+    sort_by = fields.Selection([
+        ('sequence', 'Sequence'),
+        ('name', 'Name')],
+        string='Sort Taxes by', required=True,
+        default='sequence')
+    base_position = fields.Selection([
+        ('first', 'First'),
+        ('second', 'Second')],
+        string='Base Column Position', required=True,
+        default='first')
 
     def create_report(self):
         data = {'ids': self.ids}
