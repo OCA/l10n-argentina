@@ -19,11 +19,13 @@
                     </group>
                     <notebook>
                         <page string="Configuration" name="configuration">
-                            <group>
+                            <group string="Based on">
                                 <field name="based_on" />
                                 <field name="report_id" invisible="1" />
-                                <field name="report_config_id"
-                                    domain="[('tax_report_id','=',report_id), ('based_on','=',based_on)]" />
+                            </group>
+                            <group string="Sorting">
+                                <field name="sort_by"/>
+                                <field name="base_position"/>
                             </group>
                             <group>
                                 <field name="grouped"/>
