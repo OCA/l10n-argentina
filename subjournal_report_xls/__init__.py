@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -20,17 +19,5 @@
 #
 ##############################################################################
 
-# try:
-#     from . import account_move_line
-#     from . import report
-#     from . import wizard
-#     from . import tax_report_config
-# except ImportError:
-#     import logging
-#     logging.getLogger('openerp.module').\
-#         warning('''report_xls not available in addons path.
-#     account_financial_report_webkit_xls will not be usable''')
-
-from . import models
-from . import wizard
-from . import report
+from . import wizard  # noqa
+from . import report  # noqa

@@ -1,177 +1,182 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* subjournal_report_xls
+# 	* subjournal_report_xls
+# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2019.
 #
 msgid ""
 msgstr ""
 "Language: Spanish\n"
-"Project-Id-Version: Odoo Server 8.0\n"
+"Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-14 14:26+0000\n"
-"PO-Revision-Date: 2015-08-14 11:33-0300\n"
-"Last-Translator: kloss <kloss>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-05-07 19:50+0000\n"
+"PO-Revision-Date: 2019-05-07 16:53-0300\n"
+"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
+"Language-Team: Spanish; Castilian <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #. module: subjournal_report_xls
 #: model:ir.actions.act_window,name:subjournal_report_xls.action_account_tax_subjournal
 msgid "Account Tax Subjournal"
-msgstr "Subdiario de impuestos"
+msgstr "Subdiario de Impuestos"
 
 #. module: subjournal_report_xls
 #: model:ir.model,name:subjournal_report_xls.model_account_tax_subjournal
 msgid "Account tax subjournal report"
-msgstr "Reporte de subdiario"
+msgstr "Reporte de Subdiario"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,based_on:0
-#: field:tax.subjournal.report.config,based_on:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_base_position
+msgid "Base Column Position"
+msgstr "Posición de la columna Base"
+
+#. module: subjournal_report_xls
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_based_on
 msgid "Based On"
 msgstr "Basado en"
 
 #. module: subjournal_report_xls
-#: view:account.tax.subjournal:subjournal_report_xls.view_account_tax_subjournal
+#: model:ir.ui.view,arch_db:subjournal_report_xls.view_account_tax_subjournal
+msgid "Based on"
+msgstr "Basado en"
+
+#. module: subjournal_report_xls
+#: model:ir.ui.view,arch_db:subjournal_report_xls.view_account_tax_subjournal
 msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: subjournal_report_xls
-#: view:tax.subjournal.report.config:subjournal_report_xls.view_tax_subjournal_report_configuration_form
-msgid "Columns"
-msgstr "Columnas"
-
-#. module: subjournal_report_xls
-#: view:account.tax.subjournal:subjournal_report_xls.view_account_tax_subjournal
-#: field:account.tax.subjournal,report_config_id:0
+#: model:ir.ui.view,arch_db:subjournal_report_xls.view_account_tax_subjournal
 msgid "Configuration"
 msgstr "Configuración"
 
 #. module: subjournal_report_xls
-#: view:tax.subjournal.report.config:subjournal_report_xls.view_tax_subjournal_report_configuration_form
-msgid "Configuration Name"
-msgstr "Configuration Name"
-
-#. module: subjournal_report_xls
-#: field:account.tax.subjournal,create_uid:0
-#: field:subjournal.report.taxcode.column,create_uid:0
-#: field:tax.subjournal.report.config,create_uid:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_create_uid
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,create_date:0
-#: field:subjournal.report.taxcode.column,create_date:0
-#: field:tax.subjournal.report.config,create_date:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_create_date
 msgid "Created on"
-msgstr "Creado"
+msgstr "Creado en"
 
 #. module: subjournal_report_xls
-#: model:ir.actions.report.xml,name:subjournal_report_xls.action_move_line_list_subj_xls
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_display_name
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_report_report_xlsx_move_line_list_subj_display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: subjournal_report_xls
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_date_to
+msgid "End of period"
+msgstr "Fin del Período"
+
+#. module: subjournal_report_xls
+#: model:ir.actions.report,name:subjournal_report_xls.action_move_line_list_subj_xls
 msgid "Export Subjournal"
-msgstr "Exportar subdiario"
+msgstr "Exportar Subdiario"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,fiscalyear_id:0
-msgid "Fiscal year"
-msgstr "Año fiscal"
+#: selection:account.tax.subjournal,base_position:0
+msgid "First"
+msgstr "Primero"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,id:0
-#: field:subjournal.report.taxcode.column,id:0
-#: field:tax.subjournal.report.config,id:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_grouped
+msgid "Grouped"
+msgstr "Agrupado"
+
+#. module: subjournal_report_xls
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_grouped_max_amount
+msgid "Grouped Max Amount"
+msgstr "Monto máximo para el Agrupamiento"
+
+#. module: subjournal_report_xls
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_id
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_report_report_xlsx_move_line_list_subj_id
 msgid "ID"
-msgstr "ID"
+msgstr "ID (identificación)"
 
 #. module: subjournal_report_xls
-#: help:subjournal.report.taxcode.column,print_total:0
-msgid "If true, sum  Tax and Base amount. You should use only Tax Code and not Base Code if this is True."
-msgstr "If true, sum  Tax and Base amount. You should use only Tax Code and not Base Code if this is True."
+#: model:ir.model.fields,help:subjournal_report_xls.field_account_tax_subjournal_grouped_max_amount
+msgid "If grouped is checked, this will determine the grouping threshold"
+msgstr ""
+"Si 'Agrupado' está tildado, aquí se determinará el monto límite para la "
+"agrupación"
 
 #. module: subjournal_report_xls
 #: model:ir.model,name:subjournal_report_xls.model_account_move_line
-msgid "Journal Items"
-msgstr "Apuntes contables"
+msgid "Journal Item"
+msgstr "Apunte Contable"
 
 #. module: subjournal_report_xls
-#: help:account.tax.subjournal,fiscalyear_id:0
-msgid "Keep empty for all open fiscal year"
-msgstr "Mantener vacio para todos los años fiscales"
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal___last_update
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_report_report_xlsx_move_line_list_subj___last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,write_uid:0
-#: field:subjournal.report.taxcode.column,write_uid:0
-#: field:tax.subjournal.report.config,write_uid:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_write_uid
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización de"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,write_date:0
-#: field:subjournal.report.taxcode.column,write_date:0
-#: field:tax.subjournal.report.config,write_date:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_write_date
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: subjournal_report_xls
-#: field:subjournal.report.taxcode.column,name:0
-#: field:tax.subjournal.report.config,name:0
+#: selection:account.tax.subjournal,sort_by:0
 msgid "Name"
 msgstr "Nombre"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,period:0
-msgid "Period"
-msgstr "Periodo"
-
-#. module: subjournal_report_xls
-#: view:account.tax.subjournal:subjournal_report_xls.view_account_tax_subjournal
+#: model:ir.ui.view,arch_db:subjournal_report_xls.view_account_tax_subjournal
 msgid "Print Report"
-msgstr "Imprimir reporte"
-
-#. module: subjournal_report_xls
-#: field:subjournal.report.taxcode.column,print_total:0
-msgid "Print Total"
-msgstr "Imprimir total"
+msgstr "Imprimir Reporte"
 
 #. module: subjournal_report_xls
 #: selection:account.tax.subjournal,based_on:0
-#: selection:tax.subjournal.report.config,based_on:0
 msgid "Purchases"
 msgstr "Compras"
 
 #. module: subjournal_report_xls
-#: field:account.tax.subjournal,report_id:0
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_report_id
 msgid "Report"
-msgstr "Reporte"
-
-#. module: subjournal_report_xls
-#: field:tax.subjournal.report.config,tax_column_ids:0
-msgid "Report Columns"
-msgstr "Columnas del reporte"
+msgstr "Informe"
 
 #. module: subjournal_report_xls
 #: selection:account.tax.subjournal,based_on:0
-#: selection:tax.subjournal.report.config,based_on:0
 msgid "Sales"
 msgstr "Ventas"
 
 #. module: subjournal_report_xls
-#: view:tax.subjournal.report.config:subjournal_report_xls.view_tax_subjournal_report_configuration_form
-#: view:tax.subjournal.report.config:subjournal_report_xls.view_tax_subjournal_report_configuration_tree
-msgid "Subjournal Report Configuration"
-msgstr "Configuración de subdiarios"
+#: selection:account.tax.subjournal,base_position:0
+msgid "Second"
+msgstr "Segundo"
 
 #. module: subjournal_report_xls
-#: field:tax.subjournal.report.config,tax_report_id:0
-msgid "Tax Report"
-msgstr "Reporte de impuestos"
+#: selection:account.tax.subjournal,sort_by:0
+msgid "Sequence"
+msgstr "Secuencia"
 
 #. module: subjournal_report_xls
-#: model:ir.actions.act_window,name:subjournal_report_xls.action_tax_subjournal_report_config
-#: model:ir.ui.menu,name:subjournal_report_xls.menu_action_tax_subjournal_report_config
-msgid "Tax Subjournal Configuration"
-msgstr "Configuración del Subdiario de Impuestos"
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_sort_by
+msgid "Sort Taxes by"
+msgstr "Ordenar Impuestos por"
+
+#. module: subjournal_report_xls
+#: model:ir.ui.view,arch_db:subjournal_report_xls.view_account_tax_subjournal
+msgid "Sorting"
+msgstr "Ordenamiento"
+
+#. module: subjournal_report_xls
+#: model:ir.model.fields,field_description:subjournal_report_xls.field_account_tax_subjournal_date_from
+msgid "Start of period"
+msgstr "Comienzo del Período"
 
 #. module: subjournal_report_xls
 #: model:ir.model,name:subjournal_report_xls.model_tax_subjournal_report_config
@@ -179,29 +184,32 @@ msgid "Tax Subjournal Report Configuration"
 msgstr "Configuración de subdiarios de impuestos"
 
 #. module: subjournal_report_xls
-#: field:subjournal.report.taxcode.column,tax_code_id:0
-msgid "Tax code"
-msgstr "Código de impuesto"
-
-#. module: subjournal_report_xls
-#: view:account.tax.subjournal:subjournal_report_xls.view_account_tax_subjournal
 #: model:ir.ui.menu,name:subjournal_report_xls.menu_account_tax_subjournal
+#: model:ir.ui.view,arch_db:subjournal_report_xls.view_account_tax_subjournal
 msgid "Taxes Subjournal"
 msgstr "Subdiario de impuestos"
 
 #. module: subjournal_report_xls
-#: code:addons/subjournal_report_xls/report/move_line_list_xls.py:194
+#: code:addons/subjournal_report_xls/report/report_subjournal_xlsx.py:237
 #, python-format
 msgid "There were no moves for this period"
-msgstr "No existen movimientos para el periodo"
+msgstr "No hubieron apuntes contables en este período"
 
 #. module: subjournal_report_xls
-#: code:addons/subjournal_report_xls/report/move_line_list_xls.py:194
-#, python-format
-msgid "Warning"
-msgstr "Atención"
+#: model:ir.model.fields,help:subjournal_report_xls.field_account_tax_subjournal_grouped
+msgid ""
+"Type B Invoices below the grouped max amount will be grouped in a single "
+"line per day and tax."
+msgstr ""
+"Facturas de tipo B por debajo del monto máximo de agrupación serán "
+"informadas en una sóla línea por día e impuesto."
 
 #. module: subjournal_report_xls
-#: field:subjournal.report.taxcode.column,report_config_id:0
-msgid "unknown"
-msgstr "unknown"
+#: model:ir.model,name:subjournal_report_xls.model_report_report_xlsx_move_line_list_subj
+msgid "report.report_xlsx.move_line_list_subj"
+msgstr "report.report_xlsx.move_line_list_subj"
+
+#. module: subjournal_report_xls
+#: model:ir.model,name:subjournal_report_xls.model_subjournal_report_taxcode_column
+msgid "subjournal.report.taxcode.column"
+msgstr "subjournal.report.taxcode.column"
