@@ -41,16 +41,22 @@ class SubjournalXlsx(models.AbstractModel):
         q = """
         SELECT DISTINCT at.id
         FROM account_move_line l
-        LEFT JOIN account_move_line_account_tax_rel tr ON tr.account_move_line_id = l.id
-        LEFT JOIN account_tax at ON at.id = l.tax_line_id OR at.id = tr.account_tax_id
-        LEFT JOIN account_invoice i ON i.move_id = l.move_id
-        WHERE l.date BETWEEN %(date_from)s AND %(date_to)s
-        AND i.type IN %(inv_type)s
-        AND at.id IN (
-            SELECT tax_code_id
-            FROM subjournal_report_taxcode_column
-            WHERE report_config_id=%(report_id)s
-        ) ORDER BY at.id
+        LEFT JOIN account_move_line_account_tax_rel tr
+            ON tr.account_move_line_id = l.id
+        LEFT JOIN account_tax at
+            ON at.id = l.tax_line_id
+                OR at.id = tr.account_tax_id
+        LEFT JOIN account_invoice i
+            ON i.move_id = l.move_id
+        WHERE
+            l.date BETWEEN %(date_from)s AND %(date_to)s
+            AND i.type IN %(inv_type)s
+            AND at.id IN (
+                SELECT tax_code_id
+                FROM subjournal_report_taxcode_column
+                WHERE report_config_id=%(report_id)s
+            )
+        ORDER BY at.id
         """
         # OLD QUERY
         # q = """
@@ -88,6 +94,7 @@ class SubjournalXlsx(models.AbstractModel):
                 lambda y: y.tax_code_id == x).sequence):
             all_taxes.append({
                 'id': tax.id,
+                'is_exempt': tax.is_exempt,
                 'name': tax.name,
                 'type': 'tax',
                 'column': 72+i,
@@ -100,6 +107,7 @@ class SubjournalXlsx(models.AbstractModel):
             else:
                 all_taxes.append({
                     'id': tax.id,
+                    'is_exempt': tax.is_exempt,
                     'name': 'Base '+tax.name,
                     'type': 'base',
                     'column': 72+i,
@@ -146,8 +154,11 @@ class SubjournalXlsx(models.AbstractModel):
             JOIN res_partner p ON p.id = i.partner_id
             JOIN account_account a ON a.id = l.account_id
             JOIN account_fiscal_position afp ON afp.id = i.fiscal_position_id
-            LEFT JOIN account_move_line_account_tax_rel amlatr ON (amlatr.account_move_line_id,amlatr.account_tax_id)=(
-                SELECT account_move_line_id, account_tax_id FROM account_move_line_account_tax_rel amlatr WHERE account_move_line_id=l.id
+            LEFT JOIN account_move_line_account_tax_rel amlatr
+            ON (amlatr.account_move_line_id,amlatr.account_tax_id)=(
+                SELECT account_move_line_id, account_tax_id
+                FROM account_move_line_account_tax_rel amlatr
+                WHERE account_move_line_id=l.id
                 LIMIT 1
             )
             WHERE i.type IN %(inv_type)s
@@ -275,11 +286,13 @@ class SubjournalXlsx(models.AbstractModel):
             else:
                 ll = lines[dict_hash]
                 ll['total'] += (l['credit'] - l['debit'])
-                ll['no_taxed'] += not l['tax_line_id'] and not l['tax_ids'] and (
-                    l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
+                ll['no_taxed'] += not l['tax_line_id'] and \
+                    not l['tax_ids'] and \
+                    (l['debit'] - l['credit']) * sign * sign_no_taxed or 0.0
 
             for i, tax in enumerate(self.columns):
-                if l['tax_line_id'] == tax['id'] or l['tax_ids'] == tax['id']:
+                if l['tax_line_id'] == tax['id'] or (
+                        l['tax_ids'] == tax['id'] and tax.get('is_exempt')):
                     if lines[dict_hash]['taxes'][i] == 0:
                         if tax['type'] == 'tax':
                             lines[dict_hash]['taxes'][i] = abs(
