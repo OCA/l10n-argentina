@@ -210,7 +210,7 @@ class WsfexConfig(models.Model):
         return res
 
     def get_config(self):
-        company_id = self._context.company_id
+        company_id = self.env.context.get('company_id')
         without_raise = self.env.context.get('without_raise', False)
         if not company_id and not without_raise:
             raise UserError(

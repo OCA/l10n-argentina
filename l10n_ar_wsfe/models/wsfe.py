@@ -117,7 +117,7 @@ class WsfeConfig(models.Model):
 
     @api.model
     def get_config(self):
-        company_id = self._context.company_id
+        company_id = self.env.context.get('company_id')
         no_raise = self.env.context.get('without_raise', False)
         if not company_id and not no_raise:
             raise UserError(
