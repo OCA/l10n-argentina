@@ -117,9 +117,7 @@ class WsfeConfig(models.Model):
 
     @api.model
     def get_config(self):
-        # Obtenemos la compania que esta utilizando
-        # en este momento este usuario
-        company_id = self.env.user.company_id.id
+        company_id = self._context.company_id
         no_raise = self.env.context.get('without_raise', False)
         if not company_id and not no_raise:
             raise UserError(
