@@ -548,7 +548,7 @@ class AccountPaymentOrder(models.Model):
                     'that Writeoff Amount is not negative.'))
         if self.amount == 0.0:
             raise ValidationError(
-                _("Validate Error!\n"),
+                _("Validate Error!\n") +
                 _("You cannot validate a voucher with amount of 0.0"))
 
         self._clean_payment_lines()
