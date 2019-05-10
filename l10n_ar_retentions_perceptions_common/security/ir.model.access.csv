@@ -5,7 +5,3 @@
 "access_retention_tax_payment","retention.tax.line payment","model_retention_tax_line","account.group_account_invoice",1,1,1,1
 "access_retention_tax_manager","retention.tax.line manager","model_retention_tax_line","account.group_account_manager",1,1,1,1
 "access_retention_tax_user","retention.tax.line user","model_retention_tax_line","account.group_account_user",1,1,1,1
-"access_retention_retention_common","retention.retention common","model_retention_retention","l10n_ar_retentions_perceptions_common.group_retentions_perceptions_common",1,0,0,0
-"access_retention_tax_common","retention.tax.line common","model_retention_tax_line","l10n_ar_retentions_perceptions_common.group_retentions_perceptions_common",1,0,0,0
-"access_retention_retention_manager","retention.retention manager","model_retention_retention","l10n_ar_retentions_basic.group_retentions_manager",1,1,1,1
-"access_retention_tax_manager","retention.tax.line manager","model_retention_tax_line","l10n_ar_retentions_basic.group_retentions_manager",1,1,1,1
