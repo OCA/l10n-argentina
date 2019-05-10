@@ -224,11 +224,9 @@ class AccountPaymentOrder(models.Model):
         amount and the sum of allocated amounts. You can either \
         choose to keep open this difference on the partner's \
         account, or reconcile it with the payment(s)")
-    company_id = fields.Many2one(
-        comodel_name='res.company',
-        string='Company',
-        default=lambda self: self.env.user.company_id.id,
-        required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company',
+                                 related='journal_id.company_id',
+                                 store=True, readonly=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
     payment_mode_line_ids = fields.One2many(
         comodel_name='account.payment.mode.line',
