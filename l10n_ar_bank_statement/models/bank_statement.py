@@ -179,11 +179,18 @@ class AccountBankStatementLine(models.Model):
     def button_open_line(self):
         return self.open_line()
 
-    def _build_open_statement_search_domain(self):
-        return [("journal_id.type", "=", "cash"), ("state", "=", "open")]
+    def _build_open_statement_search_domain(self, journal_id=False):
+        domain = [("state", "=", "open")]
 
-    def find_open_statement_id(self):
-        statement_domain = self._build_open_statement_search_domain()
+        if journal_id:
+            domain.append(("journal_id", "=", journal_id))
+        else:
+            domain.append(("journal_id.type", "=", "cash"))
+
+        return domain
+
+    def find_open_statement_id(self, journal_id=False):
+        statement_domain = self._build_open_statement_search_domain(journal_id)
         return self.env["account.bank.statement"].search(
             statement_domain,
             order="create_date",

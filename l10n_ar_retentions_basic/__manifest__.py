@@ -22,12 +22,7 @@
     "name": "Retentions for ARGENTINA (Retenciones)",
     "version": "11.0.1.0.0",
     "depends": [
-        "base",
-        "account",
-        "sale",
-        "purchase",
-        "l10n_ar_account_payment_order",
-        "l10n_ar_point_of_sale",
+        "l10n_ar_retentions_perceptions_common",
     ],
     "author": "Eynes/E-MIPS",
     "website": "http://eynes.com.ar",
@@ -39,6 +34,7 @@
     based on tax objects of OpenERP like account.tax and account.tax.code.
     """,
     'data': [
+        'security/res_groups_data.xml',
         'security/ir.model.access.csv',
         'views/retention_view.xml',
         'views/voucher_payment_receipt_view.xml',
