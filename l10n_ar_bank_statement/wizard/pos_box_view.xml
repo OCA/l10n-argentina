@@ -7,9 +7,6 @@
         <field name="inherit_id" ref="account.cash_box_in_form"/>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='name']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="concept_id" domain="[('concept_type', '=', 'in')]" class="oe_inline"/>
             </xpath>
@@ -22,9 +19,6 @@
         <field name="inherit_id" ref="account.cash_box_out_form"/>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='name']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="concept_id" domain="[('concept_type', '=', 'out')]" class="oe_inline"/>
             </xpath>

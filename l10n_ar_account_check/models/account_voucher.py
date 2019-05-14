@@ -82,7 +82,8 @@ class AccountPaymentOrder(models.Model):
     @api.multi
     def unlink(self):
         for voucher in self:
-            voucher.third_check_ids.unlink()
+            if voucher.type == 'receipt':
+                voucher.third_check_ids.unlink()
             voucher.issued_check_ids.unlink()
             super(AccountPaymentOrder, voucher).unlink()
 
