@@ -548,15 +548,20 @@ class AccountPaymentOrder(models.Model):
                 _('Error!\n Cannot validate a ' +
                     'voucher with negative amount.\n Please check ' +
                     'that Writeoff Amount is not negative.'))
-        if self.amount == 0.0:
+        if self.amount == 0.0 and not self._get_income_amount():
             raise ValidationError(
-                _("Validate Error!\n"),
-                _("You cannot validate a voucher with amount of 0.0"))
+                _("Validate Error!\n") +
+                _("You cannot validate a voucher with amount of 0.0") +
+                _(" and no income lines"))
 
         self._clean_payment_lines()
         self.action_move_line_create()
 
         return True
+
+    def _get_income_amount(self):
+        self.ensure_one()
+        return sum(self.income_line_ids.mapped('amount'))
 
     def _get_company_currency(self):
         '''
