@@ -10,7 +10,7 @@
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="arch" type="xml">
                 <page name="accounting" position="after">
-                    <page string="Retentions" name="retentions">
+                    <page string="Retentions" name="retentions" groups="l10n_ar_retentions_perceptions_common.group_retentions_perceptions_common">
                         <group string="Partner Retentions">
                             <field name="retention_ids" nolabel="1">
                                 <tree string="Retentions to Apply" editable="bottom">

@@ -63,7 +63,7 @@ class AccountPaymentOrder(models.Model):
                 st_line_data = line._prepare_statement_line_data()
 
                 if journal.type == "cash":
-                    statement_id = bank_st_line_obj.find_open_statement_id()
+                    statement_id = bank_st_line_obj.find_open_statement_id(journal.id)
                     if not statement_id:
                         return self.no_statement_redirect()
 
