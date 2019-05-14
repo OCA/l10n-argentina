@@ -501,6 +501,10 @@ class AccountInvoice(models.Model):
             raise UserError(_("WSFE Error\n") + err)
         local = local_list[0]
         ctx = self.env.context.copy()
+        company = self.mapped('pos_ar_id.company_id')
+        company.ensure_one()
+        # ^- Raise if trying to validate invoice of != companies
+        ctx['company_id'] = company.id
         if local:
             ctx['without_raise'] = True
         wsfe_conf = wsfe_conf_obj.with_context(ctx).get_config()
