@@ -1274,10 +1274,8 @@ class AccountPaymentModeLine(models.Model):
         else:
             return currency_obj.search([('rate', '=', 1.0)], limit=1)
 
-    name = fields.Char(help='Payment reference',
-                       string='Mode',
-                       readonly=True,
-                       size=64)
+    name = fields.Text(
+        help='Payment reference', string='Description')
     payment_order_id = fields.Many2one(comodel_name='account.payment.order',
                                        string='Payment Order')
     payment_mode_id = fields.Many2one(comodel_name='account.journal',

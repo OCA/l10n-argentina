@@ -193,6 +193,7 @@ msgstr "Tipo por defecto"
 
 #. module: l10n_ar_account_payment_order
 #: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_line_name
+#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_name
 msgid "Description"
 msgstr "Descripción"
 
@@ -440,11 +441,6 @@ msgstr "Última actualización en"
 #: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_name
 msgid "Memo"
 msgstr "Memoria"
-
-#. module: l10n_ar_account_payment_order
-#: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_mode_line_name
-msgid "Mode"
-msgstr "Modo"
 
 #. module: l10n_ar_account_payment_order
 #: model:ir.model.fields,field_description:l10n_ar_account_payment_order.field_account_payment_order_is_multi_currency
