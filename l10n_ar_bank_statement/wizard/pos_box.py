@@ -20,53 +20,52 @@
 ##############################################################################
 
 from odoo import api, fields, models
-from odoo.addons.account.wizard.pos_box import CashBox
+from odoo.addons.account.wizard.pos_box import CashBox as CashBoxOdoo
+from odoo.addons.account.wizard.pos_box import CashBoxIn as CashBoxInOdoo
+from odoo.addons.account.wizard.pos_box import CashBoxOut as CashBoxOutOdoo
 
-
-# Disabled to force users to set a proper reason
-@api.onchange("concept_id")
-def onchange_concept_id(self):
-    pass
-    # self.name = self.concept_id.name
-
-
-#_original_run = CashBox._run
-#
-#
-#@api.multi
-#def _run(self, records):
-#    filtered_records = records.filtered(lambda r: r.journal_id.company_id.transfer_account_id)
-#    ret = _original_run(self, filtered_records)
-#    for box in self:
-#        for record in records - filtered_records:
-#            box._create_bank_statement_line(record)
-#
-#    return ret
-
-CashBox.name = fields.Text(
-    string="Name",
-    required=True,
-)
-CashBox.concept_id = fields.Many2one(
-    'pos.box.concept',
-    string='Concept',
-    required=True,
-    ondelete='cascade',
-)
-CashBox.onchange_concept_id = onchange_concept_id
-#CashBox._run = _run
-
+@api.multi
+def get_account(self, record=None):
+    """ Provides hook to set an account on cash.box movements """
+    res = self.concept_id.account_id
+    fallback = record.journal_id.company_id.transfer_account_id
+    if not res and not fallback:
+        raise exceptions.ValidationError(_('Cannot found account to do the transfer'))
+    return res or fallback
 
 class CashBoxIn(models.TransientModel):
     _inherit = 'cash.box.in'
 
+    name = fields.Text(
+        string="name",
+        required=True,
+    )
+    concept_id = fields.Many2one(
+        'pos.box.concept',
+        string='concept',
+        required=True,
+        ondelete='cascade',
+    )
+
+    get_account = api.multi(get_account)
+
+    # Disabled to force users to set a proper reason
+    @api.onchange("concept_id")
+    def onchange_concept_id(self):
+        pass
+
+    @api.model_cr
+    def _register_hook(self):
+        res = super()._register_hook()
+        CashBoxInOdoo._patch_method(
+            '_calculate_values_for_statement_line',
+            _calculate_values_for_statement_line_cashboxin
+        )
+
     @api.multi
     def _calculate_values_for_statement_line(self, record):
-        # TODO: remove super() transfer_account_id check (see: addons/account/wizard/pos_box.py:49)
         vals = super(CashBoxIn, self)._calculate_values_for_statement_line(record)
-        former_account_id = vals.get("account_id", False)
         vals["concept_id"] = self.concept_id.id
-        vals["account_id"] = self.concept_id.account_id.id or former_account_id
         vals["line_type"] = "in"
         vals["state"] = "confirm"
         return vals
@@ -75,13 +74,64 @@ class CashBoxIn(models.TransientModel):
 class CashBoxOut(models.TransientModel):
     _inherit = 'cash.box.out'
 
+    name = fields.Text(
+        string="Name",
+        required=True,
+    )
+    concept_id = fields.Many2one(
+        'pos.box.concept',
+        string='Concept',
+        required=True,
+        ondelete='cascade',
+    )
+
+    get_account = api.multi(get_account)
+
+    # Disabled to force users to set a proper reason
+    @api.onchange("concept_id")
+    def onchange_concept_id(self):
+        pass
+
+    @api.model_cr
+    def _register_hook(self):
+        res = super()._register_hook()
+        CashBoxOutOdoo._patch_method(
+            '_calculate_values_for_statement_line',
+            _calculate_values_for_statement_line_cashboxout
+        )
+
+
     @api.multi
     def _calculate_values_for_statement_line(self, record):
-        # TODO: remove super() transfer_account_id check (see: addons/account/wizard/pos_box.py:67)
         vals = super(CashBoxOut, self)._calculate_values_for_statement_line(record)
-        former_account_id = vals.get("account_id", False)
         vals["concept_id"] = self.concept_id.id
-        vals["account_id"] = self.concept_id.account_id.id or former_account_id
         vals["line_type"] = "out"
         vals["state"] = "confirm"
         return vals
+
+
+@api.multi
+def _calculate_values_for_statement_line_cashboxin(self, record):
+    account_id = self.get_account(record).id
+    return {
+        'date': record.date,
+        'statement_id': record.id,
+        'journal_id': record.journal_id.id,
+        'amount': self.amount or 0.0,
+        'account_id': account_id,
+        'ref': '%s' % (self.ref or ''),
+        'name': self.name,
+    }
+
+@api.multi
+def _calculate_values_for_statement_line_cashboxout(self, record):
+    amount = self.amount or 0.0
+    account_id = self.get_account(record).id
+    return {
+        'date': record.date,
+        'statement_id': record.id,
+        'journal_id': record.journal_id.id,
+        'amount': -amount if amount > 0.0 else amount,
+        'account_id': account_id,
+        'name': self.name,
+    }
