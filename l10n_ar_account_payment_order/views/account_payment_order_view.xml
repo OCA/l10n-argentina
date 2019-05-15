@@ -69,7 +69,7 @@
                                     attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="journal_id"
-                                    domain="[('type','=','receipt')]"
+                                    domain="[('type','=','receipt'), ('company_id', '=', company_id)]"
                                     widget="selection"
                                     string="Journal"
                                     attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
@@ -361,7 +361,7 @@
                                 <field name="partner_id" required="1" invisible="context.get('line_type', False)" context="{'invoice_currency':currency_id, 'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"  domain="[('supplier','=',True)]" string="Supplier"/>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="journal_id"
-                                    domain="[('type', '=', 'payment')]"
+                                    domain="[('type', '=', 'payment'), ('company_id', '=', company_id)]"
                                     invisible="context.get('line_type', False)"
                                     widget="selection"
                                     string="Journal"/>

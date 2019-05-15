@@ -24,6 +24,7 @@
                                 <field name="currency_id" invisible="1"/>
                                 <field name="journal_id"
                                     widget="selection"
+                                    domain="[('company_id','=',company_id)]"
                                     string="Journal"
                                     attrs="{'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="other_payment" invisible="1"/>

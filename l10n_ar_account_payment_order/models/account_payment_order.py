@@ -225,8 +225,8 @@ class AccountPaymentOrder(models.Model):
         choose to keep open this difference on the partner's \
         account, or reconcile it with the payment(s)")
     company_id = fields.Many2one(comodel_name='res.company', string='Company',
-                                 related='journal_id.company_id',
-                                 store=True, readonly=True)
+                                 default=lambda s: s.env['res.company']._company_default_get('account.payment.order'),
+                                 required=True, readonly=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
     payment_mode_line_ids = fields.One2many(
         comodel_name='account.payment.mode.line',
