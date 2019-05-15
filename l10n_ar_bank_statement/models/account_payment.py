@@ -92,7 +92,7 @@ class AccountPayment(models.Model):
 
     def no_statement_redirect(self):
         err = _("No open 'Cash' Bank Statement! Go to the dashboard and open it")
-        action_id = self.env.ref("account.open_account_journal_dashboard_kanban")
+        action_id = self.env.ref("account.open_account_journal_dashboard_kanban").id
         raise exceptions.RedirectWarning(err, action_id, _("Open Dashboard"))
 
     @api.multi
@@ -109,7 +109,7 @@ class AccountPayment(models.Model):
             st_line_data = payment._prepare_statement_line_data()
 
             if journal.type == "cash":
-                statement_id = bank_st_line_obj.find_open_statement_id()
+                statement_id = journal.find_open_statement_id()
                 if not statement_id:
                     raise exceptions.RedirectWarning()
 

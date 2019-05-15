@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from odoo import models
+from odoo import models, api
 
 
 class AccountJournal(models.Model):
@@ -27,3 +27,22 @@ class AccountJournal(models.Model):
 
     def detach_statement_lines(self):
         return self.type in ("bank", "cash")
+
+    @api.multi
+    def _build_open_statement_search_domain(self):
+        res = [
+            ("journal_id.type", "=", "cash"),
+            ("state", "=", "open"),
+            ("journal_id", "=", self.id),
+        ]
+        return res
+
+    @api.multi
+    def find_open_statement_id(self):
+        self.ensure_one()
+        statement_domain = self._build_open_statement_search_domain()
+        return self.env["account.bank.statement"].search(
+            statement_domain,
+            order="create_date",
+            limit=1,
+        ).id

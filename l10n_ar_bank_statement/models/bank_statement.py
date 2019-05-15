@@ -178,14 +178,3 @@ class AccountBankStatementLine(models.Model):
     @api.multi
     def button_open_line(self):
         return self.open_line()
-
-    def _build_open_statement_search_domain(self):
-        return [("journal_id.type", "=", "cash"), ("state", "=", "open")]
-
-    def find_open_statement_id(self):
-        statement_domain = self._build_open_statement_search_domain()
-        return self.env["account.bank.statement"].search(
-            statement_domain,
-            order="create_date",
-            limit=1,
-        ).id
