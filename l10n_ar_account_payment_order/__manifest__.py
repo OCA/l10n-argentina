@@ -34,9 +34,8 @@
     ],
     "data": [
         "views/assets.xml",
-        "views/account_payment_order_receipt_view.xml",
+        "views/account_payment_order_view.xml",
         "views/account_journal_view.xml",
-        # "views/account_invoice.xml",  # TODO
         "security/payment_rule.xml",
         "security/ir.model.access.csv",
     ],
