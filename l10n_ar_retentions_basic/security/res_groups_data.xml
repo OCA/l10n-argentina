@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+    <!-- User groups -->
+
+    <record model="res.groups" id="group_retentions_manager">
+        <field name="name">Retentions Manager</field>
+        <field name="category_id" ref="l10n_ar_retentions_perceptions_common.module_retentions_perceptions_category"/>
+    </record>
+
+</data>
+</openerp>
