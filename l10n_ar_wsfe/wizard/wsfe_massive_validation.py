@@ -19,10 +19,12 @@ class AccountInvoiceConfirm(models.TransientModel):
         wsfe_conf_obj = self.env['wsfe.config']
         inv_obj = self.env['account.invoice']
 
-        conf = wsfe_conf_obj.get_config()
-
         invoices = inv_obj.browse(self.env.context['active_ids'])
         invoices = invoices.sorted(key=lambda x: x.create_date)
+
+        company = invoices.mapped('pos_ar_id.company_id')
+        company.ensure_one()
+        conf = wsfe_conf_obj.with_context(company_id=company.id).get_config()
 
         # Primero tenemos que chequear si al menos alguna de las facturas
         # se debe hacer por factura electronica
