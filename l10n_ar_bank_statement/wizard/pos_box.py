@@ -25,6 +25,15 @@ from odoo.addons.account.wizard.pos_box import CashBoxIn as CashBoxInOdoo
 from odoo.addons.account.wizard.pos_box import CashBoxOut as CashBoxOutOdoo
 
 @api.multi
+def _run_patched(self, records):
+    for box in self:
+        for record in records:
+            if not record.journal_id:
+                raise UserError(_("Please check that the field 'Journal' is set on the Bank Statement"))
+            box._create_bank_statement_line(record)
+    return {}
+
+@api.multi
 def get_account(self, record=None):
     """ Provides hook to set an account on cash.box movements """
     res = self.concept_id.account_id
@@ -60,6 +69,10 @@ class CashBoxIn(models.TransientModel):
         CashBoxInOdoo._patch_method(
             '_calculate_values_for_statement_line',
             _calculate_values_for_statement_line_cashboxin
+        )
+        CashBoxOdoo._patch_method(
+            '_run',
+            _run_patched
         )
 
     @api.multi
