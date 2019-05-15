@@ -125,7 +125,8 @@
                                 <field name="payment_mode_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
                                     <tree string="Payment Methods" editable="bottom" decoration-muted="amount == 0">
                                         <field name="payment_mode_id" invisible="0"
-                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
+                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank']), ('company_id', '=', parent.company_id)]"/>
+                                        <field name="name" invisible="1"/>
                                         <field name="currency_id" readonly="1"/>
                                         <field name="date"/>
                                         <field name="payment_order_id" invisible="1"/>
@@ -408,7 +409,7 @@
                                 <field name="payment_mode_line_ids">
                                     <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
                                         <field name="payment_mode_id" invisible="0"
-                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
+                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank']), ('company_id', '=', parent.company_id)]"/>
                                         <field name="currency_id" readonly="1"/>
                                         <field name="date"/>
                                         <field name="payment_order_id" invisible="1"/>
