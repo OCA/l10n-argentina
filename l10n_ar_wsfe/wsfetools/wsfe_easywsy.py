@@ -1,7 +1,14 @@
-from datetime import datetime
-from odoo.exceptions import UserError, ValidationError
-from odoo import _, fields
+###############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (Cuesta Martín Nicolás)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+###############################################################################
 
+from odoo import _, fields
+from odoo.exceptions import UserError, ValidationError
+from odoo.addons.l10n_ar_wsfe.wsfetools.ws_afip import \
+    wsapi, AfipWS, AfipWSError, AfipWSEvent
+
+from datetime import datetime
 import time
 import logging
 _logger = logging.getLogger(__name__)
@@ -10,56 +17,8 @@ _logger = logging.getLogger(__name__)
 DATE_FORMAT = '%Y-%m-%d'
 AFIP_DATE_FORMAT = '%Y%m%d'
 
-try:
-    from easywsy import WebService, wsapi
-except (ImportError, IOError) as e:
 
-    class wsapi:
-        def check(*a, **kw):
-            def func(*a, **kw):
-                return None
-            return func
-
-    WebService = object
-    _logger.debug("Cannot import WebService, wsapi from easywsy: \n%s" %
-                  repr(e))
-
-
-class Error:
-
-    def __init__(self, code, msg):
-        self.code = code
-        self.msg = msg
-
-    def __str__(self):
-        return '%s (Err. %s)' % (self.msg, self.code)
-
-
-class Event:
-
-    def __init__(self, code, msg):
-        self.code = code
-        self.msg = msg
-
-    def __str__(self):
-        return '%s (Evento %s)' % (self.msg, self.code)
-
-
-class WSFE(WebService):
-
-    # AFIP Requests a (13, 2) format for amounts
-    _decimal_precision = 2
-
-    def afip_round(self, data):
-        for key, value in data.items():
-            if isinstance(value, float):
-                data[key] = round(value, self._decimal_precision)
-            if isinstance(value, dict):
-                self.afip_round(value)
-            if isinstance(value, list):
-                for item in value:
-                    self.afip_round(item)
-        return True
+class WSFE(AfipWS):
 
     def parse_invoices(self, invoices, first_number=False):
         reg_qty = len(invoices)
@@ -240,7 +199,7 @@ class WSFE(WebService):
                 'AlicIva': vat_array,
             },
         }
-        self.afip_round(vals)
+        self._afip_round(vals)
         log = ('Procesando Factura Electronica: %(number)s (id: %(id)s)\n' +
                'Importe Total: %(ImpTotal)s\n' +
                'Importe Neto Gravado: %(ImpNeto)s\n' +
@@ -350,7 +309,8 @@ class WSFE(WebService):
                     inv.partner_id.document_type_id.afip_code or '99'
                 doc_tipo = comp['DocTipo'] == int(doc_type)
                 if comp['DocNro'] == 0:
-                    doc_num = inv.partner_id.vat in [False, '', '0'] or doc_type == '99'
+                    doc_num = inv.partner_id.vat in [False, '', '0'] \
+                        or doc_type == '99'
                 else:
                     try:
                         doc_num = bool(int(inv.partner_id.vat))
@@ -460,14 +420,6 @@ class WSFE(WebService):
         """
         return self.send_invoices(invoice, first_number=first_number)
 
-    def auth_decoy(self):
-        auth = {
-            'Token': 'T',
-            'Sign': 'S',
-            'Cuit': 'C',
-        }
-        self.login('Auth', auth)
-
     def send_invoices(self, invoices, first_number=False, conf=False):
         invoices.complete_date_invoice()
         data = self.parse_invoices(invoices, first_number=first_number)
@@ -499,7 +451,7 @@ class WSFE(WebService):
         errors = []
         if 'Errors' in result:
             for error in result.Errors.Err:
-                error = Error(error.Code, error.Msg)
+                error = AfipWSError(error.Code, error.Msg)
                 errors.append(error)
         return errors
 
@@ -507,49 +459,9 @@ class WSFE(WebService):
         events = []
         if 'Events' in result:
             for event in result.Events.Evt:
-                event = Event(event.Code, event.Msg)
+                event = AfipWSEvent(event.Code, event.Msg)
                 events.append(event)
         return events
-
-    def check_errors(self, res, raise_exception=True):
-        msg = ''
-        if 'errors' in res:
-            errors = [error.msg for error in res['errors']]
-            err_codes = [str(error.code) for error in res['errors']]
-            msg = ' '.join(errors)
-            msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
-
-            if msg != '' and raise_exception:
-                raise UserError(_('WSFE Error!\n') + msg)
-        return msg
-
-    def check_observations(self, res):
-        msg = ''
-        if 'observations' in res:
-            observations = [obs.msg for obs in res['observations']]
-            obs_codes = [str(obs.code) for obs in res['observations']]
-            msg = ' '.join(observations)
-            msg = msg + ' Codigo/s Observacion:' + ' '.join(obs_codes)
-
-            # Escribimos en el log del cliente web
-            _logger.info(msg)
-        return msg
-
-    def parse_response(self, result):
-        res = {}
-        # Obtenemos Errores y Eventos
-        errors = self._get_errors(result)
-        if len(errors):
-            res['errors'] = errors
-
-        events = self._get_events(result)
-        if len(events):
-            res['events'] = events
-
-        res['response'] = result
-        self.check_errors(res)
-        self.check_observations(res)
-        return res
 
 ###############################################################################
 # AFIP Data Validation Methods According to:
