@@ -9,6 +9,7 @@ from xml.sax import SAXParseException
 import logging
 from openerp.tools.misc import ustr
 import pytz
+from openerp.osv import osv
 
 ## Configuracion del logger
 logger = logging.getLogger('afipws')
@@ -133,6 +134,8 @@ class WSAA:
         logger.debug("Llamando a loginCms:\n%s", cms)
         try:
             result = self.client.service.loginCms(cms)
+        except urllib2.URLError as er:
+            raise er
         except Exception, e:
             logger.exception("Excepcion al llamar a loginCms")
             raise Exception, 'Exception al autenticar: %s' % ustr(e)
@@ -171,6 +174,7 @@ class WSAA:
     # TODO: Hacer chequeo de errores
     def get_token_and_sign(self, cert, key, force=True):
         # Primero chequeamos si ya tenemos un token
+
         if not force:
             if self.ta and self.expiration_time and self.token and self.sign:
                 # Si todavia no expiro el que tenemos, lo retornamos
@@ -181,7 +185,7 @@ class WSAA:
         cms = self._sign_tra(tra, cert, key)
         try:
             self._call_wsaa(cms)
-        except Exception, e:
+        except Exception as e:
             raise e
 
         self.parse_ta(self.ta)

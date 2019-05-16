@@ -25,6 +25,7 @@ from openerp.tools.translate import _
 from wsfetools.wsfe_suds import WSFEv1 as wsfe
 from datetime import datetime
 import time
+import urllib2
 
 
 class wsfe_tax_codes(models.Model):
@@ -65,6 +66,18 @@ class wsfe_config(models.Model):
         'company_id': lambda self, cr, uid, context=None: self.pool.get('res.users')._get_company(cr, uid, context=context),
         'homologation': lambda *a: False,
     }
+
+    def test_connection(func):
+        def wrapper(self, *args, **kwargs):
+            try:
+                self.get_server_state()
+            except urllib2.URLError as er:
+                raise osv.except_osv('No es posible conectar con el servicio de AFIP. Por favor revise su conexion a Internet. Si el problema persiste pongase en contacto con la mesa de ayuda de AFIP.',er)
+            except Exception as e:
+                raise osv.except_osv('WSFE error!',e)
+            res = func(self, *args, **kwargs)
+            return res
+        return wrapper
 
     def create(self, cr, uid, vals, context):
 
@@ -262,6 +275,7 @@ class wsfe_config(models.Model):
         return wsfe_req_obj.create(vals)
 
     @api.model
+    @test_connection
     def get_last_voucher(self, pos, voucher_type):
         self.ensure_one()
 
@@ -277,6 +291,7 @@ class wsfe_config(models.Model):
         return last
 
     @api.model
+    @test_connection
     def get_voucher_info(self, pos, voucher_type, number):
 
         conf = self
@@ -320,6 +335,7 @@ class wsfe_config(models.Model):
         return result
 
     @api.multi
+    @test_connection
     def read_tax(self):
         self.ensure_one()
 

@@ -1,6 +1,6 @@
 from suds.client import Client
 import urllib2
-
+from openerp.osv import osv
 import logging
 
 # Direcciones de los servicios web
@@ -283,21 +283,24 @@ class WSFEv1:
     def fe_comp_ultimo_autorizado(self, pto_venta, cbte_tipo):
 
         # Llamamos a la funcion
-        result = self.client.service.FECompUltimoAutorizado(self.argauth, pto_venta, cbte_tipo)
+        try:
+            result = self.client.service.FECompUltimoAutorizado(self.argauth, pto_venta, cbte_tipo)
 
-        res = {}
-        # Obtenemos Errores y Eventos
-        errors = self._get_errors(result)
-        if len(errors):
-            res['errors'] = errors
+            res = {}
+            # Obtenemos Errores y Eventos
+            errors = self._get_errors(result)
+            if len(errors):
+                res['errors'] = errors
 
-        events = self._get_events(result)
-        if len(events):
-            res['events'] = events
+            events = self._get_events(result)
+            if len(events):
+                res['events'] = events
 
-        res['response'] = result.CbteNro
+            res['response'] = result.CbteNro
 
-        return res
+            return res
+        except Exception as ex:
+            raise e
 
     # TODO: Implementar FECompConsultar. Estaria bueno para saber si hubo algun
     # tema entre el soft y lo que tiene la AFIP
