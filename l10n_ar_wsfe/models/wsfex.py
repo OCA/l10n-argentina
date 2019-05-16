@@ -28,6 +28,23 @@ from odoo.exceptions import UserError
 from odoo.addons.l10n_ar_wsfe.wsfetools.wsfex_easywsy import WSFEX
 
 
+class StockIncoterms(models.Model):
+    _name = 'stock.incoterms'
+    _inherit = 'stock.incoterms'
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for inc in self:
+            name_lst = []
+            if inc.code:
+                name_lst.append("[%s]" % inc.code)
+            name_lst.append(inc.name)
+            name = (" ").join(name_lst)
+            res.append((inc.id, name))
+        return res
+
+
 class WsfexShippingPermission(models.Model):
     _name = "wsfex.shipping.permission"
     _description = "WSFEX Shipping Permission"
@@ -170,6 +187,14 @@ class WsfexConfig(models.Model):
         comodel_name='res.company', string='Company Name',
         default=lambda self: self.env['res.users']._get_company(),
         required=True)
+
+    @property
+    def voucher_type_str(self):
+        if self.homologation:
+            vt_str = 'Cbte_Tipo'
+        else:
+            vt_str = 'Tipo_Cbte'
+        return vt_str
 
     @api.multi
     def ws_auth(self):
@@ -443,7 +468,7 @@ class WsfexConfig(models.Model):
     @api.multi
     def get_wsfex_voucher_types(self):
         self.ensure_one()
-        res = self.fexgetparam_method('Cbte_Tipo')
+        res = self.fexgetparam_method(self.voucher_type_str)
 
         wsfex_param_obj = self.env['wsfex.voucher_type.codes']
         # Armo un lista con los codigos de los Impuestos
