@@ -508,12 +508,8 @@ class AccountInvoice(models.Model):
         # ^- Raise if trying to validate invoice of != companies
         ctx['company_id'] = company.id
 
-        ctx.setdefault('without_raise', not local)
+        ctx.setdefault('without_raise', True)
         wsfe_conf = wsfe_conf_obj.with_context(ctx).get_config()
-
-        ctx.update({
-            'without_raise': local,
-        })
         wsfex_conf = wsfex_conf_obj.with_context(ctx).get_config()
 
         pos_ar_list = self.mapped('pos_ar_id')
