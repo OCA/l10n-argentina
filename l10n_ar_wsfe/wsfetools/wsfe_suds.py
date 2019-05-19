@@ -286,7 +286,7 @@ class WSFEv1:
         result = self.client.service.FECompUltimoAutorizado(self.argauth, pto_venta, cbte_tipo)
 
         res = {}
-            # Obtenemos Errores y Eventos
+        # Obtenemos Errores y Eventos
         errors = self._get_errors(result)
         if len(errors):
             res['errors'] = errors
