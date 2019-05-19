@@ -283,24 +283,21 @@ class WSFEv1:
     def fe_comp_ultimo_autorizado(self, pto_venta, cbte_tipo):
 
         # Llamamos a la funcion
-        try:
-            result = self.client.service.FECompUltimoAutorizado(self.argauth, pto_venta, cbte_tipo)
+        result = self.client.service.FECompUltimoAutorizado(self.argauth, pto_venta, cbte_tipo)
 
-            res = {}
+        res = {}
             # Obtenemos Errores y Eventos
-            errors = self._get_errors(result)
-            if len(errors):
-                res['errors'] = errors
+        errors = self._get_errors(result)
+        if len(errors):
+            res['errors'] = errors
 
-            events = self._get_events(result)
-            if len(events):
-                res['events'] = events
+        events = self._get_events(result)
+        if len(events):
+            res['events'] = events
 
-            res['response'] = result.CbteNro
+        res['response'] = result.CbteNro
 
-            return res
-        except Exception as ex:
-            raise e
+        return res
 
     # TODO: Implementar FECompConsultar. Estaria bueno para saber si hubo algun
     # tema entre el soft y lo que tiene la AFIP
