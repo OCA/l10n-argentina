@@ -174,7 +174,6 @@ class WSAA:
     # TODO: Hacer chequeo de errores
     def get_token_and_sign(self, cert, key, force=True):
         # Primero chequeamos si ya tenemos un token
-
         if not force:
             if self.ta and self.expiration_time and self.token and self.sign:
                 # Si todavia no expiro el que tenemos, lo retornamos
