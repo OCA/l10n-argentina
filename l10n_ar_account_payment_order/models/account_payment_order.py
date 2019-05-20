@@ -42,17 +42,25 @@ class AccountPaymentOrder(models.Model):
             payment.currency_id = payment.journal_id.currency_id or \
                 payment.company_id.currency_id
 
-    # TODO: Context=Receipt por vista, chequear que utilidad tiene esto
+    @api.model
+    def _get_default_company(self):
+        company = self.env['res.company']._company_default_get(
+            'account.payment.order')
+        return company
+
+    @api.model
     def _get_journal(self):
         res = False
         ttype = self.env.context.get('type', 'bank')
+        company = self._get_default_company()
 
         # Pago inmediato, al contado, desde el boton de la factura
         immediate = self.env.context.get('immediate_payment', False)
 
         if not immediate and ttype in ('payment', 'receipt'):
-            rec = self.env['account.journal'].search(
-                [('type', '=', ttype)], limit=1,
+            rec = self.env['account.journal'].search([
+                ('type', '=', ttype),
+                ('company_id', '=', company.id)], limit=1,
                 order='priority')
             if not rec:
                 action = self.env.ref('account.action_account_journal_form')
@@ -225,7 +233,7 @@ class AccountPaymentOrder(models.Model):
         choose to keep open this difference on the partner's \
         account, or reconcile it with the payment(s)")
     company_id = fields.Many2one(comodel_name='res.company', string='Company',
-                                 default=lambda s: s.env['res.company']._company_default_get('account.payment.order'),
+                                 default=lambda s: s._get_default_company(),
                                  required=True, readonly=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
     payment_mode_line_ids = fields.One2many(
