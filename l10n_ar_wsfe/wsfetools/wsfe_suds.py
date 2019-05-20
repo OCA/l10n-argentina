@@ -1,6 +1,6 @@
 from suds.client import Client
 import urllib2
-
+from openerp.osv import osv
 import logging
 
 # Direcciones de los servicios web
