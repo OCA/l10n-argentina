@@ -23,6 +23,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from odoo.addons.l10n_ar_wsfe.wsfetools.wsfe_easywsy import WSFE
+
 from datetime import datetime
 import time
 
@@ -146,7 +147,8 @@ class WsfeConfig(models.Model):
                 err_var_name = 'Msg'
                 err_var_code = 'Code'
             errors = [getattr(error, err_var_name) for error in err_array]
-            err_codes = [str(getattr(error, err_var_code)) for error in err_array]
+            err_codes = [str(getattr(error, err_var_code))
+                         for error in err_array]
             msg = ' '.join(errors)
             msg = msg + ' Codigo/s Error:' + ' '.join(err_codes)
 
