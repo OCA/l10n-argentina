@@ -104,15 +104,15 @@ class AccountPaymentOrder(models.Model):
 
         return ret
 
-    def check_confirmed_stament_lines(self):
+    def check_confirmed_statement_lines(self):
         lines = self.mapped("bank_statement_line_ids")
-        return self.env["account.payment"].check_confirmed_stament_lines(lines)
+        return self.env["account.payment"].check_confirmed_statement_lines(lines)
 
     @api.multi
     def cancel_voucher(self):
         for payment_order in self:
             # Do not proceed if there are confirmed account.bank.statement.line
-            if not payment_order.check_confirmed_stament_lines():
+            if not payment_order.check_confirmed_statement_lines():
                 return False
 
         ret = super(AccountPaymentOrder, self).cancel_voucher()

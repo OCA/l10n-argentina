@@ -120,7 +120,7 @@ class AccountPayment(models.Model):
 
         return ret
 
-    def check_confirmed_stament_lines(self, lines=False):
+    def check_confirmed_statement_lines(self, lines=False):
         lines = lines or self.bank_statement_line_ids
         if not lines:
             return True
@@ -130,7 +130,7 @@ class AccountPayment(models.Model):
                 err = _(
                     """You can't cancel a Payment with confirmed Bank Statements
 
-                    HINT: Click on the 'Bank Statements' button your right.
+                    HINT: Click on the 'Bank Statements' button your left.
                     """
                 )
                 raise exceptions.UserError(err)
@@ -141,7 +141,7 @@ class AccountPayment(models.Model):
     def cancel(self):
         for payment in self:
             # Do not proceed if there are confirmed account.bank.statement.line
-            if not payment.check_confirmed_stament_lines():
+            if not payment.check_confirmed_statement_lines():
                 return False
 
         ret = super(AccountPayment, self).cancel()
