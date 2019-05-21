@@ -331,7 +331,7 @@ class AccountInvoice(models.Model):
             SUBSTRING(internal_number FROM '[0-9]{8}$'), '99999999')
             )
         FROM account_invoice
-        WHERE internal_number ~ '^[0-9]{4}-[0-9]{8}$'
+        WHERE internal_number ~ '(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$'
             AND pos_ar_id = %(pos_id)s
             AND state in %(state)s
             AND type = %(type)s
@@ -390,9 +390,12 @@ class AccountInvoice(models.Model):
                 if not internal_number:
                     internal_number = '%s-%08d' % (pos_ar.name, next_number)
 
-                m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', internal_number)
+                m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$',
+                             internal_number)
                 if not m:
-                    raise ValidationError(_('The Invoice Number should be the format XXXX[X]-XXXXXXXX'))
+                    raise ValidationError(
+                        _('The Invoice Number should be the format ' +
+                          'XXXX[X]-XXXXXXXX'))
 
                 # Escribimos el internal number
                 invoice_vals['internal_number'] = internal_number
@@ -404,9 +407,12 @@ class AccountInvoice(models.Model):
                         _('The Invoice Number should be filled'))
 
                 if self.local:
-                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', inv.internal_number)
+                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$',
+                                 inv.internal_number)
                     if not m:
-                        raise ValidationError(_('The Invoice Number should be the format XXXX[X]-XXXXXXXX'))
+                        raise ValidationError(
+                            _('The Invoice Number should be the format ' +
+                              'XXXX[X]-XXXXXXXX'))
 
             # Escribimos los campos necesarios de la factura
             inv.write(invoice_vals)

@@ -64,8 +64,8 @@ class wsfe_massive_sinchronize(models.TransientModel):
         self.ensure_one()
         wsfe_conf_model = self.env['wsfe.config']
         invoice_model = self.env['account.invoice']
-
-        conf = wsfe_conf_model.get_config()
+        company = self.pos_id.company_id
+        conf = wsfe_conf_model.with_context(company_id=company.id).get_config()
         pos = int(self.pos_id.name)
         voucher_type = self.voucher_type.code
 
