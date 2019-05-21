@@ -74,6 +74,8 @@ class AccountBankStatement(models.Model):
 
     @api.multi
     def button_confirm_bank(self):
+        """Extend to unrelate unconfirmed absl from the abs."""
+
         self.unlink_unconfirmed_lines()
         ret = super(AccountBankStatement, self).button_confirm_bank()
         return ret
