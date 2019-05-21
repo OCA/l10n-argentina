@@ -102,7 +102,7 @@ class AccountPayment(models.Model):
         st_line_values = data._prepare_statement_line_data()
 
         if journal.type == "cash":
-            statement_id = journal.find_open_statement_id()
+            statement_id = journal.find_open_statement_id(journal.id)
             if not statement_id:
                 return self.no_statement_redirect()
 
