@@ -74,6 +74,8 @@ class AccountBankStatement(models.Model):
 
     @api.multi
     def button_confirm_bank(self):
+        """Extend to unrelate unconfirmed absl from the abs."""
+
         self.unlink_unconfirmed_lines()
         ret = super(AccountBankStatement, self).button_confirm_bank()
         return ret
@@ -86,8 +88,9 @@ class AccountBankStatementLine(models.Model):
     journal_id = fields.Many2one(related=False)
     company_id = fields.Many2one(related=False)
     statement_state = fields.Selection(related="statement_id.state")
-    payment_id = fields.Many2one('account.payment', string='Payment reference')
-    payment_order_id = fields.Many2one('account.payment.order', string='Payment Order reference')
+    payment_id = fields.Many2one('account.payment', string='Payment reference', copy=False)
+    payment_order_id = fields.Many2one('account.payment.order', string='Payment Order reference',
+                                       copy=False)
     concept_id = fields.Many2one(comodel_name='pos.box.concept', string='Concept')
     line_type = fields.Selection(
         [

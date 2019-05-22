@@ -49,10 +49,12 @@ class AccountPaymentOrder(models.Model):
     def no_statement_redirect(self):
         return self.env["account.payment"].no_statement_redirect()
 
+    def create_statement_line(self, data, journal):
+        return self.env["account.payment"].create_statement_line(data, journal)
+
     @api.multi
     def proforma_voucher(self):
         ret = super(AccountPaymentOrder, self).proforma_voucher()
-        bank_st_line_obj = self.env['account.bank.statement.line']
 
         for payment_order in self:
             for line in payment_order.payment_mode_line_ids:
@@ -60,17 +62,7 @@ class AccountPaymentOrder(models.Model):
                 if not journal.detach_statement_lines():
                     continue
 
-                st_line_data = line._prepare_statement_line_data()
-
-                if journal.type == "cash":
-                    statement_id = journal.find_open_statement_id()
-                    if not statement_id:
-                        return self.no_statement_redirect()
-
-                    st_line_data["statement_id"] = statement_id
-                    st_line_data["state"] = "confirm"
-
-                bank_st_line_obj.create(st_line_data)
+                self.create_statement_line(line, journal)
 
             #for issued_check in vou.issued_check_ids:
             #    if issued_check.type in 'common':
@@ -104,21 +96,24 @@ class AccountPaymentOrder(models.Model):
 
         return ret
 
-    def check_confirmed_stament_lines(self):
+    def check_confirmed_statement_lines(self):
         lines = self.mapped("bank_statement_line_ids")
-        return self.env["account.payment"].check_confirmed_stament_lines(lines)
+        return self.env["account.payment"].check_confirmed_statement_lines(lines)
+
+    def forced_st_line_unlink(self, lines=False):
+        lines = lines or self.mapped("bank_statement_line_ids")
+        return self.env["account.payment"].forced_st_line_unlink(lines)
 
     @api.multi
     def cancel_voucher(self):
         for payment_order in self:
-            # Do not proceed if there are confirmed account.bank.statement.line
-            if not payment_order.check_confirmed_stament_lines():
+            # Do not proceed if there are account.bank.statement.line on a confirmed ABS
+            if not payment_order.check_confirmed_statement_lines():
                 return False
 
         ret = super(AccountPaymentOrder, self).cancel_voucher()
 
-        # Remove account.bank.statement.line after cancel
-        self.mapped("bank_statement_line_ids").unlink()
+        self.forced_st_line_unlink()
 
         return ret
 
