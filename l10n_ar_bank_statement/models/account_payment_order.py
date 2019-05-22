@@ -101,6 +101,7 @@ class AccountPaymentOrder(models.Model):
         return self.env["account.payment"].check_confirmed_statement_lines(lines)
 
     def forced_st_line_unlink(self, lines=False):
+        lines = lines or self.mapped("bank_statement_line_ids")
         return self.env["account.payment"].forced_st_line_unlink(lines)
 
     @api.multi
