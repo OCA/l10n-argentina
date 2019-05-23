@@ -1,0 +1,895 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_retentions
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-10 21:26+0000\n"
+"PO-Revision-Date: 2019-05-15 18:04-0300\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"Language: es_AR\n"
+"Language: es_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_code
+msgid "AFIP Code"
+msgstr "Cód. AFIP"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:79
+#, python-format
+msgid "Accont %s[%s] must have an associated concept for %s. Please configure it!"
+msgstr "La cuenta %s[%s] debe tener un Concepto asociado para %s. ¡Por favor configúrelo!"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_account_account
+msgid "Account"
+msgstr "Cuenta"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_account_ids
+msgid "Accounts"
+msgstr "Cuentas"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_concept_form
+msgid "Accounts Associated"
+msgstr "Cuentas Asociadas"
+
+#. module: l10n_ar_retentions
+#: model:ir.actions.act_window,name:l10n_ar_retentions.action_retention_activity_tree
+#: model:ir.ui.menu,name:l10n_ar_retentions.retention_retention_activities_menu
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_activity_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_activity_id
+msgid "Activity"
+msgstr "Actividad"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_ids
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_users_advance_retention_ids
+msgid "Advance Payment Concept"
+msgstr "Concepto de Adelanto"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_partner_retention_form
+msgid "Advance Payment Retentions"
+msgstr "Retenciones de Adelantos"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_aliq_type
+msgid "Aliquot Type"
+msgstr "Tipo de alícuota"
+
+#. module: l10n_ar_retentions
+#: selection:retention.retention,applicable_state:0
+msgid "Always"
+msgstr "Siemrpre"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_always_apply_padron
+msgid "Always Apply from Padron"
+msgstr "Siempre aplicar Padron"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Amounts"
+msgstr "Cantidad"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_applicable_state
+msgid "Applicable State"
+msgstr "Estado de aplicación"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_application_id
+msgid "Application"
+msgstr "Aplicación"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_account_position_retention_form
+msgid "Applied Retentions"
+msgstr "Retenciones aplicadas"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_calculation_base
+msgid "Calculation Base"
+msgstr "Base de cálculo"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_check_sit_iibb
+msgid "Check IIBB Situation"
+msgstr "Chequear Situation of IIBB"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_concept_no_subject
+msgid "Check this if Retention should not be applied for this Concept"
+msgstr "Marcar si esta Retención no debería ser aplicada sobre este Concepto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_tax_application_exclude_tax_allowance
+msgid "Check this if Tax Allowance should be excluded from calculated Base"
+msgstr "Marcar si la Ex debería ser excluída del cálculo Base"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_account_payment_order_disable_retentions
+msgid "Check this if you want to disable automatic calculation of retention on this payment"
+msgstr "Marcar para desactivar el cálculo automático de Retenciones en este Pago"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_code
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_code
+msgid "Code"
+msgstr "Código"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_concept_id
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_tax_line_concept_search
+msgid "Concept"
+msgstr "Concepto"
+
+#. module: l10n_ar_retentions
+#: model:ir.actions.act_window,name:l10n_ar_retentions.action_retention_concept_tree
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_account_account_retention_concept_ids
+#: model:ir.ui.menu,name:l10n_ar_retentions.retention_retention_concepts_menu
+msgid "Concepts"
+msgstr "Conceptos"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,sit_iibb:0
+msgid "Convenio Multilateral"
+msgstr "Convenio Multilateral"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_create_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_create_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_date_applied
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_tax_line_concept_search
+msgid "Date Applied"
+msgstr "Fecha de aplicación"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_name
+msgid "Description"
+msgstr "Descripción"
+
+#. module: l10n_ar_retentions
+#: selection:retention.retention,applicable_state:0
+msgid "Destination"
+msgstr "Destino"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_account_payment_order_disable_retentions
+msgid "Disable Retentions"
+msgstr "Desactivar Retenciones"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_display_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_account_payment_order_date_effective
+msgid "Effective Date"
+msgstr "Fecha efectiva"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:431
+#, python-format
+msgid "Error!\n"
+msgstr "¡Error!\n"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_exclude_tax_allowance
+msgid "Exclude Tax Allowance"
+msgstr "Excluir Monto No Imponible"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_exclusion_certificate
+msgid "Exclusion Certificate"
+msgstr "Certificado de Exclusión"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_exclusion_date_certificate
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_exclusion_date_certificate
+msgid "Exclusion General Resolution Date"
+msgstr "Fecha de Resolución General de Exclusión"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_account_fiscal_position
+msgid "Fiscal Position"
+msgstr "Posición fiscal"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_ex_date_from
+msgid "From date"
+msgstr "Fecha desde"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_general_resolution
+msgid "GR Number"
+msgstr "N° RG"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "General Resolution Associated"
+msgstr "Resolución General Asociada"
+
+#. module: l10n_ar_retentions
+#: selection:retention.activity,type:0 selection:retention.concept,type:0
+#: selection:retention.tax.application,type:0
+msgid "Gross Income"
+msgstr "Ingreso Bruto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_gi_application_ids
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Gross Income Tax Application"
+msgstr "Aplicación de Impuesto de Ingreso Bruto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_res_partner_retention_ids
+#: model:ir.model.fields,help:l10n_ar_retentions.field_res_users_retention_ids
+msgid "Here you have to configure retention exceptions for this partner with this Fiscal Position"
+msgstr "Aqui debe configurar las excepciones de retenciones para esta Empresa y su Posición Fiscal"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_id
+msgid "ID"
+msgstr "ID (identificación)"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_retention_check_sit_iibb
+msgid "If checked, when IIBB situation is Multilateral, this retention is always applicable"
+msgstr "Si lo marca significa que para una situación de IIBB Multilateral la retención se aplica siempre"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_retention_always_apply_padron
+msgid "If checked, when the partner has a perception exception and it was generated from a padron, this perception will be applied"
+msgstr "Si se marca para un partner con excepciones de Percepciones y fue generado desde el padron esta percepción aplicará"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Included Lines"
+msgstr "Líneas incluídas"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_retention_applicable_state
+msgid ""
+"Indicates if this Perception is applicable when:\n"
+"* State/Province is equals to source address\n"
+"* State/Province is equals to destination address\n"
+"* Always"
+msgstr ""
+"Indica si esta Percepción será aplicable cuando:\n"
+"* La Provincia es igual a la Dirección de origen\n"
+"* La Provincia es igual a la Dirección de destino\n"
+"* Siempre"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Information"
+msgstr "Información"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_invoice_id
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_invoice_ref
+msgid "Invoice Reference"
+msgstr "Referencia factura"
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,calculation_base:0
+msgid "Invoice Subtotal"
+msgstr "Subtotal de factura"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Jurisdiction Information"
+msgstr "Información de la Jurisdicción"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Keep it empty if the date is the same as the voucher."
+msgstr "Dejar vacío si la fecha es la misma que la del comprobante."
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application___last_update
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax___last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_write_uid
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_write_uid
+msgid "Last Updated by"
+msgstr "Última actualización de"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_write_date
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_write_date
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_limit
+msgid "Limit"
+msgstr "Límite"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_scale_form
+msgid "Lines"
+msgstr "Líneas"
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,sit_iibb:0
+msgid "Local"
+msgstr "Local"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_manual
+msgid "Manual"
+msgstr "Manual"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_move_line_ids
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Move Lines"
+msgstr "Movimientos"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Moves Information"
+msgstr "Información de Asientos"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_name
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,sit_iibb:0
+msgid "No Inscripto"
+msgstr "No Inscripto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_no_subject
+msgid "No Subject"
+msgstr "No Sujeto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_notes
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_notes
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_notes
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_activity_form
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_concept_form
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Notes"
+msgstr "Notas"
+
+#. module: l10n_ar_retentions
+#: selection:retention.activity,type:0 selection:retention.concept,type:0
+msgid "Other"
+msgstr "Otro"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Other Information"
+msgstr "Otra Información"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_partner_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_partner_id
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_partner_retention_form
+msgid "Partner Retentions"
+msgstr "Retenciones de la empresa"
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,calculation_base:0
+msgid "Payment Amount Untaxed"
+msgstr "Importe sin impuestos del Pago"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_percent
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_percent
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_percent
+#: selection:retention.tax.application,aliq_type:0
+msgid "Percent"
+msgstr "Porcentaje"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_tax_application_percent
+msgid "Percent to Apply if the Partner is inscripted in the Tax"
+msgstr "Porcentaje a aplicar si la Empresa está inscripta en los impuestos"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_excluded_percent
+msgid "Percentage of Exclusion"
+msgstr "Porcentaje de Exclusión"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_excluded_percent
+msgid "Percentage of exclusion"
+msgstr "Porcentaje de Exclusión"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_account_position_retention_form
+msgid "Perception"
+msgstr "Percepción"
+
+#. module: l10n_ar_retentions
+#: selection:retention.activity,type:0 selection:retention.concept,type:0
+#: selection:retention.tax.application,type:0
+msgid "Profit"
+msgstr "Ganancia"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_profit_application_ids
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Profit Tax Application"
+msgstr "Aplicación de Impuestos"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_rate
+msgid "Rate"
+msgstr "Tasa"
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,calculation_base:0
+msgid "Rate Proportional VAT"
+msgstr "Tasa proporcional de IVA "
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_vat_tax_rate
+msgid "Rate from 1.0 to 0.0. This is the proportion of percent applied to base amount of this tax."
+msgstr "Tasa entre 1.0 y 0.0. Es la proporción aplicada al importe base de este impuesto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_reg_code
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_reg_code
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_tax_line_concept_search
+msgid "Reg. Code"
+msgstr "Cód. Reg."
+
+#. module: l10n_ar_retentions
+#: selection:retention.tax.application,sit_iibb:0
+msgid "Regimen Simplificado"
+msgstr "Regimen Simplificado"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_advance_retention_retention_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_retention_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_retention_id
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Retention"
+msgstr "Retentción"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:104
+#, python-format
+msgid "Retention %s is not configured for Partner Fiscal Position %s"
+msgstr "La Retención %s no está configurada para la Pos. Fiscal  %s"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_activity_tree
+msgid "Retention Activities"
+msgstr "Actividades de Retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_activity_form
+msgid "Retention Activity"
+msgstr "Actividad de Retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_concept_form
+msgid "Retention Concept"
+msgstr "Concepto de Retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_concept_tree
+msgid "Retention Concepts"
+msgstr "Conceptos de Retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_retention
+msgid "Retention Configuration"
+msgstr "Configuración de la retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_res_partner_retention
+msgid "Retention Defined in Partner"
+msgstr "Retención definida en la empresa"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:78
+#, python-format
+msgid "Retention Error\n"
+msgstr "Error en la Retención\n"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:114
+#: code:addons/l10n_ar_retentions/models/payment_order.py:122
+#: code:addons/l10n_ar_retentions/models/retention.py:234
+#: code:addons/l10n_ar_retentions/models/retention.py:243
+#: code:addons/l10n_ar_retentions/models/retention.py:629
+#, python-format
+msgid "Retention Error!\n"
+msgstr "¡Error en la Retención!\n"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_activity
+msgid "Retention Gross Income Activity"
+msgstr "Actividad de Retención de IIBB"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_vendor_payment_retention_form_extended_inherit
+msgid "Retention Lines"
+msgstr "Líneas de retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_concept
+msgid "Retention Profit Concepts"
+msgstr "Conceptos de Retención de Ganancias"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_scale_form
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_scale_tree
+msgid "Retention Scale"
+msgstr "Escala de Retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.actions.act_window,name:l10n_ar_retentions.action_retention_scale_tree
+msgid "Retention Scales"
+msgstr "Escalas de Retenciones"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_tax_line
+msgid "Retention Tax Line"
+msgstr "Línea de impuesto de retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_tax_application_tax_minimum
+msgid "Retention is performed when the amount thereof exceeds this value."
+msgstr "La Retención es ejecutada cuando el importe de la misma excede este valor"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_tax_application_tax_allowance
+msgid "Retention will be calculated over this amount."
+msgstr "La Rentención será aplicada sobre este valor."
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_account_fiscal_position_retention_ids
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_partner_retention_form
+msgid "Retentions"
+msgstr "Retenciones"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_ids
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_users_retention_ids
+msgid "Retentions Exceptions"
+msgstr "Exepciones de Retenciones"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_partner_retention_form
+msgid "Retentions to Apply"
+msgstr "Retencions a aplicar"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_scale_id
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_scale_id
+#: selection:retention.tax.application,aliq_type:0
+msgid "Scale"
+msgstr "Escala"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_scale_line
+msgid "Scale Line for Retention Calculation"
+msgstr "Línea de Escala para cálculo de Retenciones"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_scale_line_ids
+msgid "Scale Lines"
+msgstr "Líneas de Escala"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_scale
+msgid "Scale for Retention Calculation"
+msgstr "Escala para cálculo de Retenciones"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.menu,name:l10n_ar_retentions.retention_retention_scales_menu
+msgid "Scales"
+msgstr "Escalas"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_sit_iibb
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_sit_iibb
+msgid "Situation of IIBB"
+msgstr "Situación de IIBB"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:208
+#, python-format
+msgid "Something is wrong with retention calculation because there are more than one tuple (voucher line, retention, concept) applied to this voucher"
+msgstr "Algo está mal con el cálculo de retenciones: hay más de conjunto (línea de pago, retención, concepto) aplicado a este pago"
+
+#. module: l10n_ar_retentions
+#: selection:retention.retention,applicable_state:0
+msgid "Source"
+msgstr "Documento Origen"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_account_payment_order_receipt_number
+msgid "Supplier Receipt Number"
+msgstr "Número de Recibo del Proveedor"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_tax_allowance
+msgid "Tax Allowance"
+msgstr "Monto No Imponible"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_taxapp_id
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Tax Application"
+msgstr "Aplicación del impuesto"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Tax Information"
+msgstr "Información de Impuesto"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_tax_minimum
+msgid "Tax Minimum"
+msgstr "Mínimo imponible"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/partner.py:44
+#, python-format
+msgid "The Excluded Percent Should be a value between 0 and 1"
+msgstr "El Porcentaje de exclusión debe ser un valor entre 0 y 1"
+
+#. module: l10n_ar_retentions
+#: sql_constraint:retention.tax.application:0
+msgid "The tuple of Concept, Activity must be unique per Retention !"
+msgstr "¡El conjunto (Concepto, Actividad) debe ser único por Retención!"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:630
+#, python-format
+msgid "There is an error in retention configuration because amount of %s is negative"
+msgstr "Hay un error en la Configuración de la Retención porque el importe %s es negativo"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:244
+#, python-format
+msgid ""
+"There is more than one Retention Application (%s) configured that corresponds to\n"
+"Activity: %s \n"
+"Concept: %s\n"
+" for the Account %s"
+msgstr ""
+"Hay más de una Aplicación de Retención (%s) configurada que se corresponde con\n"
+"Actividad: %s \n"
+"Concepto: %s\n"
+"para la Cuenta %s"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:123
+#, python-format
+msgid "There is more than one Retention Application (%s) configured that corresponds to Concept: %s"
+msgstr "Hay más de una Aplicación de Retención (%s) configurada que se corresponde con el Concepto: %s"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:120
+#, python-format
+msgid "There is no State/Province configured for the Supplier while computing Retention: %s"
+msgstr "Error mientras se calculaba la retención %s: el Proveedor no tiene cargada la Provincia"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:135
+#, python-format
+msgid "There is no State/Province configured for this Company"
+msgstr "La Compañía no tiene cargada la Provincia"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/retention.py:235
+#, python-format
+msgid ""
+"There is no configured a Retention Application (%s) that corresponds to\n"
+"Activity: %s \n"
+"Concept: %s\n"
+" for the Account %s"
+msgstr ""
+"No hay Aplicación de Retención (%s) configurada que se corresponde con\n"
+"Actividad: %s \n"
+"Concepto: %s\n"
+"para la Cuenta %s"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:115
+#, python-format
+msgid "There is no configured a Retention Application (%s) that corresponds to Concept: %s"
+msgstr "No hay Aplicación de Retención (%s) configurada que se corresponde con el Concepto: %s"
+
+#. module: l10n_ar_retentions
+#: sql_constraint:res.partner.retention:0
+msgid "There must be only one retention of this type configured for the partner"
+msgstr "Solo puede haber una Retención de este tipo por empresa"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_account_fiscal_position_retention_ids
+msgid "These are the retentions that will be applied to Suppliers belonging to this Fiscal Position. Exceptions to this have to be loaded at partner form."
+msgstr "Estas son las Retenciones que aplicarán a los Proveedores pertenecientes a esta Posición Fiscal. Las Excepciones de cada empresa deberán ser cargadas directamente en su formulario."
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_retention_tax_line_date_applied
+msgid "This is the date of the real application of the retention"
+msgstr "Fecha real de Aplicación de la Retención"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_account_payment_order_date_effective
+msgid "This is the effective date when one give this voucher to the Supplier"
+msgstr "Fecha efectiva de entrega del pago al Proveedor"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,help:l10n_ar_retentions.field_account_payment_order_receipt_number
+msgid "This is the number of the receipt given by the Supplier"
+msgstr "El número de recibo entregado por el Proveedor"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_res_partner_retention_ex_date_to
+msgid "To date"
+msgstr "Fecha hasta"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_activity_type
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_concept_type
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_type
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_line_unlinkable
+msgid "Unlinkable"
+msgstr "No eliminable"
+
+#. module: l10n_ar_retentions
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "Usability Configuration"
+msgstr "Configuración de Usabilidad"
+
+#. module: l10n_ar_retentions
+#: selection:retention.activity,type:0 selection:retention.concept,type:0
+#: selection:retention.tax.application,type:0
+msgid "VAT"
+msgstr "IVA"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_vat_tax_tax_id
+msgid "VAT Tax"
+msgstr "IVA"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_retention_vat_application_ids
+#: model:ir.ui.view,arch_db:l10n_ar_retentions.view_retention_retention_form
+msgid "VAT Tax Application"
+msgstr "Aplicación de IVA"
+
+#. module: l10n_ar_retentions
+#: model:ir.model.fields,field_description:l10n_ar_retentions.field_retention_tax_application_vat_tax_ids
+msgid "VAT Taxes for Calculation"
+msgstr "IVAs para el cálculo"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_vat_tax
+msgid "VAT Taxes for Retention Calculation"
+msgstr "IVAs para el Cálculo de Retenciones"
+
+#. module: l10n_ar_retentions
+#: code:addons/l10n_ar_retentions/models/payment_order.py:432
+#, python-format
+msgid ""
+"Voucher %s [id: %s] has Unlinkable Retentions:\n"
+"%s"
+msgstr ""
+"El pago %s [id: %s] tiene Retenciones No eliminables:\n"
+"%s"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_account_payment_order
+msgid "account.payment.order"
+msgstr "account.payment.order"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_res_partner_advance_retention
+msgid "res.partner.advance.retention"
+msgstr "res.partner.advance.retention"
+
+#. module: l10n_ar_retentions
+#: model:ir.model,name:l10n_ar_retentions.model_retention_tax_application
+msgid "retention.tax.application"
+msgstr "retention.tax.application"
