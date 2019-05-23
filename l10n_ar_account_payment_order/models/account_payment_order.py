@@ -42,17 +42,25 @@ class AccountPaymentOrder(models.Model):
             payment.currency_id = payment.journal_id.currency_id or \
                 payment.company_id.currency_id
 
-    # TODO: Context=Receipt por vista, chequear que utilidad tiene esto
+    @api.model
+    def _get_default_company(self):
+        company = self.env['res.company']._company_default_get(
+            'account.payment.order')
+        return company
+
+    @api.model
     def _get_journal(self):
         res = False
         ttype = self.env.context.get('type', 'bank')
+        company = self._get_default_company()
 
         # Pago inmediato, al contado, desde el boton de la factura
         immediate = self.env.context.get('immediate_payment', False)
 
         if not immediate and ttype in ('payment', 'receipt'):
-            rec = self.env['account.journal'].search(
-                [('type', '=', ttype)], limit=1,
+            rec = self.env['account.journal'].search([
+                ('type', '=', ttype),
+                ('company_id', '=', company.id)], limit=1,
                 order='priority')
             if not rec:
                 action = self.env.ref('account.action_account_journal_form')
@@ -225,8 +233,8 @@ class AccountPaymentOrder(models.Model):
         choose to keep open this difference on the partner's \
         account, or reconcile it with the payment(s)")
     company_id = fields.Many2one(comodel_name='res.company', string='Company',
-                                 related='journal_id.company_id',
-                                 store=True, readonly=True)
+                                 default=lambda s: s._get_default_company(),
+                                 required=True, readonly=True)
     pre_line = fields.Boolean(string='Previous Payments ?')
     payment_mode_line_ids = fields.One2many(
         comodel_name='account.payment.mode.line',
@@ -546,15 +554,21 @@ class AccountPaymentOrder(models.Model):
                 _('Error!\n Cannot validate a ' +
                     'voucher with negative amount.\n Please check ' +
                     'that Writeoff Amount is not negative.'))
-        if self.amount == 0.0:
+        if self.amount == 0.0 and not self._get_income_amount():
             raise ValidationError(
                 _("Validate Error!\n") +
-                _("You cannot validate a voucher with amount of 0.0"))
+
+                _("You cannot validate a voucher with amount of 0.0") +
+                _(" and no income lines"))
 
         self._clean_payment_lines()
         self.action_move_line_create()
 
         return True
+
+    def _get_income_amount(self):
+        self.ensure_one()
+        return sum(self.income_line_ids.mapped('amount'))
 
     def _get_company_currency(self):
         '''
@@ -1268,10 +1282,8 @@ class AccountPaymentModeLine(models.Model):
         else:
             return currency_obj.search([('rate', '=', 1.0)], limit=1)
 
-    name = fields.Char(help='Payment reference',
-                       string='Mode',
-                       readonly=True,
-                       size=64)
+    name = fields.Text(
+        help='Payment reference', string='Description')
     payment_order_id = fields.Many2one(comodel_name='account.payment.order',
                                        string='Payment Order')
     payment_mode_id = fields.Many2one(comodel_name='account.journal',

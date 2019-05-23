@@ -59,11 +59,3 @@ class PoSBoxConcept(models.Model):
         string="Concept type",
         required=True,
     )
-
-    #_sql_constraints = [
-    #    (
-    #        "account_id_uniq_by_type",
-    #        "UNIQUE(account_id, concept_type)",
-    #        _("This account is already assigned to another concept")
-    #    )
-    #]

@@ -279,7 +279,8 @@ class AccountInvoice(models.Model):
                 if not internal_number:
                     internal_number = '%s-%08d' % (pos_ar.name, next_number)
 
-                m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', internal_number)
+                m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$',
+                             internal_number)
                 if not m:
                     err = _('The Invoice Number should be the ' +
                             'format XXXX[X]-XXXXXXXX')
@@ -295,7 +296,8 @@ class AccountInvoice(models.Model):
                     raise UserError(_('Error\n') + err)
 
                 if local:
-                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$', obj_inv.internal_number)
+                    m = re.match('(^[0-9]{4}|^[0-9]{5})-[0-9]{8}$',
+                                 obj_inv.internal_number)
 
                     if not m:
                         err = _('The Invoice Number should be ' +
@@ -505,12 +507,11 @@ class AccountInvoice(models.Model):
         company.ensure_one()
         # ^- Raise if trying to validate invoice of != companies
         ctx['company_id'] = company.id
-        if local:
-            ctx['without_raise'] = True
+
+        ctx.setdefault('without_raise', True)
         wsfe_conf = wsfe_conf_obj.with_context(ctx).get_config()
-        if not local:
-            ctx = {}
         wsfex_conf = wsfex_conf_obj.with_context(ctx).get_config()
+
         pos_ar_list = self.mapped('pos_ar_id')
         if len(list(set(local_list))) != 1:
             err = _("Trying to get the WSFE config for invoices that " +
@@ -616,3 +617,13 @@ class AccountInvoiceTax(models.Model):
 
         return super(AccountInvoiceTax, self).\
             hook_compute_invoice_taxes(invoice, tax_grouped)
+
+
+class AccountInvoiceLine(models.Model):
+    _name = "account.invoice.line"
+    _inherit = "account.invoice.line"
+
+    @api.multi
+    def _get_applied_discount(self):
+        self.ensure_one()
+        return 0
