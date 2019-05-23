@@ -104,11 +104,13 @@
                                         <field name="account_id" required="True"/>
                                         <field name="amount_untaxed"/>
                                         <field name="tax_id"/>
+                                        <field name="amount_tax" readonly="True" force_save="True"/>
                                         <field name="amount" readonly="True" force_save="True"/>
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Perceptions">
+                            <page string="Perceptions"
+                                attrs="{'invisible': [('partner_id', '=', False)]}">
                                 <field name="perception_ids" nolabel="1" colspan="4"
                                         context="{'default_partner_id': partner_id}">
                                     <tree string="Perception Lines">
@@ -121,7 +123,7 @@
                                     <form string="Perception Lines">
                                         <h1>
                                             <field name="perception_id" class="oe_inline"
-                                                domain="[('type_tax_use', '=', 'sale')]" />
+                                                domain="[('type_tax_use', '=', 'purchase')]" />
                                         </h1>
                                         <group>
                                             <group string="Information" name="info">
@@ -145,8 +147,11 @@
                         </notebook>
                         <group>
                             <group class="oe_subtotal_footer oe_right">
-                                <field name="amount_checks"/>
-                                <field name="amount_concepts"/>
+                                <field name="amount_checks" class="oe_subtotal_footer_separator"/>
+                                <field name="amount_subtotal"/>
+                                <field name="amount_tax"/>
+                                <field name="amount_concepts" class="oe_subtotal_footer_separator"/>
+                                <field name="amount_perceptions" class="oe_subtotal_footer_separator"/>
                                 <field name="amount_total" class="oe_subtotal_footer_separator"/>
                             </group>
                             <div class="oe_clear">

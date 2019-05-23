@@ -56,6 +56,18 @@ class CheckDiscount(models.Model):
     amount_concepts = fields.Monetary(
         string='T. Concepts',
         compute='_compute_amount_concepts', store=True)
+    amount_perceptions = fields.Monetary(
+        string='T. Perceptions',
+        compute='_compute_amount_perception', store=True)
+
+    amount_subtotal= fields.Monetary(
+        string='Subtotal',
+        compute='_compute_amount_concepts', store=True)
+
+    amount_tax = fields.Monetary(
+        string='T. Tax',
+        compute='_compute_amount_concepts', store=True)
+
     amount_total = fields.Monetary(
         string='Total',
         compute='_compute_amount_total', store=True)
@@ -84,6 +96,13 @@ class CheckDiscount(models.Model):
         inverse_name='discount_id',
         string='Perception', readonly=True,
         states={'draft': [('readonly', False)]})
+
+    @api.depends('perception_ids')
+    def _compute_amount_perception(self):
+        for reg in self:
+            reg.amount_perceptions = sum(
+                reg.perception_ids.mapped('amount'))
+
 
     @api.depends("company_id")
     def _compute_check_config(self):
@@ -129,6 +148,10 @@ class CheckDiscount(models.Model):
         for disc in self:
             disc.amount_concepts = sum(
                 disc.check_discount_line_ids.mapped('amount'))
+            disc.amount_tax = sum(
+                disc.check_discount_line_ids.mapped('amount_tax'))
+            disc.amount_subtotal = sum(
+                disc.check_discount_line_ids.mapped('amount_untaxed'))
 
     @api.depends('amount_checks', 'amount_concepts')
     def _compute_amount_total(self):
@@ -171,7 +194,7 @@ class CheckDiscount(models.Model):
                 raise ValidationError(
                     _("The Payment of the Expense Invoice " +
                       "could not be completed."))
-            payment_line.amount = self.amount_concepts  # TODO + self.amount_perceptions  # noqa
+            payment_line.amount = self.amount_concepts  + self.amount_perceptions  # noqa
             payment.proforma_voucher()
             self.expense_payment_id = payment
 
@@ -200,7 +223,7 @@ class CheckDiscount(models.Model):
     def _prepare_payment_mode_lines_for_payment(self):
         pmls = []
         pml = {
-            'amount': self.amount_concepts,  # TODO + self.amount_perceptions,
+            'amount': self.amount_concepts + self.amount_perceptions,
             'currency_id': self.currency_id,
             'payment_mode_id': self.journal_id.id,
         }
@@ -391,6 +414,9 @@ class CheckDiscountLine(models.Model):
     amount = fields.Monetary(
         string='Amount',
         compute="_compute_amount")
+    amount_tax = fields.Monetary(
+        compute="_compute_amount",
+        string='Amount Tax')
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -406,6 +432,11 @@ class CheckDiscountLine(models.Model):
             tax_vals = rec.tax_id.compute_all(
                 rec.amount_untaxed, rec.currency_id, 1, rec.product_id)
             rec.amount = tax_vals.get('total_included')
+            tax_amount_lst = [
+                tax.get('amount')
+                for tax in tax_vals.get('taxes', [])
+            ]
+            rec.amount_tax = sum(tax_amount_lst)
 
     @api.multi
     def _prepare_expense_invoice_line_vals(self):
