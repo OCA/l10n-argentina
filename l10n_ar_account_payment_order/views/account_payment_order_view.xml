@@ -69,9 +69,9 @@
                                     attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="journal_id"
-                                    domain="[('type','=','receipt')]"
-                                    widget="selection"
+                                    domain="[('type','=','receipt'), ('company_id', '=', company_id)]"
                                     string="Journal"
+				    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
                                     attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
@@ -125,7 +125,8 @@
                                 <field name="payment_mode_line_ids" attrs="{'readonly': [('state', 'not in', ('draft'))]}">
                                     <tree string="Payment Methods" editable="bottom" decoration-muted="amount == 0">
                                         <field name="payment_mode_id" invisible="0"
-                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
+                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank']), ('company_id', '=', parent.company_id)]"/>
+                                        <field name="name" invisible="1"/>
                                         <field name="currency_id" readonly="1"/>
                                         <field name="date"/>
                                         <field name="payment_order_id" invisible="1"/>
@@ -360,13 +361,15 @@
                                 <field name="partner_id" required="1" invisible="context.get('line_type', False)" context="{'invoice_currency':currency_id, 'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"  domain="[('supplier','=',True)]" string="Supplier"/>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="journal_id"
-                                    domain="[('type', '=', 'payment')]"
+                                    domain="[('type', '=', 'payment'), ('company_id', '=', company_id)]"
                                     invisible="context.get('line_type', False)"
-                                    widget="selection"
+				    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
                                     string="Journal"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
-                                    widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    widget="monetary" options="{'currency_field': 'currency_id'}"
+                                    force_save="True"
+                                    attrs="{'readonly': True}"/>
                             </group>
                             <group>
                                 <field name="date" invisible="context.get('line_type', False)"/>
@@ -408,7 +411,7 @@
                                 <field name="payment_mode_line_ids">
                                     <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
                                         <field name="payment_mode_id" invisible="0"
-                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank'])]"/>
+                                            attrs="{'required': True}" domain="[('type', 'in', ['cash', 'bank']), ('company_id', '=', parent.company_id)]"/>
                                         <field name="currency_id" readonly="1"/>
                                         <field name="date"/>
                                         <field name="payment_order_id" invisible="1"/>

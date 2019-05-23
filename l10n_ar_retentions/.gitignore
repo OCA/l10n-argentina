@@ -1,2 +1,5 @@
-*.py[co]
-*.sw[po]
+*.py[cow]
+*.sw*
+*.mo
+*.jasper
+__pycache__

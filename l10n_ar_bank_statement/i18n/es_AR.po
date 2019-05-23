@@ -364,12 +364,12 @@ msgstr "Asistente para asociar Líneas de Extracto Bancario con un Extracto"
 msgid ""
 "You can't cancel a Payment with confirmed Bank Statements\n"
 "\n"
-"                    HINT: Click on the 'Bank Statements' button your right.\n"
+"                    HINT: Click on the 'Bank Statements' button your left.\n"
 "                    "
 msgstr ""
 "No puede cancelar un Pago relacionado a Extractos confirmados\n"
 "\n"
-"                    HINT: Haga click en el boton 'Extractos Bancarios' a su derecha para solucionar el problema.\n"
+"                    HINT: Haga click en el boton 'Extractos Bancarios' a su izquierda para solucionar el problema.\n"
 "                    "
 
 #. module: l10n_ar_bank_statement
@@ -386,3 +386,9 @@ msgstr "cash.box.in"
 #: model:ir.model,name:l10n_ar_bank_statement.model_cash_box_out
 msgid "cash.box.out"
 msgstr "cash.box.out"
+
+#. module: l10n_ar_bank_statement
+#: code:addons/l10n_ar_bank_statement/wizard/pos_box.py:33
+#, python-format
+msgid "Cannot found account to do the transfer"
+msgstr "No se pudo encontrar cuenta para realizar la transferencia."

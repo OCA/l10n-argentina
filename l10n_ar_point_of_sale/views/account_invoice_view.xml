@@ -35,7 +35,7 @@
                    </field>
                    <field name="fiscal_position_id" position="after">
                         <field name="local" invisible="1"/>
-                        <field name="dst_cuit_id" widget="selection"
+                        <field name="dst_cuit_id" options="{'no_quick_create': True, 'no_create_edit': True, 'no_create': True}"
                             attrs="{'invisible': [('local','=', True)]}"/>
                     </field>
                    <field name="amount_untaxed" position="replace">
@@ -168,7 +168,7 @@
                    </field>
                     <field name="fiscal_position_id" position="after">
                         <field name="local" invisible="1"/>
-                        <field name="dst_cuit_id" widget="selection"
+                        <field name="dst_cuit_id" options="{'no_quick_create': True, 'no_create_edit': True, 'no_create': True}"
                             attrs="{'invisible': [('local','=', True)]}"/>
                     </field>
                     <field name="fiscal_position_id" position="attributes">

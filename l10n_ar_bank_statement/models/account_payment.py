@@ -73,7 +73,7 @@ class AccountPayment(models.Model):
         amount = self.amount * sign
         invoices_info = self._build_invoices_info()
 
-        st_line_data = {
+        st_line_values = {
             'ref': invoices_info or self.communication,
             'name': self.name or self.communication,
             'date': self.payment_date,
@@ -88,17 +88,32 @@ class AccountPayment(models.Model):
             #'creation_type': 'system',
         }
 
-        return st_line_data
+        return st_line_values
 
     def no_statement_redirect(self):
         err = _("No open 'Cash' Bank Statement! Go to the dashboard and open it")
-        action_id = self.env.ref("account.open_account_journal_dashboard_kanban")
+        action_id = self.env.ref("account.open_account_journal_dashboard_kanban").id
         raise exceptions.RedirectWarning(err, action_id, _("Open Dashboard"))
+
+    def _create_statement_line(self, st_line_values):
+        return self.env['account.bank.statement.line'].create(st_line_values)
+
+    def create_statement_line(self, data, journal):
+        st_line_values = data._prepare_statement_line_data()
+
+        if journal.type == "cash":
+            statement_id = journal.find_open_statement_id(journal.id)
+            if not statement_id:
+                return self.no_statement_redirect()
+
+            st_line_values["statement_id"] = statement_id
+            st_line_values["state"] = "confirm"
+
+        return self._create_statement_line(st_line_values)
 
     @api.multi
     def post(self):
         ret = super(AccountPayment, self).post()
-        bank_st_line_obj = self.env['account.bank.statement.line']
 
         for payment in self:
             payment_type = payment.payment_type
@@ -106,48 +121,45 @@ class AccountPayment(models.Model):
             if not journal.detach_statement_lines() or payment_type not in ("inbound", "outbound"):
                 continue
 
-            st_line_data = payment._prepare_statement_line_data()
-
-            if journal.type == "cash":
-                statement_id = bank_st_line_obj.find_open_statement_id(journal.id)
-                if not statement_id:
-                    raise exceptions.RedirectWarning()
-
-                st_line_data["statement_id"] = statement_id
-                st_line_data["state"] = "confirm"
-
-            bank_st_line_obj.create(st_line_data)
+            self.create_statement_line(payment, journal)
 
         return ret
 
-    def check_confirmed_stament_lines(self, lines=False):
+    def check_confirmed_statement_lines(self, lines=False, raise_error=True):
         lines = lines or self.bank_statement_line_ids
         if not lines:
             return True
 
         for st in lines:
-            if st.state == 'confirm':
-                err = _(
-                    """You can't cancel a Payment with confirmed Bank Statements
+            if st.statement_id.state == 'confirm':
+                if raise_error:
+                    err = _(
+                        """You can't cancel a Payment with confirmed Bank Statements
 
-                    HINT: Click on the 'Bank Statements' button your right.
-                    """
-                )
-                raise exceptions.UserError(err)
+                        HINT: Click on the 'Bank Statements' button your left.
+                        """
+                    )
+                    raise exceptions.UserError(err)
+                else:
+                    return False
 
         return True
+
+    def forced_st_line_unlink(self, lines=False):
+        # Remove account.bank.statement.line after cancel
+        lines = lines or self.mapped("bank_statement_line_ids")
+        return lines.with_context(force_unlink_statement_line=True).unlink()
 
     @api.multi
     def cancel(self):
         for payment in self:
             # Do not proceed if there are confirmed account.bank.statement.line
-            if not payment.check_confirmed_stament_lines():
+            if not payment.check_confirmed_statement_lines():
                 return False
 
         ret = super(AccountPayment, self).cancel()
 
-        # Remove account.bank.statement.line after cancel
-        self.mapped("bank_statement_line_ids").unlink()
+        self.forced_st_line_unlink()
 
         return ret
 
