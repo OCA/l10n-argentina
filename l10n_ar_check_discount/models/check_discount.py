@@ -50,6 +50,7 @@ class CheckDiscount(models.Model):
     currency_id = fields.Many2one(
         'res.currency',
         default=lambda s: s.get_default_currency())
+
     amount_checks = fields.Monetary(
         string='T. Checks',
         compute='_compute_amount_checks', store=True)
@@ -59,18 +60,16 @@ class CheckDiscount(models.Model):
     amount_perceptions = fields.Monetary(
         string='T. Perceptions',
         compute='_compute_amount_perception', store=True)
-
-    amount_subtotal= fields.Monetary(
+    amount_subtotal = fields.Monetary(
         string='Subtotal',
         compute='_compute_amount_concepts', store=True)
-
     amount_tax = fields.Monetary(
         string='T. Tax',
         compute='_compute_amount_concepts', store=True)
-
     amount_total = fields.Monetary(
         string='Total',
         compute='_compute_amount_total', store=True)
+
     allowed_product_ids = fields.Many2many(
         comodel_name='product.product',
         relation='check_discount_product_ids_rel',
@@ -102,7 +101,6 @@ class CheckDiscount(models.Model):
         for reg in self:
             reg.amount_perceptions = sum(
                 reg.perception_ids.mapped('amount'))
-
 
     @api.depends("company_id")
     def _compute_check_config(self):
@@ -153,10 +151,11 @@ class CheckDiscount(models.Model):
             disc.amount_subtotal = sum(
                 disc.check_discount_line_ids.mapped('amount_untaxed'))
 
-    @api.depends('amount_checks', 'amount_concepts')
+    @api.depends('amount_checks', 'amount_concepts', 'amount_perceptions')
     def _compute_amount_total(self):
         for disc in self:
-            disc.amount_total = disc.amount_checks - disc.amount_concepts
+            disc.amount_total = disc.amount_checks - disc.amount_concepts - \
+                disc.amount_perceptions
 
     @api.multi
     def action_discount(self):
@@ -177,7 +176,8 @@ class CheckDiscount(models.Model):
                     _("The Invoice Number must be set!"))
             # Expense Invoice
             invoice = self._generate_expense_invoice()
-            #Perceptions
+
+            # Perceptions
             self.perception_ids.write({'invoice_id': invoice.id})
             invoice.compute_taxes()
             invoice.action_invoice_open()
@@ -194,7 +194,8 @@ class CheckDiscount(models.Model):
                 raise ValidationError(
                     _("The Payment of the Expense Invoice " +
                       "could not be completed."))
-            payment_line.amount = self.amount_concepts  + self.amount_perceptions  # noqa
+            payment_line.amount = self.amount_concepts + \
+                self.amount_perceptions
             payment.proforma_voucher()
             self.expense_payment_id = payment
 
@@ -248,7 +249,7 @@ class CheckDiscount(models.Model):
         blvs = []
         blv = {
             'account_id': self.journal_id.default_debit_account_id.id,
-            'debit': self.amount_total + self.amount_concepts,
+            'debit': self.amount_checks,
             'credit': 0.0,
             'currency_id': self.currency_id.id,
         }
@@ -345,6 +346,9 @@ class CheckDiscount(models.Model):
                       "The error was:\n%s" % err_str))
         if self.expense_invoice_id:
             try:
+                self.expense_invoice_id.perception_ids.write({
+                    'invoice_id': False,
+                })
                 self.expense_invoice_id.action_cancel()
                 self.expense_invoice_id.action_invoice_draft()
                 self.expense_invoice_id.move_name = False
