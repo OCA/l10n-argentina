@@ -12,6 +12,7 @@
                     name="%(l10n_ar_bank_statement.action_wizard_add_account_bank_statement_line)d"/>
             </button>
             <xpath expr="//field[@name='line_ids']//tree" position="inside">
+                <field name="concept_id"/>
                 <field name="statement_state" invisible="1"/>
                 <field name="state" invisible="1"/>
                 <field name="line_type" invisible="1"/>
