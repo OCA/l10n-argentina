@@ -7,6 +7,7 @@ import logging
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -210,8 +211,12 @@ class CheckDiscount(models.Model):
     def _generate_expense_payment_order(self):
         payment_order_model = self.env['account.payment.order']
         pmls = self._prepare_payment_mode_lines_for_payment()
+        date = datetime.today()
+        if self.discount_date:
+            date = datetime.strptime(self.discount_date, "%Y-%m-%d")
         po_vals = {
             'type': 'payment',
+            'date': date,
             'journal_id': self.check_config_id.discount_payment_journal_id.id,
             'partner_id': self.partner_id.id,
             'payment_mode_line_ids': [(0, False, pml) for pml in pmls],
