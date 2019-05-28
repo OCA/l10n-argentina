@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- PosBoxConcept -->
+
     <record id="view_pos_box_concept_tree" model="ir.ui.view">
         <field name="name">pos.box.concept.tree</field>
         <field name="model">pos.box.concept</field>
@@ -93,6 +95,80 @@
         <field name="sequence" eval="10"/>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_pos_box_concept_tree"/>
+    </record>
+
+    <!-- PosBoxConceptAllowed -->
+
+    <record id="view_pos_box_concept_allowed_tree" model="ir.ui.view">
+        <field name="name">pos.box.concept.allowed.tree</field>
+        <field name="model">pos.box.concept.allowed</field>
+        <field name="type">tree</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <tree string="PoS Box Concept Allowed">
+            <field name="name"/>
+            <field name="user_ids"/>
+            <field name="concept_ids"/>
+        </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_box_concept_allowed_form" model="ir.ui.view">
+        <field name="name">pos.box.concept.allowed.form</field>
+        <field name="model">pos.box.concept.allowed</field>
+        <field name="type">form</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <form string="PoS Box Concept Allowed">
+            <sheet>
+                <h1><field name="name"/></h1>
+                <h2><label for="user_ids"/></h2>
+                <field name="user_ids"/>
+                <h2><label for="concept_ids"/></h2>
+                <field name="concept_ids"/>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_pos_box_concept_allowed_search" model="ir.ui.view">
+        <field name="name">pos.box.concept.allowed.search</field>
+        <field name="model">pos.box.concept.allowed</field>
+        <field name="type">search</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+        <search string="PoS Box Concept Allowed">
+            <field name="name"/>
+            <field name="user_ids"/>
+            <field name="concept_ids"/>
+        </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="act_open_pos_box_concept_allowed_view">
+        <field name="name">Allowed PoS Box Concept</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pos.box.concept.allowed</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pos_box_concept_allowed_search"/>
+        <field name="groups_id" eval="[(6, 0, [ref('account.group_account_manager')])]"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="act_open_pos_box_concept_allowed_view_form">
+        <field name="act_window_id" ref="act_open_pos_box_concept_allowed_view"/>
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_pos_box_concept_allowed_form"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="act_open_pos_box_concept_allowed_view_tree">
+        <field name="act_window_id" ref="act_open_pos_box_concept_allowed_view"/>
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_pos_box_concept_allowed_tree"/>
     </record>
 
 </odoo>
