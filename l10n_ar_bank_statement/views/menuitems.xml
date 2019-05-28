@@ -8,4 +8,11 @@
         action="act_open_pos_box_concept_view"
         />
 
+    <menuitem
+        id="menu_pos_box_concept_allowed_act"
+        parent="l10n_ar_point_of_sale.menu_journal_subroot"
+        sequence="20"
+        action="act_open_pos_box_concept_allowed_view"
+        />
+
 </odoo>

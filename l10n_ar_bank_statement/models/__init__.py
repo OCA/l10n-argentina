@@ -24,3 +24,4 @@ from . import bank_statement  # noqa
 from . import account_journal  # noqa
 from . import account_payment  # noqa
 from . import account_payment_order  # noqa
+from . import res_users  # noqa

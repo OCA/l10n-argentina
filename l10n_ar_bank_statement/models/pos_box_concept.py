@@ -59,3 +59,21 @@ class PoSBoxConcept(models.Model):
         string="Concept type",
         required=True,
     )
+
+class PoSBoxConceptAllowed(models.Model):
+    _name = 'pos.box.concept.allowed'
+    _description = 'Allow users to see PosBoxConcepts'
+    _sql_constraints = [
+        ('name_unique', 'UNIQUE(model, name)', "Field name must be unique per model."),
+    ]
+
+    name = fields.Char('Name', required=True)
+    user_ids = fields.Many2many('res.users', string='Users', required=True)
+    concept_ids = fields.Many2many('pos.box.concept', string='PosBox Concepts')
+
+    @api.constrains('user_ids')
+    def _check_users(self):
+        recordset = self.search([('id', 'not in', self.ids)])
+        for record in recordset:
+            if set(self.user_ids.ids) & set(record.user_ids.ids):
+                raise exceptions.ValidationError(_('Fields users must be unique per model.'))

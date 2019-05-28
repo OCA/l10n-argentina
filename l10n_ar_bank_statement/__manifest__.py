@@ -42,6 +42,7 @@
         'views/account_payment_order_view.xml',
         'views/menuitems.xml',
         'security/ir.model.access.csv',
+        'security/security.xml',
     ],
     "installable": True,
     'active': False
