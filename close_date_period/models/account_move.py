@@ -55,6 +55,7 @@ class AccountMove(models.Model):
         if self.journal_id.id in self.period_id.journal_ids.ids:
             raise ValidationError(
                 _("Can't delete an account move on a closed period."))
+        return super(AccountMove, self).unlink()
 
 
 class AccountMoveLine(models.Model):
