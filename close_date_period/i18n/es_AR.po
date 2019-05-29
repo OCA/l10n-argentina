@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-11 16:14+0000\n"
-"PO-Revision-Date: 2019-01-11 13:16-0300\n"
+"POT-Creation-Date: 2019-05-29 13:37+0000\n"
+"PO-Revision-Date: 2019-05-29 10:40-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,11 @@ msgid "<strong>Select the journals to close:</strong>"
 msgstr "<strong>Seleccione los Diarios a cerrar:</strong>"
 
 #. module: close_date_period
+#: model:ir.ui.view,arch_db:close_date_period.reopen_date_period_wizard_view
+msgid "<strong>Select the journals to reopen:</strong>"
+msgstr "<strong>Seleccione los Diarios a reabrir:</strong>"
+
+#. module: close_date_period
 #: model:ir.ui.view,arch_db:close_date_period.close_account_journal_wizard_view
 msgid "<strong>Select the period to open/close:</strong>"
 msgstr "<strong>Seleccione el periodo a abrir/cerrar:</strong>"
@@ -33,31 +38,31 @@ msgid "Account Entry"
 msgstr "Asiento Contable"
 
 #. module: close_date_period
-#: code:addons/close_date_period/models/account_move.py:65
+#: code:addons/close_date_period/models/account_move.py:73
 #, python-format
 msgid "Can't create an account move line on a closed period."
 msgstr "No es posible crear un apunte contable en un período cerrado."
 
 #. module: close_date_period
-#: code:addons/close_date_period/models/account_move.py:29
+#: code:addons/close_date_period/models/account_move.py:28
 #, python-format
 msgid "Can't create an account move on a closed period."
 msgstr "No es posible crear un asiento contable en un período cerrado."
 
 #. module: close_date_period
-#: code:addons/close_date_period/models/account_move.py:77
+#: code:addons/close_date_period/models/account_move.py:91
 #, python-format
 msgid "Can't delete an account move line on a closed period."
 msgstr "No es posible eliminar un apunte contable en un período cerrado."
 
 #. module: close_date_period
-#: code:addons/close_date_period/models/account_move.py:52
+#: code:addons/close_date_period/models/account_move.py:57
 #, python-format
 msgid "Can't delete an account move on a closed period."
 msgstr "No es posible crear un asiento contable en un período cerrado."
 
 #. module: close_date_period
-#: code:addons/close_date_period/models/account_move.py:71
+#: code:addons/close_date_period/models/account_move.py:82
 #, python-format
 msgid "Can't edit an account move line on a closed period."
 msgstr "No es posible editar un apunte contable en un período cerrado."
@@ -69,7 +74,7 @@ msgid "Can't edit an account move on a closed period."
 msgstr "No es posible editar un asiento contable en un período cerrado.."
 
 #. module: close_date_period
-#: code:addons/close_date_period/models/account_move.py:46
+#: code:addons/close_date_period/models/account_move.py:50
 #, python-format
 msgid "Can't edit an account move to a closed period."
 msgstr "No es posible llevar un asiento contable a un período cerrado."
@@ -77,6 +82,7 @@ msgstr "No es posible llevar un asiento contable a un período cerrado."
 #. module: close_date_period
 #: model:ir.ui.view,arch_db:close_date_period.close_account_journal_wizard_view
 #: model:ir.ui.view,arch_db:close_date_period.close_date_period_wizard_view
+#: model:ir.ui.view,arch_db:close_date_period.reopen_date_period_wizard_view
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -107,26 +113,30 @@ msgstr "Diarios Cerrados"
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard_create_uid
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_create_uid
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_create_uid
 msgid "Created by"
 msgstr "Creado por"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard_create_date
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_create_date
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_create_date
 msgid "Created on"
 msgstr "Creado en"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard_display_name
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_display_name
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_display_name
 msgid "Display Name"
-msgstr "Mostrar Nombre"
+msgstr "Nombre mostrado"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard_id
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_id
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_id
 msgid "ID"
-msgstr "ID"
+msgstr "ID (identificación)"
 
 #. module: close_date_period
 #: model:ir.model,name:close_date_period.model_account_journal
@@ -136,32 +146,37 @@ msgstr "Diario"
 #. module: close_date_period
 #: model:ir.model,name:close_date_period.model_account_move_line
 msgid "Journal Item"
-msgstr "Item Diario"
+msgstr "Apunte Contable"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_closed_journal_ids
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_journal_ids
 #: model:ir.model.fields,field_description:close_date_period.field_date_period_journal_ids
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_closed_journal_ids
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_journal_ids
 msgid "Journals"
 msgstr "Diarios"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard___last_update
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard___last_update
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard___last_update
 msgid "Last Modified on"
 msgstr "Última modificación en"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard_write_uid
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_write_uid
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_write_uid
 msgid "Last Updated by"
-msgstr "Última actualización realizada por"
+msgstr "Última actualización de"
 
 #. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_close_account_journal_wizard_write_date
 #: model:ir.model.fields,field_description:close_date_period.field_close_date_period_wizard_write_date
+#: model:ir.model.fields,field_description:close_date_period.field_reopen_date_period_wizard_write_date
 msgid "Last Updated on"
-msgstr "Última actualización el"
+msgstr "Última actualización en"
 
 #. module: close_date_period
 #: selection:date.period,period_state:0
@@ -187,9 +202,31 @@ msgid "Period"
 msgstr "Período"
 
 #. module: close_date_period
+#: model:ir.ui.view,arch_db:close_date_period.reopen_date_period_wizard_view
+#: model:ir.ui.view,arch_db:close_date_period.view_period_form_inherit
+msgid "Reopen"
+msgstr "Reabrir"
+
+#. module: close_date_period
+#: model:ir.actions.act_window,name:close_date_period.reopen_date_period_wizard_action
+#: model:ir.ui.view,arch_db:close_date_period.reopen_date_period_wizard_view
+msgid "Reopen Period"
+msgstr "Reabrir Período"
+
+#. module: close_date_period
 #: model:ir.model.fields,field_description:close_date_period.field_date_period_period_state
 msgid "Status"
 msgstr "Estado"
+
+#. module: close_date_period
+#: model:ir.ui.view,arch_db:close_date_period.close_date_period_wizard_view
+msgid "You are going to close open periods. Are you sure?"
+msgstr "Usted va a cerrar períodos abiertos. Desea continuar?"
+
+#. module: close_date_period
+#: model:ir.ui.view,arch_db:close_date_period.reopen_date_period_wizard_view
+msgid "You are going to reopen closed periods. Are you sure?"
+msgstr "Usted va a reabrir períodos cerrados. Desea continuar?"
 
 #. module: close_date_period
 #: model:ir.model,name:close_date_period.model_close_account_journal_wizard
@@ -209,5 +246,11 @@ msgstr "date.period"
 #. module: close_date_period
 #: model:ir.ui.view,arch_db:close_date_period.close_account_journal_wizard_view
 #: model:ir.ui.view,arch_db:close_date_period.close_date_period_wizard_view
+#: model:ir.ui.view,arch_db:close_date_period.reopen_date_period_wizard_view
 msgid "or"
 msgstr "o"
+
+#. module: close_date_period
+#: model:ir.model,name:close_date_period.model_reopen_date_period_wizard
+msgid "reopen.date.period.wizard"
+msgstr "reopen.date.period.wizard"

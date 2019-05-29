@@ -12,13 +12,16 @@
                         <button name="%(close_date_period.close_date_period_wizard_action)d" class="btn-primary"
                             string="Close" type="action" attrs="{'invisible': [('period_state', 'in', 'closed')]}"
                             groups='account.group_account_manager'/>
+                        <button name="%(close_date_period.reopen_date_period_wizard_action)d" class="btn-secondary"
+                            string="Reopen" type="action" attrs="{'invisible': [('period_state', 'in', 'open')]}"
+                            groups='account.group_account_manager'/>
                         <field name="period_state" widget="statusbar" statusbar_visible="open,partial,closed"/>
                     </header>
                 </xpath>
                 <xpath expr="//sheet" position="inside">
                     <notebook>
                         <page name="closed_journals" string="Closed Journals">
-                            <field name="journal_ids"/>
+                            <field name="journal_ids" readonly="True"/>
                         </page>
                     </notebook>
                 </xpath>

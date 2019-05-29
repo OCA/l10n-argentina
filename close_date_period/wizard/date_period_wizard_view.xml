@@ -2,6 +2,8 @@
 <openerp>
     <data>
 
+        <!-- Close Date Period -->
+
         <record model="ir.ui.view" id="close_date_period_wizard_view">
             <field name="name">close.date.period.wizard.form</field>
             <field name="model">close.date.period.wizard</field>
@@ -15,7 +17,8 @@
                         <field name="journal_ids" domain="[('id', 'not in', closed_journal_ids)]"/>
                     </group>
                     <footer>
-                        <button name="button_close" type="object" string="Close" class="btn-primary"/>
+                        <button name="button_close" type="object" string="Close" class="btn-primary"
+                            confirm="You are going to close open periods. Are you sure?"/>
                         or
                         <button special="cancel" string="Cancel"/>
                     </footer>
@@ -28,5 +31,36 @@
                     res_model="close.date.period.wizard"
                     view_mode="form"
                     target="new"/>
+
+        <!-- Reopen Date Period -->
+
+        <record model="ir.ui.view" id="reopen_date_period_wizard_view">
+            <field name="name">reopen.date.period.wizard.form</field>
+            <field name="model">reopen.date.period.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reopen Period">
+                    <p>
+                        <strong>Select the journals to reopen:</strong>
+                    </p>
+                    <group>
+                        <field name="closed_journal_ids" invisible="1"/>
+                        <field name="journal_ids" domain="[('id', 'in', closed_journal_ids)]"/>
+                    </group>
+                    <footer>
+                        <button name="button_reopen" type="object" string="Reopen" class="btn-primary"
+                            confirm="You are going to reopen closed periods. Are you sure?"/>
+                        or
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="reopen_date_period_wizard_action"
+                    name="Reopen Period"
+                    res_model="reopen.date.period.wizard"
+                    view_mode="form"
+                    target="new"/>
+
     </data>
 </openerp>
