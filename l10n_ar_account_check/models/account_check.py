@@ -411,6 +411,10 @@ class AccountThirdCheck(models.Model):
     not_order = fields.Boolean(string='Not Order')
     bank_branch = fields.Char(string='Bank Branch', size=64)
     zip = fields.Char(string='Zip Code', size=64)
+    deposit_move_id = fields.Many2one(
+        comodel_name='account.move',
+        string='Account Move',
+        readonly=True)
 
     @api.model
     def create_voucher_move_line(self, voucher):
@@ -489,6 +493,16 @@ class AccountThirdCheck(models.Model):
 
             check.write(vals)
         return True
+
+    @api.multi
+    def check_to_wallet(self):
+        self.ensure_one()
+        if self.deposit_move_id:
+            self.deposit_move_id.button_cancel()
+            self.deposit_move_id.unlink()
+            self.write({'state': 'wallet'})
+        else:
+            raise ValidationError(_('There is no reference for account move. Imposible to go back to wallet.'))
 
     @api.multi
     def return_wallet(self):
