@@ -5,6 +5,23 @@
 
 from odoo import models, _
 from odoo.exceptions import UserError
+from string import ascii_uppercase
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def int2xlscol(number, state=None):
+    if state is None:
+        state = []
+    alpsize = ascii_uppercase.__len__()
+    q, r = divmod(number,alpsize)
+    if q == 0:
+        state.append(ascii_uppercase[r])
+        return ''.join(reversed(state))
+    state.append(ascii_uppercase[r])
+    state = int2xlscol(q-1, state)
+    return state
 
 
 class SubjournalXlsx(models.AbstractModel):
@@ -64,7 +81,7 @@ class SubjournalXlsx(models.AbstractModel):
                     'is_exempt': tax.is_exempt,
                     'name': 'Base '+tax.name,
                     'type': 'base',
-                    'column': 72+i,
+                    'column': 7+i,
                 }
                 all_taxes.append(base_vals)
                 i += 1
@@ -74,7 +91,7 @@ class SubjournalXlsx(models.AbstractModel):
                 'is_exempt': tax.is_exempt,
                 'name': tax.name,
                 'type': 'tax',
-                'column': 72+i,
+                'column': 7+i,
             }
             all_taxes.append(tax_vals)
             i += 1
@@ -87,7 +104,7 @@ class SubjournalXlsx(models.AbstractModel):
                     'is_exempt': tax.is_exempt,
                     'name': 'Base '+tax.name,
                     'type': 'base',
-                    'column': 72+i,
+                    'column': 7+i,
                 }
                 all_taxes.append(base_vals)
                 i += 1
@@ -319,7 +336,7 @@ class SubjournalXlsx(models.AbstractModel):
         worksheet.set_column('D:E', 10)
         worksheet.set_column('F:F', 5)
         worksheet.set_column('G:G', 10)
-        worksheet.set_column('G:'+chr(index), 10)
+        worksheet.set_column('G:'+int2xlscol(index), 10)
 
     def create_format(self, workbook, bold, border_type,
                       border_color, back_color):
@@ -361,10 +378,8 @@ class SubjournalXlsx(models.AbstractModel):
                 wanted_list.insert(-2, col['name'])
         sheet = workbook.add_worksheet(title)
         sheet.set_column('A:L', 20)
-        i = 65
-        for column in wanted_list:
-            sheet.write(chr(i)+'1', column, head_format)
-            i += 1
+        for i, column in enumerate(wanted_list):
+            sheet.write(int2xlscol(i)+'1', column, head_format)
         self.set_column(sheet, i)
         for p, line in enumerate(lines):
             p += 2
@@ -378,13 +393,13 @@ class SubjournalXlsx(models.AbstractModel):
             sheet.write('E'+str(p), line['fiscal_position'], cell_format)
             sheet.write('F'+str(p), line['invoice_type'], cell_format)
             sheet.write('G'+str(p), line['invoice_number'], cell_format)
-            i = 72
+            i = 7
             for t, tax in enumerate(cols):
                 if self.c_taxes[t] > 0:
-                    sheet.write(chr(i)+str(p), line['taxes'][t], cell_format)
+                    sheet.write(int2xlscol(i)+str(p), line['taxes'][t], cell_format)
                     i += 1
-            sheet.write(chr(i)+str(p), line['no_taxed'], cell_format)
-            sheet.write(chr(i+1)+str(p), line['total'], cell_format)
+            sheet.write(int2xlscol(i)+str(p), line['no_taxed'], cell_format)
+            sheet.write(int2xlscol(i+1)+str(p), line['total'], cell_format)
 
         # Formulas
         fac_formula = '{=SUMIF(F2:F%(last_line)s,"F *",%(col)s2:%(col)s%(last_line)s) + SUMIF(F2:F%(last_line)s,"ND *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
@@ -400,7 +415,7 @@ class SubjournalXlsx(models.AbstractModel):
         i = 0
         for j, col in enumerate(cols):
             if self.c_taxes[j] > 0:
-                col_char = chr(col['column']-i)
+                col_char = int2xlscol(col['column']-i)
                 indexes = {
                     'last_line': last_row_char,
                     'col': col_char,
@@ -427,8 +442,8 @@ class SubjournalXlsx(models.AbstractModel):
             else:
                 i += 1
 
-        ng_col_char = chr(72+len(cols)-i)
-        tot_col_char = chr(73+len(cols)-i)
+        ng_col_char = int2xlscol(7+len(cols)-i)
+        tot_col_char = int2xlscol(8+len(cols)-i)
 
         indexes = {
             'last_line': last_row_char,
