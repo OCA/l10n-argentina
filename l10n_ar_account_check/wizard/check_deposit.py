@@ -171,7 +171,7 @@ class AccountCheckDeposit(models.Model):
                 'deposit_bank_id': self.bank_account_id.id,
                 'deposit_date': deposit_date,
                 'deposit_slip': self.voucher_number,
-                'move_id': move_id.id,
+                'deposit_move_id': move_id.id,
             }
             check.write(check_vals)
 

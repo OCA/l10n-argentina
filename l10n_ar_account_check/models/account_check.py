@@ -245,7 +245,7 @@ class AccountIssuedCheck(models.Model):
                 'name': name_ref,
                 'account_id': def_check_account.id,
                 'debit': check.amount,
-                'deposit_move_id': move_id.id,
+                'move_id': move_id.id,
             }
 
             clearance_move_line = move_line_obj.with_context(
