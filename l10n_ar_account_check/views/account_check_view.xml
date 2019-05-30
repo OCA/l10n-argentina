@@ -314,7 +314,7 @@
                                 <field name="signatory_vat"/>
                                 <field name="signatory_account"/>
                                 <field name="deposit_bank_id" attrs="{'invisible': [('state', 'not in', ('deposited', 'rejected'))]}" />
-                                <field name="move_id" attrs="{'invisible': [('state', 'in', ('draft', 'wallet'))]}" />
+                                <field name="deposit_move_id" attrs="{'invisible': [('state', 'in', ('draft', 'wallet'))]}" />
                             </group>
                        </group>
                        <group string="Additional Information">
