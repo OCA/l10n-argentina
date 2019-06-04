@@ -46,6 +46,8 @@ class AccountTaxSubjournal(models.TransientModel):
         string='Base Column Position', required=True,
         default='first')
 
+    company_ids = fields.Many2many('res.company', string = 'Company')
+
     def create_report(self):
         data = {'ids': self.ids}
         data['model'] = 'account.move.line'

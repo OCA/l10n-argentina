@@ -116,6 +116,7 @@ class SubjournalXlsx(models.AbstractModel):
         q = """
         WITH all_lines AS (
             SELECT  l.move_id AS move_id,
+                    lc.name AS company_id,
                     i.date_invoice AS date,
                     i.id AS invoice_id,
                     i.internal_number AS invoice_number,
@@ -157,9 +158,12 @@ class SubjournalXlsx(models.AbstractModel):
                 WHERE account_move_line_id=l.id
                 LIMIT 1
             )
+            INNER JOIN res_company lc
+            ON l.company_id = lc.id
             WHERE i.type IN %(inv_type)s
                 AND l.date BETWEEN %(date_from)s AND %(date_to)s
                 AND a.internal_type NOT IN ('payable', 'receivable')
+                AND l.company_id IN %(company_ids)s
         ),
         grouped_invoice AS (
             SELECT invoice_id, ABS(SUM(debit - credit)) AS invoice_total
@@ -169,6 +173,7 @@ class SubjournalXlsx(models.AbstractModel):
 
         SELECT NULL AS move_id,
             al.date AS date,
+            al.company_id AS company_id,
             -1 AS invoice_id,
             al.invoice_type AS invoice_type,
             NULL AS cae,
@@ -198,12 +203,13 @@ class SubjournalXlsx(models.AbstractModel):
             AND gi.invoice_total < %(grouped_max)s
             AND %(grouped)s
         GROUP BY al.date, al.tax_line_id, al.fpid,
-            al.invoice_type, al.pos, al.fiscal_position
+            al.invoice_type, al.pos, al.fiscal_position, al.company_id
 
         UNION
 
         SELECT al.move_id AS move_id,
             al.date AS date,
+            al.company_id AS company,
             al.invoice_id AS invoice_id,
             al.invoice_type AS invoice_type,
             al.cae AS cae,
@@ -237,9 +243,14 @@ class SubjournalXlsx(models.AbstractModel):
         """
         final_consumer = self.env.ref(
             'l10n_ar_point_of_sale.fiscal_position_final_cons')
+        if obj.company_ids:
+            company_ids = obj.company_ids.ids
+        else:
+            company_ids = self.env['res.company'].search([]).ids
         q_vals = {
             'inv_type': tuple(types),
             'date_from': obj.date_from,
+            'company_ids': tuple(company_ids),
             'date_to': obj.date_to,
             'grouped': obj.grouped,
             'grouped_max': obj.grouped_max_amount,
@@ -249,6 +260,7 @@ class SubjournalXlsx(models.AbstractModel):
         # Obtenemos el resultado de la consulta
         res = self._cr.dictfetchall()
 
+        # TODO: FIX RAISE USERERROR
         if not len(res):
             raise UserError(
                 _('There were no moves for this period'))
@@ -320,7 +332,7 @@ class SubjournalXlsx(models.AbstractModel):
 
     def _report_xls_fields(self):
         base_lst = [
-            'Fecha', 'Razon Social', 'Provincia', 'CUIT', 'Cond. IVA',
+            'Fecha', 'Compañía', 'Razon Social', 'Provincia', 'CUIT', 'Cond. IVA',
             'Tipo', 'Numero', 'No Gravado', 'Total'
         ]
         config_obj = self.env['ir.config_parameter']
@@ -387,12 +399,13 @@ class SubjournalXlsx(models.AbstractModel):
             if p % 2:
                 cell_format = date_format
             sheet.write('A'+str(p), line['date'], cell_format)
-            sheet.write('B'+str(p), line['partner'], cell_format)
-            sheet.write('C'+str(p), line['state'], cell_format)
-            sheet.write('D'+str(p), line['vat'], cell_format)
-            sheet.write('E'+str(p), line['fiscal_position'], cell_format)
-            sheet.write('F'+str(p), line['invoice_type'], cell_format)
-            sheet.write('G'+str(p), line['invoice_number'], cell_format)
+            sheet.write('B'+str(p), line['company_id'], cell_format)
+            sheet.write('C'+str(p), line['partner'], cell_format)
+            sheet.write('D'+str(p), line['state'], cell_format)
+            sheet.write('E'+str(p), line['vat'], cell_format)
+            sheet.write('F'+str(p), line['fiscal_position'], cell_format)
+            sheet.write('G'+str(p), line['invoice_type'], cell_format)
+            sheet.write('H'+str(p), line['invoice_number'], cell_format)
             i = 7
             for t, tax in enumerate(cols):
                 if self.c_taxes[t] > 0:
