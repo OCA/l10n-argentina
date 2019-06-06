@@ -36,6 +36,6 @@
     'data': [
         "report/move_line_list_xls.xml",
         "wizard/account_tax_subjournal_view.xml",
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
     ],
 }
