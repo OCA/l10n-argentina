@@ -33,10 +33,6 @@ access_wsfex_dest_country_user,wsfex.dest.country user,model_wsfex_dst_country_c
 access_wsfex_dest_country_accountant,wsfex.dest.country accountant,model_wsfex_dst_country_codes,account.group_account_user,1,1,1,0
 access_wsfex_dest_country_payments,wsfex.dest.country payments,model_wsfex_dst_country_codes,account.group_account_invoice,1,0,0,0
 access_wsfex_dest_country_manager,wsfex.dest.country manager,model_wsfex_dst_country_codes,account.group_account_manager,1,1,1,1
-access_wsfex_dest_cuit_user,wsfex.dest.cuit user,model_wsfex_dst_cuit_codes,base.group_user,1,0,0,0
-access_wsfex_dest_cuit_accountant,wsfex.dest.cuit accountant,model_wsfex_dst_cuit_codes,account.group_account_user,1,1,1,0
-access_wsfex_dest_cuit_payments,wsfex.dest.cuit payments,model_wsfex_dst_cuit_codes,account.group_account_invoice,1,1,0,0
-access_wsfex_dest_cuit_manager,wsfex.dest.cuit manager,model_wsfex_dst_cuit_codes,account.group_account_manager,1,1,1,1
 access_wsfex_export_type_user,wsfex.export.type user,model_wsfex_export_type_codes,base.group_user,1,0,0,0
 access_wsfex_export_type_accountant,wsfex.export.type accountant,model_wsfex_export_type_codes,account.group_account_user,1,1,1,0
 access_wsfex_export_type_payments,wsfex.export.type payments,model_wsfex_export_type_codes,account.group_account_invoice,1,1,0,0
