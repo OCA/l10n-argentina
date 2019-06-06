@@ -289,7 +289,6 @@ class retention_retention(models.Model):
 
                 base_to_pay = round(base / factor_to_pay, 2)
                 base_unrec = round(base / factor_unrec, 2)
-
                 retentions.setdefault(key, {
                     'base': 0.0,
                     'base_to_pay': 0.0,
@@ -506,6 +505,7 @@ class RetentionTaxApplication(models.Model):
                                     po_date=False):
         date_start, date_finish = self._get_month_date_span_from_date(po_date)
         payment_order_model = self.env['account.payment.order']
+        payment_order_line_model = self.env['account.payment.order.line']
         prev_pos = payment_order_model.search([
             ('partner_id', '=', partner.id),
             ('state', '=', 'posted'),
@@ -519,8 +519,40 @@ class RetentionTaxApplication(models.Model):
         income_untax_mls = income_moves.mapped('line_ids').filtered(
             lambda ml: ml.account_id in concept.account_ids and
             ml.tax_ids and not ml.tax_line_id)
-        untaxed_debt = sum([ml.credit or ml.debit for ml in debt_untax_mls])
-        untaxed_inc = sum([ml.credit or ml.debit for ml in income_untax_mls])
+        # Use the proportional amount of line being paid, searching in
+        # the old apo's and gathering the apol related to the untaxed ones
+        debt_untax_mls_ok = []
+        for ml in debt_untax_mls:
+            amls_w_tax = ml.move_id.mapped('line_ids').filtered(
+                lambda ml: ml.account_id.internal_type in ['payable'])
+            domain = [
+                ('payment_order_id', 'in', prev_pos.ids),
+                ('move_line_id', 'in', amls_w_tax.ids),
+            ]
+            pol_todo = payment_order_line_model.search(domain)
+            amount = (ml.credit or ml.debit)
+            if pol_todo:
+                factor = pol_todo.amount / pol_todo.amount_original
+                amount = amount * factor
+            debt_untax_mls_ok.append(amount)
+        # Use the proportional amount of line being paid, searching in
+        # the old apo's and gathering the apol related to the untaxed ones
+        income_untax_mls_ok = []
+        for ml in income_untax_mls:
+            amls_w_tax = ml.move_id.mapped('line_ids').filtered(
+                lambda ml: ml.account_id.internal_type in ['payable'])
+            domain = [
+                ('payment_order_id', 'in', prev_pos.ids),
+                ('move_line_id', 'in', amls_w_tax.ids),
+            ]
+            pol_todo = payment_order_line_model.search(domain)
+            amount = (ml.credit or ml.debit)
+            if pol_todo:
+                factor = pol_todo.amount / pol_todo.amount_original
+                amount = amount * factor
+            income_untax_mls_ok.append(amount)
+        untaxed_debt = sum(debt_untax_mls_ok)
+        untaxed_inc = sum(income_untax_mls_ok)
         untaxed_amount = untaxed_debt - untaxed_inc
         untaxed_amount += self.get_period_partner_advance_payments(prev_pos)
         return untaxed_amount
