@@ -20,6 +20,7 @@
                     <notebook>
                         <page string="Configuration" name="configuration">
                             <group string="Based on">
+                                <field name="company_ids" widget="many2many_tags"/>
                                 <field name="based_on" />
                                 <field name="report_id" invisible="1" />
                             </group>
