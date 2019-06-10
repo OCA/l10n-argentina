@@ -28,14 +28,14 @@
     'category': 'Accounting & Finance',
     'summary': 'Journal Items Excel export',
     'depends': [
-        'account',
         'report_xlsx',
         'l10n_ar_point_of_sale',
         'l10n_ar_perceptions_basic',
+        'l10n_ar_wsfe',
     ],
     'data': [
         "report/move_line_list_xls.xml",
         "wizard/account_tax_subjournal_view.xml",
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
     ],
 }
