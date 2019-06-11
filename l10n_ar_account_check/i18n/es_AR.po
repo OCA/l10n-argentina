@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-29 16:46+0000\n"
-"PO-Revision-Date: 2019-05-29 13:49-0300\n"
+"POT-Creation-Date: 2019-06-05 18:00+0000\n"
+"PO-Revision-Date: 2019-06-05 15:05-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgid " ERROR! There is no check                     configuration for this Comp
 msgstr " ERROR! No hay configuración de cheques para esta empresa!"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:428
+#: code:addons/l10n_ar_account_check/models/account_check.py:440
 #, python-format
 msgid " ERROR! There is no check configuration for this Company!"
 msgstr " ERROR! No hay configuración de cheques para esta empresa!"
@@ -62,11 +62,6 @@ msgstr "Cuenta"
 #: model:ir.ui.view,arch_db:l10n_ar_account_check.view_account_check_config_form
 msgid "Account Check Configuration"
 msgstr "Configuración de la cuenta de cheque"
-
-#. module: l10n_ar_account_check
-#: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_move_id
-msgid "Account Move"
-msgstr "Asiento Contable"
 
 #. module: l10n_ar_account_check
 #: model:ir.ui.view,arch_db:l10n_ar_account_check.view_account_issued_check_form
@@ -253,13 +248,13 @@ msgid "Check Deposit"
 msgstr "Depositar Cheque"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:477
+#: code:addons/l10n_ar_account_check/models/account_check.py:489
 #, python-format
 msgid "Check Error! Check has to                     be associated with a voucher"
 msgstr "Error! El cheque tiene que estar asociado a un pago"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:529
+#: code:addons/l10n_ar_account_check/models/account_check.py:540
 #, python-format
 msgid "Check Error! You cannot delete a third                     check that is not in Draft state [See %s]."
 msgstr "Error! No puede borrar un cheque de terceros que no esté en estado Borrador [Ver %s]."
@@ -479,6 +474,16 @@ msgstr "Depósito Cheque %s en %s"
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_deposit_date
 msgid "Deposit Date"
 msgstr "Fecha de Depósito"
+
+#. module: l10n_ar_account_check
+#: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_deposit_journal_id
+msgid "Deposit Journal"
+msgstr "Diario de Depósito"
+
+#. module: l10n_ar_account_check
+#: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_deposit_move_id
+msgid "Deposit Move"
+msgstr "Asiento de Depósito"
 
 #. module: l10n_ar_account_check
 #: model:ir.model.fields,field_description:l10n_ar_account_check.field_account_third_check_deposit_slip
@@ -935,7 +940,7 @@ msgid "There is no check configuration for this Company!"
 msgstr "No hay configuraciones de cheque para esta compañía!"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:506
+#: code:addons/l10n_ar_account_check/models/account_check.py:517
 #, python-format
 msgid "There is no reference for account move. Imposible to go back to wallet."
 msgstr "No existe la referencia del asiento contable. Imposible devolver a cartera."
@@ -946,19 +951,19 @@ msgid "Third Check"
 msgstr "Cheque de Tercero"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:454
+#: code:addons/l10n_ar_account_check/models/account_check.py:466
 #, python-format
 msgid "Third Check "
 msgstr "Cheque de Tercero "
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:539
+#: code:addons/l10n_ar_account_check/models/account_check.py:550
 #, python-format
 msgid "Third Check Error! You cannot cancel                     check if it is not in Draft or in Wallet"
 msgstr "Error! No puede cancelar el cheque si no es está en Borrador o en Cartera"
 
 #. module: l10n_ar_account_check
-#: code:addons/l10n_ar_account_check/models/account_check.py:513
+#: code:addons/l10n_ar_account_check/models/account_check.py:524
 #, python-format
 msgid "Third Check Error! You cannot return to                     wallet a check if it is not in Delivered state"
 msgstr "Error! No puede devolver a la cartera un chqueque si no está en estado Entregado"
