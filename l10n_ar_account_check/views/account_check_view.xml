@@ -17,6 +17,8 @@
                     <field name="company_id"/>
                     <field name="account_id"/>
                     <field name="deferred_account_id"/>
+                    <field name="receivable_rejected_account_id"/>
+                    <field name="rejected_account_id"/>
                     <field name="deferred_journal_id"/>
                 </tree>
             </field>
@@ -36,6 +38,8 @@
                             <field name="company_id"/>
                             <field name="account_id"/>
                             <field name="deferred_account_id"/>
+                            <field name="receivable_rejected_account_id"/>
+                            <field name="rejected_account_id"/>
                             <field name="deferred_journal_id"/>
                         </group>
                     </sheet>
@@ -251,7 +255,7 @@
                     <field name="destiny_partner_id"/>
                     <field name="endorsement_date"/>
                     <field name="bank_id"/>
-                    <field name="amount"/>
+                    <field name="amount" sum="Total Amount"/>
                     <field name="deposit_bank_id"/>
                     <field name="deposit_slip"/>
                     <field name="type"/>
@@ -269,7 +273,7 @@
                <form string="Third Checks">
                     <header>
                         <button name="%(action_check_deposit)d" type='action' string='Deposit Check' states='wallet' class="oe_highlight" groups="account.group_account_invoice,account.group_account_manager"/>
-                        <button name="check_to_wallet" type='object' string='Back to Wallet' 
+                        <button name="check_to_wallet" type='object' string='Back to Wallet'
                             class="btn-secondary" groups="account.group_account_invoice,account.group_account_manager"
                             attrs="{'invisible': [('state','in', ('draft', 'wallet'))]}"
                             confirm="You are going to delete an account move. Are you sure?"/>
@@ -294,8 +298,6 @@
                                 <field name="issue_date"/>
                                 <field name="endorsement_date" attrs="{'invisible': [('state', 'not in', ('wallet', 'delivered', 'rejected'))]}"/>
                                 <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')], 'required': [('type','=','postdated')]}"/>
-                                <field name="deposit_date" attrs="{'invisible': [('state','!=','deposited')]}"/>
-                                <field name="deposit_slip"/>
                             </group>
                         </group>
                         <group string="Other Information">
@@ -313,10 +315,22 @@
                                 <field name="signatory"/>
                                 <field name="signatory_vat"/>
                                 <field name="signatory_account"/>
-                                <field name="deposit_bank_id" attrs="{'invisible': [('state', 'not in', ('deposited', 'rejected'))]}" />
-                                <field name="deposit_move_id" attrs="{'invisible': [('state', 'in', ('draft', 'wallet'))]}" />
+                            </group>
+                        </group>
+                        <group string="Check Deposit" attrs="{'invisible': [('state','not in',('deposited', 'rejected'))]}">
+                            <group>
+                                <field name="deposit_date"/>
+                                <field name="deposit_slip"/>
+                                <field name="deposit_move_id"/>
+                                <field name="deposit_bank_id" />
                             </group>
                        </group>
+                        <group string="Payments, Receipts and Debits">
+                            <group>
+                                <field name="source_payment_order_id"/>
+                                <field name="debit_note_id"/>
+                            </group>
+                        </group>
                        <group string="Additional Information">
                        <div class="oe_clear"/>
                        <field name="note" colspan="4" nolabel="1" placeholder="Additional Information..."/>
