@@ -159,7 +159,7 @@ class SubjournalXlsx(models.AbstractModel):
                 LIMIT 1
             )
             INNER JOIN res_company lc
-            ON l.company_id = lc.id
+            ON i.company_id = lc.id
             WHERE i.type IN %(inv_type)s
                 AND l.date BETWEEN %(date_from)s AND %(date_to)s
                 AND a.internal_type NOT IN ('payable', 'receivable')
