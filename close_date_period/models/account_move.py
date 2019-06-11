@@ -45,7 +45,7 @@ class AccountMove(models.Model):
         journal_id = vals.get('journal_id')
         if not journal_id:
             journal_id = self.journal_id
-        if journal_id in period.journal_ids.ids:
+        if journal_id.id in period.journal_ids.ids:
             raise ValidationError(
                 _("Can't edit an account move to a closed period."))
         return super(AccountMove, self).write(vals)
