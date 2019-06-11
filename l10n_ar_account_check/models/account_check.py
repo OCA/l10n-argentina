@@ -420,6 +420,18 @@ class AccountThirdCheck(models.Model):
         comodel_name='account.move',
         string='Deposit Move',
         readonly=True)
+    deposit_journal_id = fields.Many2one(
+        comodel_name='account.journal',
+        string='Deposit Journal',
+        readonly=True, compute='_compute_deposit_journal_id')
+
+    @api.depends('deposit_move_id')
+    def _compute_deposit_journal_id(self):
+        for check in self:
+            if check.deposit_move_id:
+                check.deposit_journal_id = check.deposit_move_id.journal_id
+            else:
+                check.deposit_journal_id = False
 
     @api.model
     def create_voucher_move_line(self, voucher):

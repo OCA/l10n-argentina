@@ -159,7 +159,7 @@ class SubjournalXlsx(models.AbstractModel):
                 LIMIT 1
             )
             INNER JOIN res_company lc
-            ON l.company_id = lc.id
+            ON i.company_id = lc.id
             WHERE i.type IN %(inv_type)s
                 AND l.date BETWEEN %(date_from)s AND %(date_to)s
                 AND a.internal_type NOT IN ('payable', 'receivable')
@@ -406,7 +406,7 @@ class SubjournalXlsx(models.AbstractModel):
             sheet.write('F'+str(p), line['fiscal_position'], cell_format)
             sheet.write('G'+str(p), line['invoice_type'], cell_format)
             sheet.write('H'+str(p), line['invoice_number'], cell_format)
-            i = 7
+            i = 8
             for t, tax in enumerate(cols):
                 if self.c_taxes[t] > 0:
                     sheet.write(int2xlscol(i)+str(p), line['taxes'][t], cell_format)
@@ -425,7 +425,7 @@ class SubjournalXlsx(models.AbstractModel):
         nc_row_char = str(last_row_num + 4)
         total_row_char = str(last_row_num + 5)
 
-        i = 0
+        i = -1
         for j, col in enumerate(cols):
             if self.c_taxes[j] > 0:
                 col_char = int2xlscol(col['column']-i)
