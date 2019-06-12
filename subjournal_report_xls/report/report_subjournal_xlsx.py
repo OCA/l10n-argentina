@@ -415,8 +415,8 @@ class SubjournalXlsx(models.AbstractModel):
             sheet.write(int2xlscol(i+1)+str(p), line['total'], cell_format)
 
         # Formulas
-        fac_formula = '{=SUMIF(F2:F%(last_line)s,"F *",%(col)s2:%(col)s%(last_line)s) + SUMIF(F2:F%(last_line)s,"ND *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
-        nc_formula = '{=SUMIF(F2:F%(last_line)s,"NC *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
+        fac_formula = '{=SUMIF(G2:G%(last_line)s,"F *",%(col)s2:%(col)s%(last_line)s) + SUMIF(G2:G%(last_line)s,"ND *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
+        nc_formula = '{=SUMIF(G2:G%(last_line)s,"NC *",%(col)s2:%(col)s%(last_line)s)}'  # noqa
         total_formula = '{=SUM(%(col)s2:%(col)s%(last_line)s)}'  # noqa
 
         last_row_num = len(lines) + 1
