@@ -45,7 +45,7 @@ class AccountMove(models.Model):
         journal_id = vals.get('journal_id')
         if not journal_id:
             journal_id = self.journal_id
-        if isinstance(journal_id, self.env['account.journal'].__class__):
+        if isinstance(journal_id, self.env['account.journal']):
             journal_id = journal_id.id
         if journal_id in period.journal_ids.ids:
             raise ValidationError(
