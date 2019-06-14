@@ -40,4 +40,5 @@
     'installable': True,
     'application': True,
     'active': False,
+    'license': 'GPL-3 or any other later version',
 }
