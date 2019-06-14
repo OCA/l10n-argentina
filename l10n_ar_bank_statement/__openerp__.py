@@ -38,6 +38,6 @@
                 #~ 'wizard/project_import_wizard_view.xml',
             ],
         "installable": True,
-        'active': False
-
+        'active': False,
+        "license": "GPL-3 or any later version",
 }
