@@ -40,6 +40,7 @@ Accounting chart for Argetina in Open ERP.
     "active": False,
     "installable": True,
     "certificate" : "",
+    "license": "AGPL-3",
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
