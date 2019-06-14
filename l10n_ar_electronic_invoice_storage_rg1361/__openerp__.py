@@ -37,4 +37,5 @@
     'demo_xml': [],
     'installable': True,
     'active': False,
+    'license': 'GPL-3 or any later version',
 }
