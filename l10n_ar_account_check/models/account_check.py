@@ -359,6 +359,7 @@ class AccountThirdCheck(models.Model):
     deposit_date = fields.Date(string='Deposit Date',
                                readonly=True,
                                states={'wallet': [('readonly', False)]})
+    reject_date = fields.Date(string='Reject Date')
     source_partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Source Partner',

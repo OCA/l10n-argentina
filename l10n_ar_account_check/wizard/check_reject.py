@@ -59,6 +59,8 @@ class AccountCheckReject(models.Model):
 
         for check in check_objs:
 
+            check.reject_date = wizard.reject_date
+
             partner = check.source_partner_id
 
             config = check_config_obj.search(
@@ -67,7 +69,7 @@ class AccountCheckReject(models.Model):
                 raise ValidationError(_(' ERROR! There is no check \
                     configuration for this Company!'))
 
-            account = config.receivable_rejected_account_id
+            inv_account_id = config.receivable_rejected_account_id
             if not inv_account_id:
                 inv_account_id = partner.property_account_receivable_id
 
@@ -79,7 +81,6 @@ class AccountCheckReject(models.Model):
                 'is_debit_note': True,
                 'account_id': inv_account_id.id,
                 'partner_id': partner.id,
-                'date_invoice': wizard.reject_date,
                 'journal_id': wizard.journal_id.id,
                 'fiscal_position': partner.property_account_position_id.id,
                 'company_id': wizard.company_id.id,
@@ -110,9 +111,9 @@ class AccountCheckReject(models.Model):
             # Lineas de gastos
             for expense in wizard.expense_line_ids:
 
-                account_id = expense.property_account_expense_id
+                account_id = expense.product_id.property_account_expense_id
                 if not account_id:
-                    account_id = expense.categ_id.property_account_expense_categ_id
+                    account_id = expense.product_id.categ_id.property_account_expense_categ_id
                 if not account_id:
                     raise ValidationError(_('Please, fill the expense account in the product.'))
 
@@ -121,7 +122,7 @@ class AccountCheckReject(models.Model):
                     'product_id': expense.product_id.id,
                     'quantity': 1,
                     'price_unit': expense.price,
-                    'account_id': account_id,
+                    'account_id': account_id.id,
                     'invoice_line_tax_ids': [(6, 0, expense.product_id.taxes_id.ids)],
                 }
 

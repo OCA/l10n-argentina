@@ -329,6 +329,7 @@
                             <group>
                                 <field name="source_payment_order_id"/>
                                 <field name="debit_note_id"/>
+                                <field name="reject_date" states="rejected"/>
                             </group>
                         </group>
                        <group string="Additional Information">
