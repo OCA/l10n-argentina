@@ -58,21 +58,29 @@ class AccountCheckReject(models.Model):
         check_objs = third_check_obj.browse(record_ids)
 
         for check in check_objs:
-            if check.state not in ('deposited', 'delivered'):
-                raise ValidationError(_("Error! Check %s has to be deposited \
-                    or delivered!") % (check.number))
+
+            check.reject_date = wizard.reject_date
 
             partner = check.source_partner_id
 
+            config = check_config_obj.search(
+                [('company_id', '=', check.company_id.id)])
+            if not config:
+                raise ValidationError(_(' ERROR! There is no check \
+                    configuration for this Company!'))
+
+            inv_account_id = config.receivable_rejected_account_id
+            if not inv_account_id:
+                inv_account_id = partner.property_account_receivable_id
+
             invoice_vals = {
-                'origin': 'Check : %s' % check.number,
-                'name': 'Debit Note due to rejected check %s [%s]' %
+                'origin': _('Check : %s') % check.number,
+                'name': _('Debit Note due to rejected check %s [%s]') %
                 (check.number or '', check.source_payment_order_id.number),
                 'type': 'out_invoice',
                 'is_debit_note': True,
-                'account_id': partner.property_account_receivable_id.id,
+                'account_id': inv_account_id.id,
                 'partner_id': partner.id,
-                'date_invoice': wizard.reject_date,
                 'journal_id': wizard.journal_id.id,
                 'fiscal_position': partner.property_account_position_id.id,
                 'company_id': wizard.company_id.id,
@@ -81,19 +89,16 @@ class AccountCheckReject(models.Model):
             lines = []
             # Linea del cheque rechazado
 
-            config = check_config_obj.search(
-                [('company_id', '=', check.company_id.id)])
-            if not config:
-                raise ValidationError(_(' ERROR! There is no check \
-                    configuration for this Company!'))
-
             account_id = False
             if check.state == 'delivered':
-                account_id = config.account_id.id
+                account_id = config.rejected_account_id.id
             elif check.state == 'deposited':
                 account_id = check.deposit_bank_id.account_id.id
+            elif check.state == 'wallet':
+                account_id = config.account_id.id
 
-            name = _('Check Rejected') + ' ' + check.number
+            name = _('Check Rejected') + ' ' + check.number + ' '
+            name += datetime.strptime(wizard.reject_date, '%Y-%m-%d').strftime('%d/%m/%Y')
             invoice_line_vals = {
                 'name': name,
                 'quantity': 1,
@@ -106,12 +111,19 @@ class AccountCheckReject(models.Model):
             # Lineas de gastos
             for expense in wizard.expense_line_ids:
 
+                account_id = expense.product_id.property_account_expense_id
+                if not account_id:
+                    account_id = expense.product_id.categ_id.property_account_expense_categ_id
+                if not account_id:
+                    raise ValidationError(_('Please, fill the expense account in the product.'))
+
                 invoice_line_vals = {
                     'name': expense.product_id.name,
                     'product_id': expense.product_id.id,
                     'quantity': 1,
                     'price_unit': expense.price,
-                    'account_id': account_id,
+                    'account_id': account_id.id,
+                    'invoice_line_tax_ids': [(6, 0, expense.product_id.taxes_id.ids)],
                 }
 
                 lines.append((0, 0, invoice_line_vals))
@@ -123,8 +135,8 @@ class AccountCheckReject(models.Model):
 
             debit_note_id._onchange_partner_id()
 
-            for line in debit_note_id.invoice_line_ids:
-                line._onchange_product_id()
+            # Volvemos a cambiar la cuenta que sobreescribio el onchange
+            debit_note_id.account_id = inv_account_id
 
             debit_note_id._onchange_invoice_line_ids()
 

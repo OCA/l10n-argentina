@@ -38,6 +38,15 @@ class AccountCheckConfig(models.Model):
     deferred_journal_id = fields.Many2one(comodel_name='account.journal',
                                           string='Deferred Check Journal',
                                           required=True)
+    receivable_rejected_account_id = fields.Many2one(comodel_name='account.account',
+                                          string='Receivable Rejected Check Account',
+                                          domain=[('internal_type', '=', 'receivable')],
+                                          help=_("Partner's account in debit note generation."),
+                                          required=True)
+    rejected_account_id = fields.Many2one(comodel_name='account.account',
+                                          string='Rejected Check Account',
+                                          domain=[('internal_type', 'not in', ('receivable', 'payable'))],
+                                          required=True)
     company_id = fields.Many2one(comodel_name='res.company',
                                  string='Company', required=True)
     # TODO
@@ -337,23 +346,20 @@ class AccountThirdCheck(models.Model):
                           required=True,
                           states={'draft': [('readonly', False)]})
     receipt_date = fields.Date(string='Receipt Date',
-                               readonly=True,
                                required=True,
                                states={'draft': [('readonly', False)]},
                                default=lambda *a: time.strftime('%Y-%m-%d'))
     issue_date = fields.Date(string='Issue Date',
-                             readonly=True,
                              required=True,
                              states={'draft': [('readonly', False)]})
     payment_date = fields.Date(string='Payment Date',
-                               readonly=True,
                                states={'draft': [('readonly', False)]})
     endorsement_date = fields.Date(string='Endorsement Date',
-                                   readonly=True,
                                    states={'wallet': [('readonly', False)]})
     deposit_date = fields.Date(string='Deposit Date',
                                readonly=True,
                                states={'wallet': [('readonly', False)]})
+    reject_date = fields.Date(string='Reject Date')
     source_partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Source Partner',
