@@ -531,9 +531,15 @@ class RetentionTaxApplication(models.Model):
             ]
             pol_todo = payment_order_line_model.search(domain)
             amount = (ml.credit or ml.debit)
-            if pol_todo:
-                factor = pol_todo.amount / pol_todo.amount_original
-                amount = amount * factor
+            factor = 0.0
+            for pol in pol_todo:
+                factor += pol.amount / pol.amount_original
+
+            if factor:
+                amount = amount * round(factor, 3)
+#            if pol_todo:
+#                factor = pol_todo.amount / pol_todo.amount_original
+#                amount = amount * factor
             debt_untax_mls_ok.append(amount)
         # Use the proportional amount of line being paid, searching in
         # the old apo's and gathering the apol related to the untaxed ones
@@ -547,9 +553,15 @@ class RetentionTaxApplication(models.Model):
             ]
             pol_todo = payment_order_line_model.search(domain)
             amount = (ml.credit or ml.debit)
-            if pol_todo:
-                factor = pol_todo.amount / pol_todo.amount_original
-                amount = amount * factor
+            factor = 0.0
+            for pol in pol_todo:
+                factor += pol.amount / pol.amount_original
+
+            if factor:
+                amount = amount * round(factor, 3)
+#            if pol_todo:
+#                factor = pol_todo.amount / pol_todo.amount_original
+#                amount = amount * factor
             income_untax_mls_ok.append(amount)
         untaxed_debt = sum(debt_untax_mls_ok)
         untaxed_inc = sum(income_untax_mls_ok)
