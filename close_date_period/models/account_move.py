@@ -77,7 +77,7 @@ class AccountMoveLine(models.Model):
     @api.multi
     def write(self, vals):
         bypass_fields = ['reconciled', 'full_reconcile_id']
-        if not any(key in vals for key in bypass_fields):
+        if any(key not in bypass_fields for key in list(vals.keys())):
             for rec in self:
                 if rec.move_id.journal_id.id in \
                         rec.move_id.period_id.journal_ids.ids:
