@@ -76,11 +76,13 @@ class AccountMoveLine(models.Model):
 
     @api.multi
     def write(self, vals):
-        for rec in self:
-            if rec.move_id.journal_id.id in \
-                    rec.move_id.period_id.journal_ids.ids:
-                raise ValidationError(
-                    _("Can't edit an account move line on a closed period."))
+        bypass_fields = ['reconciled', 'full_reconcile_id']
+        if not any(key in vals for key in bypass_fields):
+            for rec in self:
+                if rec.move_id.journal_id.id in \
+                        rec.move_id.period_id.journal_ids.ids:
+                    raise ValidationError(
+                        _("Can't edit an account move line on a closed period."))
         return super(AccountMoveLine, self).write(vals)
 
     @api.multi
