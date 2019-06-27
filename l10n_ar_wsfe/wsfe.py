@@ -168,6 +168,91 @@ class wsfe_config(models.Model):
         return res
 
     @api.multi
+    def get_document_CAE(self, pos, voucher_type, detail):
+        voucher_type_obj = self.env['wsfe.voucher_type']
+        voucher_type_obj = self.env['wsfe.voucher_type']
+        voucher_type_reg = voucher_type_obj.search([
+            ('code', '=', voucher_type)
+        ])
+        voucher_type_name = voucher_type_reg.name
+        req_details = []
+        reprocess = False
+
+        new_cr = self.pool.cursor()
+        uid = self.env.user.id
+        ctx = self.env.context
+
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
+        _wsfe = wsfe(conf.cuit, token, sign, conf.url)
+        try:
+            res = _wsfe.get_multi_doc_CAE(pos, voucher_type, detail)
+            self.env.cr.commit()
+
+            if res['Resultado'] == 'R':
+                msg = ''
+                if res['Errores']:
+                    msg = _('Errors: ') + '\n'.join(res['Errores']) + '\n'
+
+                if self._context.get('raise-exception', True):
+                    raise osv.except_osv(_('AFIP Web Service Error'),
+                                         _('The documents was not approved. \n%s') % msg)
+
+            req_details = []
+            for det in res['Comprobantes']:
+                req_vals = {
+                    'concept': str(det['Concepto']),
+                    'doctype': det['DocTipo'],
+                    'docnum': str(det['DocNro']),
+                    'voucher_number_from': det['CbteDesde'],
+                    'voucher_number': det['CbteHasta'],
+                    'voucher_date': det['CbteFch'],
+                    'result': det['Resultado'],
+                    'cae': det['CAE'],
+                    'cae_duedate': det['CAEFchVto'],
+                    'observations': det['Observaciones'] or
+                    '\n'.join(res.get('Errores', [])),
+                    'currency': detail['currency_code'],
+                    'currency_rate': detail['currency_rate'],
+                    'amount_total': detail['total_amount'],
+                }
+                req_details.append((0, 0, req_vals))
+
+            reprocess = False
+            if res['Reproceso'] == 'S':
+                reprocess = True
+        except Exception as e:
+            if isinstance(e, osv.except_osv):
+                raise
+            raise osv.except_osv(
+                _("WSFE Validation Error"),
+                _("Error received was: \n %s") % repr(e))
+
+        finally:
+            self.env.cr.rollback()
+            vals = {
+                'voucher_type': voucher_type_name,
+                'nregs': len(req_details),
+                'pos_ar': '%04d' % pos,
+                'date_request': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'result': res.get('Resultado'),
+                'reprocess': reprocess,
+                'errors': '\n'.join(res.get('Errores', [])),
+                'detail_ids': req_details,
+            }
+            with api.Environment.manage():
+                new_env = api.Environment(new_cr, uid, ctx)
+                wsfe_req_obj = new_env['wsfe.request']
+                request = wsfe_req_obj.sudo().create(vals)
+                request_id = request.id
+                new_cr.commit()
+                new_cr.close()
+        self.env.cr.rollback()
+        request = self.env['wsfe.request'].browse(request_id)
+        request.refresh()
+        return request
+
+    @api.multi
     def _parse_result(self, invoices, result):
 
         invoices_approbed = {}
@@ -243,6 +328,7 @@ class wsfe_config(models.Model):
                 'concept': str(detail['Concepto']),
                 'doctype': detail['DocTipo'],  # TODO: Poner aca el nombre del tipo de documento
                 'docnum': str(detail['DocNro']),
+                'voucher_number_from': comp['CbteDesde'],
                 'voucher_number': comp['CbteHasta'],
                 'voucher_date': comp['CbteFch'],
                 'amount_total': detail['ImpTotal'],

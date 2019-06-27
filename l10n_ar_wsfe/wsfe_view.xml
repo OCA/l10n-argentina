@@ -337,6 +337,7 @@
                                       <field name="doctype"/>
                                       <field name="docnum"/>
                                       <field name="voucher_date"/>
+                                      <field name="voucher_number_from"/>
                                       <field name="voucher_number"/>
                                       <field name="amount_total"/>
                                       <field name="currency"/>
