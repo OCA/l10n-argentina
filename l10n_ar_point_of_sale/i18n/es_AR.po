@@ -122,6 +122,7 @@ msgstr "Nota de Débito"
 #. module: l10n_ar_point_of_sale
 #: code:addons/l10n_ar_point_of_sale/models/res_users.py:10
 #: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_res_users_default_pos
+#: model:ir.model.fields,field_description:l10n_ar_point_of_sale.field_res_users_property_default_pos_id
 #, python-format
 msgid "Default POS"
 msgstr "Punto de Venta por defecto"

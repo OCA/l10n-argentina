@@ -7,4 +7,5 @@ from odoo.exceptions import UserError
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
-    default_pos = fields.Many2one('pos.ar', string=_('Default POS'), help=_('Select the Default Point of Sale'))
+    property_default_pos_id = fields.Many2one('pos.ar', string=_('Default POS'),
+        help=_('Select the Default Point of Sale'), company_dependent=True)

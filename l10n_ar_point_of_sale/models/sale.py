@@ -16,7 +16,7 @@ class sale_order(models.Model):
     @api.model
     def _get_pos_ar(self, denom):
         pos_ar_obj = self.env['pos.ar']
-        res_pos = self.env.user.default_pos
+        res_pos = self.env.user.property_default_pos_id
         if not res_pos:
             res_pos = pos_ar_obj.search([
                 ('shop_id', '=', self.warehouse_id.id),

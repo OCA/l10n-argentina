@@ -20,7 +20,7 @@
 {
     "name": "Point of Sale ARGENTINA",
     "category": "Accounting & Finance",
-    "version": "11.0.1.0.0",
+    "version": "11.0.1.0.1",
     "author": "Eynes/E-MIPS",
     "website": "http://eynes.com.ar",
     "license": "AGPL-3",
