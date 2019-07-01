@@ -59,7 +59,7 @@ msgstr "No es posible eliminar un apunte contable en un período cerrado."
 #: code:addons/close_date_period/models/account_move.py:57
 #, python-format
 msgid "Can't delete an account move on a closed period."
-msgstr "No es posible crear un asiento contable en un período cerrado."
+msgstr "No es posible eliminar un asiento contable en un período cerrado."
 
 #. module: close_date_period
 #: code:addons/close_date_period/models/account_move.py:82
