@@ -20,10 +20,14 @@ class AccountMove(models.Model):
     @api.model
     def create(self, vals):
         period_model = self.env['date.period']
+        date = vals.get('date', fields.Date.context_today(self))
         period_date = fields.Datetime.context_timestamp(
-            self, datetime.strptime(vals['date'], '%Y-%m-%d'))
+            self, datetime.strptime(date, '%Y-%m-%d'))
         period = period_model._get_period(period_date)
-        if vals['journal_id'] in period.journal_ids.ids:
+        journal_id = vals.get('journal_id', self._get_default_journal())
+        if not journal_id:
+            return super(AccountMove, self).create(vals)
+        if journal_id in period.journal_ids.ids:
             raise ValidationError(
                 _("Can't create an account move on a closed period."))
         return super(AccountMove, self).create(vals)
@@ -34,18 +38,14 @@ class AccountMove(models.Model):
             raise ValidationError(
                 _("Can't edit an account move on a closed period."))
         period_model = self.env['date.period']
-        date = vals.get('date')
-        if not date:
-            date = self.date
+        date = vals.get('date', self.date)
         if not date:
             return super(AccountMove, self).write(vals)
         period_date = fields.Datetime.context_timestamp(
             self, datetime.strptime(date, '%Y-%m-%d'))
         period = period_model._get_period(period_date)
-        journal_id = vals.get('journal_id')
-        if not journal_id:
-            journal_id = self.journal_id
-        if isinstance(journal_id, self.env['account.journal'].__class__):
+        journal_id = vals.get('journal_id', self.journal_id.id)
+        if isinstance(journal_id, models.BaseModel):
             journal_id = journal_id.id
         if journal_id in period.journal_ids.ids:
             raise ValidationError(
@@ -66,12 +66,15 @@ class AccountMoveLine(models.Model):
     @api.model
     def create(self, vals):
         move_model = self.env['account.move']
-        move_id = move_model.browse(vals['move_id'])
+        move_id = vals.get('move_id')
+        if not move_id:
+            return super(AccountMoveLine, self).create(vals)
+        move = move_model.browse(move_id)
         period_model = self.env['date.period']
         period_date = fields.Datetime.context_timestamp(
-            self, datetime.strptime(move_id.date, '%Y-%m-%d'))
+            self, datetime.strptime(move.date, '%Y-%m-%d'))
         period = period_model._get_period(period_date)
-        if move_id.journal_id.id in period.journal_ids.ids:
+        if move.journal_id.id in period.journal_ids.ids:
             raise ValidationError(
                 _("Can't create an account move line on a closed period."))
         return super(AccountMoveLine, self).create(vals)
@@ -84,7 +87,8 @@ class AccountMoveLine(models.Model):
                 if rec.move_id.journal_id.id in \
                         rec.move_id.period_id.journal_ids.ids:
                     raise ValidationError(
-                        _("Can't edit an account move line on a closed period."))
+                        _("Can't edit an account move line on " +
+                          "a closed period."))
         return super(AccountMoveLine, self).write(vals)
 
     @api.multi
