@@ -206,3 +206,13 @@ class AccountIssuedCheck(models.Model):
             return super(AccountIssuedCheck, self).unlink()
         self.check_id.write({'state': 'draft'})
         return super(AccountIssuedCheck, self).unlink()
+
+class AccountPaymentOrder(models.Model):
+    _inherit = 'account.payment.order'
+
+    _used_issued_check_ids = fields.Many2many('account.checkbook.check', compute='_compute_used_issued_check_ids', store=False)
+
+    @api.depends('issued_check_ids')
+    def _compute_used_issued_check_ids(self):
+        for reg in self:
+            reg._used_issued_check_ids = [issued_check.check_id.id for issued_check in reg.issued_check_ids]
