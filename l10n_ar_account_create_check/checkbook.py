@@ -199,3 +199,13 @@ class account_issued_check(models.Model):
         return super(account_issued_check, self).unlink(cr, uid, ids, context=context)
 
 account_issued_check()
+
+class AccountVoucher(models.Model):
+    _inherit = 'account.voucher'
+
+    _used_issued_check_ids = fields.Many2many('account.checkbook.check', compute='_compute_used_issued_check_ids', store=False)
+
+    @api.depends('issued_check_ids')
+    def _compute_used_issued_check_ids(self):
+        for reg in self:
+            reg._used_issued_check_ids = [issued_check.check_id.id for issued_check in reg.issued_check_ids]
