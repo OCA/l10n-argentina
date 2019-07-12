@@ -1109,9 +1109,10 @@ class AccountPaymentOrder(models.Model):
     def cancel_voucher(self):
         for payment in self:
             if payment.move_id:
-                payment.move_id.line_ids.search(
-                    payment.move_id.open_reconcile_view()[
-                        'domain']).remove_move_reconcile()
+                # payment.move_id.line_ids.search(
+                #     payment.move_id.open_reconcile_view()[
+                #         'domain']).remove_move_reconcile()
+                payment.move_id.line_ids.remove_move_reconcile() # Fix Desconcile Bug
                 payment.move_id.button_cancel()
                 payment.move_id.unlink()
         self.write({
