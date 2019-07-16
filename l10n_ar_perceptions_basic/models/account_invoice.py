@@ -146,61 +146,14 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-    #     """finalize_invoice_move_lines(invoice, move_lines) -> move_lines
-    #     Hook method to be overridden in additional modules to verify and
-    #     possibly alter the move lines to be created by an invoice, for
-    #     special cases.
-    #     :param self: browsable record of the
-    #      invoice that is generating the move lines
-    #     :param move_lines: list of dictionaries with
-    #      the account.move.lines (as for create())
-    #     :return: the (possibly updated) final
-    #      move_lines to create for this invoice
-    #     """
-    #     # Como nos faltan los account.move.line de
-    #     # las bases imponibles de las percepciones
-    #     # utilizamos este hook para agregarlos
-    #     company_currency = self.company_id.currency_id.id
-    #     current_currency = self.currency_id.id
-
+        """ If not date write the invoice date """
         for p in self.perception_ids:
-    #         # sign = p.perception_id.tax_id.base_sign
-    #         tax_amount, base_amount = p._compute(self, p.base, p.amount)
-
-    #         # ...y ahora creamos la linea contable perteneciente
-    #         # a la base imponible de la perception
-    #         # Notar que credit & debit son 0.0 ambas. Lo
-    #         # que cuenta es el tax_code_id y el tax_amount
-    #         move_line = {
-    #             'name': p.name + '(Base Imp)',
-    #             'ref': self.internal_number or False,
-    #             'debit': 0.0,
-    #             'credit': 0.0,
-    #             'account_id': p.account_id.id,
-    #             # 'tax_code_id': p.base_code_id.id,
-    #             # 'tax_amount': base_amount,
-    #             'journal_id': self.journal_id.id,
-    #             'period_id': self.period_id.id,
-    #             'partner_id': self.partner_id.id,
-    #             'currency_id': company_currency !=
-    #             current_currency and current_currency or False,
-    #             # 'amount_currency': company_currency !=
-    #             # current_currency and sign * p.amount or 0.0,
-    #             'amount_currency': company_currency !=
-    #             current_currency and p.amount or 0.0,
-    #             'date': self.date_invoice or time.strftime('%Y-%m-%d'),
-    #             'date_maturity': self.date_due or False,
-    #         }
-
-            # Si no tenemos seteada la fecha,
-            # escribimos la misma que la de la factura
             if not p.date:
                 date = self.date_invoice or time.strftime('%Y-%m-%d')
                 p.write({'date': date})
 
-    #         move_lines.insert(len(move_lines) - 1, (0, 0, move_line))
-    #     return super(AccountInvoice, self).\
-    #         finalize_invoice_move_lines(move_lines)
+        return super().finalize_invoice_move_lines(move_lines)
+
 
     def prepare_perception_tax_line_vals(self, tax):
         """ Prepare values to create an perception.tax.line
