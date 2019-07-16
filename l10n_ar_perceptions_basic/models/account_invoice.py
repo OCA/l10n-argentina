@@ -144,8 +144,8 @@ class AccountInvoice(models.Model):
             res['value']['perception_ids'] = upd_lst
         return res
 
-    # @api.multi
-    # def finalize_invoice_move_lines(self, move_lines):
+    @api.multi
+    def finalize_invoice_move_lines(self, move_lines):
     #     """finalize_invoice_move_lines(invoice, move_lines) -> move_lines
     #     Hook method to be overridden in additional modules to verify and
     #     possibly alter the move lines to be created by an invoice, for
@@ -163,7 +163,7 @@ class AccountInvoice(models.Model):
     #     company_currency = self.company_id.currency_id.id
     #     current_currency = self.currency_id.id
 
-    #     for p in self.perception_ids:
+        for p in self.perception_ids:
     #         # sign = p.perception_id.tax_id.base_sign
     #         tax_amount, base_amount = p._compute(self, p.base, p.amount)
 
@@ -192,10 +192,11 @@ class AccountInvoice(models.Model):
     #             'date_maturity': self.date_due or False,
     #         }
 
-    #         # Si no tenemos seteada la fecha,
-    #         # escribimos la misma que la de la factura
-    #         if not p.date:
-    #             p.write({'date': move_line['date']})
+            # Si no tenemos seteada la fecha,
+            # escribimos la misma que la de la factura
+            if not p.date:
+                date = self.date_invoice or time.strftime('%Y-%m-%d')
+                p.write({'date': date})
 
     #         move_lines.insert(len(move_lines) - 1, (0, 0, move_line))
     #     return super(AccountInvoice, self).\
