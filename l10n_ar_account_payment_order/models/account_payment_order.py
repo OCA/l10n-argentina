@@ -185,7 +185,6 @@ class AccountPaymentOrder(models.Model):
                                   # required=True,
                                   compute='_get_journal_currency')
     amount = fields.Float(strin='Tax Amount',
-                          digits=dp.get_precision('Account'),
                           default=_get_amount,
                           states={
                               'cancel': [('readonly', True)],
@@ -1184,7 +1183,7 @@ class AccountPaymentOrderLine(models.Model):
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner',
                                  related='payment_order_id.partner_id')
     untax_amount = fields.Float(string='Untax Amount')
-    amount = fields.Float(string='Amount', digits=dp.get_precision('Account'))
+    amount = fields.Float(string='Amount')
     reconcile = fields.Boolean(string='Full Reconcile')
     type = fields.Selection(string='Dr/Cr',
                             selection=[('debt', 'Debt'),
@@ -1202,10 +1201,8 @@ class AccountPaymentOrderLine(models.Model):
                            related='move_line_id.date_maturity',
                            readonly=True)
     amount_original = fields.Float(string='Original Amount',
-                                   digits=dp.get_precision('Account'),
                                    compute='_compute_balance', store=True)
     amount_unreconciled = fields.Float(string='Open Balance',
-                                       digits=dp.get_precision('Account'),
                                        compute='_compute_balance', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company',
                                  related='payment_order_id.company_id',
