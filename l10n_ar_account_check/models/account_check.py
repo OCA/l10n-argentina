@@ -1,9 +1,7 @@
-###############################################################################
-#   Copyright (C) 2008-2011  Thymbra
-#   Copyright (c) 2012-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 import time
 
@@ -12,9 +10,9 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class AccountCheckConfig(models.Model):
-    '''
+    """
     Account Check Config
-    '''
+    """
     _name = 'account.check.config'
     _description = 'Check Account Configuration'
 
@@ -27,39 +25,33 @@ class AccountCheckConfig(models.Model):
 
         return ret
 
-    account_id = fields.Many2one(comodel_name='account.account',
-                                 string='Main Check Account',
-                                 required=True,
-                                 help="In Argentina, Valores a \
-                                 Depositar is used, for example")
-    deferred_account_id = fields.Many2one(comodel_name='account.account',
-                                          string='Deferred Check Account',
-                                          required=True)
-    deferred_journal_id = fields.Many2one(comodel_name='account.journal',
-                                          string='Deferred Check Journal',
-                                          required=True)
-    receivable_rejected_account_id = fields.Many2one(comodel_name='account.account',
-                                          string='Receivable Rejected Check Account',
-                                          domain=[('internal_type', '=', 'receivable')],
-                                          help=_("Partner's account in debit note generation."),
-                                          required=True)
-    rejected_account_id = fields.Many2one(comodel_name='account.account',
-                                          string='Rejected Check Account',
-                                          domain=[('internal_type', 'not in', ('receivable', 'payable'))],
-                                          required=True)
-    company_id = fields.Many2one(comodel_name='res.company',
-                                 string='Company', required=True)
-    # TODO
-    # _sql_constraints = [
-    #     ('company_uniq', 'UNIQUE(company_id)',
-    #         'The configuration must be unique per company!'),
-    # ]
+    account_id = fields.Many2one(
+        comodel_name='account.account', string='Main Check Account',
+        required=True,
+        help="In Argentina, Valores a Depositar is used, for example")
+    deferred_account_id = fields.Many2one(
+        comodel_name='account.account', string='Deferred Check Account',
+        required=True)
+    deferred_journal_id = fields.Many2one(
+        comodel_name='account.journal', string='Deferred Check Journal',
+        required=True)
+    receivable_rejected_account_id = fields.Many2one(
+        comodel_name='account.account',
+        string='Receivable Rejected Check Account',
+        domain=[('internal_type', '=', 'receivable')],
+        help=_("Partner's account in debit note generation."), required=True)
+    rejected_account_id = fields.Many2one(
+        comodel_name='account.account', string='Rejected Check Account',
+        domain=[('internal_type', 'not in', ('receivable', 'payable'))],
+        required=True)
+    company_id = fields.Many2one(
+        comodel_name='res.company', string='Company', required=True)
 
 
 class AccountIssuedCheck(models.Model):
-    '''
+    """
     Account Issued Check
-    '''
+    """
     _name = 'account.issued.check'
     _description = 'Issued Checks'
     _rec_name = 'number'
@@ -67,29 +59,29 @@ class AccountIssuedCheck(models.Model):
     number = fields.Char(string='Check Number', size=20, required=True)
     amount = fields.Float(string='Amount Check', required=True)
     issue_date = fields.Date(string='Issue Date')
-    payment_date = fields.Date(string='Payment Date',
-                               help="Only if this check is post dated")
+    payment_date = fields.Date(
+        string='Payment Date', help="Only if this check is post dated")
     reject_date = fields.Date(string='Reject Date')
-    receiving_partner_id = fields.Many2one(comodel_name='res.partner',
-                                           string='Receiving Entity',
-                                           required=False, readonly=True)
-    bank_id = fields.Many2one(comodel_name='res.bank',
-                              string='Bank', required=True)
+    receiving_partner_id = fields.Many2one(
+        comodel_name='res.partner', string='Receiving Entity',
+        required=False, readonly=True)
+    bank_id = fields.Many2one(
+        comodel_name='res.bank', string='Bank', required=True)
     signatory = fields.Char(string='Signatory', size=64)
-    clearing = fields.Selection([('24', '24 hs'),
-                                 ('48', '48 hs'),
-                                 ('72', '72 hs')],
-                                string='Clearing', default='24')
-    account_bank_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Bank Account')
-    payment_order_id = fields.Many2one(comodel_name='account.payment.order',
-                                       string='Voucher')
-    payment_move_id = fields.Many2one(comodel_name='account.move',
-                                      string='Payment Account Move')
-    clearance_move_id = fields.Many2one(comodel_name='account.move',
-                                        string='Clearance Account Move')
-    accredited = fields.Boolean(string='Accredited',
-                                compute='_compute_accredit_state')
+    clearing = fields.Selection([
+        ('24', '24 hs'),
+        ('48', '48 hs'),
+        ('72', '72 hs')], string='Clearing', default='24')
+    account_bank_id = fields.Many2one(
+        comodel_name='res.partner.bank', string='Bank Account')
+    payment_order_id = fields.Many2one(
+        comodel_name='account.payment.order', string='Voucher')
+    payment_move_id = fields.Many2one(
+        comodel_name='account.move', string='Payment Account Move')
+    clearance_move_id = fields.Many2one(
+        comodel_name='account.move', string='Clearance Account Move')
+    accredited = fields.Boolean(
+        string='Accredited', compute='_compute_accredit_state')
     origin = fields.Char(string='Origin', size=64)
     crossed = fields.Boolean(string='Crossed')
     not_order = fields.Boolean(string='Not Order')
@@ -99,8 +91,8 @@ class AccountIssuedCheck(models.Model):
         ('common', 'Common'),
         ('postdated', 'Post-dated')],
         string='Check Type', default='common',
-        help="If common, checks only have issued_date.\
-        If post-dated they also have payment date")
+        help="If common, checks only have issued_date. " +
+        "If post-dated they also have payment date")
     company_id = fields.Many2one(
         comodel_name='res.company',
         string='Company', required=True,
@@ -331,34 +323,34 @@ class AccountIssuedCheck(models.Model):
 
 
 class AccountThirdCheck(models.Model):
-    '''
+    """
     Account Third Check
-    '''
+    """
     _name = 'account.third.check'
     _description = 'Third Checks'
     _rec_name = 'number'
 
-    number = fields.Char(string='Check Number', size=20,
-                         readonly=True, required=True,
-                         states={'draft': [('readonly', False)]})
-    amount = fields.Float(string='Check Amount',
-                          readonly=True,
-                          required=True,
-                          states={'draft': [('readonly', False)]})
-    receipt_date = fields.Date(string='Receipt Date',
-                               required=True,
-                               states={'draft': [('readonly', False)]},
-                               default=lambda *a: time.strftime('%Y-%m-%d'))
-    issue_date = fields.Date(string='Issue Date',
-                             required=True,
-                             states={'draft': [('readonly', False)]})
-    payment_date = fields.Date(string='Payment Date',
-                               states={'draft': [('readonly', False)]})
-    endorsement_date = fields.Date(string='Endorsement Date',
-                                   states={'wallet': [('readonly', False)]})
-    deposit_date = fields.Date(string='Deposit Date',
-                               readonly=True,
-                               states={'wallet': [('readonly', False)]})
+    number = fields.Char(
+        string='Check Number', size=20,
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)]})
+    amount = fields.Float(
+        string='Check Amount', readonly=True,
+        required=True, states={'draft': [('readonly', False)]})
+    receipt_date = fields.Date(
+        string='Receipt Date', required=True,
+        states={'draft': [('readonly', False)]},
+        default=lambda *a: time.strftime('%Y-%m-%d'))
+    issue_date = fields.Date(
+        string='Issue Date', required=True,
+        states={'draft': [('readonly', False)]})
+    payment_date = fields.Date(
+        string='Payment Date', states={'draft': [('readonly', False)]})
+    endorsement_date = fields.Date(
+        string='Endorsement Date', states={'wallet': [('readonly', False)]})
+    deposit_date = fields.Date(
+        string='Deposit Date', readonly=True,
+        states={'wallet': [('readonly', False)]})
     reject_date = fields.Date(string='Reject Date')
     source_partner_id = fields.Many2one(
         comodel_name='res.partner',
@@ -370,25 +362,28 @@ class AccountThirdCheck(models.Model):
         comodel_name='res.partner',
         string='Destiny Partner',
         states={'delivered': [('required', True)]})
-    state = fields.Selection([('draft', 'Draft'),
-                              ('wallet', 'In Wallet'),
-                              ('deposited', 'Deposited'),
-                              ('delivered', 'Delivered'),
-                              ('rejected', 'Rejected'),
-                              ('cancel', 'Cancelled')],
-                             string='State', readonly=True, default='draft')
-    bank_id = fields.Many2one(comodel_name='res.bank', string='Bank',
-                              required=True, readonly=True,
-                              states={'draft': [('readonly', False)]})
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('wallet', 'In Wallet'),
+        ('deposited', 'Deposited'),
+        ('delivered', 'Delivered'),
+        ('rejected', 'Rejected'),
+        ('cancel', 'Cancelled')], string='State',
+        readonly=True, default='draft')
+    bank_id = fields.Many2one(
+        comodel_name='res.bank', string='Bank',
+        required=True, readonly=True,
+        states={'draft': [('readonly', False)]})
     signatory = fields.Char(string='Signatory', size=64)
-    clearing = fields.Selection([('24', '24 hs'),
-                                 ('48', '48 hs'),
-                                 ('72', '72 hs')],
-                                string='Clearing', default='24')
+    clearing = fields.Selection([
+        ('24', '24 hs'),
+        ('48', '48 hs'),
+        ('72', '72 hs')],
+        string='Clearing', default='24')
     origin = fields.Char(string='Origin', size=64)
     dest = fields.Char(string='Destiny', size=64)
-    deposit_bank_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Deposit Account')
+    deposit_bank_id = fields.Many2one(
+        comodel_name='res.partner.bank', string='Deposit Account')
     source_payment_order_id = fields.Many2one(
         comodel_name='account.payment.order',
         string='Source Voucher',
@@ -397,13 +392,14 @@ class AccountThirdCheck(models.Model):
         comodel_name='account.invoice',
         string='Debit Note', readonly=True,
         help="In case of rejection of the third check")
-    type = fields.Selection([('common', 'Common'),
-                             ('postdated', 'Post-dated')],
-                            string='Check Type', readonly=True,
-                            states={'draft': [('readonly', False)]},
-                            default='common',
-                            help="If common, checks only have issued_date. \
-                            If post-dated they also have payment date")
+    type = fields.Selection([
+        ('common', 'Common'),
+        ('postdated', 'Post-dated')],
+        string='Check Type', readonly=True,
+        states={'draft': [('readonly', False)]},
+        default='common',
+        help="If common, checks only have issued_date. " +
+        "If post-dated they also have payment date")
     note = fields.Text(string='Additional Information')
     company_id = fields.Many2one(
         comodel_name='res.company', string='Company',
@@ -520,7 +516,9 @@ class AccountThirdCheck(models.Model):
             self.deposit_move_id.unlink()
             self.write({'state': 'wallet'})
         else:
-            raise ValidationError(_('There is no reference for account move. Imposible to go back to wallet.'))
+            raise ValidationError(
+                _('There is no reference for account move. ' +
+                  'Imposible to go back to wallet.'))
 
     @api.multi
     def return_wallet(self):

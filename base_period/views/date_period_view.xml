@@ -7,9 +7,9 @@
             <field name="model">date.period</field>
             <field name="arch" type="xml">
                 <form string="Period">
-                <!-- <header> -->
+                    <!-- <header> -->
                         <!-- TODO -->
-                <!-- </header> -->
+                        <!-- </header> -->
                     <sheet>
                         <group>
                             <group>

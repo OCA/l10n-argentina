@@ -58,7 +58,7 @@
             action="action_check_config"
             name="Check Config"
             parent="menu_treasury_configuration"
-        />
+            />
 
         <!-- Cheques Emitidos -->
 
@@ -167,7 +167,7 @@
                         <filter string="Receiving Partner" context="{'group_by':'receiving_partner_id'}"/>
                         <filter string="State" context="{'group_by': 'state'}"/>
                     </group>
-               </search>
+                </search>
             </field>
         </record>
 
@@ -197,7 +197,7 @@
             </field>
         </record>
 
-    <!-- Tesoreria/Cheques/Cheques Emitidos -->
+        <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
         <record id="action_issued_check" model="ir.actions.act_window">
             <field name="name">Issued Checks</field>
@@ -225,21 +225,21 @@
             action="action_issued_check"
             name="Issued Checks"
             parent="menu_treasury_issued_check_menu"
-        />
+            />
 
         <menuitem id="menu_treasury_issued_check_calendar_payment"
             action="action_issued_check_calendar_payment_date"
             name="Calendar By Payment Date"
             parent="menu_treasury_issued_check_menu"
-        />
+            />
 
         <menuitem id="menu_treasury_issued_check_calendar_issued"
             action="action_issued_check_calendar_issued_date"
             name="Calendar By Issue Date"
             parent="menu_treasury_issued_check_menu"
-        />
+            />
 
-    <!-- Third Checks -->
+        <!-- Third Checks -->
 
         <record id="view_account_third_check_tree" model="ir.ui.view">
             <field name="name">account.third.check.tree</field>
@@ -270,7 +270,7 @@
             <field name="type">form</field>
             <field name="priority">10</field>
             <field name="arch" type="xml">
-               <form string="Third Checks">
+                <form string="Third Checks">
                     <header>
                         <button name="%(action_check_deposit)d" type='action' string='Deposit Check' states='wallet' class="oe_highlight" groups="account.group_account_invoice,account.group_account_manager"/>
                         <button name="check_to_wallet" type='object' string='Back to Wallet'
@@ -310,7 +310,7 @@
                                 <field name="not_order"/>
                                 <field name="dest" attrs="{'invisible': [('state','!=','delivered')]}"/>
                             </group>
-                             <group>
+                            <group>
                                 <field name="clearing"/>
                                 <field name="signatory"/>
                                 <field name="signatory_vat"/>
@@ -324,7 +324,7 @@
                                 <field name="deposit_move_id"/>
                                 <field name="deposit_bank_id" />
                             </group>
-                       </group>
+                        </group>
                         <group string="Payments, Receipts and Debits">
                             <group>
                                 <field name="source_payment_order_id"/>
@@ -332,16 +332,16 @@
                                 <field name="reject_date" states="rejected"/>
                             </group>
                         </group>
-                       <group string="Additional Information">
-                       <div class="oe_clear"/>
-                       <field name="note" colspan="4" nolabel="1" placeholder="Additional Information..."/>
-                       </group>
+                        <group string="Additional Information">
+                            <div class="oe_clear"/>
+                            <field name="note" colspan="4" nolabel="1" placeholder="Additional Information..."/>
+                        </group>
                     </sheet>
                 </form>
             </field>
         </record>
 
-       <record id="view_third_checks_search" model="ir.ui.view">
+        <record id="view_third_checks_search" model="ir.ui.view">
             <field name="name">third.check.search</field>
             <field name="model">account.third.check</field>
             <field name="type">search</field>
@@ -358,15 +358,15 @@
                             string="Rejected" domain="[('state','=','rejected')]"/>
                         <filter icon="gtk-cancel" name="cancel"
                             string="Cancelled" domain="[('state','=','cancel')]"/>
-                       <separator orientation="vertical"/>
-                       <filter icon="terp-check" string="Common" name="common"
-                           domain="[('type','=', 'common')]"/>
-                       <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
-                           domain="[('type','=', 'postdated')]"/>
-                    <field name="number" select="1" string="Check Number"/>
-                    <field name="issue_date"/>
-                    <field name="origin"/>
-                    <field name="source_partner_id"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-check" string="Common" name="common"
+                            domain="[('type','=', 'common')]"/>
+                        <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+                            domain="[('type','=', 'postdated')]"/>
+                        <field name="number" select="1" string="Check Number"/>
+                        <field name="issue_date"/>
+                        <field name="origin"/>
+                        <field name="source_partner_id"/>
                         <field name="payment_date"/>
                         <field name="receipt_date"/>
                     </group>
@@ -386,7 +386,7 @@
                             context="{'group_by':'payment_date'}" help="Payment Date"/>
                         <filter string="Endorsement Date" icon="terp-go-month" domain="[('endorsement_date','!=',False)]"
                             context="{'group_by':'endorsement_date'}" help="Endorsement Date"/>
-                       <separator orientation="vertical"/>
+                        <separator orientation="vertical"/>
                         <filter string="Bank" icon="terp-accessories-archiver" domain="[('state','!=','draft')]"
                             context="{'group_by':'bank_id'}"/>
                         <filter string="Deposit Slip" icon="terp-stock_effects-object-colorize" domain="[]"
@@ -439,7 +439,7 @@
 
 
 
-    <!-- Tesoreria/Cheques/Cheques Emitidos -->
+        <!-- Tesoreria/Cheques/Cheques Emitidos -->
 
         <record id="action_third_check" model="ir.actions.act_window">
             <field name="name">Third Checks</field>

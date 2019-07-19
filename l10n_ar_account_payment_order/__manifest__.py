@@ -1,8 +1,6 @@
 ###############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    All Rights Reserved. See readme/CONTRIBUTORS.rst for details.
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -11,21 +9,21 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
 
 {
     "name": "Payment Order",
-    "category": "Accounting & Finance",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
-    "description": "Module Description",
+    "description": "Payment Order document with argentinian payment methods.",
     "depends": [
         "base",
         "account",
@@ -33,13 +31,12 @@
         "base_period",
     ],
     "data": [
+        "security/payment_rule.xml",
+        "security/ir.model.access.csv",
         "views/assets.xml",
         "views/account_payment_order_view.xml",
         "views/account_journal_view.xml",
-        "security/payment_rule.xml",
-        "security/ir.model.access.csv",
     ],
-    "qweb": ['static/src/xml/*.xml'],
     "installable": True,
     "application": True,
 }

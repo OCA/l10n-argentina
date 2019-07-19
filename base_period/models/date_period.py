@@ -1,17 +1,13 @@
-###############################################################################
-#   Copyright (c) 2018 Eynes/E-MIPS (Cardozo Nicolás Joaquin)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-import logging
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DSDF
-
-
-_logger = logging.getLogger(__name__)
 
 
 class DatePeriod(models.Model):
@@ -21,18 +17,18 @@ class DatePeriod(models.Model):
     code = fields.Char(string="Code", size=7, required=True)
     date_from = fields.Date(string="Start Date", required=True)
     date_to = fields.Date(string="End Date", required=True)
-    invoice_ids = fields.One2many(comodel_name="account.invoice",
-                                  inverse_name="period_id",
-                                  string="Invoice")
-    move_ids = fields.One2many(comodel_name="account.move",
-                               inverse_name="period_id",
-                               string="Move")
-    move_line_ids = fields.One2many(comodel_name="account.move.line",
-                                    inverse_name="period_id",
-                                    string="Move Line")
-    inventory_ids = fields.One2many(comodel_name="stock.inventory",
-                                    inverse_name="period_id",
-                                    string="Stock Inventory")
+    invoice_ids = fields.One2many(
+        comodel_name="account.invoice", inverse_name="period_id",
+        string="Invoice")
+    move_ids = fields.One2many(
+        comodel_name="account.move", inverse_name="period_id",
+        string="Move")
+    move_line_ids = fields.One2many(
+        comodel_name="account.move.line", inverse_name="period_id",
+        string="Move Line")
+    inventory_ids = fields.One2many(
+        comodel_name="stock.inventory", inverse_name="period_id",
+        string="Stock Inventory")
 
     @api.multi
     def unlink(self):
@@ -43,7 +39,7 @@ class DatePeriod(models.Model):
         ]
         affected_models = self._hook_affected_models(affected_models)
         self._check_affected_models(affected_models)
-        super().unlink()
+        return super().unlink()
 
     @api.multi
     def _hook_affected_models(self, affected_models):

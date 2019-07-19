@@ -1,8 +1,7 @@
-###############################################################################
-#    Copyright (c) 2013 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import api, exceptions, fields, models, _
 from odoo.exceptions import UserError
@@ -207,12 +206,17 @@ class AccountIssuedCheck(models.Model):
         self.check_id.write({'state': 'draft'})
         return super(AccountIssuedCheck, self).unlink()
 
+
 class AccountPaymentOrder(models.Model):
     _inherit = 'account.payment.order'
 
-    _used_issued_check_ids = fields.Many2many('account.checkbook.check', compute='_compute_used_issued_check_ids', store=False)
+    _used_issued_check_ids = fields.Many2many(
+        'account.checkbook.check',
+        compute='_compute_used_issued_check_ids', store=False)
 
     @api.depends('issued_check_ids')
     def _compute_used_issued_check_ids(self):
         for reg in self:
-            reg._used_issued_check_ids = [issued_check.check_id.id for issued_check in reg.issued_check_ids]
+            reg._used_issued_check_ids = [
+                issued_check.check_id.id for issued_check
+                in reg.issued_check_ids]

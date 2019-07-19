@@ -1,30 +1,29 @@
-###############################################################################
-#   Copyright (c) 2018 Eynes/E-MIPS (Cardozo Nicolás Joaquin)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import models, fields, api
 
 
-class account_journal(models.Model):
+class AccountJournal(models.Model):
     _name = "account.journal"
     _inherit = "account.journal"
 
-    # Aumentamos el size del code para poder hacer OP 0001, por ejemplo.
-    code = fields.Char(string='Code', size=8, required=True,
-                       help="The code will be displayed on reports.")
-    type = fields.Selection(
-        selection=[('sale_refund', 'Sale Refund'),
-                   ('purchase_refund', 'Purchase Refund'),
-                   ('purchase', 'Purchase'),
-                   ('receipt', 'Receipts'),
-                   ('sale', 'Sale'),
-                   ('cash', 'Cash'),
-                   ('general', 'General'),
-                   ('bank', 'Bank and Checks'),
-                   ('situation', 'Opening/Closing Situation'),
-                   ('payment', 'Payment')], string='Type',
-        size=32, required=True,
+    code = fields.Char(
+        string='Code', size=8, required=True,
+        help="The code will be displayed on reports.")
+    type = fields.Selection(selection=[
+        ('sale_refund', 'Sale Refund'),
+        ('purchase_refund', 'Purchase Refund'),
+        ('purchase', 'Purchase'),
+        ('receipt', 'Receipts'),
+        ('sale', 'Sale'),
+        ('cash', 'Cash'),
+        ('general', 'General'),
+        ('bank', 'Bank and Checks'),
+        ('situation', 'Opening/Closing Situation'),
+        ('payment', 'Payment')], string='Type', size=32, required=True,
         help="Select 'Sale' for customer invoices journals.\n\
               Select 'Purchase' for supplier invoices journals.\n\
               Select 'Cash' or 'Bank' for journals that are \
@@ -38,7 +37,8 @@ class account_journal(models.Model):
 
     @api.model
     def create_sequence(self, vals):
-        """ Create new no_gap entry sequence for every new Joural
+        """
+        Create new no_gap entry sequence for every new Joural
         """
 
         # Creacion de secuencia. Si es de tipo payment o receipt
@@ -46,8 +46,7 @@ class account_journal(models.Model):
         journal_type = vals['type']
 
         if journal_type not in ['receipt', 'payment']:
-            return super(account_journal, self).\
-                    create_sequence(vals)
+            return super().create_sequence(vals)
 
         # in account.journal code is actually the prefix of the sequence
         # whereas ir.sequence code is a key to lookup global sequences.

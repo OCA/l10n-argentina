@@ -1,17 +1,12 @@
-# -*- coding: utf-8 -*-
-###############################################################################
-#   Copyright (c) 2019 Eynes/E-mips (Julian Corso)
+##############################################################################
+#   Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-import logging
 from datetime import datetime
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-
-
-_logger = logging.getLogger(__name__)
 
 
 class AccountMove(models.Model):

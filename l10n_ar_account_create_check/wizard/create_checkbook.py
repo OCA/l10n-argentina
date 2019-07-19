@@ -1,8 +1,7 @@
-###############################################################################
-#    Copyright (c) 2013 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import fields, models, _
 from odoo.exceptions import UserError
@@ -12,18 +11,18 @@ class WizardCreateCheck(models.Model):
     _name = "wizard.create.check"
     _description = "wizard create check"
 
-    bank_account_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Bank', required=True)
-    start_num = fields.Char(string='Start number of check',
-                            size=20, required=True)
+    bank_account_id = fields.Many2one(
+        comodel_name='res.partner.bank',
+        string='Bank', required=True)
+    start_num = fields.Char(
+        string='Start number of check',
+        size=20, required=True)
     end_num = fields.Char(string='End number of check', size=20, required=True)
-    checkbook_num = fields.Char(string='Checkbook number',
-                                size=20, required=True)
-    company_id = fields.Many2one(comodel_name='res.company',
-                                 string='Company',
-                                 required=True,
-                                 default=lambda self: self.env.
-                                 user.company_id.id)
+    checkbook_num = fields.Char(
+        string='Checkbook number', size=20, required=True)
+    company_id = fields.Many2one(
+        comodel_name='res.company', string='Company',
+        required=True, default=lambda self: self.env.user.company_id.id)
     type = fields.Selection([
         ('common', 'Common'),
         ('postdated', 'Post-dated')],
@@ -40,8 +39,8 @@ class WizardCreateCheck(models.Model):
             end_num = int(form.end_num)
             if start_num > end_num:
                 raise UserError(
-                    _('Error creating Checkbook!\nEnd number \
-                        cannot be lower than Start number'))
+                    _('Error creating Checkbook!\n' +
+                      'End number cannot be lower than Start number'))
 
             # Creamos los cheques numerados
             checks = []

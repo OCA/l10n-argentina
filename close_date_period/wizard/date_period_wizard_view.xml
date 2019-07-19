@@ -27,10 +27,10 @@
         </record>
 
         <act_window id="close_date_period_wizard_action"
-                    name="Close Period"
-                    res_model="close.date.period.wizard"
-                    view_mode="form"
-                    target="new"/>
+            name="Close Period"
+            res_model="close.date.period.wizard"
+            view_mode="form"
+            target="new"/>
 
         <!-- Reopen Date Period -->
 
@@ -57,10 +57,10 @@
         </record>
 
         <act_window id="reopen_date_period_wizard_action"
-                    name="Reopen Period"
-                    res_model="reopen.date.period.wizard"
-                    view_mode="form"
-                    target="new"/>
+            name="Reopen Period"
+            res_model="reopen.date.period.wizard"
+            view_mode="form"
+            target="new"/>
 
     </data>
 </openerp>

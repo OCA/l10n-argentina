@@ -3,7 +3,7 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ###############################################################################
 
-from . import date_period  # noqa
 from . import account_invoice  # noqa
 from . import account_move  # noqa
+from . import date_period  # noqa
 from . import stock_inventory  # noqa

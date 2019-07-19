@@ -16,9 +16,9 @@
                     </group>
                     <footer>
                         <button name="button_open" type="object" string="Open" class="btn-primary"
-                             attrs="{'invisible': [('closed', 'not in', True)]}"/>
+                            attrs="{'invisible': [('closed', 'not in', True)]}"/>
                         <button name="button_close" type="object" string="Close" class="btn-primary"
-                             attrs="{'invisible': [('closed', 'not in', False)]}"/>
+                            attrs="{'invisible': [('closed', 'not in', False)]}"/>
                         or
                         <button special="cancel" string="Cancel"/>
                     </footer>
@@ -27,9 +27,9 @@
         </record>
 
         <act_window id="close_account_journal_wizard_action"
-                    name="Open/Close Period"
-                    res_model="close.account.journal.wizard"
-                    view_mode="form"
-                    target="new"/>
+            name="Open/Close Period"
+            res_model="close.account.journal.wizard"
+            view_mode="form"
+            target="new"/>
     </data>
 </openerp>

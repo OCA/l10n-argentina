@@ -1,19 +1,9 @@
-# -*- coding: utf-8 -*-
-###############################################################################
-#   Copyright (c) 2019 Eynes/E-mips (Julian Corso)
+##############################################################################
+#   Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-import logging
-
-from odoo import models, api, fields, _, exceptions
-# from odoo.exceptions import except_orm
-# from odoo.addons.decimal_precision import decimal_precision as dp
-# from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, \
-#         DEFAULT_SERVER_DATETIME_FORMAT, float_compare
-
-
-_logger = logging.getLogger(__name__)
+from odoo import models, api, fields
 
 
 class CloseDatePeriodWizard(models.TransientModel):
@@ -36,13 +26,16 @@ class CloseDatePeriodWizard(models.TransientModel):
         active_ids = self.env.context.get('active_ids')
         date_period_id = self.env['date.period'].browse(active_ids)
         self.journal_ids += self.closed_journal_ids
-        date_period_id.write({'journal_ids':[(6, 0, self.journal_ids.ids)]})
+        date_period_id.write({
+            'journal_ids': [(6, 0, self.journal_ids.ids)],
+        })
 
     @api.model
     def _get_default_closed_journals(self):
         active_ids = self.env.context.get('active_ids')
         date_period_id = self.env['date.period'].browse(active_ids)
         return date_period_id.journal_ids.ids
+
 
 class ReopenDatePeriodWizard(models.TransientModel):
     _name = 'reopen.date.period.wizard'
@@ -64,7 +57,9 @@ class ReopenDatePeriodWizard(models.TransientModel):
         active_ids = self.env.context.get('active_ids')
         date_period_id = self.env['date.period'].browse(active_ids)
         for _id in self.journal_ids.ids:
-            date_period_id.write({'journal_ids':[(3, _id, 0)]})
+            date_period_id.write({
+                'journal_ids': [(3, _id, 0)],
+            })
 
     @api.model
     def _get_default_closed_journals(self):

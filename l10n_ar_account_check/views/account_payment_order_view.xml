@@ -34,14 +34,14 @@
                                     <group>
                                         <field name="issue_date"/>
                                         <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
-                                                                           'required': [('type', '=', 'postdated')]}"/>
+                                            'required': [('type', '=', 'postdated')]}"/>
                                         <field name="account_bank_id" domain="[('company_id', '=', company_id)]" required="1" readonly="1"/>
                                         <field name="clearing"/>
                                         <field name="signatory"/>
                                         <field name="origin"/>
                                         <field name="state" invisible="1"/>
-										<field name="crossed"/>
-										<field name="not_order"/>
+                                        <field name="crossed"/>
+                                        <field name="not_order"/>
                                     </group>
                                 </group>
                                 <field name="receiving_partner_id" invisible="1"/>
@@ -49,7 +49,7 @@
                         </field>
                         <label for="third_check_ids"/>
                         <field name="third_check_ids" string="Third Checks" nolabel="1" colspan="4" domain="[('state', '=', 'wallet')]">
-                           <tree string="Third Checks">
+                            <tree string="Third Checks">
                                 <field name="number"/>
                                 <field name="source_partner_id"/>
                                 <field name="issue_date"/>
@@ -59,7 +59,7 @@
                                 <field name="amount" sum="Total"/>
                                 <field name="state" invisible="1"/>
                             </tree>
-                         </field>
+                        </field>
                     </page>
                 </page>
             </field>
@@ -97,14 +97,14 @@
                                         <field name="type"/>
                                         <field name="amount"/>
                                         <field name="bank_id"/>
-										<field name="crossed"/>
-										<field name="not_order"/>
+                                        <field name="crossed"/>
+                                        <field name="not_order"/>
                                     </group>
                                     <group>
                                         <field name="receipt_date"/>
                                         <field name="issue_date"/>
                                         <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
-                                                                           'required': [('type','=','postdated')]}"/>
+                                            'required': [('type','=','postdated')]}"/>
                                         <field name="clearing"/>
                                         <field name="signatory"/>
                                         <field name="signatory_vat"/>
@@ -119,8 +119,8 @@
                             string="Add Pre-created" type="object"/>
                             -->
                    </page>
-                </page>
-            </field>
-        </record>
-    </data>
+               </page>
+           </field>
+       </record>
+   </data>
 </odoo>

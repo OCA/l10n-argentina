@@ -5,15 +5,13 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ###############################################################################
 
+from datetime import datetime
+
 from odoo import models, fields, _, api
 from odoo.exceptions import ValidationError
 import odoo.addons.decimal_precision as dp
 
-from datetime import datetime
 
-# TODO: Que pasa si no se valida la Nota de Debito???
-
-# TODO !!!! This class is not properly migrated at all
 class AccountCheckReject(models.Model):
     _name = 'account.check.reject'
 
@@ -29,29 +27,22 @@ class AccountCheckReject(models.Model):
         return res and res.id or False
 
     reject_date = fields.Date(string='Reject Date', required=True)
-    journal_id = fields.Many2one(comodel_name='account.journal',
-                                 string='Journal', required=True,
-                                 default=_get_journal)
-    expense_line_ids = fields.One2many(comodel_name='check.reject.expense',
-                                       inverse_name='reject_id',
-                                       string='Expenses')
-    company_id = fields.Many2one(comodel_name='res.company', string='Company',
-                                 required=True,
-                                 default=lambda self: self.env['res.company'].
-                                 _company_default_get('account.invoice'))
-
-
-#    def _get_address_invoice(self, cr, uid, partner):
-#        partner_obj = self.pool.get('res.partner')
-#        return partner_obj.address_get(cr, uid, [partner],
-#                ['contact', 'invoice'])
+    journal_id = fields.Many2one(
+        comodel_name='account.journal', string='Journal',
+        required=True, default=_get_journal)
+    expense_line_ids = fields.One2many(
+        comodel_name='check.reject.expense', inverse_name='reject_id',
+        string='Expenses')
+    company_id = fields.Many2one(
+        comodel_name='res.company', string='Company', required=True,
+        default=lambda self: self.env['res.company']._company_default_get(
+            'account.invoice'))
 
     @api.multi
     def action_reject(self):
         check_config_obj = self.env['account.check.config']
         third_check_obj = self.env['account.third.check']
         invoice_obj = self.env['account.invoice']
-        invoice_line_obj = self.env['account.invoice.line']
 
         wizard = self
         record_ids = self.env.context.get('active_ids', [])
@@ -98,7 +89,8 @@ class AccountCheckReject(models.Model):
                 account_id = config.account_id.id
 
             name = _('Check Rejected') + ' ' + check.number + ' '
-            name += datetime.strptime(wizard.reject_date, '%Y-%m-%d').strftime('%d/%m/%Y')
+            name += datetime.strptime(
+                wizard.reject_date, '%Y-%m-%d').strftime('%d/%m/%Y')
             invoice_line_vals = {
                 'name': name,
                 'quantity': 1,
@@ -111,11 +103,14 @@ class AccountCheckReject(models.Model):
             # Lineas de gastos
             for expense in wizard.expense_line_ids:
 
-                account_id = expense.product_id.property_account_expense_id
+                product = expense.product_id
+                account_id = product.property_account_expense_id
                 if not account_id:
-                    account_id = expense.product_id.categ_id.property_account_expense_categ_id
+                    account_id = product.categ_id.\
+                        property_account_expense_categ_id
                 if not account_id:
-                    raise ValidationError(_('Please, fill the expense account in the product.'))
+                    raise ValidationError(
+                        _('Please, fill the expense account in the product.'))
 
                 invoice_line_vals = {
                     'name': expense.product_id.name,
@@ -123,7 +118,8 @@ class AccountCheckReject(models.Model):
                     'quantity': 1,
                     'price_unit': expense.price,
                     'account_id': account_id.id,
-                    'invoice_line_tax_ids': [(6, 0, expense.product_id.taxes_id.ids)],
+                    'invoice_line_tax_ids': [
+                        (6, 0, expense.product_id.taxes_id.ids)],
                 }
 
                 lines.append((0, 0, invoice_line_vals))
@@ -170,13 +166,12 @@ class AccountCheckReject(models.Model):
 class CheckRejectExpense(models.Model):
     _name = 'check.reject.expense'
 
-    product_id = fields.Many2one(comodel_name='product.product',
-                                 string='Product', required=True)
-    reject_id = fields.Many2one(comodel_name='account.check.reject',
-                                string='Reject')
-    price = fields.Float(string='Amount',
-                         digits=dp.get_precision('Account'),
-                         required=True)
+    product_id = fields.Many2one(
+        comodel_name='product.product', string='Product', required=True)
+    reject_id = fields.Many2one(
+        comodel_name='account.check.reject', string='Reject')
+    price = fields.Float(
+        string='Amount', digits=dp.get_precision('Account'), required=True)
 
 
 class CheckRejectIssuedCheck(models.Model):

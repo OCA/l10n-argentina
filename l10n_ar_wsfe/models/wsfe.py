@@ -561,6 +561,8 @@ class WsfeVoucherType(models.Model):
 
             denomination_id = voucher.denomination_id.id
             type = voucher.type
+            if type.startswith("in"):
+                type = "out_%s" % type[3:]
             if type == 'out_invoice':
                 if voucher.is_debit_note:
                     type = 'out_debit'
