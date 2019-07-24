@@ -467,9 +467,9 @@ class AccountInvoice(models.Model):
                 self.denomination_id = self.fiscal_position_id.\
                     denom_supplier_id
             else:
-                domain['pos_ar_id'] = [('denomination_id', '=',
-                                        self.denomination_id)]
                 self.denomination_id = self.fiscal_position_id.denomination_id
+                domain['pos_ar_id'] = [('denomination_ids', 'in',
+                                        [self.denomination_id.id])]
                 sorted_pos = self.denomination_id.pos_ar_ids.sorted(
                     key=lambda x: x.priority)
                 if sorted_pos and not self.pos_ar_id:
