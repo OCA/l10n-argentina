@@ -264,6 +264,12 @@ class account_invoice(models.Model):
                     if not m:
                         raise except_orm(_('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
+                # Check CAE length
+                if obj_inv.cae:
+                    m = re.match('^\d{14}$', obj_inv.cae)
+                    if not m:
+                        raise except_orm(_('Error'), _('CAE format is incorrect. Should be 14 numeric digits.'))
+
             # Escribimos los campos necesarios de la factura
             obj_inv.write(invoice_vals)
 
