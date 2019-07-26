@@ -64,7 +64,7 @@ class PoSBoxConceptAllowed(models.Model):
     _name = 'pos.box.concept.allowed'
     _description = 'Allow users to see PosBoxConcepts'
     _sql_constraints = [
-        ('name_unique', 'UNIQUE(model, name)', "Field name must be unique per model."),
+        ('name_unique', 'UNIQUE(name)', "Field name must be unique."),
     ]
 
     name = fields.Char('Name', required=True)
