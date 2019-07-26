@@ -56,22 +56,6 @@ class AccountInvoice(models.Model):
                                   "computed automatically when the " +
                                   "invoice is created.")
 
-    @api.multi
-    def get_default_pos_id(self):
-        """
-        By default return the default_pos for the user's commercial field
-        Otherwise, returns the current user default
-        """
-        self.ensure_one()
-        config_obj = self.env['ir.config_parameter']
-        config_param = config_obj.sudo().get_param('default_pos_setting', 'commercial')
-        if config_param == 'commercial':
-            res = self.user_id.property_default_pos_id
-        else:
-            res = self.env.user.property_default_pos_id
-        _logger.info('default_pos({}) for {}: {}'.format(config_param, self, res))
-        return res
-
     # DONE
     @api.multi
     def name_get(self):
@@ -477,7 +461,7 @@ class AccountInvoice(models.Model):
                 domain['pos_ar_id'] = [('denomination_ids', 'in',
                                         [self.denomination_id.id])]
                 if not self.pos_ar_id:
-                    default_pos_id = self.get_default_pos_id()
+                    default_pos_id = self.env.user.get_default_pos_id(self)
                     if default_pos_id:
                         self.pos_ar_id = default_pos_id
                     else:
