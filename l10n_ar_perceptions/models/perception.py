@@ -1,29 +1,27 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
+###############################################################################
 #
-#    Copyright (C) 2007-2018 E-MIPS (http://www.e-mips.com.ar)
-#    All Rights Reserved. Contact: info@e-mips.com.ar
-#
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/.
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
+###############################################################################
+
+import logging
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.addons import decimal_precision as dp
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -101,42 +99,6 @@ class PerceptionPerception(models.Model):
                                              self.name))
 
         return concepts
-
-    # Se deja el codigo comentado a modo de ejemplo,
-    # pero esta funcionalidad no tiene mucho sentido
-#    @api.multi
-#    def check_user_defined_base(self):
-#        self.ensure_one()
-#        user_defined_base = self.user_defined_base
-#        legend_vals = {
-#            'amount_taxed': str(100.0),
-#            'amount_no_taxed': str(50.0),
-#            'amount_untaxed': str(150.0),
-#            'amount_tax': str(21.0),
-#            'amount_total': str(171.0),
-#        }
-#
-#        try:
-#            test = eval(user_defined_base % (legend_vals))
-#        except Exception as e:
-#            raise except_orm(_('Error in expression'), e)
-#        return True
-
-    # Se deja el codigo comentado a modo de ejemplo,
-    # pero esta funcionalidad no tiene mucho sentido
-#    @api.model
-#    def _compute_user_defined_base(self, invoice, user_defined_base):
-#
-#        legend_vals = {
-#            'amount_untaxed': invoice.amount_untaxed,
-#            'amount_no_taxed': invoice.amount_no_taxed,
-#            'amount_taxed': invoice.amount_taxed,
-#            'amount_tax': invoice.amount_tax,
-#            'amount_total': invoice.amount_total,
-#        }
-#
-#        base = eval(user_defined_base % (legend_vals))
-#        return base
 
     @api.model
     def _check_perception_applicable(self, invoice, perception_data):

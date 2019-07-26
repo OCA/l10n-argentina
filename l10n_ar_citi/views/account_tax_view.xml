@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_tax_form_inherit_afip_code" model="ir.ui.view">
+            <field name="name">account.tax.form.inherit.citi</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type_tax_use']" position="after">
+                    <field name="afip_code"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

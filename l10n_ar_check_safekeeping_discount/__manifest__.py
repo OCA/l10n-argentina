@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
-#    Copyright (c) 2019 Eynes/E-MIPS
+#    Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,18 +18,16 @@
 ###############################################################################
 
 {
-    "name": "l10n_ar_check_safekeeping_discount",
-    "category": "Accounting & Finance",
+    "name": "Check Safeskeeping Discount",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
-    "description": "Module Description",
+    "description": "Check Discount & Safeskeeping link.",
     "depends": [
         "l10n_ar_check_safekeeping",
         "l10n_ar_check_discount",
     ],
-    "data": [],
-    "qweb": [],
     "installable": True,
     "application": True,
 }

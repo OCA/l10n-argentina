@@ -1,6 +1,6 @@
 ###############################################################################
 #
-#    Copyright (c) 2018 Eynes/E-MIPS
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,30 +18,30 @@
 ###############################################################################
 
 {
-    'name': 'Padron Retenciones y Percepciones',
-    'author': 'Eynes/E-MIPS',
-    'website': 'www.eynes.com.ar - www.e-mips.com.ar',
-    'version': '1.0',
-    'depends': [
-        'base_vat_ar',
-        'l10n_ar_retentions',
-        'l10n_ar_perceptions',
+    "name": "Padron Retenciones y Percepciones",
+    "category": "L10N AR",
+    "version": "11.0.1.0.0",
+    "author": "Eynes/E-MIPS",
+    "license": "AGPL-3",
+    "description": "According to AGIP & ARBA fiscal laws, this module allows to automatically import percentages of Retentions and Perceptions",  # noqa
+    "depends": [
+        "base_vat_ar",
+        "l10n_ar_retentions",
+        "l10n_ar_perceptions",
     ],
-    'category': '',
-    'description': "According to AGIP & ARBA fiscal laws, this module allows to automatically import percentages of Retentions and Perceptions",  # noqa
-    'data': [
-        'views/padron_view.xml',
-        'views/perception_view.xml',
-        'views/retention_view.xml',
-        'wizard/padron_import_view.xml',
-        'wizard/padron_mass_update_view.xml',
-        'security/ir.model.access.csv',
+    "data": [
+        "security/ir.model.access.csv",
+        "wizard/padron_import_view.xml",
+        "wizard/padron_mass_update_view.xml",
+        "views/padron_view.xml",
+        "views/perception_view.xml",
+        "views/retention_view.xml",
     ],
-    'external_dependencies': {
-        'python': [
-            'rarfile',
+    "external_dependencies": {
+        "python": [
+            "rarfile",
         ],
     },
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
 }

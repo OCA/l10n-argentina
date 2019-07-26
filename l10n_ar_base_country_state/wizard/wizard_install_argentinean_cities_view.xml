@@ -7,16 +7,16 @@
             <field name="type">form</field>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-            <form string="Install Argentinean Cities">
-                <group col="4" colspan="2">
-                    <field name="mode" groups="base.group_system"/>
-                    <field name="noupdate" groups="base.group_system"/>
-                </group>
-            </form>
-            <footer>
-                <button string="Run" type="object" name="button_run" class="oe_highlight"/>
-                <button string="Cancel" special="cancel"/>
-            </footer>
+                <form string="Install Argentinean Cities">
+                    <group col="4" colspan="2">
+                        <field name="mode" groups="base.group_system"/>
+                        <field name="noupdate" groups="base.group_system"/>
+                    </group>
+                </form>
+                <footer>
+                    <button string="Run" type="object" name="button_run" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
             </field>
         </record>
 

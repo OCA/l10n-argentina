@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
-#    Copyright (c) 2018 Eynes/E-MIPS
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,12 +18,12 @@
 ###############################################################################
 
 {
-    "name": "vat_ar_website",
-    "category": "Website",
+    "name": "Vat AR Website",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
-    "description": "Module Description",
+    "description": "VAT Check for Argentina in Website module",
     "depends": [
         "base",
         "website_sale",
@@ -32,7 +31,6 @@
     "data": [
         "views/templates.xml",
     ],
-    "qweb": ['static/src/xml/*.xml'],
     "installable": True,
     "application": True,
 }

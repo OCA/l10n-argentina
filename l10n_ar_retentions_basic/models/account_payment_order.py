@@ -1,7 +1,7 @@
-###############################################################################
-#    Copyright (c) 2011-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
@@ -15,40 +15,38 @@ class RetentionTaxLine(models.Model):
     # para manejar tambien propiedades segun estados
     name = fields.Char(string='Retention', size=64)
     date = fields.Date(string='Date', index=True)
-    payment_order_id = fields.Many2one(comodel_name='account.payment.order',
-                                       string='Payment Order',
-                                       ondelete='cascade')
+    payment_order_id = fields.Many2one(
+        comodel_name='account.payment.order', string='Payment Order',
+        ondelete='cascade')
     voucher_number = fields.Char(string='Reference', size=64)
-    account_id = fields.Many2one(comodel_name='account.account',
-                                 string='Tax Account',
-                                 required=True,
-                                 domain=[('type', '<>', 'view'),
-                                         ('type', '<>', 'income'),
-                                         ('type', '<>', 'closed')])
+    account_id = fields.Many2one(
+        comodel_name='account.account', string='Tax Account', required=True,
+        domain=[
+            ('type', '<>', 'view'),
+            ('type', '<>', 'income'),
+            ('type', '<>', 'closed')])
     base = fields.Float(string='Base', digits=dp.get_precision('Account'))
     amount = fields.Float(string='Amount', digits=dp.get_precision('Account'))
-    retention_id = fields.Many2one(comodel_name='retention.retention',
-                                   string='Retention Configuration',
-                                   required=True,
-                                   help="Retention configuration used for this \
-                                   retention tax, where all the configuration \
-                                   resides. Accounts, Tax Codes, etc.")
-    base_amount = fields.Float(comodel_name='Base Code Amount',
-                               digits=dp.get_precision('Account'))
-    tax_amount = fields.Float(string='Tax Code Amount',
-                              digits=dp.get_precision('Account'))
-    company_id = fields.Many2one(string='Company',
-                                 related='account_id.company_id',
-                                 store=True, readonly=True)
-    partner_id = fields.Many2one(comodel_name='res.partner',
-                                 string='Partner', required=False)
-    vat = fields.Char(string='CIF/NIF',
-                      related='partner_id.vat',
-                      readonly=True)
-    certificate_no = fields.Char(string='Certificate No.',
-                                 required=False, size=32)
-    state_id = fields.Many2one(comodel_name='res.country.state',
-                               string="State/Province")
+    retention_id = fields.Many2one(
+        comodel_name='retention.retention',
+        string='Retention Configuration', required=True,
+        help="Retention configuration used for this retention tax, where " +
+        "all the configuration resides. Accounts, Tax Codes, etc.")
+    base_amount = fields.Float(
+        comodel_name='Base Code Amount', digits=dp.get_precision('Account'))
+    tax_amount = fields.Float(
+        string='Tax Code Amount', digits=dp.get_precision('Account'))
+    company_id = fields.Many2one(
+        string='Company', related='account_id.company_id',
+        store=True, readonly=True)
+    partner_id = fields.Many2one(
+        comodel_name='res.partner', string='Partner', required=False)
+    vat = fields.Char(
+        string='CIF/NIF', related='partner_id.vat', readonly=True)
+    certificate_no = fields.Char(
+        string='Certificate No.', required=False, size=32)
+    state_id = fields.Many2one(
+        comodel_name='res.country.state', string="State/Province")
 
     @api.onchange('retention_id')
     def onchange_retention(self):
@@ -56,8 +54,6 @@ class RetentionTaxLine(models.Model):
         if retention.id:
             self.name = retention.name
             self.account_id = retention.tax_id.account_id.id
-            # self.base_code_id = retention.tax_id.base_code_id.id
-            # self.tax_code_id = retention.tax_id.tax_code_id.id
 
             if retention.state_id:
                 self.state_id = retention.state_id.id
@@ -90,10 +86,6 @@ class RetentionTaxLine(models.Model):
             voucher._convert_paid_amount_in_company_currency(retention.amount)
 
         debit = credit = 0.0
-
-        # Lo escribimos en el objeto retention_tax_line
-        # retention_vals['tax_amount'] = tax_amount_in_company_currency
-        # retention_vals['base_amount'] = base_amount_in_company_currency
 
         retention.write(retention_vals)
 

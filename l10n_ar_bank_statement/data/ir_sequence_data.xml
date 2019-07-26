@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data noupdate="1">
+    <data noupdate="1">
 
-    <record id="seq_account_bank_statement" model="ir.sequence">
-        <field name="name">Account Bank Statement Sequence</field>
-        <field name="code">account.bank.statement</field>
-        <field name="padding">10</field>
-        <field name="company_id" eval="False"/>
-    </record>
+        <record id="seq_account_bank_statement" model="ir.sequence">
+            <field name="name">Account Bank Statement Sequence</field>
+            <field name="code">account.bank.statement</field>
+            <field name="padding">10</field>
+            <field name="company_id" eval="False"/>
+        </record>
 
-</data>
+    </data>
 </odoo>

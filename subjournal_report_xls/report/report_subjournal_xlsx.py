@@ -1,12 +1,13 @@
-###############################################################################
-#   Copyright (c) 2018 Eynes/E-MIPS (Cardozo Nicolás Joaquin)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
+
+from string import ascii_uppercase
+import logging
 
 from odoo import models, _
 from odoo.exceptions import UserError
-from string import ascii_uppercase
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ def int2xlscol(number, state=None):
     if state is None:
         state = []
     alpsize = ascii_uppercase.__len__()
-    q, r = divmod(number,alpsize)
+    q, r = divmod(number, alpsize)
     if q == 0:
         state.append(ascii_uppercase[r])
         return ''.join(reversed(state))
@@ -332,8 +333,8 @@ class SubjournalXlsx(models.AbstractModel):
 
     def _report_xls_fields(self):
         base_lst = [
-            'Fecha', 'Compañía', 'Razon Social', 'Provincia', 'CUIT', 'Cond. IVA',
-            'Tipo', 'Numero', 'No Gravado', 'Total'
+            'Fecha', 'Compañía', 'Razon Social', 'Provincia', 'CUIT',
+            'Cond. IVA', 'Tipo', 'Numero', 'No Gravado', 'Total'
         ]
         config_obj = self.env['ir.config_parameter']
         config_param = config_obj.sudo().get_param('subjournal_export_cae')
@@ -409,7 +410,8 @@ class SubjournalXlsx(models.AbstractModel):
             i = 8
             for t, tax in enumerate(cols):
                 if self.c_taxes[t] > 0:
-                    sheet.write(int2xlscol(i)+str(p), line['taxes'][t], cell_format)
+                    sheet.write(int2xlscol(i)+str(p), line['taxes'][t],
+                                cell_format)
                     i += 1
             sheet.write(int2xlscol(i)+str(p), line['no_taxed'], cell_format)
             sheet.write(int2xlscol(i+1)+str(p), line['total'], cell_format)

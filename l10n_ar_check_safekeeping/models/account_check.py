@@ -1,16 +1,10 @@
-# -*- coding: utf-8 -*-
-###############################################################################
-#   Copyright (c) 2019 Eynes/E-MIPS (Julian Corso)
+##############################################################################
+#   Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-import logging
-
-from odoo import models, api, fields, _, exceptions
+from odoo import _, models, api, fields
 from odoo.exceptions import ValidationError
-from datetime import datetime
-
-_logger = logging.getLogger(__name__)
 
 
 class AccountThirdCheck(models.Model):

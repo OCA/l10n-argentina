@@ -1,8 +1,7 @@
-###############################################################################
-#   Copyright (c) 2017-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -21,13 +20,13 @@ class AccountTax(models.Model):
         string='Exempt',
         default=False,
         help="Check this if this Tax represent Tax Exempts")
-    tax_group = fields.Selection([('vat', 'VAT'),
-                                  ('perception', 'Perception'),
-                                  ('retention', 'Retention'),
-                                  ('internal', 'Internal Tax'),
-                                  ('other', 'Other')], string='Tax Group',
-                                 default='vat', required=True,
-                                 help="This is tax categorization.")
+    tax_group = fields.Selection([
+        ('vat', 'VAT'),
+        ('perception', 'Perception'),
+        ('retention', 'Retention'),
+        ('internal', 'Internal Tax'),
+        ('other', 'Other')], string='Tax Group',
+        default='vat', required=True, help="This is tax categorization.")
 
 
 @api.multi

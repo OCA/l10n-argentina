@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_currency_form_inherit_afip_code" model="ir.ui.view">
+            <field name="name">res.currency.form.inherit.citi</field>
+            <field name="model">res.currency</field>
+            <field name="inherit_id" ref="base.view_currency_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_subunit_label']" position="after">
+                    <field name="afip_code"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

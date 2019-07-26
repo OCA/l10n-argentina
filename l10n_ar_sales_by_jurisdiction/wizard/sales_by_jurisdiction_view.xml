@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="export_sales_by_jurisdiction_view" model="ir.ui.view">
+            <field name="name">Sales By Jurisdiction</field>
+            <field name="model">export.sales.by.jurisdiction.xls</field>
+            <field name="arch" type="xml">
+                <form string="Report Options" version="7.0">
+                    <group colspan="4">
+                        <!-- <field name="fiscalyear_id"/> -->
+                    </group>
+                    <notebook tabpos="up" colspan="4">
+                        <page string="Filters" name="filters">
+                            <group string="Company">
+                                <field name="company_ids" widget="many2many_tags"/>
+                            </group>
+                            <group string="Periods">
+                                <field name="period_from"/>
+                                <field name="period_to"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="xls_export" string="Export" type="object" class="oe_highlight" context="{'xls_export':1}"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_export_sales_by_jurisdiction" model="ir.actions.act_window">
+            <field name="name">Export Sales by Jurisdiction</field>
+            <field name="res_model">export.sales.by.jurisdiction.xls</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="export_sales_by_jurisdiction_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="Sales by Jurisdiction"
+            parent="account.account_reports_management_menu"
+            action="action_export_sales_by_jurisdiction"
+            id="menu_export_sales_by_jurisdiction"/>
+
+    </data>
+</openerp>

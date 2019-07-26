@@ -1,9 +1,6 @@
 ###############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013-2014 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
-#    All Rights Reserved. See readme/CONTRIBUTORS.rst for details.
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -12,46 +9,32 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+
 {
-    "name": "WSAA",
+    "name": "WSAA (Web Service Afip Authentication)",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
+    "author": "Eynes/E-MIPS",
+    "license": "AGPL-3",
+    "description": "Authentication for AFIP Web Services",
     "depends": [
         "base",
         "account",
         "l10n_ar_point_of_sale",
     ],
-    "author": "Proyecto Aconcagua",
-    "website": "http://proyectoaconcagua.com.ar",
-    "license": "GPL-3",
-    "category": "Accounting & Finance",
-    "description": """
-WSAA (Web Service de Autenticación y Autorización).
-===================================================
-
-Este módulo nos permite el uso del WSAA para utilizar luego los demás
-servicios disponibles por la AFIP. Este módulo es dependencia de los
-demás módulos de Servicios Web de AFIP.
-
-Dependencias Python:
-********************
-python-m2crypto
-pyopenssl
-    """,
-    'data': [
-        'wizard/wsaa_config_renewal.xml',
-        'views/wsaa_view.xml',
-        'views/certificate_request_view.xml',
-        'security/ir.model.access.csv',
+    "data": [
+        "security/ir.model.access.csv",
+        "wizard/wsaa_config_renewal.xml",
+        "views/wsaa_view.xml",
+        "views/certificate_request_view.xml",
     ],
-    'demo': [
-        'demo/wsaa_demo.xml',
-    ],
-    'installable': True,
+    "installable": True,
+    "application": True,
 }

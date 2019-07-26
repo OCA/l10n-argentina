@@ -5,43 +5,43 @@
         <field name="name">Add statement lines</field>
         <field name="model">wizard.add.account.bank.statement.line</field>
         <field name="arch" type="xml">
-        <form string="Add Statement lines">
-            <field name="do_confirm" class="oe_inline" default_focus="1"/>
-            <label for="do_confirm" class="oe_inline" string="Add lines and validate them too"/>
-            <group colspan="4" col="4">
-                <field name="statement_id" invisible="1"/>
-                <field name="journal_id" invisible="1"/>
-                <field name="statement_line_ids" colspan="4" nolabel="1" options="{'no_create': true}"
-                    context="{'form_view_ref': 'l10n_ar_bank_statement.view_account_bank_statement_line_form_readonly'}"
-                    domain="[('state', '=', 'open'), ('statement_id', '=', False), ('journal_id','=', journal_id)]">
-                    <search>
-                        <field name="date"/>
-                        <field name="name"/>
-                        <field name="ref"/>
-                        <field name="payment_id"/>
-                        <field name="payment_order_id"/>
-                        <field name="partner_id"/>
-                        <field name="line_type"/>
-                        <field name="account_id"/>
-                    </search>
-                    <tree>
-                        <field name="date"/>
-                        <field name="name"/>
-                        <field name="ref"/>
-                        <field name="payment_id"/>
-                        <field name="payment_order_id"/>
-                        <field name="partner_id"/>
-                        <field name="line_type"/>
-                        <field name="account_id"/>
-                        <field name="amount" sum="Total"/>
-                    </tree>
-                </field>
-                <footer>
-                    <button name="button_add_lines" string="Add" type="object" class="oe_highlight"/>
-                    <button special="cancel" string="Cancel"/>
-                </footer>
-            </group>
-        </form>
+            <form string="Add Statement lines">
+                <field name="do_confirm" class="oe_inline" default_focus="1"/>
+                <label for="do_confirm" class="oe_inline" string="Add lines and validate them too"/>
+                <group colspan="4" col="4">
+                    <field name="statement_id" invisible="1"/>
+                    <field name="journal_id" invisible="1"/>
+                    <field name="statement_line_ids" colspan="4" nolabel="1" options="{'no_create': true}"
+                        context="{'form_view_ref': 'l10n_ar_bank_statement.view_account_bank_statement_line_form_readonly'}"
+                        domain="[('state', '=', 'open'), ('statement_id', '=', False), ('journal_id','=', journal_id)]">
+                        <search>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="ref"/>
+                            <field name="payment_id"/>
+                            <field name="payment_order_id"/>
+                            <field name="partner_id"/>
+                            <field name="line_type"/>
+                            <field name="account_id"/>
+                        </search>
+                        <tree>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="ref"/>
+                            <field name="payment_id"/>
+                            <field name="payment_order_id"/>
+                            <field name="partner_id"/>
+                            <field name="line_type"/>
+                            <field name="account_id"/>
+                            <field name="amount" sum="Total"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="button_add_lines" string="Add" type="object" class="oe_highlight"/>
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </group>
+            </form>
         </field>
     </record>
 

@@ -1,6 +1,6 @@
 ###############################################################################
 #
-#    Copyright (c) 2018 Eynes/E-MIPS
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,12 @@
 ###############################################################################
 
 {
-    "name": "Point of Sale ARGENTINA",
-    "category": "Accounting & Finance",
+    "name": "Point of Sale",
+    "category": "L10N AR",
     "version": "11.0.1.0.1",
     "author": "Eynes/E-MIPS",
-    "website": "http://eynes.com.ar",
     "license": "AGPL-3",
-    "description": "Normativas básicas para la Facturación Argentina",  # noqa
+    "description": "Normativas básicas para la Facturación Argentina",
     "depends": [
         "base",
         "sale_stock",
@@ -35,18 +34,18 @@
         "base_vat_ar"
     ],
     "data": [
-        'data/partner_data.xml',
-        'data/iibb_situation_data.xml',
-        'views/pos_ar_view.xml',
-        'views/account_invoice_view.xml',
-        'views/partner_view.xml',
-        'views/account_view.xml',
-        'views/iibb_situation_view.xml',
-        'views/menuitems.xml',
-        'security/pos_ar_rule.xml',
-        'views/res_users_view.xml',
-        'security/ir.model.access.csv',
+        "security/pos_ar_rule.xml",
+        "security/ir.model.access.csv",
+        "data/partner_data.xml",
+        "data/iibb_situation_data.xml",
+        "views/pos_ar_view.xml",
+        "views/account_invoice_view.xml",
+        "views/partner_view.xml",
+        "views/account_view.xml",
+        "views/iibb_situation_view.xml",
+        "views/res_users_view.xml",
+        "views/menuitems.xml",
     ],
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
 }

@@ -71,7 +71,7 @@
                                 <field name="journal_id"
                                     domain="[('type','=','receipt'), ('company_id', '=', company_id)]"
                                     string="Journal"
-				    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
+                                    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
                                     attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
@@ -363,7 +363,7 @@
                                 <field name="journal_id"
                                     domain="[('type', '=', 'payment'), ('company_id', '=', company_id)]"
                                     invisible="context.get('line_type', False)"
-				    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
+                                    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
                                     string="Journal"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"

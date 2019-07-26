@@ -1,10 +1,10 @@
-###############################################################################
-#   Copyright (c) 2019 Eynes/E-MIPS
+##############################################################################
+#   Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-from odoo import api, models, fields, _
-from odoo.exceptions import UserError
+from odoo import _, api, models
+from odoo.exceptions import UserError, ValidationError
 import time
 from datetime import datetime
 
@@ -17,16 +17,16 @@ class AccountCheckDeposit(models.Model):
         record_ids = self.env.context.get('active_ids', [])
         for check in check_obj.browse(record_ids):
             if check.state not in ['wallet', 'safekeeped']:
-                raise UserError(_("Error! The selected checks must be \
-                    in wallet or safekeeped.\nCheck %s is not in wallet or safekeeped") % (check.number))
-        pass
+                raise UserError(
+                    _("Error! The selected checks must be in wallet " +
+                      "or safekeeped.\nCheck %s is not in wallet or " +
+                      "safekeeped") % (check.number))
 
     @api.multi
     def _prepare_move_line(self, check, account_id, move_id):
         deposit_date = self.date or time.strftime('%Y-%m-%d')
         line_vals = {
             'name': _('Check Deposit'),
-            # 'centralisation': 'normal',
             'account_id': account_id,
             'move_id': move_id,
             'journal_id': self.journal_id.id,
@@ -87,18 +87,18 @@ class AccountCheckDeposit(models.Model):
 
         for check in check_objs:
             if check.state not in ['wallet', 'safekeeped']:
-                raise UserError(_("Error! The selected checks must to be in \
-                    wallet or safekeeped.\nCheck %s is not in wallet or safekeeped") % (check.number))
+                raise UserError(
+                    _("Error! The selected checks must to be in wallet or " +
+                      "safekeeped.\nCheck %s is not in wallet or safekeeped")
+                    % (check.number))
 
             if check.payment_date > deposit_date:
-                raise UserError(_("Cannot deposit! You cannot deposit check %s \
-                    because Payment Date is greater than \
-                    Deposit Date.") % (check.number))
+                raise UserError(
+                    _("Cannot deposit! You cannot deposit check %s " +
+                      "because Payment Date is greater than Deposit Date.")
+                    % (check.number))
 
             account_check_id = self._get_source_account_check(company_id)
-
-            # name = self.pool.get('ir.sequence').get_id(cr, uid,
-            # check.payment_order_id.journal_id.id)
 
             if self.voucher_number:
                 move_ref = _('Deposit Check %s [%s]') % (check.number,
@@ -112,7 +112,6 @@ class AccountCheckDeposit(models.Model):
                 'state': 'draft',
                 'period_id': period_id,
                 'date': deposit_date,
-                # 'to_check': True,
                 'ref': move_ref,
             })
             ctx_validity = {'check_move_validity': False}
@@ -124,7 +123,8 @@ class AccountCheckDeposit(models.Model):
                 check_config = self.get_check_config()
                 account_check_id = check_config.safekept_account_id.id
 
-            line_vals = self._prepare_counterpart_line(check, account_check_id, move.id)
+            line_vals = self._prepare_counterpart_line(
+                check, account_check_id, move.id)
             move_line_obj.with_context(ctx_validity).create(line_vals)
 
             check_vals = {
@@ -137,4 +137,3 @@ class AccountCheckDeposit(models.Model):
             move.post()
 
         return {'type': 'ir.actions.act_window_close'}
-

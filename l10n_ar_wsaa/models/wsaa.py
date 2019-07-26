@@ -1,11 +1,9 @@
-###############################################################################
-#    Copyright (c) 2013-2014 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import models, fields, api
-# sfrom openerp.osv import osv
 from datetime import datetime, timedelta
 from odoo.addons.l10n_ar_wsaa.utils.wsaa_suds import WSAA as wsaa
 from odoo import SUPERUSER_ID

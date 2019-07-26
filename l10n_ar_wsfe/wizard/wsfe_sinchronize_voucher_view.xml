@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-		<record id="view_wsfe_sinchronize_voucher" model="ir.ui.view">
+        <record id="view_wsfe_sinchronize_voucher" model="ir.ui.view">
             <field name="name">WSFE Sinchronize Voucher</field>
             <field name="model">wsfe.sinchronize.voucher</field>
             <field name="type">form</field>
@@ -52,13 +52,13 @@
             </field>
         </record>
 
-    <act_window id="action_wsfe_sinchronize_voucher"
-        name="WSFE Sinchronize Voucher"
-        res_model="wsfe.sinchronize.voucher"
-        src_model="account.invoice"
-        view_mode="form"
-        target="new"
-        key2="client_action_multi"/>
+        <act_window id="action_wsfe_sinchronize_voucher"
+            name="WSFE Sinchronize Voucher"
+            res_model="wsfe.sinchronize.voucher"
+            src_model="account.invoice"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
 
     </data>
 </odoo>

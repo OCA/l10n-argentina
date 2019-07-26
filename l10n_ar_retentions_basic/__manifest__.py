@@ -1,8 +1,6 @@
 ###############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2011-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    All Rights Reserved. See readme/CONTRIBUTORS.rst for details.
+#    Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -11,35 +9,31 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+
 {
     "name": "Retentions for ARGENTINA (Retenciones)",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
+    "author": "Eynes/E-MIPS",
+    "license": "AGPL-3",
+    "description": "Implementation of Retentions Taxes for Argentina",
     "depends": [
         "l10n_ar_retentions_perceptions_common",
     ],
-    "author": "Eynes/E-MIPS",
-    "website": "http://eynes.com.ar",
-    "license": "AGPL-3",
-    "category": "Localisation Modules",
-    "description": """
-    This module provides:
-    Implementation of Retentions Taxes for Argentina
-    based on tax objects of OpenERP like account.tax and account.tax.code.
-    """,
-    'data': [
-        'security/res_groups_data.xml',
-        'security/ir.model.access.csv',
-        'views/retention_view.xml',
-        'views/voucher_payment_receipt_view.xml',
-        'views/menuitems.xml',
+    "data": [
+        "security/res_groups_data.xml",
+        "security/ir.model.access.csv",
+        "views/retention_view.xml",
+        "views/voucher_payment_receipt_view.xml",
+        "views/menuitems.xml",
     ],
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
 }

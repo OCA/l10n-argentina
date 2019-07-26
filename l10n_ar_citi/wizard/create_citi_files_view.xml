@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--  CITI Files Generation -->
+
+        <record id="view_create_sired_files" model="ir.ui.view">
+            <field name="name">CITI Files Generation</field>
+            <field name="model">create.citi.files</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <field name="state" invisible="1"/>
+                    <label string="This wizard allows you to create files to import to SIAp for CITI. The files generated will be attached to corresponding period." colspan="4"/>
+                    <separator colspan="4"/>
+                    <field name="period_id"/>
+                    <separator string="Validation Errors" colspan="4"/>
+                    <field name="notes" readonly="1" nolabel="1" colspan="4"/>
+                    <group col="2" colspan="4">
+                        <button icon='gtk-cancel' special="cancel" string="Cancel" states="init"/>
+                        <button name="create_files" string="Generate" colspan="1" type="object" icon="gtk-ok" states="init"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- <act_window  -->
+            <!--     name="CITI Files Generation" -->
+            <!--     res_model="create.citi.files" -->
+            <!--     src_model="account.period" -->
+            <!--     view_mode="form" -->
+            <!--     target="new" -->
+            <!--     key2="client_action_multi" -->
+            <!--     id="action_generate_citi_files" -->
+            <!--     /> -->
+        <!--  -->
+        <!-- <menuitem  -->
+            <!--     id="account_misc_reports_menu"  -->
+            <!--     parent="account.menu_finance_reports" -->
+            <!--     sequence="20" -->
+            <!--     name="Miscellaneous Reports" -->
+            <!--     /> -->
+        <!--  -->
+        <!-- <menuitem  -->
+            <!--     id="account_citi_reports_menu"  -->
+            <!--     parent="account_misc_reports_menu" -->
+            <!--     sequence="02" -->
+            <!--     name="CITI Files Generation" -->
+            <!--     action="action_generate_citi_files" -->
+            <!--     /> -->
+
+        <record id="action_generate_citi_files" model="ir.actions.act_window">
+            <field name="name">CITI</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">create.citi.files</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_action_citi"
+            name="CITI Exporter"
+            parent="account.account_reports_management_menu"
+            action="action_generate_citi_files"
+            icon="STOCK_PRINT"/>
+
+    </data>
+</openerp>

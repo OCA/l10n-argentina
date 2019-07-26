@@ -1,14 +1,15 @@
-###############################################################################
-#   Copyright (c) 2012-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
+
+import time
 
 from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
-import time
 
 
 class wsfe_sinchronize_voucher(models.TransientModel):
@@ -23,30 +24,27 @@ class wsfe_sinchronize_voucher(models.TransientModel):
         wsfe_conf_model = self.env['wsfe.config']
         return wsfe_conf_model.get_config()
 
-    voucher_type = fields.Many2one('wsfe.voucher_type', 'Voucher Type',
-                                   required=True)
+    voucher_type = fields.Many2one(
+        'wsfe.voucher_type', 'Voucher Type', required=True)
     pos_id = fields.Many2one('pos.ar', 'POS', required=True)
-    config_id = fields.Many2one('wsfe.config', 'Config',
-                                default=_get_def_config)
+    config_id = fields.Many2one(
+        'wsfe.config', 'Config', default=_get_def_config)
     voucher_number = fields.Integer('Number', required=True)
-    document_type = fields.Many2one('res.document.type', 'Document Type',
-                                    readonly=True)
+    document_type = fields.Many2one(
+        'res.document.type', 'Document Type', readonly=True)
     document_number = fields.Char('Document Number', readonly=True)
     date_invoice = fields.Date('Date Invoice', readonly=False)
-    amount_total = fields.Float(digits=dp.get_precision('Account'),
-                                string="Total", readonly=True)
-    amount_no_taxed = fields.Float(digits=dp.get_precision('Account'),
-                                   string="No Taxed", readonly=True)
-    # amount_untaxed = fields.float(digits=dp.get_precision('Account'),
-    #                               string="Untaxed", readonly=True)
-    amount_taxed = fields.Float(digits=dp.get_precision('Account'),
-                                string="Taxed", readonly=True)
-    amount_tax = fields.Float(digits=dp.get_precision('Account'),
-                              string="Tax", readonly=True)
-    amount_exempt = fields.Float(digits=dp.get_precision('Account'),
-                                 string="Amount Exempt", readonly=True)
-    # currency = fields.many2one('res.currency', string="Currency",
-    #                            readonly=True)
+    amount_total = fields.Float(
+        digits=dp.get_precision('Account'), string="Total", readonly=True)
+    amount_no_taxed = fields.Float(
+        digits=dp.get_precision('Account'), string="No Taxed", readonly=True)
+    amount_taxed = fields.Float(
+        digits=dp.get_precision('Account'), string="Taxed", readonly=True)
+    amount_tax = fields.Float(
+        digits=dp.get_precision('Account'), string="Tax", readonly=True)
+    amount_exempt = fields.Float(
+        digits=dp.get_precision('Account'), string="Amount Exempt",
+        readonly=True)
     cae = fields.Char('CAE', size=32, required=False, readonly=False)
     cae_due_date = fields.Date('CAE Due Date', readonly=False)
     date_process = fields.Datetime('Date Processed', readonly=True)

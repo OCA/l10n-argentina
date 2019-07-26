@@ -1,14 +1,13 @@
-###############################################################################
-#   Copyright (c) 2017-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import api, models, _
 from odoo.exceptions import UserError
 
 
-class sale_order(models.Model):
+class SaleOrder(models.Model):
     _name = "sale.order"
     _inherit = "sale.order"
 
@@ -32,14 +31,13 @@ class sale_order(models.Model):
 
     # DONE
     @api.model
-    # def _prepare_invoice(self, order, lines):
     def _prepare_invoice(self):
         """Se le agrega denominación y
            punto de venta a la factura
         """
 
         fpos_obj = self.env['account.fiscal.position']
-        res = super(sale_order, self)._prepare_invoice()
+        res = super()._prepare_invoice()
 
         fiscal_position = res['fiscal_position_id']
         if not fiscal_position:

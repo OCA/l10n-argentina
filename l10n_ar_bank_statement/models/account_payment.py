@@ -1,22 +1,6 @@
 ##############################################################################
-#
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#    All Rights Reserved. See AUTHORS for details.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 from odoo import _, api, exceptions, fields, models
@@ -51,7 +35,9 @@ class AccountPayment(models.Model):
             payment.statement_count = statement_count
 
     def _build_invoices_info(self):
-        """Show invoices name concatenated."""
+        """
+        Show invoices name concatenated.
+        """
 
         invoices = self.mapped("invoice_ids")
         return ', '.join(name or '' for _id, name in invoices.name_get())
@@ -85,14 +71,15 @@ class AccountPayment(models.Model):
             'line_type': line_type,
             'amount': amount,
             'state': 'open',
-            #'creation_type': 'system',
         }
 
         return st_line_values
 
     def no_statement_redirect(self):
-        err = _("No open 'Cash' Bank Statement! Go to the dashboard and open it")
-        action_id = self.env.ref("account.open_account_journal_dashboard_kanban").id
+        err = _("No open 'Cash' Bank Statement! " +
+                "Go to the dashboard and open it")
+        action_id = self.env.ref(
+            "account.open_account_journal_dashboard_kanban").id
         raise exceptions.RedirectWarning(err, action_id, _("Open Dashboard"))
 
     def _create_statement_line(self, st_line_values):
@@ -118,7 +105,8 @@ class AccountPayment(models.Model):
         for payment in self:
             payment_type = payment.payment_type
             journal = payment.journal_id
-            if not journal.detach_statement_lines() or payment_type not in ("inbound", "outbound"):
+            if not journal.detach_statement_lines() or \
+                    payment_type not in ("inbound", "outbound"):
                 continue
 
             self.create_statement_line(payment, journal)

@@ -1,22 +1,6 @@
 ##############################################################################
-#
-#    Copyright (C) 2004-2010 Pexego Sistemas Informáticos. All Rights Reserved
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 from odoo import api, fields, models
@@ -69,7 +53,8 @@ class AccountBankStatement(models.Model):
         return ret
 
     def unlink_unconfirmed_lines(self):
-        unconfirmed_lines = self.mapped("line_ids").filtered(lambda l: l.state != "confirm")
+        unconfirmed_lines = self.mapped("line_ids").filtered(
+            lambda l: l.state != "confirm")
         return unconfirmed_lines.remove_line()
 
     @api.multi
@@ -88,10 +73,12 @@ class AccountBankStatementLine(models.Model):
     journal_id = fields.Many2one(related=False)
     company_id = fields.Many2one(related=False)
     statement_state = fields.Selection(related="statement_id.state")
-    payment_id = fields.Many2one('account.payment', string='Payment reference', copy=False)
-    payment_order_id = fields.Many2one('account.payment.order', string='Payment Order reference',
-                                       copy=False)
-    concept_id = fields.Many2one(comodel_name='pos.box.concept', string='Concept')
+    payment_id = fields.Many2one(
+        'account.payment', string='Payment reference', copy=False)
+    payment_order_id = fields.Many2one(
+        'account.payment.order', string='Payment Order reference', copy=False)
+    concept_id = fields.Many2one(
+        comodel_name='pos.box.concept', string='Concept')
     line_type = fields.Selection(
         [
             ("in", "Income"),
@@ -103,8 +90,9 @@ class AccountBankStatementLine(models.Model):
         help="Type of the associated operation",
         required=True,
     )
-    state = fields.Selection(lambda l: l._get_state_select(), related=False, string='Status',
-                             readonly=False, default=lambda l: l._get_default_state_value())
+    state = fields.Selection(
+        lambda l: l._get_state_select(), related=False, string='Status',
+        readonly=False, default=lambda l: l._get_default_state_value())
 
     def open_line(self):
         return self.write({"state": "open"})
@@ -130,16 +118,19 @@ class AccountBankStatementLine(models.Model):
         statement_id = vals.get('statement_id')
         if not vals.get('company_id'):
             if journal_id:
-                company_id = self.env['account.journal'].browse(journal_id).company_id.id
+                company_id = self.env['account.journal'].browse(
+                    journal_id).company_id.id
             else:
                 company_model = self.env['res.company']
-                company_id = company_model._company_default_get('account.bank.statement').id
+                company_id = company_model._company_default_get(
+                    'account.bank.statement').id
             if company_id:
                 vals['company_id'] = company_id
         # Not journal here? gather the one defined in the statement
         # Done to handle differences in cash amount
         if not journal_id and statement_id:
-            touse_journal = self.env['account.bank.statement'].browse(statement_id).journal_id
+            touse_journal = self.env['account.bank.statement'].browse(
+                statement_id).journal_id
             if touse_journal:
                 vals['journal_id'] = touse_journal.id
         self.ensure_line_type(vals)
@@ -160,7 +151,8 @@ class AccountBankStatementLine(models.Model):
 
     def _get_default_state_value(self):
         try:
-            return self.env["account.bank.statement"].default_get(["state"])["state"]
+            return self.env["account.bank.statement"].default_get(
+                ["state"])["state"]
         except KeyError:
             return False
 
@@ -169,7 +161,8 @@ class AccountBankStatementLine(models.Model):
 
     def fast_counterpart_creation(self):
         wont_create_move = self.filtered(self._filter_state_to_create_move)
-        return super(AccountBankStatementLine, self - wont_create_move).fast_counterpart_creation()
+        return super(AccountBankStatementLine, self - wont_create_move).\
+            fast_counterpart_creation()
 
     def confirm(self):
         return self.write({"state": "confirm"})

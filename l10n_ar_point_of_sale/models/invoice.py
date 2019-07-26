@@ -1,9 +1,7 @@
-###############################################################################
-#   Copyright (c) 2017-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
-
+##############################################################################
 
 import re
 import logging
@@ -19,42 +17,36 @@ class AccountInvoice(models.Model):
     _inherit = "account.invoice"
     _order = "date_invoice desc, internal_number desc"
 
-    pos_ar_id = fields.Many2one(comodel_name='pos.ar',
-                                string='Point of Sale',
-                                readonly=True,
-                                states={'draft': [('readonly', False)]})
+    pos_ar_id = fields.Many2one(
+        comodel_name='pos.ar', string='Point of Sale',
+        readonly=True, states={'draft': [('readonly', False)]})
     is_debit_note = fields.Boolean(string='Debit Note', default=False)
-    denomination_id = fields.Many2one(comodel_name='invoice.denomination',
-                                      readonly=True,
-                                      states={'draft': [('readonly', False)]})
-    internal_number = fields.Char(string='Invoice Number', size=32,
-                                  readonly=True,
-                                  states={'draft': [('readonly', False)]},
-                                  help="Unique number of the invoice, computed \
-                                  automatically when the invoice is created.")
-    amount_exempt = fields.Monetary(string='Amount Exempt',
-                                    digits=dp.get_precision('Account'),
-                                    store=True,
-                                    readonly=True, compute='_compute_amount')
-    amount_no_taxed = fields.Monetary(string='No Taxed',
-                                      digits=dp.get_precision('Account'),
-                                      store=True, readonly=True,
-                                      compute='_compute_amount')
-    amount_taxed = fields.Monetary(string='VAT Base',
-                                   digits=dp.get_precision('Account'),
-                                   store=True, readonly=True,
-                                   compute='_compute_amount')
-    amount_other_taxed = fields.Monetary(string='Other Tax Base',
-                                         digits=dp.get_precision('Account'),
-                                         store=True, readonly=True,
-                                         compute='_compute_amount')
+    denomination_id = fields.Many2one(
+        comodel_name='invoice.denomination', readonly=True,
+        states={'draft': [('readonly', False)]})
+    internal_number = fields.Char(
+        string='Invoice Number', size=32, readonly=True,
+        states={'draft': [('readonly', False)]},
+        help="Unique number of the invoice, computed automatically when " +
+        "the invoice is created.")
+    amount_exempt = fields.Monetary(
+        string='Amount Exempt', digits=dp.get_precision('Account'),
+        store=True, readonly=True, compute='_compute_amount')
+    amount_no_taxed = fields.Monetary(
+        string='No Taxed', digits=dp.get_precision('Account'), store=True,
+        readonly=True, compute='_compute_amount')
+    amount_taxed = fields.Monetary(
+        string='VAT Base', digits=dp.get_precision('Account'), store=True,
+        readonly=True, compute='_compute_amount')
+    amount_other_taxed = fields.Monetary(
+        string='Other Tax Base', digits=dp.get_precision('Account'),
+        store=True, readonly=True, compute='_compute_amount')
     local = fields.Boolean(string='Local', default=True)
     dst_cuit_id = fields.Many2one('dst_cuit.codes', 'Country CUIT')
-    internal_number = fields.Char(string="Internal Number", default=False,
-                                  copy=False, readonly=True,
-                                  help="Unique number of the invoice, " +
-                                  "computed automatically when the " +
-                                  "invoice is created.")
+    internal_number = fields.Char(
+        string="Internal Number", default=False, copy=False, readonly=True,
+        help="Unique number of the invoice, computed automatically when " +
+        "the invoice is created.")
 
     # DONE
     @api.multi
@@ -73,13 +65,6 @@ class AccountInvoice(models.Model):
         if not self._context.get('use_internal_number', True):
             result = super(AccountInvoice, self).name_get()
         else:
-
-            # reads = self.read(cr, uid, ids, [
-            #     'pos_ar_id', 'type',
-            #     'is_debit_note',
-            #     'internal_number',
-            #     'denomination_id'], context=context)
-
             for inv in self:
                 type = inv.type
                 rtype = type
@@ -119,12 +104,6 @@ class AccountInvoice(models.Model):
             if not recs:
                 recs = self.search([('internal_number', operator, name)] +
                                    args, limit=limit)
-            # if not recs:
-            #     try:
-            #         recs = self.search([('pos_ar_id.name', operator, name)] +
-            #                            args, limit=limit)
-            #     except TypeError:
-            #         recs = []
 
         return recs.name_get()
 
@@ -192,30 +171,6 @@ class AccountInvoice(models.Model):
                 raise ValidationError(err % ', '.join(state_tags))
 
         return super(AccountInvoice, self).action_cancel()
-
-    # def _get_invoice_line_ids(self, cr, uid, ids, context=None):
-    #     result = {}bb
-    #     for line in self.pool.get('account.invoice.line').\
-    #             browse(cr, uid, ids, context=context):
-    #         pass
-    #         result[line.invoice_id.id] = True
-    #     return result.keys()
-    #
-    # def _get_invoice_tax(self, cr, uid, ids, context=None):
-    #     result = {}
-    #     for tax in self.pool.get('account.invoice.tax').\
-    #             browse(cr, uid, ids, context=context):
-    #         result[tax.invoice_id.id] = True
-    #     return result.keys()
-
-    # TODO --Verificar si sigue siendo util esta validación. si
-    # Validacion para que el total de una invoice no pueda ser negativo.
-    # @api.one
-    # @api.constrains('amount_total')
-    # def _check_amount_total(self):
-    #     if self.amount_total < 0:
-    #         raise ValidationError(
-    #             _('Error! The total amount cannot be negative'))
 
     # DONE
     @api.constrains('denomination_id', 'pos_ar_id', 'type',
@@ -484,16 +439,6 @@ class AccountInvoice(models.Model):
             self.pos_ar_id = False
         return res
 
-    # def invoice_pay_customer(self, cr, uid, ids, context=None):
-    #     if not ids:
-    #         return []
-    #     inv = self.browse(cr, uid, ids[0], context=context)
-    #     res = super(AccountInvoice, self).invoice_pay_customer(
-    #         cr, uid, ids, context=context)
-    #     res['context']['type'] = inv.type in \
-    #         ('out_invoice', 'out_refund') and 'receipt' or 'payment'
-    #     return res
-
     def _prepare_tax_line_vals(self, line, tax):
         vals = super(AccountInvoice, self)._prepare_tax_line_vals(line, tax)
         tax_browse = self.env['account.tax'].browse(tax['id'])
@@ -506,8 +451,7 @@ class AccountInvoiceTax(models.Model):
     _name = "account.invoice.tax"
     _inherit = "account.invoice.tax"
 
-    tax_id = fields.Many2one('account.tax',
-                             string='Account Tax',
-                             required=True)
-    is_exempt = fields.Boolean(string='Is Exempt',
-                               readonly=True)
+    tax_id = fields.Many2one(
+        'account.tax', string='Account Tax', required=True)
+    is_exempt = fields.Boolean(
+        string='Is Exempt', readonly=True)

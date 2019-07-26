@@ -1,0 +1,371 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* base_report_exporter
+# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Language: Spanish\n"
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-25 14:56+0000\n"
+"PO-Revision-Date: 2019-07-25 11:57-0300\n"
+"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
+"Language-Team: Spanish; Castilian <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
+
+#. module: base_report_exporter
+#: code:addons/base_report_exporter/models/report.py:59
+#: code:addons/base_report_exporter/models/report.py:85
+#, python-format
+msgid " Exporter"
+msgstr " Exportador"
+
+#. module: base_report_exporter
+#: code:addons/base_report_exporter/models/report.py:98
+#: code:addons/base_report_exporter/models/report.py:113
+#, python-format
+msgid " Reports"
+msgstr " Informes"
+
+#. module: base_report_exporter
+#: model:ir.ui.menu,name:base_report_exporter.menu_all_exporters
+msgid "All Exporters"
+msgstr "Todos los exportadores"
+
+#. module: base_report_exporter
+#: model:ir.ui.menu,name:base_report_exporter.menu_all_reports
+msgid "All Reports"
+msgstr "Todos los informes"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_attachment_ids
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_exporter_tree
+msgid "Available Reports"
+msgstr "Informes disponibles"
+
+#. module: base_report_exporter
+#: model:ir.ui.menu,name:base_report_exporter.menu_rfg_citi_main
+msgid "CITI"
+msgstr "CITI"
+
+#. module: base_report_exporter
+#: model:ir.actions.act_window,name:base_report_exporter.action_rfg_citi_exporter
+#: model:ir.ui.menu,name:base_report_exporter.menu_rfg_citi_exporter
+msgid "CITI Exportador"
+msgstr "CITI Exportador"
+
+#. module: base_report_exporter
+#: model:ir.actions.act_window,name:base_report_exporter.action_rfg_citi_view_reports
+#: model:ir.ui.menu,name:base_report_exporter.menu_rfg_citi_reports
+msgid "CITI Informes"
+msgstr "CITI Informes"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.report_files_generator_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_codename
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_exporter_codename
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_exporter_codename
+msgid "Codename"
+msgstr "Nombre clave"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_company_id
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_create_uid
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_create_uid
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_create_uid
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_create_date
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_create_date
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_create_date
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_date_start
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_date_start
+msgid "Date Start"
+msgstr "Fecha de inicio"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_date_stop
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_date_stop
+msgid "Date Stop"
+msgstr "Fecha de fin"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_date_type
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_exporter_date_type
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_exporter_date_type
+msgid "Date Type"
+msgstr "Tipo de fecha"
+
+#. module: base_report_exporter
+#: selection:report.exporter,date_type:0
+msgid "Dates"
+msgstr "fechas"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_form
+msgid "Declare"
+msgstr "Declarar"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+#: selection:report.files,state:0
+msgid "Declared"
+msgstr "Declarado"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_display_name
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_display_name
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_display_name
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_display_name
+msgid "Display Name"
+msgstr "Mostrar nombre"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_error
+#: selection:report.files,state:0 selection:report.files.error,type:0
+msgid "Error"
+msgstr "Error"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_ids
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_form
+msgid "Errors"
+msgstr "Errores"
+
+#. module: base_report_exporter
+#: model:ir.model,name:base_report_exporter.model_report_files_error
+msgid "Errors for an exportat"
+msgstr "Errores para un exportat"
+
+#. module: base_report_exporter
+#: model:ir.model,name:base_report_exporter.model_report_files
+msgid "Exported Files"
+msgstr "Archivos exportados"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_exporter_id
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_exporter_id
+#: model:ir.ui.view,arch_db:base_report_exporter.report_files_generator_view
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+msgid "Exporter"
+msgstr "Exportador"
+
+#. module: base_report_exporter
+#: code:addons/base_report_exporter/wizard/report.py:145
+#, python-format
+msgid ""
+"Exporter Failure.\n"
+"[undefined %s]"
+msgstr "Falla de exportador. [undefined %s]"
+
+#. module: base_report_exporter
+#: model:ir.ui.menu,name:base_report_exporter.menu_parent_exporters
+msgid "Exporters"
+msgstr "Exportadores"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_file_id
+msgid "File"
+msgstr "Archivo"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_form
+msgid "Files"
+msgstr "Archivos"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.report_files_generator_view
+msgid "Generate"
+msgstr "Generar"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+#: selection:report.files,state:0
+msgid "Generated"
+msgstr "Generado"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+msgid "Group By"
+msgstr "Agrupar por"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_group_ids
+msgid "Groups"
+msgstr "Grupos"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_id
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_id
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_id
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_id
+msgid "ID"
+msgstr "ID"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter___last_update
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files___last_update
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error___last_update
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator___last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_write_uid
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_write_uid
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_write_uid
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_write_uid
+msgid "Last Updated by"
+msgstr "Última Actualización por"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_write_date
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_write_date
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_write_date
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_write_date
+msgid "Last Updated on"
+msgstr "Última Actualización el"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+msgid "My Reports"
+msgstr "Mis informes"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_name
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_generator_period_id
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_period_id
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+#: selection:report.exporter,date_type:0
+msgid "Period"
+msgstr "Período"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_form
+msgid "Regenerate"
+msgstr "Regenerar"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_exporter_related_ui_ids
+msgid "Related Ui"
+msgstr "Ui relacionados"
+
+#. module: base_report_exporter
+#: code:addons/base_report_exporter/wizard/report.py:96
+#, python-format
+msgid "Report"
+msgstr "Informe"
+
+#. module: base_report_exporter
+#: model:ir.model,name:base_report_exporter.model_report_exporter
+msgid "Report Exporter"
+msgstr "Exportador de informes"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_form
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_tree
+msgid "Report Files"
+msgstr "Archivos de informe"
+
+#. module: base_report_exporter
+#: model:ir.actions.act_window,name:base_report_exporter.action_report_exporters
+#: model:ir.actions.act_window,name:base_report_exporter.action_report_files
+msgid "Reports"
+msgstr "Informes"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_resource_name
+msgid "Resource Name"
+msgstr "Nombre del recurso"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_resource_ref
+msgid "Resource Ref"
+msgstr "Ref. De recursos"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+msgid "Search Reports"
+msgstr "Informes de búsqueda"
+
+#. module: base_report_exporter
+#: code:addons/base_report_exporter/wizard/report.py:155
+#, python-format
+msgid "Sorry, there is nothing to export 😢"
+msgstr "Lo siento, no hay nada para exportar 😢"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_state
+msgid "State"
+msgstr "Estado"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+msgid "Status"
+msgstr "Estado"
+
+#. module: base_report_exporter
+#: model:ir.model.fields,field_description:base_report_exporter.field_report_files_error_type
+msgid "Type"
+msgstr "Tipo"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_form
+msgid "Un-Declare"
+msgstr "Un-Declare"
+
+#. module: base_report_exporter
+#: code:addons/base_report_exporter/wizard/report.py:134
+#, python-format
+msgid ""
+"Unable to export. More info in logs.\n"
+"Error was:\n"
+"%s"
+msgstr ""
+"No se puede exportar. Más información en los registros. El error fue: %s"
+
+#. module: base_report_exporter
+#: selection:report.files.error,type:0
+msgid "Warning"
+msgstr "Advertencia"
+
+#. module: base_report_exporter
+#: model:ir.ui.view,arch_db:base_report_exporter.view_report_files_filter
+msgid "With errors"
+msgstr "Con errores"
+
+#. module: base_report_exporter
+#: model:ir.model,name:base_report_exporter.model_report_files_generator
+msgid "report.files.generator"
+msgstr "report.files.generator"

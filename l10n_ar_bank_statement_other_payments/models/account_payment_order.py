@@ -1,22 +1,6 @@
 ##############################################################################
-#
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#    All Rights Reserved. See AUTHORS for details.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 from odoo import api, models
@@ -50,15 +34,14 @@ class AccountPaymentOrderConceptLine(models.Model):
         line_type = payment_order.type
 
         # Si el voucher no tiene partner, ponemos el de la compania
-        partner = payment_order.partner_id or payment_order.company_id.partner_id
+        partner = payment_order.partner_id or \
+            payment_order.company_id.partner_id
         journal = self.journal_id or payment_order.journal_id
 
         if payment_order.type == 'payment':
             sign = 1
-            #account = journal.default_debit_account_id
         else:
             sign = -1
-            #account = journal.default_credit_account_id
 
         amount = self.amount * sign
 

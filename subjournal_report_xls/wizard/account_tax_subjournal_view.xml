@@ -32,7 +32,7 @@
                                 <field name="grouped"/>
                                 <field name="grouped_max_amount"
                                     attrs="{'invisible': [('grouped', '=', False)],
-                                            'required': [('grouped', '!=', False)]}"/>
+                                    'required': [('grouped', '!=', False)]}"/>
                             </group>
                         </page>
                     </notebook>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="report_default_jurisdiction_configuration_view_tree" model="ir.ui.view">
+            <field name="name">report.default.jurisdiction.configuration.tree.view</field>
+            <field name="model">report.default.jurisdiction.configuration</field>
+            <field name="arch" type="xml">
+                <tree string="Default Jurisdiction Configuration">
+                    <field name="pos_ar_id"/>
+                    <field name="state_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="report_default_jurisdiction_configuration_view_form" model="ir.ui.view">
+            <field name="name">report.default.jurisdiction.configuration.form.view</field>
+            <field name="model">report.default.jurisdiction.configuration</field>
+            <field name="arch" type="xml">
+                <form string="Default Jurisdiction Configuration Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="pos_ar_id"/>
+                            </group>
+                            <group>
+                                <field name="state_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_report_default_jurisdiction_configuration" model="ir.actions.act_window">
+            <field name="name">Sales by Jurisdiction Config</field>
+            <field name="res_model">report.default.jurisdiction.configuration</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain" eval=""/>
+            <field name="context" eval=""/>
+        </record>
+
+        <menuitem id="menu_report_default_jurisdiction"
+            name="Sales by Jurisdiction Config"
+            sequence="15"
+            action="action_report_default_jurisdiction_configuration"
+            parent="account.menu_finance_configuration"/>
+
+    </data>
+</odoo>

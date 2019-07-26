@@ -1,13 +1,13 @@
-###############################################################################
-#    Copyright (c) 2013-2014 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
+
+import base64
+from tempfile import TemporaryFile
 
 from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
-import base64
-from tempfile import TemporaryFile
 
 
 class wsaa_load_config(models.TransientModel):

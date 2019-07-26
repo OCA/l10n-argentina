@@ -1,22 +1,6 @@
 ##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 import base64
@@ -53,7 +37,8 @@ except TypeError:
 
 class WizardImportAccountBankStatementLine(models.TransientModel):
     _name = "wizard.import.account.bank.statement.line"
-    _description = "Wizard to import Account Bank Statement Lines from a spreadsheet"
+    _description = "Wizard to import Account Bank " + \
+        "Statement Lines from a spreadsheet"
 
     filename = fields.Char('Filename')
     filedata = fields.Binary('File', required=True)
@@ -68,13 +53,16 @@ class WizardImportAccountBankStatementLine(models.TransientModel):
     _code_concept_map = {}
 
     def _get_default_statement_id(self):
-        return self.env["wizard.add.account.bank.statement.line"]._get_default_statement_id()
+        wiz_model = self.env["wizard.add.account.bank.statement.line"]
+        return wiz_model._get_default_statement_id()
 
     def save_file(self, name, value):
         name, extension = os.path.splitext(name)
-        name = datetime.today().strftime("{}_%H%M%S-%d%m%y{}".format(name, extension))
+        name = datetime.today().strftime(
+            "{}_%H%M%S-%d%m%y{}".format(name, extension))
 
-        base_path = os.path.join(data_dir, "imported_account_bank_statement_line",)
+        base_path = os.path.join(
+            data_dir, "imported_account_bank_statement_line",)
         if not os.path.isdir(base_path):
             os.mkdir(base_path)
 
@@ -128,7 +116,8 @@ class WizardImportAccountBankStatementLine(models.TransientModel):
         statement = self.statement_id
         for row_number in range(sheet.nrows):
             row_values = sheet.row_values(row_number)
-            line_data = self._prepare_statement_line_data(row_values, statement)
+            line_data = self._prepare_statement_line_data(
+                row_values, statement)
             if not line_data:
                 continue
 

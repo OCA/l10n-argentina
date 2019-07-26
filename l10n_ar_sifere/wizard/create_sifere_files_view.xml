@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- SIFERE Retention Supported File Generation -->
+
+        <record id="view_create_sifere_retention_file" model="ir.ui.view">
+            <field name="name">SIFERE Retention Supported File Generation</field>
+            <field name="model">create.sifere.retention.file</field>
+            <field name="arch" type="xml">
+                <form string="Create sifere retention file" version="7.0">
+                    <label string="This wizard allows you to export a file with retentions supported(SIFERE)" colspan="4"/>
+                    <separator colspan="4"/>
+                    <field name="period_id"/>
+                    <separator string="Validation Errors" colspan="4"/>
+                    <field name="notes" nolabel="1" colspan="4"/>
+                    <group col="2" colspan="4">
+                        <button icon='gtk-cancel' special="cancel" string="Cancel" />
+                        <button name="create_retention_file" string="Generate" colspan="1" type="object" icon="gtk-ok" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="SIFERE Retention Supported Report"
+            res_model="create.sifere.retention.file"
+            src_model="date.period"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_create_retention_sifere_file"/>
+
+        <!-- SIFERE Perception Supported File Generation -->
+
+        <record id="view_create_sifere_perception_file" model="ir.ui.view">
+            <field name="name">SIFERE Perception Supported File Generation</field>
+            <field name="model">create.sifere.perception.file</field>
+            <field name="arch" type="xml">
+                <form string="Create sifere perception file" version="7.0">
+                    <label string="This wizard allows you to export a file with perceptions supported(SIFERE)" colspan="4"/>
+                    <separator colspan="4"/>
+                    <field name="period_id"/>
+                    <separator string="Validation Errors" colspan="4"/>
+                    <field name="notes" nolabel="1" colspan="4"/>
+                    <group col="2" colspan="4">
+                        <button icon='gtk-cancel' special="cancel" string="Cancel" />
+                        <button name="create_perception_file" string="Generate" colspan="1" type="object" icon="gtk-ok" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="SIFERE Perception Supported Report"
+            res_model="create.sifere.perception.file"
+            src_model="date.period"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_create_perception_sifere_file"/>
+    </data>
+</openerp>
