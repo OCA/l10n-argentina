@@ -56,6 +56,22 @@ class AccountInvoice(models.Model):
                                   "computed automatically when the " +
                                   "invoice is created.")
 
+    @api.multi
+    def get_default_pos_id(self):
+        """
+        By default return the default_pos for the user's commercial field
+        Otherwise, returns the current user default
+        """
+        self.ensure_one()
+        config_obj = self.env['ir.config_parameter']
+        config_param = config_obj.sudo().get_param('default_pos_setting', 'commercial')
+        if config_param == 'commercial':
+            res = self.user_id.property_default_pos_id
+        else:
+            res = self.env.user.property_default_pos_id
+        _logger.info('default_pos({}) for {}: {}'.format(config_param, self, res))
+        return res
+
     # DONE
     @api.multi
     def name_get(self):
@@ -446,23 +462,13 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self)._get_refund_common_fields()
         return self._get_refund_point_of_sale_fields() + res
 
-    # DONE
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):
-        # Se llenan
         res = super(AccountInvoice, self)._onchange_partner_id()
         domain = {}
         if 'domain' in res:
             domain = res['domain']
-        # Verifico que halla partner y posicion fiscal
         if self.partner_id and self.fiscal_position_id:
-            # Verifico que sea factura de vendedor
-            # o nota de credito de proveedor.
-            # NOTA:
-            # 'out_invoice': Factura de cliente
-            # 'in_invoice': Factura de proveedor
-            # 'out_refund': Nota de creidot de cliente
-            # 'in_refund': Nota de credito de proveedor
             if self.type in ['in_invoice', 'in_refund']:
                 self.denomination_id = self.fiscal_position_id.\
                     denom_supplier_id
@@ -470,29 +476,22 @@ class AccountInvoice(models.Model):
                 self.denomination_id = self.fiscal_position_id.denomination_id
                 domain['pos_ar_id'] = [('denomination_ids', 'in',
                                         [self.denomination_id.id])]
-                sorted_pos = self.denomination_id.pos_ar_ids.sorted(
-                    key=lambda x: x.priority)
-                if sorted_pos and not self.pos_ar_id:
-                    self.pos_ar_id = sorted_pos[0]
+                if not self.pos_ar_id:
+                    default_pos_id = self.get_default_pos_id()
+                    if default_pos_id:
+                        self.pos_ar_id = default_pos_id
+                    else:
+                        sorted_pos = self.denomination_id.pos_ar_ids.sorted(
+                            key=lambda x: x.priority)
+                        if sorted_pos:
+                            self.pos_ar_id = sorted_pos[0]
             self.local = self.fiscal_position_id.local
             self.dst_cuit_id = self.partner_id.dst_cuit_id
-            if not self.pos_ar_id and self.user_id.property_default_pos_id:
-                self.pos_ar_id = self.user_id.property_default_pos_id.id
         else:
             self.local = True
             self.denomination_id = False
             self.pos_ar_id = False
         return res
-
-    # def invoice_pay_customer(self, cr, uid, ids, context=None):
-    #     if not ids:
-    #         return []
-    #     inv = self.browse(cr, uid, ids[0], context=context)
-    #     res = super(AccountInvoice, self).invoice_pay_customer(
-    #         cr, uid, ids, context=context)
-    #     res['context']['type'] = inv.type in \
-    #         ('out_invoice', 'out_refund') and 'receipt' or 'payment'
-    #     return res
 
     def _prepare_tax_line_vals(self, line, tax):
         vals = super(AccountInvoice, self)._prepare_tax_line_vals(line, tax)
