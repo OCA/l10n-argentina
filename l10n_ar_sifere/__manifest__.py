@@ -31,6 +31,7 @@
         "base_report_exporter",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "data/data.xml",
         "wizard/create_sifere_files_view.xml",
         "views/sifere_config_view.xml",

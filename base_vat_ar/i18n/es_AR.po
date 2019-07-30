@@ -85,6 +85,7 @@ msgstr "Tipo de documento..."
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_users_document_type_id
 #: model:ir.ui.view,arch_db:base_vat_ar.view_res_document_type_form
 #: model:ir.ui.view,arch_db:base_vat_ar.view_res_document_type_tree
+#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
 msgid "Document type"
 msgstr "Tipo de documento"
 
@@ -141,8 +142,3 @@ msgstr "Existe otra compañía con la misma información de NIF"
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_verification_required
 msgid "Verification required"
 msgstr "Requiere Verificación"
-
-#. module: base_vat_ar
-#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
-msgid "base_vat_ar.menu_document_type"
-msgstr "base_vat_ar.menu_document_type"

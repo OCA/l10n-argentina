@@ -3,7 +3,11 @@
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
-from odoo import fields, models, _
+import logging
+
+from odoo import api, fields, models, _
+
+_logger = logging.getLogger(__name__)
 
 
 class ResUsers(models.Model):
@@ -21,10 +25,12 @@ class ResUsers(models.Model):
         """
         self.ensure_one()
         config_obj = self.env['ir.config_parameter']
-        config_param = config_obj.sudo().get_param('default_pos_setting', 'commercial')
+        config_param = config_obj.sudo().get_param(
+            'default_pos_setting', 'commercial')
         if config_param == 'commercial':
             res = record.user_id.property_default_pos_id
         else:
             res = self.env.user.property_default_pos_id
-        _logger.info('default_pos({})[{}] for {}: {}'.format(config_param, record, self, res))
+        _logger.info('default_pos({})[{}] for {}: {}'.format(
+            config_param, record, self, res))
         return res

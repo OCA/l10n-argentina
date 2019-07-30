@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sifere_jurisdiction,access_sifere_jurisdiction,model_sifere_jurisdiction,base.group_user,1,1,1,1
+access_sifere_config,access_sifere_config,model_sifere_config,base.group_user,1,1,1,1

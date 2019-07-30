@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
+access_report_files_error,access_report_files_error,model_report_files_error,base.group_user,1,1,1,1
+access_report_exporter,access_report_exporter,model_report_exporter,base.group_user,1,1,1,1
+access_report_files_generator,access_report_files_generator,model_report_files_generator,base.group_user,1,1,1,1
+access_report_files,access_report_files,model_report_files,base.group_user,1,1,1,1
