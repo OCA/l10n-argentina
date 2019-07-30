@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_sifere_config_tree" model="ir.ui.view">
+            <field name="name">sifere.config.tree</field>
+            <field name="model">sifere.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Configuration">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_sifere_config_form" model="ir.ui.view">
+            <field name="name">sifere.config.form</field>
+            <field name="model">sifere.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sifere Configuration">
+                    <sheet>
+                        <h1>
+                            <field name="name" />
+                        </h1>    
+                        <group>
+                            <field name="ignore_jurisdiction" string="Ignore jurisdiction errors?"/>
+                        </group>
+                        <notebook>
+                            <page string="Jurisdictions">
+                                <field name="jurisdiction_ids">
+                                    <tree string="Jurisdictions">
+                                        <field name="state" />
+                                        <field name="code" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sifere_config" model="ir.actions.act_window">
+            <field name="name">Sifere Configuration</field>
+            <field name="res_model">sifere.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem action="action_sifere_config" id="menu_action_sifere_config" name="Sifere Configuration" parent="account.menu_finance_configuration" />
+
+    </data>
+</openerp>

@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
-###############################################################################
-#   Copyright (c) 2019 Eynes/E-MIPS (Julian Corso)
+##############################################################################
+#   Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-import logging
-
-from odoo import models, api, fields, _, exceptions
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from datetime import datetime
-
-_logger = logging.getLogger(__name__)
 
 
 class AccountCheckSafekeepingLot(models.Model):
@@ -47,14 +42,17 @@ class AccountCheckSafekeepingLot(models.Model):
             bad_checks = reg.check_ids.filtered(
                     lambda x: x.state != 'wallet')
             if bad_checks:
-                msg = _("You cannot delete the lot %s because it " \
-                       "has checks that are not in wallet") %(reg.name)
+                msg = (_(
+                    "You cannot delete the lot %s because it " +
+                    "has checks that are not in wallet") %
+                    (reg.name))
                 raise ValidationError(msg)
         res = super(AccountCheckSafekeepingLot, self).unlink()
         return res
 
-    @api.depends('check_ids', 'check_ids.state',
-            'check_ids.safekeeping_move_id')
+    @api.depends(
+        'check_ids', 'check_ids.state',
+        'check_ids.safekeeping_move_id')
     def _compute_state(self):
         for lot in self:
             checks = lot.check_ids
@@ -62,7 +60,7 @@ class AccountCheckSafekeepingLot(models.Model):
                     lambda x: x.state == 'safekeeped'):
                 lot.state = 'safekeeped'
             elif checks.filtered(
-                    lambda x: x.state in ['deposited','delivered']):
+                    lambda x: x.state in ['deposited', 'delivered']):
                 lot.state = 'done'
             else:
                 lot.state = 'new'
@@ -86,8 +84,7 @@ class AccountCheckSafekeepingLot(models.Model):
         if not account:
             raise ValidationError(_("Invalid Account"))
         line_vals = {
-            'name': _('Safekeeped Check %s ') %(check.number),
-            # 'centralisation': 'normal',
+            'name': _('Safekeeped Check %s ') % (check.number),
             'account_id': account.id,
             'journal_id': self.journal_id.id,
             'date': self.safekeep_date,
@@ -102,10 +99,9 @@ class AccountCheckSafekeepingLot(models.Model):
         safekept_account = check_config.safekept_account_id
         if not safekept_account:
             raise ValidationError(_("Invalid Safekept Account"))
-        #Counterpart vals
+        # Counterpart vals
         counterpart_vals = {
             'name': _('Safekeeped Check %s ') % (check.number),
-            # 'centralisation': 'normal',
             'account_id': safekept_account.id,
             'journal_id': self.journal_id.id,
             'date': self.safekeep_date,
@@ -140,15 +136,12 @@ class AccountCheckSafekeepingLot(models.Model):
 
     @api.multi
     def action_safekeep(self):
-        move_obj = self.env['account.move']
-        move_line_obj = self.env['account.move.line']
         if not self.check_ids:
             raise ValidationError(_("There is not third check related"))
         if not self.safekeep_date:
             self.safekeep_date = fields.Date.context_today(self)
         checks = self.check_ids.filtered(
-                lambda x: x.state == 'wallet'or \
-                        not x.safekeeping_move_id)
+            lambda x: x.state == 'wallet'or not x.safekeeping_move_id)
         for check in checks:
             move = self.create_move(check)
             check.write({'safekeeping_move_id': move.id})

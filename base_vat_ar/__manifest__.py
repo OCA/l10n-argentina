@@ -1,9 +1,6 @@
 ###############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2012-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
-#    All Rights Reserved. See readme/CONTRIBUTORS.rst for details.
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -12,28 +9,31 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
 
 {
     "name": "Base VAT Ar",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
-    "depends": ["base", "base_vat"],
-    "author": "Eynes, E-MIPS, Odoo Community Association (OCA)",
+    "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
-    "category": "VAT Modules",
-    "description": "This module provides VAT Check for Argentina.",
+    "description": "This module provides VAT Checking for Argentina.",
+    "depends": [
+        "base",
+        "base_vat",
+    ],
     "data": [
-        'views/partner_view.xml',
+        'security/ir.model.access.csv',
         'data/partner_data.xml',
         'data/dst_cuit_codes_data.xml',
-        'security/ir.model.access.csv',
+        'views/partner_view.xml',
     ],
     "installable": True,
-    "active": False,
+    "application": True,
 }

@@ -1,22 +1,6 @@
 ##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 from odoo import api, fields, models
@@ -24,9 +8,11 @@ from odoo import api, fields, models
 
 class WizardAddAccountBankStatementLine(models.TransientModel):
     _name = "wizard.add.account.bank.statement.line"
-    _description = "Wizard to link Account Bank Statement Lines with an Statement"
+    _description = "Wizard to link Account Bank " + \
+        "Statement Lines with an Statement"
 
-    do_confirm = fields.Boolean(string='Confirm all lines', default=False)
+    do_confirm = fields.Boolean(
+        string='Confirm all lines', default=False)
     statement_id = fields.Many2one(
         'account.bank.statement',
         string='Bank Statement',
@@ -68,7 +54,6 @@ class WizardAddAccountBankStatementLine(models.TransientModel):
             ("journal_id", "=", statement.journal_id.id),
             ("statement_id", "=", False),
             ("state", "=", "open"),
-            #("line_type", "in", ("receipt", "payment")),
         ]
 
         lines = self.env["account.bank.statement.line"].search(domain)
@@ -77,12 +62,12 @@ class WizardAddAccountBankStatementLine(models.TransientModel):
 
     def add_lines(self):
         statement = self.statement_id
-        ret = statement.write({"line_ids": [(4, line.id) for line in self.statement_line_ids]})
+        ret = statement.write({
+            "line_ids": [(4, line.id) for line in self.statement_line_ids],
+        })
 
         if self.do_confirm:
             self.statement_line_ids.confirm()
-            #ret = statement.check_confirm_bank()
-
         return ret
 
     @api.multi

@@ -1,9 +1,7 @@
-###############################################################################
-#   Copyright (C) 2008-2011  Thymbra
-#   Copyright (c) 2012-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import models, fields, api
 import time
@@ -18,11 +16,11 @@ class AccountAddIssuedCheck(models.Model):
     date = fields.Date(string='Date', required=True)
     debit_date = fields.Date(string='Date Out', readonly=True)
     date_changed = fields.Date(string='Date Changed', readonly=True)
-    receiving_partner_id = fields.Many2one(comodel_name='res.partner',
-                                           string='Receiving Entity',
-                                           required=False, readonly=True)
-    bank_id = fields.Many2one(comodel_name='res.bank',
-                              string='Bank', required=True)
+    receiving_partner_id = fields.Many2one(
+        comodel_name='res.partner', string='Receiving Entity',
+        required=False, readonly=True)
+    bank_id = fields.Many2one(
+        comodel_name='res.bank', string='Bank', required=True)
     on_order = fields.Char(string='On Order', size=64)
     signatory = fields.Char(string='Signatory', size=64)
     clearing = fields.Selection([
@@ -32,10 +30,10 @@ class AccountAddIssuedCheck(models.Model):
     ], string='Clearing',
        default=lambda *a: '24')
     origin = fields.Char(string='Origin', size=64)
-    account_bank_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Destiny Account')
-    payment_order_id = fields.Many2one(comodel_name='account.payment.order',
-                                       string='Voucher')
+    account_bank_id = fields.Many2one(
+        comodel_name='res.partner.bank', string='Destiny Account')
+    payment_order_id = fields.Many2one(
+        comodel_name='account.payment.order', string='Voucher')
     issued = fields.Boolean(string='Issued')
 
     @api.multi
@@ -69,9 +67,9 @@ class AccountAddThirdCheck(models.Model):
         default=lambda *a: time.strftime('%Y-%m-%d'))
     date = fields.Date('Check Date', required=True)
     date_out = fields.Date('Date Out', readonly=True)
-    source_partner_id = fields.Many2one(comodel_name='res.partner',
-                                        string='Source Partner',
-                                        required=False, readonly=True)
+    source_partner_id = fields.Many2one(
+        comodel_name='res.partner', string='Source Partner',
+        required=False, readonly=True)
     destiny_partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Destiny Partner',
@@ -85,8 +83,8 @@ class AccountAddThirdCheck(models.Model):
         ('rejected', 'Rejected'),
     ], string='State', required=True,
        default=lambda *a: 'draft')
-    bank_id = fields.Many2one(comodel_name='res.bank',
-                              string='Bank', required=True)
+    bank_id = fields.Many2one(
+        comodel_name='res.bank', string='Bank', required=True)
     vat = fields.Char(string='Vat', size=15, required=True)
     on_order = fields.Char(string='On Order', size=64)
     signatory = fields.Char(string='Signatory', size=64)
@@ -97,12 +95,12 @@ class AccountAddThirdCheck(models.Model):
     ], string='Clearing',
        default=lambda *a: '24')
     origin = fields.Char(string='Origen', size=64)
-    account_bank_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Destiny Account')
-    payment_order_id = fields.Many2one(comodel_name='account.payment.order',
-                                       string='Voucher')
-    reject_debit_note = fields.Many2one(comodel_name='account.invoice',
-                                        string='Reject Debit Note')
+    account_bank_id = fields.Many2one(
+        comodel_name='res.partner.bank', string='Destiny Account')
+    payment_order_id = fields.Many2one(
+        comodel_name='account.payment.order', string='Voucher')
+    reject_debit_note = fields.Many2one(
+        comodel_name='account.invoice', string='Reject Debit Note')
 
     @api.multi
     def add_third_checks(self):

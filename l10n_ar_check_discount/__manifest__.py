@@ -1,6 +1,6 @@
 ###############################################################################
 #
-#    Copyright (c) 2019 Eynes/E-MIPS
+#    Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,12 @@
 ###############################################################################
 
 {
-    "name": "L10N AR Check Discount",
-    "category": "Accounting & Finance",
+    "name": "Check Discount",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
-    "description": "Module Description",
+    "description": "Document to manage check discounts.",
     "depends": [
         "l10n_ar_account_check",
         "l10n_ar_perceptions_basic",

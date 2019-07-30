@@ -1,8 +1,7 @@
-###############################################################################
-#    Copyright (c) 2013-2014 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#    Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from lxml import etree
 from datetime import datetime
@@ -11,16 +10,11 @@ import email
 import urllib.error as Urllib
 from xml.sax import SAXParseException
 import logging
-from openerp.tools.misc import ustr
 import pytz
 
 # Configuracion del logger
 logger = logging.getLogger('afipws')
 logger.setLevel(logging.DEBUG)
-# streamH = logging.StreamHandler(sys.stdout)
-# streamH.setLevel(logging.DEBUG)
-# streamH.setFormatter(formatter)
-# logger.addHandler(streamH)
 try:
     from suds.client import Client
 except (ImportError, IOError) as e:
@@ -142,7 +136,7 @@ class WSAA:
             result = self.client.service.loginCms(cms)
         except Exception as e:
             logger.exception("Excepcion al llamar a loginCms")
-            raise Exception('Exception al autenticar: %s' % ustr(e))
+            raise Exception('Exception al autenticar: %s' % str(e))
 
         self.ta = result
         return result

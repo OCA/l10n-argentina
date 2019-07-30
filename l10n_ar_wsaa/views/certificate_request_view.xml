@@ -25,7 +25,7 @@
                         <button name="generate_certificate_request"
                             string="Generate Request" class="oe_highlight"
                             attrs="{
-                                'invisible': [('key', '=', False)],
+                            'invisible': [('key', '=', False)],
                             }"
                             type="object"/>
                         <field name="state" widget="statusbar"/>
@@ -48,7 +48,7 @@
                             <div class="oe_right oe_button_box oe_inline">
                                 <button type="object"
                                     context="{
-                                        'field': 'old_certificate',
+                                    'field': 'old_certificate',
                                     }"
                                     class="oe_stat_button"
                                     icon="fa-refresh"
@@ -58,7 +58,7 @@
                                 </button>
                                 <button type="object"
                                     context="{
-                                        'field': 'certificate',
+                                    'field': 'certificate',
                                     }"
                                     class="oe_stat_button"
                                     icon="fa-refresh"
@@ -79,8 +79,8 @@
                                 <div class="oe_right oe_button_box oe_inline">
                                     <button type="object"
                                         context="{
-                                            'field': 'key',
-                                            'filename': 'priv.key',
+                                        'field': 'key',
+                                        'filename': 'priv.key',
                                         }"
                                         class="oe_stat_button"
                                         icon="fa-download"
@@ -109,8 +109,8 @@
                                 <div class="oe_right oe_button_box oe_inline">
                                     <button type="object"
                                         context="{
-                                            'field': 'old_certificate',
-                                            'filename': 'old_cert.crt',
+                                        'field': 'old_certificate',
+                                        'filename': 'old_cert.crt',
                                         }"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_request_download"
@@ -134,8 +134,8 @@
                                 <div class="oe_right oe_button_box oe_inline">
                                     <button type="object"
                                         context="{
-                                            'field': 'cert_request',
-                                            'filename': 'request.csr',
+                                        'field': 'cert_request',
+                                        'filename': 'request.csr',
                                         }"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_request_download"
@@ -151,8 +151,8 @@
                                 <div class="oe_right oe_button_box oe_inline">
                                     <button type="object"
                                         context="{
-                                            'field': 'certificate',
-                                            'filename': 'cert.crt',
+                                        'field': 'certificate',
+                                        'filename': 'cert.crt',
                                         }"
                                         class="oe_stat_button"
                                         id="wsaa_certificate_request_download"

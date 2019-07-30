@@ -1,22 +1,17 @@
-# -*- coding: utf-8 -*-
-###############################################################################
-#   Copyright (c) 2019 Eynes/E-MIPS (Gaston Bertolani)
+##############################################################################
+#   Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-import logging
-
-from odoo import models, api, fields, _, exceptions
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from datetime import datetime
-
-_logger = logging.getLogger(__name__)
 
 
 class CheckSafekeepingWizard(models.Model):
     _name = 'check.safekeeping.wizard'
 
-    safekeeping_lot_id = fields.Many2one('account.check.safekeeping.lot', 'Safekeeping Lot')
+    safekeeping_lot_id = fields.Many2one(
+        'account.check.safekeeping.lot', 'Safekeeping Lot')
 
     @api.multi
     def action_done(self):
@@ -40,7 +35,8 @@ class CheckSafekeepingWizard(models.Model):
         else:
             lot_reg = safekeeping_lot_obj.create({'state': 'new'})
             checks.write({'safekeeping_lot_id': lot_reg.id})
-        form = self.env.ref('l10n_ar_check_safekeeping.account_check_safekeeping_lot_form')
+        form = self.env.ref(
+            'l10n_ar_check_safekeeping.account_check_safekeeping_lot_form')
         act_window = {
             'name': _('Safekeeping Lot'),
             'type': 'ir.actions.act_window',

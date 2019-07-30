@@ -4,3 +4,5 @@ Major Developers:
 
 Other Contributors:
 ===== =============
+* Gastón Bertolani
+* Martín Nicolás Cuesta

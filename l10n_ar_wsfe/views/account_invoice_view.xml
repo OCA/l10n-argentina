@@ -12,7 +12,7 @@
             <field name="inherit_id" ref="l10n_ar_point_of_sale.view_pos_invoice_form"/>
             <field name="arch" type="xml">
                 <field name="fiscal_position_id" position="after">
-					<field name="aut_cae" invisible="1"/>
+                    <field name="aut_cae" invisible="1"/>
                     <field name="export_type_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
                     <field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
                 </field>
@@ -51,7 +51,7 @@
                             </field>
                         </group>
                         <group string="History Requests">
-                                <field name="wsfex_request_ids" nolabel="1">
+                            <field name="wsfex_request_ids" nolabel="1">
                                 <tree string="Requests">
                                     <field name="request_id"/>
                                     <field name="date"/>
@@ -65,14 +65,14 @@
                                             <field name="voucher_type_id"/>
                                             <field name="voucher_number"/>
                                             <field name="request_id"/>
-                                         </group>
+                                        </group>
                                         <group>
                                             <field name="date"/>
                                             <field name="result"/>
                                             <field name="cae"/>
                                             <field name="cae_duedate"/>
                                         </group>
-                                     </group>
+                                    </group>
                                     <group>
                                         <group string="Error">
                                             <field name="error" nolabel="1"/>
@@ -84,7 +84,7 @@
                                     <group string="Details">
                                         <field name="detail" nolabel="1"/>
                                     </group>
-                               </form>
+                                </form>
                             </field>
                         </group>
                     </page>
@@ -100,7 +100,7 @@
                     </page>
                 </page>
 
-           </field>
+            </field>
         </record>
 
         <!-- Add CAI to Supplier Invoices -->

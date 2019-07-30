@@ -1,9 +1,6 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
+###############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#
-#    Copyright (c) 2014 e-mips.
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,24 +15,26 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
+###############################################################################
 
 {
-    'name': 'Account Move Line(Subjournal) XLS export',
-    'version': '0.6',
-    'license': 'AGPL-3',
-    'author': "e-mips",
-    'category': 'Accounting & Finance',
-    'summary': 'Journal Items Excel export',
-    'depends': [
-        'report_xlsx',
-        'l10n_ar_point_of_sale',
-        'l10n_ar_perceptions_basic',
-        'l10n_ar_wsfe',
+    "name": "Account Move Line (Subjournal) XLSX export",
+    "category": "L10N AR",
+    "version": "11.0.1.0.0",
+    "author": "Eynes/E-MIPS",
+    "license": "AGPL-3",
+    "description": "Journal Items Excel Export",
+    "depends": [
+        "report_xlsx",
+        "l10n_ar_point_of_sale",
+        "l10n_ar_perceptions_basic",
+        "l10n_ar_wsfe",
     ],
-    'data': [
-        "report/move_line_list_xls.xml",
-        "wizard/account_tax_subjournal_view.xml",
+    "data": [
         "security/ir.model.access.csv",
+        "wizard/account_tax_subjournal_view.xml",
+        "report/move_line_list_xls.xml",
     ],
+    "installable": True,
+    "application": True,
 }

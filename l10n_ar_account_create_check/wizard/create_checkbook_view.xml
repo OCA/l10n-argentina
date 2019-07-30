@@ -35,7 +35,7 @@
             <field name="view_id" ref="view_wizard_create_check"/>
             <field name="target">new</field>
         </record>
-        
+
         <menuitem id="menu_wizard_create_check"
             action="action_wizard_create_check"
             sequence="20"

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
-    <record id="action_move_line_list_subj_xls" model="ir.actions.report">
-      <field name="name">Export Subjournal</field>
-      <field name="model">account.move.line</field>
-      <field name="type">ir.actions.report</field>
-      <field name="report_name">report_xlsx.move_line_list_subj</field>
-      <field name="report_type">xlsx</field>
-      <field name="report_file">export_subjournal</field>
-    </record>
-  </data>
+    <data>
+        <record id="action_move_line_list_subj_xls" model="ir.actions.report">
+            <field name="name">Export Subjournal</field>
+            <field name="model">account.move.line</field>
+            <field name="type">ir.actions.report</field>
+            <field name="report_name">report_xlsx.move_line_list_subj</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_file">export_subjournal</field>
+        </record>
+    </data>
 </openerp>

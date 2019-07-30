@@ -1,7 +1,7 @@
-###############################################################################
-#   Copyright (c) 2018 Eynes/E-MIPS (Martín Nicolás Cuesta)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 import logging
 from datetime import datetime
@@ -559,9 +559,6 @@ class RetentionTaxApplication(models.Model):
 
             if factor:
                 amount = amount * round(factor, 3)
-#            if pol_todo:
-#                factor = pol_todo.amount / pol_todo.amount_original
-#                amount = amount * factor
             income_untax_mls_ok.append(amount)
         untaxed_debt = sum(debt_untax_mls_ok)
         untaxed_inc = sum(income_untax_mls_ok)
@@ -577,7 +574,8 @@ class RetentionTaxApplication(models.Model):
                    po.income_line_ids.mapped('amount')) or not po.amount \
                    or not po.retention_ids:
                 continue
-            extra_untaxed_amount += po.amount - sum(po.retention_ids.mapped('amount'))
+            extra_untaxed_amount += po.amount - sum(
+                po.retention_ids.mapped('amount'))
         return extra_untaxed_amount
 
     def get_period_base_amount(self, partner, concept,
@@ -677,8 +675,6 @@ class RetentionTaxApplication(models.Model):
             return 0.0, 0.0
 
         # Aplicamos el porcentaje de eximision si es que lo hay
-        # print "Aplicando: ", excluded_percent, amount
         amount *= (1 - excluded_percent)
-        # print "Aplicando2: ", excluded_percent, amount
 
         return base*sign_base, amount*sign_base

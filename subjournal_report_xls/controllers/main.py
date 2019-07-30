@@ -1,8 +1,15 @@
-from odoo.addons.web.controllers import main as report
-from odoo.tools import html_escape, ustr
-from odoo.http import content_disposition, route, request, serialize_exception, Response
-from odoo import _
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+##############################################################################
+
 import json
+
+from odoo.addons.web.controllers import main as report
+from odoo.tools import html_escape
+from odoo.http import route, request, serialize_exception
+from odoo import _
+
 
 class ReportController(report.ReportController):
     @route()

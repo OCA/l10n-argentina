@@ -1,7 +1,7 @@
-###############################################################################
-#   Copyright (c) 2018 Eynes/E-MIPS (Martín Nicolás Cuesta)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 import logging
 from pprint import pformat as pf
@@ -23,8 +23,8 @@ class RetentionTaxLine(models.Model):
     invoice_id = fields.Many2one('account.invoice', 'Invoice')
     invoice_ref = fields.Char('Invoice Reference', size=64)
     concept_id = fields.Many2one('retention.concept', 'Concept')
-    taxapp_id = fields.Many2one('retention.tax.application',
-                                'Tax Application')
+    taxapp_id = fields.Many2one(
+        'retention.tax.application', 'Tax Application')
     reg_code = fields.Integer('Reg. Code')
     date_applied = fields.Date(
         'Date Applied',

@@ -1,44 +1,59 @@
-###############################################################################
-#   Copyright (c) 2011-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
 
 
-class perception_tax_line(models.Model):
+class PerceptionTaxLine(models.Model):
     _name = "perception.tax.line"
     _description = "Perception Tax Line"
 
-    # @api.v8
-    # def _compute(self, invoice, base, amount):
-    #     """
-    #     self: perception.tax.line
-    #     invoice: account.invoice
-    #     """
-    #     tax = self.perception_id.tax_id
-    #     # Nos fijamos la currency de la invoice
-    #     currency = invoice.currency_id.with_context(
-    #         date=invoice.date_invoice or fields.Date.context_today(invoice))
-    #     company_currency = invoice.company_id.currency_id
+    # TODO: Tal vaz haya que ponerle estados a este objeto
+    # para manejar tambien propiedades segun estados
+    name = fields.Char('Perception', required=True, size=64)
+    date = fields.Date('Date', index=True)
+    invoice_id = fields.Many2one(
+        'account.invoice', 'Invoice', ondelete='cascade')
+    account_id = fields.Many2one(
+        'account.account', string='Tax Account',
+        required=True, domain=[
+            ('type', '<>', 'view'),
+            ('type', '<>', 'income'),
+            ('type', '<>', 'closed')])
+    base = fields.Float('Base', digits=dp.get_precision('Account'))
+    amount = fields.Float('Amount', digits=dp.get_precision('Account'))
+    perception_id = fields.Many2one(
+        'perception.perception', string='Perception Configuration',
+        required=True,
+        help="Perception configuration used for this perception tax, " +
+        "where all the configuration resides. Accounts, Tax Codes, etc.")
+    base_amount = fields.Float(
+        'Base Code Amount', digits=dp.get_precision('Account'))
+    tax_amount = fields.Float(
+        'Tax Code Amount', digits=dp.get_precision('Account'))
+    company_id = fields.Many2one(
+        related='account_id.company_id', string='Company',
+        store=True, readonly=True)
+    partner_id = fields.Many2one(
+        'res.partner', string='Partner', required=True)
+    vat = fields.Char(
+        related='partner_id.vat', string='CIF/NIF', readonly=True)
+    state_id = fields.Many2one(
+        'res.country.state', string="State/Province")
+    ait_id = fields.Many2one(
+        'account.invoice.tax', string='Invoice Tax', ondelete='cascade')
 
-    #     if invoice.type in ('out_invoice', 'in_invoice'):
-    #         base_amount = currency.compute(
-    #             base, company_currency, round=False)
-    #             # base * tax.base_sign, company_currency, round=False) # noqa
-    #         tax_amount = currency.compute(
-    #             amount, company_currency, round=False)
-    #             # amount * tax.tax_sign, company_currency, round=False) # noqa
-    #     else:  # invoice is out_refund
-    #         base_amount = currency.compute(
-    #             base, company_currency, round=False)
-    #             # base * tax.ref_base_sign, company_currency, round=False) # noqa
-    #         tax_amount = currency.compute(
-    #             amount, company_currency, round=False)
-    #             # amount * tax.ref_tax_sign, company_currency, round=False) # noqa
-    #     return (tax_amount, base_amount)
+    @api.onchange('perception_id')
+    def onchange_perception(self):
+        if not self.perception_id:
+            return {}
+        self.name = self.perception_id.name
+        self.account_id = self.perception_id.tax_id.account_id.id
+        self.state_id = self.perception_id.state_id.id
+        return None
 
     @api.multi
     def compute_all(self, currency=None):
@@ -55,80 +70,20 @@ class perception_tax_line(models.Model):
             'amount': self.amount,
             'base': self.base,
             'account_id': self.account_id.id,
-            # 'refund_account_id': ,
             'analytic': self.perception_id.account_analytic_id.id,
-            # 'price_include': .
         })
 
         return taxes
-
-    # TODO: Tal vaz haya que ponerle estados a este objeto
-    # para manejar tambien propiedades segun estados
-    name = fields.Char('Perception', required=True, size=64)
-    date = fields.Date('Date', index=True)
-    invoice_id = fields.Many2one('account.invoice', 'Invoice',
-                                 ondelete='cascade')
-    account_id = fields.Many2one('account.account',
-                                 string='Tax Account',
-                                 required=True,
-                                 domain=[('type', '<>', 'view'),
-                                         ('type', '<>', 'income'),
-                                         ('type', '<>', 'closed')])
-    base = fields.Float('Base', digits=dp.get_precision('Account'))
-    amount = fields.Float('Amount', digits=dp.get_precision('Account'))
-    perception_id = fields.Many2one('perception.perception',
-                                    string='Perception Configuration',
-                                    required=True,
-                                    help="Perception configuration \
-                                    used for this perception tax, \
-                                    where all the configuration resides. \
-                                    Accounts, Tax Codes, etc.")
-    # base_code_id = fields.Many2one(
-    #     'account.tax.code', 'Base Code',
-    #     help="The account basis of the tax declaration.")
-    base_amount = fields.Float('Base Code Amount',
-                               digits=dp.get_precision('Account'))
-    # tax_code_id = fields.Many2one('account.tax.code',
-    #                               string='Tax Code',
-    #                               help="The tax basis of the tax declaration.")  # noqa
-    tax_amount = fields.Float('Tax Code Amount',
-                              digits=dp.get_precision('Account'))
-    company_id = fields.Many2one(related='account_id.company_id',
-                                 string='Company', store=True,
-                                 readonly=True)
-    partner_id = fields.Many2one('res.partner',
-                                 string='Partner',
-                                 required=True)
-    vat = fields.Char(related='partner_id.vat',
-                      string='CIF/NIF',
-                      readonly=True)
-    state_id = fields.Many2one('res.country.state',
-                               string="State/Province")
-    ait_id = fields.Many2one('account.invoice.tax',
-                             string='Invoice Tax',
-                             ondelete='cascade')
-
-    @api.onchange('perception_id')
-    def onchange_perception(self):
-        if not self.perception_id:
-            return {}
-        self.name = self.perception_id.name
-        self.account_id = self.perception_id.tax_id.account_id.id
-        # self.base_code_id = self.perception_id.tax_id.base_code_id.id
-        # self.tax_code_id = self.perception_id.tax_id.tax_code_id.id
-        self.state_id = self.perception_id.state_id.id
-        return None
 
 
 class AccountInvoice(models.Model):
     _name = 'account.invoice'
     _inherit = 'account.invoice'
 
-    perception_ids = fields.One2many('perception.tax.line', 'invoice_id',
-                                     string='Perception', readonly=True,
-                                     states={'draft': [('readonly', False)]})
+    perception_ids = fields.One2many(
+        'perception.tax.line', 'invoice_id', string='Perception',
+        readonly=True, states={'draft': [('readonly', False)]})
 
-    # Done
     @api.multi
     def onchange_partner_id(self):
         """
@@ -149,11 +104,10 @@ class AccountInvoice(models.Model):
         """ If not date write the invoice date """
         for p in self.perception_ids:
             if not p.date:
-                date = self.date_invoice or time.strftime('%Y-%m-%d')
+                date = self.date_invoice or fields.Date.context_today(self)
                 p.write({'date': date})
 
         return super().finalize_invoice_move_lines(move_lines)
-
 
     def prepare_perception_tax_line_vals(self, tax):
         """ Prepare values to create an perception.tax.line

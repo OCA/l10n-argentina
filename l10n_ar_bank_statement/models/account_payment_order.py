@@ -1,22 +1,6 @@
 ##############################################################################
-#
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#    All Rights Reserved. See AUTHORS for details.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 from odoo import api, fields, models
@@ -36,7 +20,8 @@ class AccountPaymentOrder(models.Model):
     )
 
     def _calc_bank_statement_count_from_lines(self, bank_lines):
-        return self.env["account.payment"]._calc_bank_statement_count_from_lines(bank_lines)
+        ap_model = self.env['account.payment']
+        return ap_model._calc_bank_statement_count_from_lines(bank_lines)
 
     @api.depends("bank_statement_line_ids")
     def _calc_bank_statement_count(self):
@@ -47,10 +32,12 @@ class AccountPaymentOrder(models.Model):
             payment.statement_count = statement_count
 
     def no_statement_redirect(self):
-        return self.env["account.payment"].no_statement_redirect()
+        ap_model = self.env['account.payment']
+        return ap_model.no_statement_redirect()
 
     def create_statement_line(self, data, journal):
-        return self.env["account.payment"].create_statement_line(data, journal)
+        ap_model = self.env['account.payment']
+        return ap_model.create_statement_line(data, journal)
 
     @api.multi
     def proforma_voucher(self):
@@ -63,64 +50,35 @@ class AccountPaymentOrder(models.Model):
                     continue
 
                 self.create_statement_line(line, journal)
-
-            #for issued_check in vou.issued_check_ids:
-            #    if issued_check.type in 'common':
-            #        aux_payment_date = issued_check.issue_date
-            #    else:
-            #        aux_payment_date = issued_check.payment_date
-
-            #    ref_number = issued_check.number
-            #    if ref_number:
-            #        reference = _('Check No. ') + ref_number
-            #    else:
-            #        reference = _('Checkbook No. ') + issued_check.checkbook_id.name
-
-            #    st_line = {
-            #        'name': reference,
-            #        'issue_date': issued_check.issue_date,
-            #        'payment_date': aux_payment_date,
-            #        'amount': issued_check.amount*-1,
-            #        'account_id': vou.partner_id.property_account_payable.id,
-            #        'ref': vou.number,
-            #        'state': 'draft',
-            #        'type': 'payment',
-            #        'partner_id': vou.partner_id and vou.partner_id.id,
-            #        'ref_voucher_id': vou.id,
-            #        'creation_type': 'system',
-            #        'ref': vou.reference,
-            #        'journal_id': issued_check.account_bank_id.journal_id.id,
-            #    }
-
-            #    st_id = bank_st_line_obj.create(st_line)
-
         return ret
 
     def check_confirmed_statement_lines(self):
+        ap_model = self.env['account.payment']
         lines = self.mapped("bank_statement_line_ids")
-        return self.env["account.payment"].check_confirmed_statement_lines(lines)
+        return ap_model.check_confirmed_statement_lines(lines)
 
     def forced_st_line_unlink(self, lines=False):
+        ap_model = self.env['account.payment']
         lines = lines or self.mapped("bank_statement_line_ids")
-        return self.env["account.payment"].forced_st_line_unlink(lines)
+        return ap_model.forced_st_line_unlink(lines)
 
     @api.multi
     def cancel_voucher(self):
         for payment_order in self:
-            # Do not proceed if there are account.bank.statement.line on a confirmed ABS
+            # Do not proceed if there
+            # are account.bank.statement.line on a confirmed ABS
             if not payment_order.check_confirmed_statement_lines():
                 return False
 
         ret = super(AccountPaymentOrder, self).cancel_voucher()
-
         self.forced_st_line_unlink()
-
         return ret
 
     @api.multi
     def button_open_bank_statements(self):
         bank_lines = self.mapped("bank_statement_line_ids")
-        statements = self.env["account.payment"]._get_statements_from_lines(bank_lines)
+        ap_model = self.env['account.payment']
+        statements = ap_model._get_statements_from_lines(bank_lines)
         form = self.env.ref('account.view_bank_statement_form')
         if len(statements) == 1:
             return {
@@ -151,9 +109,12 @@ class AccountPaymentModeLine(models.Model):
     _inherit = 'account.payment.mode.line'
 
     def _build_invoices_info(self):
-        """Show invoices name concatenated."""
+        """
+        Show invoices name concatenated.
+        """
 
-        invoices = self.mapped("payment_order_id").mapped("line_ids").mapped("invoice_id")
+        invoices = self.mapped("payment_order_id").mapped(
+            "line_ids").mapped("invoice_id")
         return ', '.join(name or '' for _id, name in invoices.name_get())
 
     def _prepare_statement_line_data(self):
@@ -161,7 +122,8 @@ class AccountPaymentModeLine(models.Model):
         line_type = payment_order.type
 
         # Si el voucher no tiene partner, ponemos el de la compania
-        partner = payment_order.partner_id or payment_order.company_id.partner_id
+        partner = payment_order.partner_id or \
+            payment_order.company_id.partner_id
         journal = self.payment_mode_id or payment_order.journal_id
 
         if payment_order.type == 'payment':
@@ -186,7 +148,5 @@ class AccountPaymentModeLine(models.Model):
             'line_type': line_type,
             'amount': amount,
             'state': 'open',
-            #'creation_type': 'system',
         }
-
         return st_line_data

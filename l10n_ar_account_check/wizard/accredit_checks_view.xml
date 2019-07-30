@@ -7,16 +7,16 @@
             <field name="model">wizard.accredit.checks</field>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-            <form string="Accredit Checks">
-                <group colspan="8" col="8">
-                    <field name="issued_checks" widget="many2many_checkboxes" colspan="8"/>
-                </group>
-                <footer>
-                    <button type="special" special="cancel" string="Cancel" icon="gtk-cancel"/>
-                    <button type="object" string="Accredit Checks" name="button_accredit_checks"
-                        class="oe_highlight" icon="gtk-apply"/>
-                </footer>
-            </form>
+                <form string="Accredit Checks">
+                    <group colspan="8" col="8">
+                        <field name="issued_checks" widget="many2many_checkboxes" colspan="8"/>
+                    </group>
+                    <footer>
+                        <button type="special" special="cancel" string="Cancel" icon="gtk-cancel"/>
+                        <button type="object" string="Accredit Checks" name="button_accredit_checks"
+                            class="oe_highlight" icon="gtk-apply"/>
+                    </footer>
+                </form>
             </field>
         </record>
 

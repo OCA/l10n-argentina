@@ -27,7 +27,7 @@
                 </form>
             </field>
         </record>
-        
+
         <record id="action_add_issued_check" model="ir.actions.act_window">
             <field name="name">Add New Check</field>
             <field name="type">ir.actions.act_window</field>
@@ -37,7 +37,7 @@
             <field name="view_id" ref="add_issued_checks_form_view"/>
             <field name="target">new</field>
         </record>
-        
+
         <!--Para los Customer Payments-->
         <record id="add_third_checks_form_view" model="ir.ui.view">
             <field name="name">account.add.third.checks.wizard.form</field>
@@ -67,7 +67,7 @@
                 </form>
             </field>
         </record>
-        
+
         <record id="action_add_third_check" model="ir.actions.act_window">
             <field name="name">Add Check</field>
             <field name="type">ir.actions.act_window</field>

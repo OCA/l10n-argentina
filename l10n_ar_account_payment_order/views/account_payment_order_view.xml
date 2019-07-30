@@ -71,7 +71,7 @@
                                 <field name="journal_id"
                                     domain="[('type','=','receipt'), ('company_id', '=', company_id)]"
                                     string="Journal"
-				    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
+                                    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
                                     attrs="{'readonly': [('state', 'not in', ('draft'))]}"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
@@ -178,7 +178,7 @@
                                             sum="Total Unreconciled" force_save="True"/>
                                         <field name="amount" sum="Total Allocation" string="Allocation"
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field string="Full" name="reconcile"/>
+                                        <field string="Full" name="reconcile" class="reconcile_bullseye"/>
                                     </tree>
                                 </field>
                                 <div class="oe_button_box" name="button_box">
@@ -223,7 +223,7 @@
                                         <field name="reconcile" readonly="1" force_save="True" invisible="1"/>
                                         <field name="amount" sum="Total Allocation" string="Allocation"
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field string="Full" name="reconcile"/>
+                                        <field string="Full" name="reconcile" class="reconcile_bullseye"/>
                                     </tree>
                                 </field>
                                 <group col="3">
@@ -363,7 +363,7 @@
                                 <field name="journal_id"
                                     domain="[('type', '=', 'payment'), ('company_id', '=', company_id)]"
                                     invisible="context.get('line_type', False)"
-				    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
+                                    options="{'no_quick_create': True, 'no_create': True, 'no_create_edit': True}"
                                     string="Journal"/>
                                 <field name="amount" class="oe_inline"
                                     string="Paid Amount"
@@ -464,7 +464,7 @@
                                         <field name="reconcile" groups="account.group_account_user" invisible="1"/>
                                         <field name="amount" sum="Total Allocation"
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field string="Full" name="reconcile"/>
+                                        <field string="Full" name="reconcile" class="reconcile_bullseye"/>
                                     </tree>
                                 </field>
                                 <div class="oe_button_box" name="button_box">
@@ -509,7 +509,7 @@
                                         <field name="reconcile" groups="account.group_account_user" invisible="1"/>
                                         <field name="amount" sum="Total Allocation"
                                             widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                        <field string="Full" name="reconcile"/>
+                                        <field string="Full" name="reconcile" class="reconcile_bullseye"/>
                                     </tree>
                                 </field>
                                 <group>

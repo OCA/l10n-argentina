@@ -9,20 +9,20 @@
         <field name="type">form</field>
         <field name="priority" eval="10000"/>
         <field name="arch" type="xml">
-        <form string="Statement Line">
-            <group col="4" colspan="2">
-                <field name="statement_id" readonly="1"/>
-                <field name="date" readonly="1"/>
-                <field name="name" readonly="1"/>
-                <field name="ref" readonly="1"/>
-                <field name="partner_id" readonly="1"/>
-                <field name="amount" readonly="1"/>
-                <field name="journal_currency_id" readonly="1" invisible="1"/>
-                <field name="sequence" readonly="1"/>
-                <field name="concept_id" readonly="1"/>
-                <field name="note" colspan="4" readonly="1"/>
-            </group>
-        </form>
+            <form string="Statement Line">
+                <group col="4" colspan="2">
+                    <field name="statement_id" readonly="1"/>
+                    <field name="date" readonly="1"/>
+                    <field name="name" readonly="1"/>
+                    <field name="ref" readonly="1"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="amount" readonly="1"/>
+                    <field name="journal_currency_id" readonly="1" invisible="1"/>
+                    <field name="sequence" readonly="1"/>
+                    <field name="concept_id" readonly="1"/>
+                    <field name="note" colspan="4" readonly="1"/>
+                </group>
+            </form>
         </field>
     </record>
 

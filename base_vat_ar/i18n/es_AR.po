@@ -146,4 +146,3 @@ msgstr "Requiere Verificación"
 #: model:ir.ui.menu,name:base_vat_ar.menu_document_type
 msgid "base_vat_ar.menu_document_type"
 msgstr "base_vat_ar.menu_document_type"
-

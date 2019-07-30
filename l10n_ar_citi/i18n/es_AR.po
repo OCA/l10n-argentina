@@ -1,0 +1,237 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * l10n_ar_citi
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-25 13:46+0000\n"
+"PO-Revision-Date: 2019-07-25 13:46+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_account_fiscal_position_afip_code
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_account_tax_afip_code
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_res_currency_afip_code
+msgid "AFIP Code"
+msgstr "Código de AFIP"
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:447
+#, python-format
+msgid "Afip code is not set for tax %s used in invoice %s"
+msgstr ""
+"El código de AFIP no está establecido para el impuesto %s utilizado en la "
+"factura %s."
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:384
+#, python-format
+msgid "Amount %s can't be negative for invoice %s"
+msgstr "El importe %s no puede ser negativo para la factura %s."
+
+#. module: l10n_ar_citi
+#: model:ir.actions.act_window,name:l10n_ar_citi.action_generate_citi_files
+msgid "CITI"
+msgstr "CITI"
+
+#. module: l10n_ar_citi
+#: model:ir.ui.menu,name:l10n_ar_citi.menu_action_citi
+msgid "CITI Exporter"
+msgstr "Exportador CITI"
+
+#. module: l10n_ar_citi
+#: model:ir.ui.view,arch_db:l10n_ar_citi.view_create_sired_files
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,help:l10n_ar_citi.field_account_tax_afip_code
+msgid "Code specified by AFIP to use in CITI reports. Should not be changed"
+msgstr ""
+"Código especificado por la AFIP para utilizar en los informes de CITI. No "
+"debe ser cambiado"
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:188
+#, python-format
+msgid "Could not find a proper voucher type for invoice %s"
+msgstr ""
+"No se pudo encontrar un Tipo de Comprobante adecuado para la factura %s."
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: l10n_ar_citi
+#: model:ir.model,name:l10n_ar_citi.model_res_currency
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_display_name
+msgid "Display Name"
+msgstr "Mostrar nombre"
+
+#. module: l10n_ar_citi
+#: selection:create.citi.files,state:0
+msgid "Done"
+msgstr "Hecho"
+
+#. module: l10n_ar_citi
+#: selection:account.fiscal.position,operation_code:0
+msgid "Exempt Operation"
+msgstr "Operación Exenta"
+
+#. module: l10n_ar_citi
+#: selection:account.fiscal.position,operation_code:0
+msgid "Exports to free zone"
+msgstr "Exportaciones a zona franca."
+
+#. module: l10n_ar_citi
+#: model:ir.model,name:l10n_ar_citi.model_account_fiscal_position
+msgid "Fiscal Position"
+msgstr "Posición fiscal"
+
+#. module: l10n_ar_citi
+#: model:ir.ui.view,arch_db:l10n_ar_citi.view_create_sired_files
+msgid "Generate"
+msgstr "Generar"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_id
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_ar_citi
+#: selection:account.fiscal.position,operation_code:0
+msgid "Internal"
+msgstr "Interno"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files___last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_write_uid
+msgid "Last Updated by"
+msgstr "Última Actualización por"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_write_date
+msgid "Last Updated on"
+msgstr "Última Actualización el"
+
+#. module: l10n_ar_citi
+#: selection:account.fiscal.position,operation_code:0
+msgid "No Taxed Operation"
+msgstr "Operación no gravada"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_notes
+msgid "Notes"
+msgstr "Notas"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_account_fiscal_position_operation_code
+msgid "Operation Code"
+msgstr "Código de operación"
+
+#. module: l10n_ar_citi
+#: selection:account.fiscal.position,operation_code:0
+msgid "Overseas Exports"
+msgstr "Exportaciones en el extranjero"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_period_id
+msgid "Period"
+msgstr "Período"
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:373
+#, python-format
+msgid ""
+"Point of sale can't be zero or lower for invoice %s\n"
+"You can create an OC denomination and voucher type in order to use a not authorized point of sale."
+msgstr ""
+"El punto de venta no puede ser cero o inferior para la factura %s. Puede "
+"crear una denominación OC y un Tipo de Comprobante asociado para utilizar un"
+" Punto de Venta no autorizado."
+
+#. module: l10n_ar_citi
+#: selection:create.citi.files,state:0
+msgid "Start"
+msgstr "comienzo"
+
+#. module: l10n_ar_citi
+#: model:ir.model.fields,field_description:l10n_ar_citi.field_create_citi_files_state
+msgid "State"
+msgstr "Estado"
+
+#. module: l10n_ar_citi
+#: model:ir.model,name:l10n_ar_citi.model_account_tax
+msgid "Tax"
+msgstr "Impuesto"
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:395
+#, python-format
+msgid ""
+"Tax base does not match total tax amount for invoice %s. Check out for tax "
+"lines not matching invoice line taxes"
+msgstr ""
+"La base imponible no coincide con el importe total de impuestos para la "
+"factura %s. Revise las líneas de impuesto que no coincidan con los impuestos"
+" de las líneas de factura."
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:435
+#, python-format
+msgid ""
+"Tax percentage amount is configured as zero for tax %s. Used in invoice %s"
+msgstr ""
+"El porcentaje a aplicar no puede ser cero en el impuesto %s. Fue utilizado "
+"en la factura %s."
+
+#. module: l10n_ar_citi
+#: code:addons/l10n_ar_citi/wizard/create_citi_files.py:364
+#, python-format
+msgid "The document type of partner %s should be CUIT for invoice %s"
+msgstr "El tipo de documento de %s debe ser CUIT para la factura %s."
+
+#. module: l10n_ar_citi
+#: model:ir.ui.view,arch_db:l10n_ar_citi.view_create_sired_files
+msgid ""
+"This wizard allows you to create files to import to SIAp for CITI. The files"
+" generated will be attached to corresponding period."
+msgstr ""
+"Este asistente le permite crear archivos para importar a SIAp para CITI. Los"
+" archivos generados se adjuntarán al período correspondiente."
+
+#. module: l10n_ar_citi
+#: model:ir.ui.view,arch_db:l10n_ar_citi.view_create_sired_files
+msgid "Validation Errors"
+msgstr "Errores de validación"
+
+#. module: l10n_ar_citi
+#: model:ir.model,name:l10n_ar_citi.model_create_citi_files
+msgid "create.citi.files"
+msgstr "crear.citi.files"
+
+#. module: l10n_ar_citi
+#: model:ir.model,name:l10n_ar_citi.model_report_files_generator
+msgid "report.files.generator"
+msgstr "report.files.generator"

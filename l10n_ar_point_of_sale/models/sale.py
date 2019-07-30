@@ -1,8 +1,7 @@
-###############################################################################
-#   Copyright (c) 2017-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
 from odoo import api, models, _
 from odoo.exceptions import UserError
@@ -11,7 +10,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class sale_order(models.Model):
+class SaleOrder(models.Model):
     _name = "sale.order"
     _inherit = "sale.order"
 
@@ -32,7 +31,7 @@ class sale_order(models.Model):
 
         return res_pos
 
-    @api.multi
+    @api.model
     def _prepare_invoice(self):
         fpos_obj = self.env['account.fiscal.position']
         res = super()._prepare_invoice()

@@ -1,8 +1,6 @@
 ###############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2018 Gabriel Davini. (<https://github.com/gabrielo77>).
-#    All Rights Reserved. See readme/CONTRIBUTORS.rst for details.
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -11,34 +9,32 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
 
 {
-    "name": "Base Argentina's States (aka Provinces)",
+    "name": "Base Argentinian States (aka Provinces)",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
+    "author": "Eynes/E-MIPS",
+    "license": "AGPL-3",
+    "description": "This module provides states (provinces) for Argentina.",
     "depends": [
         "account",
         "sale",
     ],
-    "author": "Gabriel Davini",
-    "category": "Base Modules",
-    "description": """
-    This module provides:
-        * States (aka provinces) for Argentina.
-    """,
-    'data': [
-        'data/country_state_data.xml',
-        'views/partner_view.xml',
-        'views/res_city_view.xml',
-        'wizard/wizard_install_argentinean_cities_view.xml',
-        'security/ir.model.access.csv',
+    "data": [
+        "security/ir.model.access.csv",
+        "data/country_state_data.xml",
+        "wizard/wizard_install_argentinean_cities_view.xml",
+        "views/partner_view.xml",
+        "views/res_city_view.xml",
     ],
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
 }

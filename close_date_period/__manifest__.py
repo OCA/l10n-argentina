@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
-#    Copyright (c) 2019 Eynes/E-mips
+#    Copyright (c) 2019 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,11 +19,11 @@
 
 {
     "name": "Close Date Period",
-    "category": "Others",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
-    "author": "Eynes/E-mips",
+    "author": "Eynes/E-MIPS",
     "license": "AGPL-3",
-    "description": "Module Description",
+    "description": "Allow locking a period to prevent accounting changes.",
     "depends": [
         "base_period",
     ],
@@ -34,7 +33,6 @@
         "views/date_period_view.xml",
         "views/account_journal_view.xml",
     ],
-    "qweb": ['static/src/xml/*.xml'],
     "installable": True,
     "application": True,
 }

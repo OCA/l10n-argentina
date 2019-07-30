@@ -1,23 +1,24 @@
-###############################################################################
-#   Copyright (c) 2018 Eynes/E-MIPS (Martín Nicolás Cuesta)
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError, Warning
-from odoo.tools import config
-from odoo import registry
+import logging
+import os
+import shlex
+import tempfile
+import re
 from base64 import b64decode
 from io import BytesIO
 from zipfile import ZipFile, is_zipfile
 from tempfile import mkdtemp
 from subprocess import call, STDOUT
 from shutil import rmtree
-import logging
-import os
-import shlex
-import tempfile
-import re
+
+from odoo import registry
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError, Warning
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 

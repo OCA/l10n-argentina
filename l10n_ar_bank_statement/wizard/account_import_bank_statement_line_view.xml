@@ -7,17 +7,17 @@
         <field name="type">form</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <form string="Import Bank Statement Lines">
-            <group col="4" colspan="2">
-                <field name="filedata" filename="filename"/>
-                <field name="filename" invisible="1"/>
-                <field name="statement_id" invisible="1"/>
-            </group>
-        </form>
-        <footer>
-            <button string="Process File" type="object" name="button_process_file" class="oe_highlight"/>
-            <button string="Cancel" special="cancel"/>
-        </footer>
+            <form string="Import Bank Statement Lines">
+                <group col="4" colspan="2">
+                    <field name="filedata" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="statement_id" invisible="1"/>
+                </group>
+            </form>
+            <footer>
+                <button string="Process File" type="object" name="button_process_file" class="oe_highlight"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
         </field>
     </record>
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="report_files_generator_view" model="ir.ui.view">
+            <field name="name">Report Files Generator</field>
+            <field name="model">report.files.generator</field>
+            <field name="arch" type="xml">
+                <form string="Exporter">
+                    <field name="exporter_date_type" invisible="1" />
+                    <group>
+                        <field name="exporter_id" class="oe_inline" readonly="1" />
+                        <field name="company_id" class="oe_inline"/>
+                        <field name="period_id" class="oe_inline" attrs="{'invisible': [('exporter_date_type', '!=', 'period')]}" />
+                        <field name="date_start" class="oe_inline" attrs="{'invisible': [('exporter_date_type', '!=', 'date')]}" />
+                        <field name="date_stop" class="oe_inline" attrs="{'invisible': [('exporter_date_type', '!=', 'date')]}" />
+                    </group>
+                    <footer>
+                        <button name="do_generate" string="Generate" type="object" class="btn-primary"/>
+                        <button special="cancel" string="Cancel" class="btn-default"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

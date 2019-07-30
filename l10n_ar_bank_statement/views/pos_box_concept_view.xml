@@ -9,11 +9,11 @@
         <field name="type">tree</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <tree string="PoS Box Concept">
-            <field name="concept_type"/>
-            <field name="name"/>
-            <field name="account_id"/>
-        </tree>
+            <tree string="PoS Box Concept">
+                <field name="concept_type"/>
+                <field name="name"/>
+                <field name="account_id"/>
+            </tree>
         </field>
     </record>
 
@@ -23,26 +23,26 @@
         <field name="type">form</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <form string="PoS Box Concept">
-            <sheet>
-                <h1>
-                    <div>
-                        <label for="name" class="oe_edit_only"/>
-                        <field name="name" placeholder="Name..."/>
-                    </div>
-                </h1>
-                <h2>
-                    <div>
-                        <label for="code" class="oe_inline oe_edit_only"/>
-                        <field name="code" placeholder="Code..." class="oe_inline"/>
-                    </div>
-                </h2>
-                <group col="6" colspan="2">
-                    <field name="account_id"/>
-                    <field name="concept_type"/>
-                </group>
-            </sheet>
-        </form>
+            <form string="PoS Box Concept">
+                <sheet>
+                    <h1>
+                        <div>
+                            <label for="name" class="oe_edit_only"/>
+                            <field name="name" placeholder="Name..."/>
+                        </div>
+                    </h1>
+                    <h2>
+                        <div>
+                            <label for="code" class="oe_inline oe_edit_only"/>
+                            <field name="code" placeholder="Code..." class="oe_inline"/>
+                        </div>
+                    </h2>
+                    <group col="6" colspan="2">
+                        <field name="account_id"/>
+                        <field name="concept_type"/>
+                    </group>
+                </sheet>
+            </form>
         </field>
     </record>
 
@@ -52,16 +52,16 @@
         <field name="type">search</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <search string="PoS Box Concept">
-            <field name="name"/>
-            <field name="account_id"/>
-            <field name="concept_type"/>
-            <filter name="filter_by_type_in" domain="[('concept_type', '=', 'in')]" string="Put money in"/>
-            <filter name="filter_by_type_out" domain="[('concept_type', '=', 'out')]" string="Take money out"/>
-            <group expand="0" string="Group By...">
-                <filter string="Concept type" context="{'group_by': 'concept_type'}" name="group_by_concept_type"/>
-            </group>
-        </search>
+            <search string="PoS Box Concept">
+                <field name="name"/>
+                <field name="account_id"/>
+                <field name="concept_type"/>
+                <filter name="filter_by_type_in" domain="[('concept_type', '=', 'in')]" string="Put money in"/>
+                <filter name="filter_by_type_out" domain="[('concept_type', '=', 'out')]" string="Take money out"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Concept type" context="{'group_by': 'concept_type'}" name="group_by_concept_type"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -77,7 +77,7 @@
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Click to create a new PoS Box Concept
-            </p><p>
+                </p><p>
                 Cofigure the Accounts used when Puting money into/Taking money from a Bank Statement
             </p>
         </field>
@@ -105,11 +105,11 @@
         <field name="type">tree</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <tree string="PoS Box Concept Allowed">
-            <field name="name"/>
-            <field name="user_ids"/>
-            <field name="concept_ids"/>
-        </tree>
+            <tree string="PoS Box Concept Allowed">
+                <field name="name"/>
+                <field name="user_ids"/>
+                <field name="concept_ids"/>
+            </tree>
         </field>
     </record>
 
@@ -119,15 +119,15 @@
         <field name="type">form</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <form string="PoS Box Concept Allowed">
-            <sheet>
-                <h1><field name="name"/></h1>
-                <h2><label for="user_ids"/></h2>
-                <field name="user_ids"/>
-                <h2><label for="concept_ids"/></h2>
-                <field name="concept_ids"/>
-            </sheet>
-        </form>
+            <form string="PoS Box Concept Allowed">
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <h2><label for="user_ids"/></h2>
+                    <field name="user_ids"/>
+                    <h2><label for="concept_ids"/></h2>
+                    <field name="concept_ids"/>
+                </sheet>
+            </form>
         </field>
     </record>
 
@@ -137,11 +137,11 @@
         <field name="type">search</field>
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
-        <search string="PoS Box Concept Allowed">
-            <field name="name"/>
-            <field name="user_ids"/>
-            <field name="concept_ids"/>
-        </search>
+            <search string="PoS Box Concept Allowed">
+                <field name="name"/>
+                <field name="user_ids"/>
+                <field name="concept_ids"/>
+            </search>
         </field>
     </record>
 

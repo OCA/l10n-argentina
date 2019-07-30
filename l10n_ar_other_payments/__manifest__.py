@@ -1,6 +1,6 @@
 ###############################################################################
 #
-#    Copyright (c) 2018 Eynes/E-MIPS
+#    Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,9 @@
 
 {
     "name": "Other Payments",
-    "category": "Accounting & Finance",
+    "category": "L10N AR",
     "version": "11.0.1.0.0",
     "author": "Eynes/E-MIPS",
-    "website": "http://eynes.com.ar",
     "license": "AGPL-3",
     "description": "Extension del modulo de pagos, para poder registrar salida de dinero para otros conceptos con ordenes de pago.",  # noqa
     "depends": [
@@ -31,8 +30,8 @@
         "l10n_ar_account_create_check",
     ],
     "data": [
-        'views/payment_order_view.xml',
-        'security/ir.model.access.csv',
+        "security/ir.model.access.csv",
+        "views/payment_order_view.xml",
     ],
     "installable": True,
     "application": True,

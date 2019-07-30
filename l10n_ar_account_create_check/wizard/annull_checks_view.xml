@@ -7,21 +7,21 @@
             <field name="model">wizard.annull.checks</field>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-            <form string="Select checks" col="4" version="7.0">
-                <footer>
-                    <h3>
-                        <label for="checkbook_id" string="Checkbook: "/>
-                        <field name="checkbook_id" readonly="1"/>
-                        <field name="checks" widget="many2many_tags" options="{'no_create': True}"
-                            domain="[('checkbook_id', '=', checkbook_id), ('state', '=', 'draft')]"/>
-                    </h3>
-                </footer>
-                <footer>
-                    <button type="special" special="cancel" string="Cancel"/>
-                    <button type="object" string="Annull" name="button_annull_checks" class="oe_highlight"
-                        confirm="Are you sure you want to continue?"/>
-                </footer>
-            </form>
+                <form string="Select checks" col="4" version="7.0">
+                    <footer>
+                        <h3>
+                            <label for="checkbook_id" string="Checkbook: "/>
+                            <field name="checkbook_id" readonly="1"/>
+                            <field name="checks" widget="many2many_tags" options="{'no_create': True}"
+                                domain="[('checkbook_id', '=', checkbook_id), ('state', '=', 'draft')]"/>
+                        </h3>
+                    </footer>
+                    <footer>
+                        <button type="special" special="cancel" string="Cancel"/>
+                        <button type="object" string="Annull" name="button_annull_checks" class="oe_highlight"
+                            confirm="Are you sure you want to continue?"/>
+                    </footer>
+                </form>
             </field>
         </record>
 

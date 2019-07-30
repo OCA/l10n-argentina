@@ -112,7 +112,7 @@
                             <page string="Perceptions"
                                 attrs="{'invisible': [('partner_id', '=', False)]}">
                                 <field name="perception_ids" nolabel="1" colspan="4"
-                                        context="{'default_partner_id': partner_id}">
+                                    context="{'default_partner_id': partner_id}">
                                     <tree string="Perception Lines">
                                         <field name="date" />
                                         <field name="perception_id" string="Perception Type"/>

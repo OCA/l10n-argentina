@@ -65,13 +65,13 @@
                                     required="1"
                                     attrs="{'invisible':[('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="writeoff_acc_id"
-                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft',))]}"
-                                       domain="[('type','=','other')]"/>
+                                    attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'required':[('payment_option','=','with_writeoff')], 'readonly': [('state', 'not in', ('draft',))]}"
+                                    domain="[('type','=','other')]"/>
                                 <field name="comment"
-                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
+                                    attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
                                 <field name="analytic_id"
-                                       groups="analytic.group_analytic_accounting"
-                                       attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
+                                    groups="analytic.group_analytic_accounting"
+                                    attrs="{'invisible':['|', ('payment_option','!=','with_writeoff'), ('writeoff_amount','=',0)], 'readonly': [('state', 'not in', ('draft',))]}"/>
                             </group>
                         </group>
                         <notebook>
@@ -131,7 +131,7 @@
                                             <group>
                                                 <field name="issue_date"/>
                                                 <field name="payment_date" attrs="{'invisible': [('type', '=', 'common')],
-                                                                                   'required': [('type', '=', 'postdated')]}"/>
+                                                    'required': [('type', '=', 'postdated')]}"/>
                                                 <field name="account_bank_id" domain="[('company_id', '=', company_id)]" required="1" readonly="1"/>
                                                 <field name="clearing"/>
                                                 <field name="signatory"/>
@@ -146,7 +146,7 @@
                                 </field>
                                 <label for="third_check_ids"/>
                                 <field name="third_check_ids" string="Third Checks" nolabel="1" colspan="4" domain="[('state', '=', 'wallet')]">
-                                   <tree string="Third Checks">
+                                    <tree string="Third Checks">
                                         <field name="number"/>
                                         <field name="source_partner_id"/>
                                         <field name="issue_date"/>
@@ -156,7 +156,7 @@
                                         <field name="amount" sum="Total"/>
                                         <field name="state" invisible="1"/>
                                     </tree>
-                                 </field>
+                                </field>
                             </page>
                             <page string="Journal Items" name="journal_items" attrs="{'invisible': [('state','!=','posted')]}">
                                 <group col="4">

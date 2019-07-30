@@ -42,42 +42,42 @@
             name="Journals"
             parent="account.account_account_menu"
             sequence="1"/>
-            <menuitem id="account.menu_action_account_journal_form"
-                parent="menu_journal_subroot" sequence="1"/>
-            <menuitem id="account.menu_action_account_bank_journal_form"
-                parent="menu_journal_subroot" sequence="3"/>
+        <menuitem id="account.menu_action_account_journal_form"
+            parent="menu_journal_subroot" sequence="1"/>
+        <menuitem id="account.menu_action_account_bank_journal_form"
+            parent="menu_journal_subroot" sequence="3"/>
 
 
         <menuitem id="menu_tax_subroot"
             name="Taxes"
             parent="account.account_account_menu"
             sequence="2"/>
-            <menuitem id="account.menu_action_tax_form"
-                parent="menu_tax_subroot" sequence="1"/>
-            <menuitem id="account.menu_action_account_fiscal_position_form"
-                parent="menu_tax_subroot" sequence="3"/>
-            <menuitem id="menu_iibb_situation"
-                name="IIBB Situations"
-                parent="menu_tax_subroot"
-                sequence="120"
-                action="action_iibb_situation"/>
+        <menuitem id="account.menu_action_tax_form"
+            parent="menu_tax_subroot" sequence="1"/>
+        <menuitem id="account.menu_action_account_fiscal_position_form"
+            parent="menu_tax_subroot" sequence="3"/>
+        <menuitem id="menu_iibb_situation"
+            name="IIBB Situations"
+            parent="menu_tax_subroot"
+            sequence="120"
+            action="action_iibb_situation"/>
 
         <menuitem id="menu_invoicing_subroot"
             name="Invoicing"
             parent="account.account_account_menu"
             sequence="3"/>
-            <menuitem id="menu_pos_ar_root"
-                name="Point of Sale AR"
-                parent="menu_invoicing_subroot"
-                action="action_pos_ar_view_tree"
-                sequence="10"/>
-            <menuitem id="menu_invoice_denomination"
-                action="action_pos_ar_denomination_view_tree"
-                name="Denominations"
-                parent="menu_invoicing_subroot"
-                sequence="20"/>
-            <menuitem id="base_vat_ar.menu_document_type"
-                parent="menu_invoicing_subroot"/>
+        <menuitem id="menu_pos_ar_root"
+            name="Point of Sale AR"
+            parent="menu_invoicing_subroot"
+            action="action_pos_ar_view_tree"
+            sequence="10"/>
+        <menuitem id="menu_invoice_denomination"
+            action="action_pos_ar_denomination_view_tree"
+            name="Denominations"
+            parent="menu_invoicing_subroot"
+            sequence="20"/>
+        <menuitem id="base_vat_ar.menu_document_type"
+            parent="menu_invoicing_subroot"/>
 
 
         <menuitem id="not_used_native_menues_finance_receivables"
@@ -85,23 +85,23 @@
             groups="base.group_no_one"
             parent="account.menu_finance_receivables"
             sequence="999"/>
-            <menuitem id="account_voucher.menu_action_sale_receipt"
-                parent="not_used_native_menues_finance_receivables"/>
-            <menuitem id="account.menu_action_account_payments_receivable"
-                parent="not_used_native_menues_finance_receivables"/>
-            <menuitem id="account.menu_action_invoice_out_refund"
-                parent="not_used_native_menues_finance_receivables"/>
+        <menuitem id="account_voucher.menu_action_sale_receipt"
+            parent="not_used_native_menues_finance_receivables"/>
+        <menuitem id="account.menu_action_account_payments_receivable"
+            parent="not_used_native_menues_finance_receivables"/>
+        <menuitem id="account.menu_action_invoice_out_refund"
+            parent="not_used_native_menues_finance_receivables"/>
 
         <menuitem id="not_used_native_menues_finance_payables"
             name="Old Menues"
             groups="base.group_no_one"
             parent="account.menu_finance_payables"
             sequence="999"/>
-            <menuitem id="account_voucher.menu_action_purchase_receipt"
-                parent="not_used_native_menues_finance_payables"/>
-            <menuitem id="account.menu_action_account_payments_payable"
-                parent="not_used_native_menues_finance_payables"/>
-            <menuitem id="account.menu_action_invoice_in_refund"
-                parent="not_used_native_menues_finance_payables"/>
+        <menuitem id="account_voucher.menu_action_purchase_receipt"
+            parent="not_used_native_menues_finance_payables"/>
+        <menuitem id="account.menu_action_account_payments_payable"
+            parent="not_used_native_menues_finance_payables"/>
+        <menuitem id="account.menu_action_invoice_in_refund"
+            parent="not_used_native_menues_finance_payables"/>
     </data>
 </odoo>

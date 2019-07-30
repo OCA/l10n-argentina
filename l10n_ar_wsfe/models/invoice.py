@@ -1,47 +1,30 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General
-#    Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 import re
+import logging
 
 from odoo import _, api, exceptions, fields, models
 from odoo.exceptions import UserError, except_orm
 
-import logging
 _logger = logging.getLogger(__name__)
-
-__author__ = "Sebastian Kennedy <skennedy@e-mips.com.ar>"
 
 
 class AccountInvoice(models.Model):
     _name = "account.invoice"
     _inherit = "account.invoice"
 
-    aut_cae = fields.Boolean('Autorizar', default=False,
-                             help='Pedido de autorizacion a la AFIP')
+    aut_cae = fields.Boolean(
+        'Autorizar', default=False,
+        help='Pedido de autorizacion a la AFIP')
     cae = fields.Char(
         string='CAE/CAI', size=32, required=False,
         help='CAE (Codigo de Autorizacion Electronico assigned by AFIP.)')
-    cae_due_date = fields.Date('CAE Due Date', required=False,
-                               help='Fecha de vencimiento del CAE')
+    cae_due_date = fields.Date(
+        'CAE Due Date', required=False,
+        help='Fecha de vencimiento del CAE')
     associated_inv_ids = fields.Many2many(
         'account.invoice', 'account_invoice_associated_rel',
         'invoice_id', 'refund_debit_id')
@@ -51,8 +34,8 @@ class AccountInvoice(models.Model):
     # si es o no factura de exportacion
     export_type_id = fields.Many2one('wsfex.export_type.codes', 'Export Type')
     dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country')
-    shipping_perm_ids = fields.One2many('wsfex.shipping.permission',
-                                        'invoice_id', 'Shipping Permissions')
+    shipping_perm_ids = fields.One2many(
+        'wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions')
     incoterm_id = fields.Many2one(
         'stock.incoterms', 'Incoterm',
         help="International Commercial Terms are a series of predefined commercial terms used in international transactions.")  # noqa
@@ -501,7 +484,6 @@ class AccountInvoice(models.Model):
             err = _("Trying to get the WSFE config for invoices mixed " +
                     "between local and not local")
             raise UserError(_("WSFE Error\n") + err)
-        local = local_list[0]
         ctx = self.env.context.copy()
         company = self.mapped('pos_ar_id.company_id')
         company.ensure_one()

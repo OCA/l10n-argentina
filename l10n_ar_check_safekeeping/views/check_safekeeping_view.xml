@@ -98,13 +98,13 @@
         </record>
 
         <!-- <record id="action_move_to_safekeeping" model="ir.actions.server"> -->
-        <!--     <field name="name">Safekeep</field> -->
-        <!--     <field name="type">ir.actions.server</field> -->
-        <!--     <field name="state">code</field> -->
-        <!--     <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
-        <!--     <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
-        <!--     <field name="code">records.move_to_safekeeped()</field> -->
-        <!-- </record> -->
+            <!--     <field name="name">Safekeep</field> -->
+            <!--     <field name="type">ir.actions.server</field> -->
+            <!--     <field name="state">code</field> -->
+            <!--     <field name="model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
+            <!--     <field name="binding_model_id" ref="l10n_ar_account_check.model_account_third_check"/> -->
+            <!--     <field name="code">records.move_to_safekeeped()</field> -->
+            <!-- </record> -->
 
         <record id="action_move_to_wallet" model="ir.actions.server">
             <field name="name">Move to Wallet</field>
@@ -133,11 +133,11 @@
             <field name="inherit_id" ref="l10n_ar_account_check.view_third_checks_search"/>
             <field name="arch" type="xml">
                 <!-- <xpath expr="//filter[@context='&#38;quot;{&#38;apos;group_by&#38;apos;:&#38;apos;state&#38;apos;}&#38;quot;']" position="after"> -->
-                <xpath expr="//group[3]" position="inside">
-                    <filter string="Safekeeping Lot" name="group_safekeeping_lot" domain="[]" context="{'group_by':'safekeeping_lot_id'}"/>
-                </xpath>
-            </field>
-        </record>
+                    <xpath expr="//group[3]" position="inside">
+                        <filter string="Safekeeping Lot" name="group_safekeeping_lot" domain="[]" context="{'group_by':'safekeeping_lot_id'}"/>
+                    </xpath>
+                </field>
+            </record>
 
-    </data>
-</odoo>
+        </data>
+    </odoo>

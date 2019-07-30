@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
         <record id="account_check_deposit_form_view" model="ir.ui.view">
             <field name="name">account.check.deposit.wizard.form</field>
             <field name="model">account.check.deposit</field>

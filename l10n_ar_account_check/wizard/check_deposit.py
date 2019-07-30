@@ -1,14 +1,13 @@
-###############################################################################
-#   Copyright (C) 2008-2011  Thymbra
-#   Copyright (c) 2012-2018 Eynes/E-MIPS (http://www.e-mips.com.ar)
-#   Copyright (c) 2014-2018 Aconcagua Team
+##############################################################################
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
 #   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-###############################################################################
+##############################################################################
+
+import time
+from datetime import datetime
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
-import time
-from datetime import datetime
 
 
 class AccountCheckDeposit(models.Model):
@@ -32,15 +31,15 @@ class AccountCheckDeposit(models.Model):
                         ['journal_id'])[0]['journal_id'][0]
         return journal_id
 
-    journal_id = fields.Many2one(comodel_name='account.journal',
-                                 string='Journal',
-                                 required=True,
-                                 domain=[('type', 'in', ('cash', 'bank'))],
-                                 default=_get_journal)
-    bank_account_id = fields.Many2one(comodel_name='res.partner.bank',
-                                      string='Bank Account', required=True)
-    date = fields.Date(string='Deposit Date', required=True,
-                       default=lambda *a: time.strftime('%Y-%m-%d'))
+    journal_id = fields.Many2one(
+        comodel_name='account.journal', string='Journal',
+        required=True, domain=[('type', 'in', ('cash', 'bank'))],
+        default=_get_journal)
+    bank_account_id = fields.Many2one(
+        comodel_name='res.partner.bank', string='Bank Account', required=True)
+    date = fields.Date(
+        string='Deposit Date', required=True,
+        default=lambda *a: time.strftime('%Y-%m-%d'))
     voucher_number = fields.Char(string='Voucher Number', size=32)
     company_id = fields.Many2one(
         comodel_name='res.company',

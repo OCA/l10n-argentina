@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_report_default_jurisdiction_configuration_user,report.default.jurisdiction.configuration user,l10n_ar_sales_by_jurisdiction.model_report_default_jurisdiction_configuration,base.group_user,1,1,1,1

@@ -1,37 +1,26 @@
 ##############################################################################
-#
-#    Copyright (C) 2004-2010 Pexego Sistemas Informáticos. All Rights Reserved
-#    Copyright (C) 2010-2014 Eynes - Ingeniería del software All Rights Reserved
-#    Copyright (c) 2014 Aconcagua Team (http://www.proyectoaconcagua.com.ar)
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 from odoo.addons.account.wizard.pos_box import CashBox as CashBoxOdoo
 from odoo.addons.account.wizard.pos_box import CashBoxIn as CashBoxInOdoo
 from odoo.addons.account.wizard.pos_box import CashBoxOut as CashBoxOutOdoo
+
 
 @api.multi
 def _run_patched(self, records):
     for box in self:
         for record in records:
             if not record.journal_id:
-                raise UserError(_("Please check that the field 'Journal' is set on the Bank Statement"))
+                raise UserError(
+                    _("Please check that the field 'Journal' " +
+                      "is set on the Bank Statement"))
             box._create_bank_statement_line(record)
     return {}
+
 
 @api.multi
 def get_account(self, record=None):
@@ -39,8 +28,10 @@ def get_account(self, record=None):
     res = self.concept_id.account_id
     fallback = record.journal_id.company_id.transfer_account_id
     if not res and not fallback:
-        raise exceptions.ValidationError(_('Cannot found account to do the transfer'))
+        raise ValidationError(
+            _('Cannot found account to do the transfer'))
     return res or fallback
+
 
 class CashBoxIn(models.TransientModel):
     _inherit = 'cash.box.in'
@@ -74,10 +65,12 @@ class CashBoxIn(models.TransientModel):
             '_run',
             _run_patched
         )
+        return res
 
     @api.multi
     def _calculate_values_for_statement_line(self, record):
-        vals = super(CashBoxIn, self)._calculate_values_for_statement_line(record)
+        vals = super(CashBoxIn, self)._calculate_values_for_statement_line(
+            record)
         vals["concept_id"] = self.concept_id.id
         vals["line_type"] = "in"
         vals["state"] = "confirm"
@@ -112,11 +105,12 @@ class CashBoxOut(models.TransientModel):
             '_calculate_values_for_statement_line',
             _calculate_values_for_statement_line_cashboxout
         )
-
+        return res
 
     @api.multi
     def _calculate_values_for_statement_line(self, record):
-        vals = super(CashBoxOut, self)._calculate_values_for_statement_line(record)
+        vals = super(CashBoxOut, self)._calculate_values_for_statement_line(
+            record)
         vals["concept_id"] = self.concept_id.id
         vals["line_type"] = "out"
         vals["state"] = "confirm"
@@ -135,6 +129,7 @@ def _calculate_values_for_statement_line_cashboxin(self, record):
         'ref': '%s' % (self.ref or ''),
         'name': self.name,
     }
+
 
 @api.multi
 def _calculate_values_for_statement_line_cashboxout(self, record):

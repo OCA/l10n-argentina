@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <function id="_set_default_afip_codes" name="_set_default_afip_codes" 
+            model="account.tax" />
+        <!-- Install report -->
+        <record model='report.exporter' id='citi_exporter' forcecreate="True">
+            <field name="codename">citi</field>
+            <field name="name">CITI</field>
+            <field name="date_type">period</field>
+        </record>
+    </data>
+</openerp>

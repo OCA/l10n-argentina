@@ -68,7 +68,7 @@
         </record>
 
 
-    <!--Views of Invoice Denomination-->
+        <!--Views of Invoice Denomination-->
 
         <record id="inv_den_view_form" model="ir.ui.view">
             <field name="name">inv.den.view.form</field>

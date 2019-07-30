@@ -10,24 +10,24 @@
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="arch" type="xml">
                 <page name="accounting_disabled" position="after">
-                <page string="Perceptions">
-                    <group colspan="4" col="4">
-                        <group colspan="4">
-                            <field colspan="2" name="perception_ids" nolabel="1">
-                                <tree string="Perceptions to Apply" editable="bottom">
-                                    <field name="perception_id" domain="[('type_tax_use','=','sale')]"/>
-                                    <field name="activity_id"/>
-                                    <field name="percent"/>
-                                    <field name="excluded_percent" />
-                                    <field name="ex_date_from" />
-                                    <field name="ex_date_to" />
-                                    <field name="exclusion_certificate" />
-                                    <field name="sit_iibb" />
-                                </tree>
-                            </field>
+                    <page string="Perceptions">
+                        <group colspan="4" col="4">
+                            <group colspan="4">
+                                <field colspan="2" name="perception_ids" nolabel="1">
+                                    <tree string="Perceptions to Apply" editable="bottom">
+                                        <field name="perception_id" domain="[('type_tax_use','=','sale')]"/>
+                                        <field name="activity_id"/>
+                                        <field name="percent"/>
+                                        <field name="excluded_percent" />
+                                        <field name="ex_date_from" />
+                                        <field name="ex_date_to" />
+                                        <field name="exclusion_certificate" />
+                                        <field name="sit_iibb" />
+                                    </tree>
+                                </field>
+                            </group>
                         </group>
-                    </group>
-                </page>
+                    </page>
                 </page>
                 <group name="accounting_entries" position="after">
                     <group>

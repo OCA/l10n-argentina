@@ -11,7 +11,7 @@
                 <field name="acc_number" position="after">
                     <field name="account_id"/>
                 </field>
-             </field>
+            </field>
         </record>
     </data>
 </odoo>

@@ -1,23 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
-#
-#    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013 E-MIPS (http://www.e-mips.com.ar) All Rights Reserved.
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General
-#    Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#   Copyright (c) 2018 Eynes/E-MIPS (www.eynes.com.ar)
+#   License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 ##############################################################################
 
 from odoo import models, fields, api, _
@@ -37,8 +20,6 @@ class WsfeTaxCodes(models.Model):
     to_date = fields.Date('Effect Until')
     from_date = fields.Date('Effective From')
     tax_id = fields.Many2one('account.tax', 'Account Tax')
-    # TODO
-    # tax_code_id = fields.Many2one('account.tax.code', 'Account Tax Code')
     wsfe_config_id = fields.Many2one('wsfe.config', 'WSFE Configuration')
     from_afip = fields.Boolean('From AFIP')
     exempt_operations = fields.Boolean(
@@ -73,11 +54,6 @@ class WsfeConfig(models.Model):
         domain=[('from_afip', '=', False), ('exempt_operations', '=', True)])
     wsaa_ticket_id = fields.Many2one('wsaa.ta', 'Ticket Access')
     company_id = fields.Many2one('res.company', 'Company Name', required=True)
-
-    _sql_constraints = [
-        # ('company_uniq', 'unique (company_id)',
-        #  'The configuration must be unique per company !')
-    ]
 
     _defaults = {
         'company_id': lambda self, cr, uid, context=None:
@@ -561,6 +537,8 @@ class WsfeVoucherType(models.Model):
 
             denomination_id = voucher.denomination_id.id
             type = voucher.type
+            if type.startswith("in"):
+                type = "out_%s" % type[3:]
             if type == 'out_invoice':
                 if voucher.is_debit_note:
                     type = 'out_debit'

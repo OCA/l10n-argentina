@@ -1,6 +1,7 @@
 Major Developers:
 ===== ===========
-* Julian Corso
+* Julian Camilo Corso
 
 Other Contributors:
 ===== =============
+* Martín Nicolás Cuesta
