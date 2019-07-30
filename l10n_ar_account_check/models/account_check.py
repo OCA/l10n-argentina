@@ -566,6 +566,8 @@ class AccountThirdCheck(models.Model):
             voucher = voucher_obj.search([
                 ('third_check_ids', '=', check.id),
                 ('state', '!=', 'cancel')])
+            if len(voucher) > 1:
+                raise UserError(_('There are more than one voucher referenced to check %s.' %check.number))
 
             if not check.endorsement_date:
                 vals['endorsement_date'] = voucher.date or \

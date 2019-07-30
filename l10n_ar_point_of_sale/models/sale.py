@@ -5,17 +5,19 @@
 
 from odoo import api, models, _
 from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
     _name = "sale.order"
     _inherit = "sale.order"
 
-    # DONE
-    @api.model
+    @api.multi
     def _get_pos_ar(self, denom):
         pos_ar_obj = self.env['pos.ar']
-        res_pos = self.env.user.property_default_pos_id
+        res_pos = self.env.user.get_default_pos_id(self)
         if not res_pos:
             res_pos = pos_ar_obj.search([
                 ('shop_id', '=', self.warehouse_id.id),
@@ -29,13 +31,8 @@ class SaleOrder(models.Model):
 
         return res_pos
 
-    # DONE
     @api.model
     def _prepare_invoice(self):
-        """Se le agrega denominación y
-           punto de venta a la factura
-        """
-
         fpos_obj = self.env['account.fiscal.position']
         res = super()._prepare_invoice()
 
