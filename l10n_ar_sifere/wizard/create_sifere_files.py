@@ -58,6 +58,8 @@ class ReportFilesGenerator(models.Model):
                 'data': retention.get('file', False),
             }],
         }
+        if ddict['errors'] == [{'resource': False, 'error': False}]:
+            ddict.pop('errors')
         return ddict
 
     @api.multi
@@ -205,6 +207,8 @@ class ReportFilesGenerator(models.Model):
                 'data': perception.get('file', False),
             }],
         }
+        if ddict['errors'] == [{'resource': False, 'error': False}]:
+            ddict.pop('errors')
         return ddict
 
     @api.multi
