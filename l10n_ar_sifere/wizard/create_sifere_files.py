@@ -5,9 +5,6 @@
 
 from decimal import Decimal
 import datetime
-import tempfile
-import codecs
-import binascii
 import re
 import logging
 
@@ -41,26 +38,22 @@ class ReportFilesGenerator(models.Model):
     _inherit = 'report.files.generator'
 
     @api.multi
-    def _do_sifere_ret(self):
-        retention = self.create_retention_file()
-        state = True
-        if retention.get('errors', False):
-            state = False
+    def _do_sifere(self, method):
+        data = getattr(self, method)()
+        errors = data.get('errors')
+        files = data.get('files')
+        state = not bool(errors)
 
         ddict = {
             'state': state,
-            'errors': [{
-                'resource': retention.get('resource', False),
-                'error': retention.get('errors', False),
-            }],
-            'files': [{
-                'name': retention.get('name', False),
-                'data': retention.get('file', False),
-            }],
+            'errors': errors,
+            'files': files,
         }
-        if ddict['errors'] == [{'resource': False, 'error': False}]:
-            ddict.pop('errors')
         return ddict
+
+    @api.multi
+    def _do_sifere_ret(self):
+        return self._do_sifere('create_retention_file')
 
     @api.multi
     def create_retention_file(self):
@@ -106,11 +99,10 @@ class ReportFilesGenerator(models.Model):
         sifere_jurisdiction_obj = self.env['sifere.jurisdiction']
         sifere_config = self.env['sifere.config'].search(
             [('name', '=', 'Default')])
-
-        head_file_errors = []
-        head_regs = []
         fixed_width = FixedWidth(HEAD_LINES_RET)
 
+        regs = []
+        errors = []
         for tax_line in retention_tax_line_obj.browse(retention_ids):
             # String(YYYY-MM-DD)->Datetime
             date = datetime.datetime.strptime(tax_line.date, '%Y-%m-%d')
@@ -120,10 +112,10 @@ class ReportFilesGenerator(models.Model):
             logger.info('Processing %s' % tax_line_name)
             nro_doc_retenido = tax_line.partner_id.vat
             if not nro_doc_retenido:
-                return {
+                errors.append({
                     'errors': 'Partner VAT not found',
                     'resource': tax_line.partner_id,
-                }
+                })
             if '-' not in nro_doc_retenido and len(nro_doc_retenido) == 11:
                 nro_doc_retenido = '{0}-{1}-{2}'.format(
                     nro_doc_retenido[0:2], nro_doc_retenido[2:10],
@@ -133,10 +125,10 @@ class ReportFilesGenerator(models.Model):
             if not jurisdiction.code:
                 jurisdiction_code = 0
                 if not sifere_config.ignore_jurisdiction:
-                    return {
+                    errors.append({
                         'errors': 'Jurisdiction cannot be found',
                         'resource': tax_line.retention_id,
-                    }
+                    })
             else:
                 jurisdiction_code = jurisdiction.code
 
@@ -158,58 +150,22 @@ class ReportFilesGenerator(models.Model):
 
             # Apendeamos el registro
             fixed_width.update(**line)
-            head_regs.append(fixed_width.line)
-
-        # Chequeamos si hubo errores
-        if len(head_file_errors):
-            print(head_file_errors)
-            return {'errors': head_file_errors}
-
-        head_filename = tempfile.mkstemp(suffix='.iva')[1]
-        f = codecs.open(head_filename, "w", "latin-1")
-
-        for r in head_regs:
-            r2 = [a for a in r]
-            try:
-                f.write(''.join(r2))
-            except Exception as e:
-                raise e
-            f.write('\r\n')
-
-        f.close()
-
-        f = open(head_filename, 'r')
+            regs.append(fixed_width.line)
 
         name = 'SIFERE_RET_%s.txt' % period_name
 
         data = {
-            'name': name,
-            'file': binascii.b2a_base64(f.read().encode('utf-8')),
+            'errors': errors,
+            'files': [{
+                'name': name,
+                'data': regs,
+            }],
         }
-        f.close()
         return data
 
     @api.multi
     def _do_sifere_per(self):
-        perception = self.create_perception_file()
-        state = True
-        if perception.get('errors', False):
-            state = False
-
-        ddict = {
-            'state': state,
-            'errors': [{
-                'resource': perception.get('resource', False),
-                'error': perception.get('errors', False),
-            }],
-            'files': [{
-                'name': perception.get('name', False),
-                'data': perception.get('file', False),
-            }],
-        }
-        if ddict['errors'] == [{'resource': False, 'error': False}]:
-            ddict.pop('errors')
-        return ddict
+        return self._do_sifere('create_perception_file')
 
     @api.multi
     def create_perception_file(self):
@@ -273,9 +229,10 @@ class ReportFilesGenerator(models.Model):
         sifere_jurisdiction_obj = self.env['sifere.jurisdiction']
         sifere_config = self.env['sifere.config'].search(
             [('name', '=', 'Default')])
-        head_regs = []
         fixed_width = FixedWidth(HEAD_LINES_PER)
 
+        regs = []
+        errors = []
         for tax_line in perception_tax_line_obj.browse(perception_ids):
             # String(YYYY-MM-DD)->Datetime
             date = datetime.datetime.strptime(tax_line.date, '%Y-%m-%d')
@@ -285,10 +242,10 @@ class ReportFilesGenerator(models.Model):
             logger.info('Processing %s' % tax_line_name)
             nro_doc_percibido = tax_line.partner_id.vat
             if not nro_doc_percibido:
-                return {
+                errors.append({
                     'errors': 'Partner VAT not found',
                     'resource': tax_line.partner_id,
-                }
+                })
             if '-' not in nro_doc_percibido and len(nro_doc_percibido) == 11:
                 nro_doc_percibido = '{0}-{1}-{2}'.format(
                     nro_doc_percibido[0:2], nro_doc_percibido[2:10],
@@ -298,10 +255,10 @@ class ReportFilesGenerator(models.Model):
             if not jurisdiction.code:
                 jurisdiction_code = 0
                 if not sifere_config.ignore_jurisdiction:
-                    return {
+                    errors.append({
                         'errors': 'Jurisdiction cannot be found',
                         'resource': tax_line.perception_id,
-                    }
+                    })
             else:
                 jurisdiction_code = jurisdiction.code
 
@@ -327,28 +284,15 @@ class ReportFilesGenerator(models.Model):
 
             # Apendeamos el registro
             fixed_width.update(**line)
-            head_regs.append(fixed_width.line)
-
-        head_filename = tempfile.mkstemp(suffix='.iva')[1]
-        f = codecs.open(head_filename, "w", "latin-1")
-
-        for r in head_regs:
-            r2 = [a for a in r]
-            try:
-                f.write(''.join(r2))
-            except Exception as e:
-                raise e
-            f.write('\r\n')
-
-        f.close()
-
-        f = open(head_filename, 'r')
+            regs.append(fixed_width.line)
 
         name = 'SIFERE_PER_%s.txt' % period_name
 
         data = {
-            'name': name,
-            'file': binascii.b2a_base64(f.read().encode('utf-8')),
+            'errors': errors,
+            'files': {
+                'name': name,
+                'data': regs,
+            },
         }
-        f.close()
         return data
