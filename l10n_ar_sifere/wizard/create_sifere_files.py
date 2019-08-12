@@ -290,9 +290,9 @@ class ReportFilesGenerator(models.Model):
 
         data = {
             'errors': errors,
-            'files': {
+            'files': [{
                 'name': name,
                 'data': regs,
-            },
+            }],
         }
         return data
