@@ -28,6 +28,8 @@ class AccountMove(models.Model):
 
     @api.multi
     def write(self, vals):
+        if self._context.get('bypass_close_date_period_check'):
+            return super(AccountMoveLine, self).write(vals)
         if self.journal_id.id in self.period_id.journal_ids.ids:
             raise ValidationError(
                 _("Can't edit an account move on a closed period."))
@@ -73,6 +75,8 @@ class AccountMoveLine(models.Model):
 
     @api.multi
     def write(self, vals):
+        if self._context.get('bypass_close_date_period_check'):
+            return super(AccountMoveLine, self).write(vals)
         bypass_fields = ['reconciled', 'full_reconcile_id']
         if any(key not in bypass_fields for key in list(vals.keys())):
             for rec in self:
