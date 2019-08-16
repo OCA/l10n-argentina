@@ -4,3 +4,4 @@
 ##############################################################################
 
 from . import partner  # noqa
+from . import res_country_state  # noqa

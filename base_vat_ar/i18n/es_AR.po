@@ -1,22 +1,21 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* base_vat_ar
-# Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>, 2018.
 #
 msgid ""
 msgstr ""
-"Language: Spanish\n"
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-30 19:09+0000\n"
-"PO-Revision-Date: 2018-05-30 16:16-0300\n"
-"Last-Translator: Martín Nicolás Cuesta <cuesta.martin.n@hotmail.com>\n"
-"Language-Team: Spanish; Castilian <>\n"
+"POT-Creation-Date: 2019-08-16 14:40+0000\n"
+"PO-Revision-Date: 2019-08-16 11:41-0300\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"Plural-Forms: \n"
+"Language: es_AR\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_afip_code
@@ -45,6 +44,11 @@ msgid "Country CUIT"
 msgstr "Países CUIT"
 
 #. module: base_vat_ar
+#: model:ir.model,name:base_vat_ar.model_res_country_state
+msgid "Country state"
+msgstr "Provincia"
+
+#. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_create_uid
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_create_uid
 msgid "Created by"
@@ -64,7 +68,7 @@ msgstr "Países CUIT"
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_name
 msgid "Desc"
-msgstr "Descripción"
+msgstr "Desc"
 
 #. module: base_vat_ar
 #: model:ir.model.fields,field_description:base_vat_ar.field_dst_cuit_codes_display_name
@@ -85,7 +89,6 @@ msgstr "Tipo de documento..."
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_users_document_type_id
 #: model:ir.ui.view,arch_db:base_vat_ar.view_res_document_type_form
 #: model:ir.ui.view,arch_db:base_vat_ar.view_res_document_type_tree
-#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
 msgid "Document type"
 msgstr "Tipo de documento"
 
@@ -121,6 +124,11 @@ msgid "Last Updated on"
 msgstr "Última actualización en"
 
 #. module: base_vat_ar
+#: sql_constraint:res.country.state:0
+msgid "Repeated state name. Please check the states list."
+msgstr "Nombre de provincia repetido. Por favor revise su lista de provincias."
+
+#. module: base_vat_ar
 #: code:addons/base_vat_ar/models/partner.py:126
 #, python-format
 msgid "The Vat does not seems to be correct."
@@ -142,3 +150,8 @@ msgstr "Existe otra compañía con la misma información de NIF"
 #: model:ir.model.fields,field_description:base_vat_ar.field_res_document_type_verification_required
 msgid "Verification required"
 msgstr "Requiere Verificación"
+
+#. module: base_vat_ar
+#: model:ir.ui.menu,name:base_vat_ar.menu_document_type
+msgid "base_vat_ar.menu_document_type"
+msgstr "base_vat_ar.menu_document_type"
