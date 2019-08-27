@@ -30,7 +30,7 @@ class ResUsers(models.Model):
         if config_param == 'commercial':
             res = record.user_id.property_default_pos_id
         else:
-            res = self.env.user.property_default_pos_id
+            res = self.property_default_pos_id
         _logger.info('default_pos({})[{}] for {}: {}'.format(
             config_param, record, self, res))
         return res
