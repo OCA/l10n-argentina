@@ -1,3 +1,1 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-access_tax_subjournal_report_config,tax.subjournal.report.config User,model_tax_subjournal_report_config,base.group_user,1,1,1,1
-access_subjournal_report_taxcode_column,subjournal.report.taxcode.column User,model_subjournal_report_taxcode_column,base.group_user,1,1,1,1
