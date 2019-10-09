@@ -217,6 +217,7 @@ class account_issued_check(models.Model):
             name_ref = 'Clearance Check ' + check.number
             move_vals = {   'ref': name_ref,
                             'journal_id': def_check_journal.id,
+                            'date': current_date,
                         }
             move_id = move_obj.create(move_vals)
 
