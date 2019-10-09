@@ -205,8 +205,9 @@ class account_issued_check(models.Model):
             if not def_check_journal:
                 raise except_orm(_("Error!"),_("There is no Journal configured for deferred checks."))
 
-
-            current_date = time.strftime('%Y-%m-%d')
+            # Lookup in ctx (used in wizard to use another date instead of today)
+            current_date = self._context.get(
+                'date_to_use', time.strftime('%Y-%m-%d'))
 
             period_obj = self.env['account.period']
             current_period = period_obj.search([('date_start', '<=', current_date), ('date_stop', '>=', current_date)])
@@ -246,7 +247,6 @@ class account_issued_check(models.Model):
                                    }
 
             move_line_obj.create(bank_move_line_vals)
-
 
             move_lines_to_reconcile = []
             payment_move_line = move_line_obj.search([('issued_check_id', '=', check.id)])
