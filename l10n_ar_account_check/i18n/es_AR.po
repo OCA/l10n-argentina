@@ -651,6 +651,11 @@ msgid "Issued checks"
 msgstr "Cheques Emitidos"
 
 #. module: l10n_ar_account_check
+#: field:wizard.accredit.checks,date:0
+msgid "Accreditation Date"
+msgstr "Fecha de acreditación"
+
+#. module: l10n_ar_account_check
 #: field:account.check.deposit,journal_id:0
 #: field:account.check.reject,journal_id:0
 msgid "Journal"

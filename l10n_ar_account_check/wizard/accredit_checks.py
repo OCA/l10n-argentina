@@ -31,14 +31,21 @@ class WizardAccreditChecks(models.TransientModel):
         check_ids = self.env.context.get("active_ids", [])
         return [(6, False, check_ids)]
 
+    def get_default_domain(self):
+        ids = self.get_default_checks()[0][2]
+        return [('id', 'in', ids)]
+
     issued_checks = fields.Many2many(
         'account.issued.check',
         'wiz_accredit_check_rel',
         'wiz_id',
         'check_id',
         default=get_default_checks,
+        domain=get_default_domain,
     )
+    date = fields.Date(required=True, default=fields.Date.context_today, string='Accreditation Date')
 
     @api.multi
     def button_accredit_checks(self):
+        self = self.with_context(date_to_use=self.date)
         return self.issued_checks.accredit_checks()
