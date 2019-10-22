@@ -105,6 +105,8 @@
                                 <field name="internal_number" class="oe_inline" placeholder="XXXX-XXXXXXXX" attrs="{'readonly':[('state', 'not in', ('draft', 'proforma', 'proforma2'))]}"/>
                             </h2>
                         </div>
+                        <div class="oe_right oe_button_box" name="box_buttons">
+                        </div>
                     </xpath>
 
                    <field name="account_id" position="after">
