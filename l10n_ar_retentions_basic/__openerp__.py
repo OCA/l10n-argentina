@@ -27,10 +27,8 @@
     "license": "GPL-3",
     "category": "Localisation Modules",
     "description": """
-    This module provide :
-    1) Implementation of Retentions Taxes for Argentina
-       based on tax objects of OpenERP like account.tax and account.tax.code.
-    """,
+This module provides and implementation of Retentions Taxes for Argentina
+based on tax objects of Odoo like account.tax and account.tax.code.""",
     "init_xml": [
         'retention_data.xml',
     ],
