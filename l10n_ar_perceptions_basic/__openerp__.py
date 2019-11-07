@@ -27,10 +27,8 @@
     "license": "GPL-3",
     "category": "Localisation Modules",
     "description": """
-    This module provide :
-    1) Implementation of Perceptions Taxes for Argentina
-       based on tax objects of OpenERP like account.invoice, account.tax and account.tax.code.
-    """,
+This module provides an implementation of Perceptions Taxes for Argentina
+based on tax objects of Odoo like account.invoice, account.tax and account.tax.code.""",
     "init_xml": [
         "perception_data.xml",
     ],
