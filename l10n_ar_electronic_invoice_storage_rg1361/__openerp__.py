@@ -25,16 +25,15 @@
     "author": "E-MIPS",
     "category": "Localisation/Argentina",
     "description": """
+Argentinian electronic invoice storage according RG1361.
     """,
-    "init_xml": [],
-    'update_xml': [
+    'data': [
         'partner_view.xml',
         'res_currency_view.xml',
         'product_view.xml',
         'account_invoice_view.xml',
         'wizard/create_sired_files_view.xml',
     ],
-    'demo_xml': [],
     'installable': True,
     'active': False,
     'license': 'GPL-3 or any later version',
