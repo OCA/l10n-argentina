@@ -29,11 +29,9 @@
     "license": "GPL-3",
     "category": "Localisation Modules",
     "description": """
-    This module provide :
-    1) Tax Report for VAT, Perceptions and Retentions
+This module provides a Tax Report for VAT, Perceptions and Retentions.
     """,
-    "init_xml": [],
-    'update_xml': [
+    'data': [
         "security/ir.model.access.csv",
         # "tax_report.xml",
         "tax_report_config_view.xml",
