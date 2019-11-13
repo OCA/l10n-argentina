@@ -512,6 +512,11 @@ msgid "Draft"
 msgstr "Borrador"
 
 #. module: l10n_ar_account_check
+#: view:account.third.check:l10n_ar_account_check.view_third_checks_search
+msgid "Electronic Checks"
+msgstr "Cheques Electrónicos"
+
+#. module: l10n_ar_account_check
 #: selection:account.add.third.check,state:0
 msgid "En Cartera"
 msgstr "En Cartera"
@@ -595,6 +600,11 @@ msgstr "En caso de rechazo de un cheque de terceros"
 #, python-format
 msgid "Invoice"
 msgstr "Factura"
+
+#. module: l10n_ar_account_check
+#: field:account.third.check,is_electronic:0
+msgid "Is Electronic?"
+msgstr "¿Cheque electrónico?"
 
 #. module: l10n_ar_account_check
 #: field:account.issued.check,issue_date:0
@@ -714,6 +724,11 @@ msgstr "Cuenta Principal de Cheque"
 #: field:account.add.third.check,on_order:0
 msgid "On Order"
 msgstr "A la orden"
+
+#. module: l10n_ar_account_check
+#: view:account.third.check:l10n_ar_account_check.view_third_checks_search
+msgid "Not Electronic Checks"
+msgstr "Cheques NO Electrónicos"
 
 #. module: l10n_ar_account_check
 #: field:account.third.check,not_order:0

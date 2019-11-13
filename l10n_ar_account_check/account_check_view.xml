@@ -342,15 +342,19 @@
                             string="Rejected" domain="[('state','=','rejected')]"/>
                         <filter icon="gtk-cancel" name="cancel"
                             string="Cancelled" domain="[('state','=','cancel')]"/>
-                       <separator orientation="vertical"/>
-                       <filter icon="terp-check" string="Common" name="common"
-                           domain="[('type','=', 'common')]"/>
-                       <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
-                           domain="[('type','=', 'postdated')]"/>
-                    <field name="number" select="1" string="Check Number"/>
-                    <field name="issue_date"/>
-                    <field name="origin"/>
-                    <field name="source_partner_id"/>
+                        <filter name="is_electronic_check" string="Electronic Checks"
+                            domain="[('is_electronic', '=', True)]"/>
+                        <filter name="isnt_electronic_check" string="Not Electronic Checks"
+                            domain="[('is_electronic', '=', False)]"/>
+                        <separator orientation="vertical"/>
+                        <filter icon="terp-check" string="Common" name="common"
+                            domain="[('type','=', 'common')]"/>
+                        <filter icon="terp-gnome-cpu-frequency-applet+" string="Post-dated"
+                            domain="[('type','=', 'postdated')]"/>
+                        <field name="number" select="1" string="Check Number"/>
+                        <field name="issue_date"/>
+                        <field name="origin"/>
+                        <field name="source_partner_id"/>
                         <field name="payment_date"/>
                         <field name="receipt_date"/>
                     </group>

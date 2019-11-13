@@ -347,6 +347,7 @@ class account_third_check(models.Model):
     not_order = fields.Boolean('Not Order')
     bank_branch = fields.Char('Bank Branch', size=64)
     zip = fields.Char('Zip Code', size=64)
+    is_electronic = fields.Boolean(string='Is Electronic?', default=False)
 
     @api.model
     def create_voucher_move_line(self, voucher):
