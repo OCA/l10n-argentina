@@ -434,11 +434,11 @@ class account_invoice(models.Model):
     def wsfe_relate_invoice(self, pos, number, date_invoice, cae, cae_due_date):
         # Tomamos la factura y mandamos a realizar
         # el asiento contable primero.
+        self.write({'date_invoice': date_invoice})
         self.action_move_create()
 
         invoice_vals = {
             'internal_number': '%04d-%08d' % (pos, number),
-            'date_invoice': date_invoice,
             'cae': cae,
             'cae_due_date': cae_due_date,
         }
