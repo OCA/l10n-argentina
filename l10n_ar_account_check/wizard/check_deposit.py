@@ -130,7 +130,7 @@ class account_check_deposit(osv.osv_memory):
             if check.state != 'wallet':
                 raise osv.except_osv(_("Error"), _("The selected checks must to be in cartera.\nCheck %s is not in wallet") % (check.number))
 
-            if check.payment_date > deposit_date:
+            if check.payment_date and fields.Date.from_string(check.payment_date) > fields.Date.from_string(deposit_date):
                 raise osv.except_osv(_("Cannot deposit"), _("You cannot deposit check %s because Payment Date is greater than Deposit Date.") % (check.number))
 
             account_check_id = self._get_source_account_check(cr, uid, company_id)
