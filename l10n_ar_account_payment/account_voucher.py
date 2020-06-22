@@ -21,34 +21,36 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
-from openerp.osv import osv
-from openerp.exceptions import RedirectWarning
+from openerp import _, api, exceptions, fields, models
 
 
-class account_voucher(models.Model):
+class AccountVoucher(models.Model):
 
     _name = "account.voucher"
     _inherit = "account.voucher"
 
-    @api.model #convert old API calls to decorated function to new API signature
+    @api.model  # Convert old API calls to decorated function to new API signature
     def _get_journal(self):
-        res = super(account_voucher, self)._get_journal() #
+        res = super(AccountVoucher, self)._get_journal()
         ttype = self.env.context.get('type', 'bank')
 
         if ttype in ('payment', 'receipt'):
-            rec = self.env['account.journal'].search([('type', '=', ttype)], limit=1 , order= 'priority')
+            rec = self.env['account.journal'].search([('type', '=', ttype)], limit=1,
+                                                     order='priority')
             if not rec:
                 action = self.env.ref('account.action_account_journal_form')
                 msg = _('Cannot find a Payment/Receipt journal. \nPlease create at least one.')
-                raise RedirectWarning(msg, action.id, _('Go to the journal configuration'))
+                button = _('Go to the journal configuration')
+                raise exceptions.RedirectWarning(msg, action.id, button)
 
             res = rec[0] or False
         return res
 
     payment_line_ids = fields.One2many('payment.mode.receipt.line', 'voucher_id', 'Payments Lines')
-    journal_id = fields.Many2one('account.journal', 'Journal', default=_get_journal, required=True, readonly=True, states={'draft':[('readonly',False)]})
-    account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True, states={'draft':[('readonly',False)]})
+    journal_id = fields.Many2one('account.journal', 'Journal', default=_get_journal, required=True,
+                                 readonly=True, states={'draft': [('readonly', False)]})
+    account_id = fields.Many2one('account.account', 'Account', required=False, readonly=True,
+                                 states={'draft': [('readonly', False)]})
     journal_payment_id = fields.Many2one('account.journal', 'Journal')
 
     @api.onchange('journal_payment_id')
@@ -79,7 +81,8 @@ class account_voucher(models.Model):
 
     @api.multi
     def onchange_partner_id(self, partner_id, journal_id, amount, currency_id, ttype, date):
-        res = super(account_voucher, self).onchange_partner_id(partner_id, journal_id, amount, currency_id, ttype, date)
+        res = super(AccountVoucher, self).onchange_partner_id(partner_id, journal_id, amount,
+                                                              currency_id, ttype, date)
         if not partner_id:
             res['value']['payment_line_ids'] = []
             return res
@@ -94,14 +97,17 @@ class account_voucher(models.Model):
     @api.model
     def _get_payment_lines_default(self, ttype, currency_id):
         pay_method_obj = self.env['account.journal']
-        methods = pay_method_obj.search([('type', 'in', ['cash', 'bank']), '|', ('currency','=',currency_id), ('currency','=',False)])
+        methods = pay_method_obj.search(
+            [('type', 'in', ['cash', 'bank']),
+             '|', ('currency', '=', currency_id), ('currency', '=', False)])
 
         if not methods:
             return {}
 
         lines = []
         for method in methods:
-            lines.append({'name': method.name ,'amount': 0.0 ,'amount_currency':0.0 ,'payment_mode_id': method.id, 'currency': method.currency.id})
+            lines.append({'name': method.name, 'amount': 0.0, 'amount_currency': 0.0,
+                          'payment_mode_id': method.id, 'currency': method.currency.id})
 
         return lines
 
@@ -116,11 +122,12 @@ class account_voucher(models.Model):
     def proforma_voucher(self):
         # Chequeamos si la writeoff_amount no es negativa
         if round(self.writeoff_amount, 2) < 0.0:
-            raise osv.except_osv(_("Validate Error!"), _("Cannot validate a voucher with negative amount. Please check that Writeoff Amount is not negative."))
+            err = "Cannot validate a voucher with negative amount. Please check that Writeoff Amo"\
+                "unt is not negative."
+            raise exceptions.ValidationError(_(err))
 
         self._clean_payment_lines()
         self.action_move_line_create()
-
         return True
 
     @api.multi
@@ -133,7 +140,7 @@ class account_voucher(models.Model):
         ctx = self._context.copy()
         ctx.update({'date': self.date})
         ctx.update({
-            'voucher_special_currency': self.payment_rate_currency_id and self.payment_rate_currency_id.id or False,
+            'voucher_special_currency': self.payment_rate_currency_id.id,
             'voucher_special_currency_rate': self.currency_id.rate * self.payment_rate
         })
         currency = self.currency_id.with_context(ctx)
@@ -141,13 +148,11 @@ class account_voucher(models.Model):
         res = currency.compute(amount, company_currency)
         return res
 
-    #
     @api.multi
-    def _create_move_line_payment(self, move_id, name, journal_id, amount,
-            company_currency, current_currency, sign):
+    def _create_move_line_payment(self, move_id, name, journal_id, amount, company_currency,
+                                  current_currency, sign):
 
         amount_in_company_currency = self._convert_paid_amount_in_company_currency(amount)
-
         debit = credit = 0.0
         if self.type in ('purchase', 'payment'):
             credit = amount_in_company_currency
@@ -155,14 +160,16 @@ class account_voucher(models.Model):
         elif self.type in ('sale', 'receipt'):
             debit = amount_in_company_currency
             pl_account_id = journal_id.default_debit_account_id.id
+
         if debit < 0:
             credit = -debit
             debit = 0.0
         if credit < 0:
             debit = -credit
             credit = 0.0
-        sign = debit - credit < 0 and -1 or 1
 
+        sign = -1 if debit - credit < 0 else 1
+        is_multiccy = company_currency != current_currency
         move_line = {
             'name': name or '/',
             'debit': debit,
@@ -172,10 +179,10 @@ class account_voucher(models.Model):
             'journal_id': self.journal_id.id,
             'period_id': self.period_id.id,
             'partner_id': self.partner_id.id,
-            'currency_id': company_currency <> current_currency and current_currency or False,
-            'amount_currency': company_currency <> current_currency and sign * amount or 0.0,
+            'currency_id': is_multiccy and current_currency or False,
+            'amount_currency': is_multiccy and sign * amount or 0.0,
             'date': self.date,
-            'date_maturity': self.date_due
+            'date_maturity': self.date_due,
         }
 
         return move_line
@@ -186,18 +193,18 @@ class account_voucher(models.Model):
         '''
         Return a dict to be use to create account move lines of given voucher.
 
-        :param voucher_id: Id of voucher what we are creating account_move.
         :param move_id: Id of account move where this line will be added.
         :param company_currency: id of currency of the company to which the voucher belong
         :param current_currency: id of currency of the voucher
         :return: mapping between fieldname and value of account move line to create
-        :rtype: dict
-        '''
+        :rtype: dict.'''
+
         total_debit = total_credit = 0.0
         # TODO: is there any other alternative then the voucher type ??
         # ANSWER: We can have payment and receipt "In Advance".
         # TODO: Make this logic available.
-        # -for sale, purchase we have but for the payment and receipt we do not have as based on the bank/cash journal we can not know its payment or receipt
+        # -for sale, purchase we have but for the payment and receipt we do not have as based on
+        # the bank/cash journal we can not know its payment or receipt
         if self.type in ('purchase', 'payment'):
             total_credit = self.paid_amount_in_company_currency
         elif self.type in ('sale', 'receipt'):
@@ -208,41 +215,40 @@ class account_voucher(models.Model):
         if total_credit < 0:
             total_debit = -total_credit
             total_credit = 0.0
-        sign = total_debit - total_credit < 0 and -1 or 1
 
+        sign = -1 if total_debit - total_credit < 0 else 1
         # Creamos una move_line por payment_line
         move_lines = []
         for pl in self.payment_line_ids:
             if pl.amount == 0.0:
                 continue
 
-            move_line = self._create_move_line_payment(move_id, pl.name,
-                            pl.payment_mode_id, pl.amount,
-                            company_currency, current_currency, sign)
-
+            move_line = self._create_move_line_payment(
+                move_id, pl.name, pl.payment_mode_id, pl.amount, company_currency,
+                current_currency, sign)
             move_lines.append(move_line)
 
         # Si es pago contado
         if self.journal_payment_id:
             move_line = self._create_move_line_payment(
-                move_id, _('Immediate'),
-                self.journal_payment_id, self.amount,
-                company_currency, current_currency, sign)
+                move_id, _('Immediate'), self.journal_payment_id, self.amount, company_currency,
+                current_currency, sign)
 
             move_lines.append(move_line)
-
 
         # Creamos un hook para agregar los demas asientos contables de otros modulos
         self.create_move_line_hook(move_id, move_lines)
 
-        # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y total_credit
+        # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y
+        # total_credit
         amount_credit = 0.0
         amount_debit = 0.0
         for line in move_lines:
             amount_credit += line['credit']
             amount_debit += line['debit']
 
-        if round(amount_credit, 3) != round(total_credit, 3) or round(amount_debit, 3) != round(total_debit, 3):
+        if round(amount_credit, 3) != round(total_credit, 3) or\
+                round(amount_debit, 3) != round(total_debit, 3):
             if self.type in ('purchase', 'payment'):
                 amount_credit -= amount_debit
                 amount_debit -= amount_debit
@@ -250,43 +256,40 @@ class account_voucher(models.Model):
                 amount_debit -= amount_credit
                 amount_credit -= amount_credit
 
-            if round(amount_credit, 3) != round(total_credit, 3) or round(amount_debit, 3) != round(total_debit, 3):
-                raise osv.except_osv(_('Voucher Error!'), _('Voucher Paid Amount and sum of different payment mode must be equal'))
+            if round(amount_credit, 3) != round(total_credit, 3) or\
+                    round(amount_debit, 3) != round(total_debit, 3):
+                err = _('Voucher Paid Amount and sum of different payment mode must be equal')
+                raise exceptions.ValidationError(err)
 
         return move_lines
 
     @api.model
     def _update_move_reference(self, move_id, ref):
         cr = self.env.cr
-        cr.execute('UPDATE account_move SET ref=%s ' \
-                    'WHERE id=%s', (ref, move_id))
-
-        cr.execute('UPDATE account_move_line SET ref=%s ' \
-                'WHERE move_id=%s', (ref, move_id))
-
-        cr.execute('UPDATE account_analytic_line SET ref=%s ' \
-                'FROM account_move_line ' \
-                'WHERE account_move_line.move_id = %s ' \
-                    'AND account_analytic_line.move_id = account_move_line.id',
-                    (ref, move_id))
+        cr.execute('UPDATE account_move SET ref=%s WHERE id=%s', (ref, move_id))
+        cr.execute('UPDATE account_move_line SET ref=%s WHERE move_id=%s', (ref, move_id))
+        cr.execute('UPDATE account_analytic_line SET ref=%s FROM account_move_line '
+                   'WHERE account_move_line.move_id = %s'
+                   ' AND account_analytic_line.move_id = account_move_line.id', (ref, move_id))
         self.env.invalidate_all()  # Invalidamos la cache
         return True
 
     @api.multi
     def action_move_line_create(self):
-        '''
-        Confirm the vouchers given in ids and create the journal entries for each of them
-        '''
+        '''Confirm the vouchers given in ids and create the journal entries for each of them.'''
+
         move_pool = self.env['account.move']
         move_line_pool = self.env['account.move.line']
         for voucher in self:
             if voucher.move_id:
                 continue
+
             company_currency = self._get_company_currency(voucher.id)
             current_currency = self._get_current_currency(voucher.id)
             # we select the context to use accordingly if it's a multicurrency case or not
             context = self._sel_context(voucher.id)
-            # But for the operations made by _convert_amount, we always need to give the date in the context
+            # But for the operations made by _convert_amount, we always need to give the date in
+            # the context
             ctx = context.copy()
             ctx.update({'date': voucher.date})
             # Create the account move record.
@@ -294,31 +297,35 @@ class account_voucher(models.Model):
             # Get the name of the account_move just created
             name = move_recordset.name
             move_id = move_recordset.id
-
             if voucher.type in ('payment', 'receipt'):
                 # Creamos las lineas contables de todas las formas de pago, etc
-                move_line_vals = self.create_move_lines(move_id, company_currency, current_currency)
+                move_line_vals = self.create_move_lines(
+                    move_id, company_currency, current_currency)
                 line_total = 0.0
                 for vals in move_line_vals:
                     line_total += vals['debit'] - vals['credit']
                     move_line_pool.create(vals)
             else:  # ('sale', 'purchase')
                 # Create the first line of the voucher
-                move_line_brw = move_line_pool.with_context(ctx).create(self.first_move_line_get(voucher.id, move_id, company_currency, current_currency))
-                line_total = move_line_brw.debit - move_line_brw.credit
+                first_move_line_data = self.first_move_line_get(
+                    voucher.id, move_id, company_currency, current_currency)
+                first_move_line = move_line_pool.with_context(ctx).create(first_move_line_data)
+                line_total = first_move_line.debit - first_move_line.credit
 
-            # move_line_brw = move_line_pool.browse(cr, uid, move_line_id, context=context)
-            # line_total = move_line_brw.debit - move_line_brw.credit
+            # first_move_line = move_line_pool.browse(cr, uid, move_line_id, context=context)
+            # line_total = first_move_line.debit - first_move_line.credit
             rec_list_ids = []
             if voucher.type == 'sale':
                 line_total = line_total - self._convert_amount(voucher.tax_amount, voucher.id)
             elif voucher.type == 'purchase':
                 line_total = line_total + self._convert_amount(voucher.tax_amount, voucher.id)
             # Create one move line per voucher line where amount is not 0.0
-            line_total, rec_list_ids = self.voucher_move_line_create(voucher.id, line_total, move_id, company_currency, current_currency)
+            line_total, rec_list_ids = self.voucher_move_line_create(
+                voucher.id, line_total, move_id, company_currency, current_currency)
 
             # Create the writeoff line if needed
-            ml_writeoff = self.writeoff_move_line_get(voucher.id, line_total, move_id, name, company_currency, current_currency)
+            ml_writeoff = self.writeoff_move_line_get(voucher.id, line_total, move_id, name,
+                                                      company_currency, current_currency)
             if ml_writeoff:
                 move_line_pool.create(ml_writeoff)
 
@@ -331,11 +338,12 @@ class account_voucher(models.Model):
             if voucher.journal_id.entry_posted:
                 move_recordset.post()
             # We automatically reconcile the account move lines.
-            reconcile = False
             for rec_ids in rec_list_ids:
                 if len(rec_ids) >= 2:
-                    reconcile = self.pool.get('account.move.line').reconcile_partial(self.env.cr, self.env.user.id, rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id, writeoff_period_id=voucher.period_id.id, writeoff_journal_id=voucher.journal_id.id)
-
+                    move_line_pool.browse(rec_ids).reconcile_partial(
+                        writeoff_acc_id=voucher.writeoff_acc_id.id,
+                        writeoff_period_id=voucher.period_id.id,
+                        writeoff_journal_id=voucher.journal_id.id)
 
             # Borramos las lineas que estan en 0
             for line in voucher.line_ids:
@@ -346,29 +354,27 @@ class account_voucher(models.Model):
 
     @api.multi
     def recompute_voucher_lines(self, partner_id, journal_id, price, currency_id, ttype, date):
-        default = super(account_voucher, self).recompute_voucher_lines(partner_id, journal_id, price, currency_id, ttype, date)
+        default = super(AccountVoucher, self).recompute_voucher_lines(
+            partner_id, journal_id, price, currency_id, ttype, date)
         ml_obj = self.env['account.move.line']
-
         for vals in default['value']['line_dr_ids'] + default['value']['line_cr_ids']:
-            if type(vals) == dict and vals['move_line_id']:
+            if isinstance(vals, dict) and vals['move_line_id']:
                 ml = ml_obj.browse(vals['move_line_id'])
-                vals['invoice_id'] = ml.invoice.id or False
+                vals['invoice_id'] = ml.invoice.id
                 vals['ref'] = ml.ref
         return default
 
-account_voucher()
 
-class account_voucher_line(models.Model):
+class AccountVoucherLine(models.Model):
     _name = 'account.voucher.line'
     _inherit = 'account.voucher.line'
 
     invoice_id = fields.Many2one('account.invoice', string='Invoice')
     ref = fields.Char('Reference', size=64)
 
-    def onchange_amount(self, cr, uid, ids, amount, amount_unreconciled, context=None):
+    @api.multi
+    def onchange_amount(self, amount, amount_unreconciled):
         vals = {}
         if amount:
             vals['reconcile'] = (round(amount, 2) == round(amount_unreconciled, 2))
         return {'value': vals}
-
-account_voucher_line()
