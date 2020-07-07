@@ -23,9 +23,8 @@ import time
 import urllib2
 from datetime import datetime
 
-from openerp import api, fields, models
+from openerp import _, api, fields, models
 from openerp.osv import osv
-from openerp.tools.translate import _
 
 from ..wsfetools.wsfe_suds import WSFEv1 as wsfe
 
@@ -98,7 +97,7 @@ class wsfe_config(models.Model):
             ta_vals = {
                 'name': service_ids[0],
                 'company_id': vals['company_id'],
-                'config_id': wsaa_id, #wsaa_ids[0],
+                'config_id': wsaa_id,  # wsaa_ids[0],
             }
 
             ta_id = ta_obj.create(cr, uid, ta_vals, context)
