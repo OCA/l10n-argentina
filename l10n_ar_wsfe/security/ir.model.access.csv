@@ -19,10 +19,6 @@ access_wsfex_request_detail_accountant,wsfex.request.detail accountant,model_wsf
 access_wsfex_request_detail_user,wsfex.request.detail user,model_wsfex_request_detail,base.group_user,1,0,0,0
 access_wsfex_request_detail_payments,wsfex.request.detail payments,model_wsfex_request_detail,account.group_account_invoice,1,0,0,0
 access_wsfex_request_detail_manager,wsfex.request.detail manager,model_wsfex_request_detail,account.group_account_manager,1,1,1,1
-access_wsfex_shipping_permission_user,wsfex.shipping.permission user,model_wsfex_shipping_permission,base.group_user,1,0,0,0
-access_wsfex_shipping_permission_accountant,wsfex.shipping.permission accountant,model_wsfex_shipping_permission,account.group_account_user,1,1,1,0
-access_wsfex_shipping_permission_payment,wsfex.shipping.permission payments,model_wsfex_shipping_permission,account.group_account_invoice,1,1,0,0
-access_wsfex_shipping_permission_manager,wsfex.shipping.permission manager,model_wsfex_shipping_permission,account.group_account_manager,1,1,1,0
 access_wsfex_configuration_user,wsfex.configuration user,model_wsfex_config,account.group_account_user,1,0,0,0
 access_wsfex_configuration_payments,wsfex.configuration payments,model_wsfex_config,account.group_account_invoice,1,0,0,0
 access_wsfex_configuration_manager,wsfex.configuration manager,model_wsfex_config,account.group_account_manager,1,1,1,0

@@ -43,7 +43,6 @@ class account_invoice(models.Model):
     export_type_id = fields.Many2one('wsfex.export_type.codes', 'Export Type')
     dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country')
     dst_cuit_id = fields.Many2one('wsfex.dst_cuit.codes', 'Country CUIT')
-    shipping_perm_ids = fields.One2many('wsfex.shipping.permission', 'invoice_id', 'Shipping Permissions')
     incoterm_id = fields.Many2one('stock.incoterms', 'Incoterm', help="International Commercial Terms are a series of predefined commercial terms used in international transactions.")
     wsfe_request_ids = fields.One2many('wsfe.request.detail', 'name')
     wsfex_request_ids = fields.One2many('wsfex.request.detail', 'invoice_id')
@@ -176,10 +175,23 @@ class account_invoice(models.Model):
         #return super(account_invoice, self).with_context(ctx).action_cancel()
         return super(account_invoice, self).action_cancel()
 
+    def get_ws_configuration(self, inv):
+        # Chequeamos si corresponde Factura Electronica
+        # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
+        pos_ar = inv.pos_ar_id
+        if inv.fiscal_position.local:
+            # Get configuration for 'local' commerce, invoices according to fiscal position
+            wsfe_conf_obj = self.env['wsfe.config']
+            conf = wsfe_conf_obj.get_config(pos_ar)
+        else:
+            # Get configuration for 'export' invoices, according to fiscal position
+            wsfex_conf_obj = self.env['wsfex.config']
+            conf = wsfex_conf_obj.get_config(pos_ar)
+
+        return conf
+
     @api.multi
     def action_number(self):
-        wsfe_conf_obj = self.env['wsfe.config']
-        wsfex_conf_obj = self.env['wsfex.config']
 
         next_number = None
         invoice_vals = {}
@@ -193,7 +205,6 @@ class account_invoice(models.Model):
             invtype = obj_inv.type
 
             # Chequeamos si es local por medio de la posicion fiscal
-            local = True
             local = obj_inv.fiscal_position.local
 
             reference = obj_inv.reference or ''
@@ -203,7 +214,7 @@ class account_invoice(models.Model):
                 # Chequeamos los valores fiscales
                 self._check_fiscal_values()
 
-            # si el usuario no ingreso un numero, busco el ultimo y lo incremento , si no hay ultimo va 1.
+            # si el usuario no ingreso un numero, busco el ultimo y lo incremento, si no hay va 1.
             # si el usuario hizo un ingreso dejo ese numero
             internal_number = obj_inv.internal_number
             next_number = False
@@ -211,29 +222,24 @@ class account_invoice(models.Model):
             # Si son de Cliente
             if invtype in ('out_invoice', 'out_refund'):
 
-                pos_ar = obj_inv.pos_ar_id
                 next_number = self.get_next_invoice_number()
 
-                # Chequeamos si corresponde Factura Electronica
-                # Aca nos fijamos si el pos_ar_id tiene factura electronica asignada
-                wsfe_conf = wsfe_conf_obj.get_config(pos_ar)
-                wsfex_conf = wsfex_conf_obj.get_config(pos_ar)
+                #confs = filter(lambda c: c.id, [wsfe_conf, wsfex_conf])
+                #if len(confs) > 1:
+                #    raise exceptions.ValidationError(
+                #        _("There is more than one configuration with this POS %s") % pos_ar.name)
 
-                confs = filter(lambda c: c.id, [wsfe_conf, wsfex_conf])
-                #confs = filter(lambda c: pos_ar in c.point_of_sale_ids, [wsfe_conf, wsfex_conf]) #_get_ws_conf(obj_inv.pos_ar_id)
-
-                if len(confs)>1:
-                    raise osv.except_osv(_("WSFE Error"), _("There is more than one configuration with this POS %s") % pos_ar.name)
-
-                if confs:
-                    conf = confs[0]
+                conf = self.get_ws_configuration(obj_inv)
+                if conf:
                     invoice_vals['aut_cae'] = True
                     fe_next_number = obj_inv._get_next_wsfe_number(conf)
 
                     # Si es homologacion, no hacemos el chequeo del numero
                     if not conf.homologation:
                         if fe_next_number != next_number:
-                            raise except_orm(_("WSFE Error!"), _("The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
+                            raise exceptions.ValidationError(
+                                _("The next number [%d] does not corresponds to that obtained from"
+                                  " AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
                     else:
                         next_number = fe_next_number
 
@@ -245,11 +251,13 @@ class account_invoice(models.Model):
 
                 # Lo ponemos como en Proveedores, o sea, A0001-00000001
                 if not internal_number:
+                    pos_ar = obj_inv.pos_ar_id
                     internal_number = '%s-%08d' % (pos_ar.name, next_number)
 
                 m = re.match('^[0-9]{4}-[0-9]{8}$', internal_number)
                 if not m:
-                    raise except_orm(_('Error'), _('The Invoice Number should be the format XXXX-XXXXXXXX'))
+                    raise exceptions.ValidationError(
+                        _('The Invoice Number should be the format XXXX-XXXXXXXX'))
 
                 # Escribimos el internal number
                 invoice_vals['internal_number'] = internal_number
@@ -471,8 +479,6 @@ class account_invoice(models.Model):
         self.signal_workflow('invoice_massive_open')
         return
 
-account_invoice()
-
 
 class account_invoice_tax(models.Model):
     _name = "account.invoice.tax"
@@ -495,5 +501,3 @@ class account_invoice_tax(models.Model):
             t['tax_amount'] = currency.round(t['tax_amount'])
 
         return super(account_invoice_tax, self).hook_compute_invoice_taxes(invoice, tax_grouped)
-
-account_invoice_tax()
