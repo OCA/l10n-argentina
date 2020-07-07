@@ -19,4 +19,7 @@
 #
 ##############################################################################
 
-from . import models, report, wizard
+from . import invoice
+from . import wsfe
+from . import wsfe_request
+from . import wsfex
