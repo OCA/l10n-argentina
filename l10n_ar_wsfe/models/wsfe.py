@@ -111,10 +111,10 @@ class wsfe_config(models.Model):
     #def unlink(self, cr, uid, ids):
 
     @api.model
-    def get_config(self, pos_ar):
+    def get_config(self, pos_ar, raise_err=True):
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
-        if not company_id:
+        if not company_id and raise_err:
             raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
 
         ids = self.search([
@@ -122,7 +122,7 @@ class wsfe_config(models.Model):
             ('point_of_sale_ids', 'in', pos_ar.id),
         ])
 
-        if not ids:
+        if not ids and raise_err:
             raise osv.except_osv(_('WSFE Config Error!'), _('There is no WSFE configuration set to this company'))
 
         return ids
