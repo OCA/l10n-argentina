@@ -134,7 +134,6 @@ msgstr "Check it if this VAT Tax corresponds to vat tax exempts operations, such
 #: field:wsfex.export_type.codes,code:0
 #: field:wsfex.incoterms.codes,code:0
 #: field:wsfex.lang.codes,code:0
-#: field:wsfex.shipping.permission,name:0
 #: field:wsfex.uom.codes,code:0
 #: field:wsfex.voucher_type.codes,code:0
 msgid "Code"
@@ -222,7 +221,6 @@ msgstr "País CUIT"
 #: field:wsfex.incoterms.codes,create_uid:0
 #: field:wsfex.lang.codes,create_uid:0
 #: field:wsfex.request.detail,create_uid:0
-#: field:wsfex.shipping.permission,create_uid:0
 #: field:wsfex.uom.codes,create_uid:0
 #: field:wsfex.voucher_type.codes,create_uid:0
 msgid "Created by"
@@ -244,7 +242,6 @@ msgstr "Creado por"
 #: field:wsfex.incoterms.codes,create_date:0
 #: field:wsfex.lang.codes,create_date:0
 #: field:wsfex.request.detail,create_date:0
-#: field:wsfex.shipping.permission,create_date:0
 #: field:wsfex.uom.codes,create_date:0
 #: field:wsfex.voucher_type.codes,create_date:0
 msgid "Created on"
@@ -334,7 +331,6 @@ msgstr "Descripción"
 
 #. module: l10n_ar_wsfe
 #: field:account.invoice,dst_country_id:0
-#: field:wsfex.shipping.permission,dst_country_id:0
 msgid "Dest Country"
 msgstr "País Destino"
 
@@ -366,7 +362,6 @@ msgstr "Detalles"
 #: field:wsfex.incoterms.codes,display_name:0
 #: field:wsfex.lang.codes,display_name:0
 #: field:wsfex.request.detail,display_name:0
-#: field:wsfex.shipping.permission,display_name:0
 #: field:wsfex.uom.codes,display_name:0
 #: field:wsfex.voucher_type.codes,display_name:0
 msgid "Display Name"
@@ -569,7 +564,6 @@ msgstr "Homologación"
 #: field:wsfex.incoterms.codes,id:0
 #: field:wsfex.lang.codes,id:0
 #: field:wsfex.request.detail,id:0
-#: field:wsfex.shipping.permission,id:0
 #: field:wsfex.uom.codes,id:0
 #: field:wsfex.voucher_type.codes,id:0
 msgid "ID"
@@ -615,7 +609,6 @@ msgstr "International Commercial Terms are a series of predefined commercial ter
 #. module: l10n_ar_wsfe
 #: model:ir.model,name:l10n_ar_wsfe.model_account_invoice
 #: field:wsfe.sinchronize.voucher,invoice_id:0
-#: field:wsfex.shipping.permission,invoice_id:0
 msgid "Invoice"
 msgstr "Factura"
 
@@ -674,7 +667,6 @@ msgstr "Idiomas"
 #: field:wsfex.incoterms.codes,__last_update:0
 #: field:wsfex.lang.codes,__last_update:0
 #: field:wsfex.request.detail,__last_update:0
-#: field:wsfex.shipping.permission,__last_update:0
 #: field:wsfex.uom.codes,__last_update:0
 #: field:wsfex.voucher_type.codes,__last_update:0
 msgid "Last Modified on"
@@ -696,7 +688,6 @@ msgstr "Last Modified on"
 #: field:wsfex.incoterms.codes,write_uid:0
 #: field:wsfex.lang.codes,write_uid:0
 #: field:wsfex.request.detail,write_uid:0
-#: field:wsfex.shipping.permission,write_uid:0
 #: field:wsfex.uom.codes,write_uid:0
 #: field:wsfex.voucher_type.codes,write_uid:0
 msgid "Last Updated by"
@@ -718,7 +709,6 @@ msgstr "Last Updated by"
 #: field:wsfex.incoterms.codes,write_date:0
 #: field:wsfex.lang.codes,write_date:0
 #: field:wsfex.request.detail,write_date:0
-#: field:wsfex.shipping.permission,write_date:0
 #: field:wsfex.uom.codes,write_date:0
 #: field:wsfex.voucher_type.codes,write_date:0
 msgid "Last Updated on"
@@ -947,7 +937,6 @@ msgstr "Permisos de Envío"
 
 #. module: l10n_ar_wsfe
 #: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
-#: field:account.invoice,shipping_perm_ids:0
 msgid "Shipping Permissions"
 msgstr "Permisos de Envío"
 
@@ -1422,11 +1411,6 @@ msgstr "Códigos de Idioma WSFEX"
 #: model:ir.model,name:l10n_ar_wsfe.model_wsfex_request_detail
 msgid "WSFEX Request Detail"
 msgstr "Detalle de Peticiones WSFEX"
-
-#. module: l10n_ar_wsfe
-#: model:ir.model,name:l10n_ar_wsfe.model_wsfex_shipping_permission
-msgid "WSFEX Shipping Permission"
-msgstr "Permisos de Embarque WSFEX"
 
 #. module: l10n_ar_wsfe
 #: model:ir.model,name:l10n_ar_wsfe.model_wsfex_uom_codes

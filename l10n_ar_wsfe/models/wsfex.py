@@ -22,23 +22,13 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
-from openerp import models, fields, api
-from openerp.tools.translate import _
-from wsfetools.wsfex_suds import WSFEX as wsfex
 from datetime import datetime
-import time
 
+from openerp import _, api, exceptions, fields, models
+from openerp.osv import osv
 
-class wsfex_shipping_permission(models.Model):
-    _name = "wsfex.shipping.permission"
-    _description = "WSFEX Shipping Permission"
+from ..wsfetools.wsfex_suds import WSFEX as wsfex
 
-    name = fields.Char('Code', required=True, size=16)
-    invoice_id = fields.Many2one('account.invoice', 'Invoice')
-    dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country', required=True)
-
-wsfex_shipping_permission()
 
 class wsfex_currency_codes(models.Model):
     _name = "wsfex.currency.codes"
@@ -50,7 +40,6 @@ class wsfex_currency_codes(models.Model):
     currency_id = fields.Many2one('res.currency', string="OpenERP Currency")
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_currency_codes()
 
 class wsfex_uom_codes(models.Model):
     _name = "wsfex.uom.codes"
@@ -62,7 +51,6 @@ class wsfex_uom_codes(models.Model):
     uom_id = fields.Many2one('product.uom', string="OpenERP UoM")
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_uom_codes()
 
 class wsfex_lang_codes(models.Model):
     _name = "wsfex.lang.codes"
@@ -74,7 +62,6 @@ class wsfex_lang_codes(models.Model):
     lang_id = fields.Many2one('res.lang', string="OpenERP Language")
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_lang_codes()
 
 class wsfex_dst_country_codes(models.Model):
     _name = "wsfex.dst_country.codes"
@@ -86,7 +73,6 @@ class wsfex_dst_country_codes(models.Model):
     country_id = fields.Many2one('res.country', string="OpenERP Country")
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_dst_country_codes()
 
 class wsfex_incoterms_codes(models.Model):
     _name = "wsfex.incoterms.codes"
@@ -98,7 +84,6 @@ class wsfex_incoterms_codes(models.Model):
     incoterms_id = fields.Many2one('stock.incoterms', string="OpenERP Incoterm")
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_incoterms_codes()
 
 class wsfex_dst_cuit_codes(models.Model):
     _name = "wsfex.dst_cuit.codes"
@@ -109,7 +94,6 @@ class wsfex_dst_cuit_codes(models.Model):
     name = fields.Char('Desc', required=True, size=64)
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_dst_cuit_codes()
 
 class wsfex_export_type_codes(models.Model):
     _name = "wsfex.export_type.codes"
@@ -120,7 +104,6 @@ class wsfex_export_type_codes(models.Model):
     name = fields.Char('Desc', required=True, size=64)
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_export_type_codes()
 
 class wsfex_voucher_type_codes(models.Model):
     _name = "wsfex.voucher_type.codes"
@@ -132,7 +115,6 @@ class wsfex_voucher_type_codes(models.Model):
     voucher_type_id = fields.Many2one('wsfe.voucher_type', string="OpenERP Voucher Type")
     wsfex_config_id = fields.Many2one('wsfex.config')
 
-wsfex_voucher_type_codes()
 
 class wsfex_config(models.Model):
     _name = "wsfex.config"
@@ -185,15 +167,19 @@ class wsfex_config(models.Model):
 
         return super(wsfex_config, self).create(cr, uid, vals, context)
 
-    def get_config(self):
+    def get_config(self, pos_ar, raise_err=True):
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
-        if not company_id:
-            raise osv.except_osv(_('Company Error!'), _('There is no company being used by this user'))
+        if not company_id and raise_err:
+            raise exceptions.ValidationError(_('There is no company being used by this user'))
 
-        ids = self.search([('company_id','=',company_id)])
-        if not ids:
-            raise osv.except_osv(_('WSFEX Config Error!'), _('There is no WSFEX configuration set to this company'))
+        ids = self.search([
+            ('company_id', '=', company_id),
+            ('point_of_sale_ids', 'in', pos_ar.id),
+        ])
+        if not ids and raise_err:
+            raise exceptions.ValidationError(
+                _('There is no WSFEX configuration set to this company'))
 
         return ids
 
@@ -313,16 +299,12 @@ class wsfex_config(models.Model):
 
         return True
 
-
-    @api.one
+    @api.multi
     def get_wsfex_countries(self):
         conf = self
-
         token, sign = conf.wsaa_ticket_id.get_token_sign()
-
         _wsfex = wsfex(self.cuit, token, sign, self.url)
         res = _wsfex.FEXGetPARAM("DST_pais")
-
         wsfex_param_obj = self.env['wsfex.dst_country.codes']
 
         # Armo un lista con los codigos de los Impuestos
@@ -331,14 +313,15 @@ class wsfex_config(models.Model):
             # unos valores None
             if not r:
                 continue
-            res_c = wsfex_param_obj.search([('code','=', r.DST_Codigo )])
 
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_param_obj.create({'code': r.DST_Codigo, 'name': r.DST_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
+            res_c = wsfex_param_obj.search([('code', '=', r.DST_Codigo)])
+            if len(res_c):
+                # Si los codigos estan en la db los modifico
                 res_c.write({'name': r.DST_Ds, 'wsfex_config_id': self.id})
+            else:
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                wsfex_param_obj.create({'code': r.DST_Codigo, 'name': r.DST_Ds,
+                                        'wsfex_config_id': self.id})
 
         return True
 
@@ -562,19 +545,19 @@ class wsfex_config(models.Model):
 
     def prepare_details(self, invoices):
         company = self.env.user.company_id
-        obj_precision = self.env['decimal.precision']
         voucher_type_obj = self.env['wsfe.voucher_type']
-        invoice_obj = self.env['account.invoice']
         currency_code_obj = self.env['wsfex.currency.codes']
         uom_code_obj = self.env['wsfex.uom.codes']
 
         if len(invoices) > 1:
-            raise osv.except_osv(_("WSFEX Error!"), _("You cannot inform more than one invoice to AFIP WSFEX"))
+            raise exceptions.ValidationError(
+                _("You cannot inform more than one invoice to AFIP WSFEX"))
 
         first_num = self._context.get('first_num', False)
         Id = int(datetime.strftime(datetime.now(), '%Y%m%d%H%M%S'))
         cbte_nro = 0
 
+        Cmp = None
         for inv in invoices:
 
             # Obtenemos el numero de comprobante a enviar a la AFIP teniendo en
@@ -609,8 +592,8 @@ class wsfex_config(models.Model):
             # Items
             items = []
             for i, line in enumerate(inv.invoice_line):
-                product_id = line.product_id
-                product_code = product_id and product_id.default_code or i
+                #product_id = line.product_id
+                #product_code = product_id and product_id.default_code or i
                 uom_id = line.uos_id.id
                 uom_codes = uom_code_obj.search([('uom_id','=',uom_id)])
                 if not uom_codes:
@@ -619,7 +602,7 @@ class wsfex_config(models.Model):
                 uom_code = uom_codes[0].code
 
                 items.append({
-                    'Pro_codigo' : i,#product_code,
+                    'Pro_codigo' : i,
                     'Pro_ds' : line.name.encode('ascii', errors='ignore'),
                     'Pro_qty' : line.quantity,
                     'Pro_umed' : uom_code,
@@ -640,28 +623,25 @@ class wsfex_config(models.Model):
 
                 Cmps_asoc.append(Cmp_asoc)
 
-            # TODO: Agregar permisos
-            shipping_perm = 'S' and inv.shipping_perm_ids or 'N'
-
             Cmp = {
-                'invoice_id' : inv.id,
-                'Id' : Id,
+                'invoice_id': inv.id,
+                'Id': Id,
                 #'Tipo_cbte' : cbte_tipo,
-                'Fecha_cbte' : formatted_date_invoice,
-                #'Punto_vta' : pto_venta,
-                'Cbte_nro' : cbte_nro,
-                'Tipo_expo' : inv.export_type_id.code, #Exportacion de bienes
-                'Permiso_existente' : shipping_perm,
-                'Dst_cmp' : inv.dst_country_id.code,
-                'Cliente' : inv.partner_id.name.encode('ascii', errors='ignore'),
-                'Domicilio_cliente' : inv.partner_id.contact_address.encode('ascii', errors='ignore'),
-                'Cuit_pais_cliente' : cuit_pais,
-                'Id_impositivo' : inv.partner_id.vat,
-                'Moneda_Id' : curr_code,
-                'Moneda_ctz' : curr_rate,
-                'Imp_total' : inv.amount_total,
-                'Idioma_cbte' : 1,
-                'Items' : items
+                'Fecha_cbte': formatted_date_invoice,
+                #'Punto_vta': pto_venta,
+                'Cbte_nro': cbte_nro,
+                'Tipo_expo': inv.export_type_id.code,  # Exportacion de bienes
+                'Dst_cmp': inv.dst_country_id.code,
+                'Cliente': inv.partner_id.name.encode('ascii', errors='ignore'),
+                'Domicilio_cliente': inv.partner_id.contact_address.encode('ascii',
+                                                                           errors='ignore'),
+                'Cuit_pais_cliente': cuit_pais,
+                'Id_impositivo': inv.partner_id.vat,
+                'Moneda_Id': curr_code,
+                'Moneda_ctz': curr_rate,
+                'Imp_total': inv.amount_total,
+                'Idioma_cbte': 1,
+                'Items': items,
             }
 
             # Datos No Obligatorios
@@ -671,6 +651,5 @@ class wsfex_config(models.Model):
 
             if Cmps_asoc:
                 Cmp['Cmps_Asoc'] = Cmps_asoc
-        return Cmp
 
-wsfex_config()
+        return Cmp

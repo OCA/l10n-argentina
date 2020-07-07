@@ -44,14 +44,6 @@
                 </page>
                 <page string="Other Info" position="before">
                     <page string="Export Invoice" attrs="{'invisible': [('local','=', True)]}">
-                        <group string="Shipping Permissions">
-                            <field name="shipping_perm_ids" nolabel="1" widget="one2many_list">
-                                <tree string="Shipping Permission" editable="bottom">
-                                    <field name="name"/>
-                                    <field name="dst_country_id"/>
-                                </tree>
-                            </field>
-                        </group>
                         <group string="History Requests">
                                 <field name="wsfex_request_ids" nolabel="1">
                                 <tree string="Requests">
