@@ -186,13 +186,12 @@ class account_invoice(models.Model):
         else:
             # Get configuration for 'export' invoices, according to fiscal position
             wsfex_conf_obj = self.env['wsfex.config']
-            conf = wsfex_conf_obj.get_config(pos_ar)
+            conf = wsfex_conf_obj.get_config(pos_ar, raise_err=False)
 
         return conf
 
     @api.multi
     def action_number(self):
-
         next_number = None
         invoice_vals = {}
         invtype = None
@@ -235,13 +234,13 @@ class account_invoice(models.Model):
                     fe_next_number = obj_inv._get_next_wsfe_number(conf)
 
                     # Si es homologacion, no hacemos el chequeo del numero
-                    if not conf.homologation:
+                    if conf.homologation:
+                        next_number = fe_next_number
+                    else:
                         if fe_next_number != next_number:
                             raise exceptions.ValidationError(
                                 _("The next number [%d] does not corresponds to that obtained from"
                                   " AFIP WSFE [%d]") % (int(next_number), int(fe_next_number)))
-                    else:
-                        next_number = fe_next_number
 
                 # Si no es Factura Electronica...
                 else:

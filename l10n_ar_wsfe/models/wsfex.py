@@ -167,13 +167,16 @@ class wsfex_config(models.Model):
 
         return super(wsfex_config, self).create(cr, uid, vals, context)
 
-    def get_config(self, raise_err=True):
+    def get_config(self, pos_ar, raise_err=True):
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
         if not company_id and raise_err:
             raise exceptions.ValidationError(_('There is no company being used by this user'))
 
-        ids = self.search([('company_id', '=', company_id)])
+        ids = self.search([
+            ('company_id', '=', company_id),
+            ('point_of_sale_ids', 'in', pos_ar.id),
+        ])
         if not ids and raise_err:
             raise exceptions.ValidationError(
                 _('There is no WSFEX configuration set to this company'))
