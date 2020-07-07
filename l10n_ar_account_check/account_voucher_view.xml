@@ -40,8 +40,8 @@
                                         <field name="signatory"/>
                                         <field name="origin"/>
                                         <field name="state" invisible="1"/>
-										<field name="crossed"/>
-										<field name="not_order"/>
+                                        <field name="crossed"/>
+                                        <field name="not_order"/>
                                     </group>
                                 </group>
                                 <field name="receiving_partner_id" invisible="1"/>
@@ -88,6 +88,7 @@
                                 <field name="type"/>
                                 <field name="amount" sum="Total"/>
                                 <field name="state"/>
+                                <field name="is_electronic"/>
                             </tree>
                             <form string="Third Checks">
                                 <field name="source_partner_id" invisible="1"/>
@@ -97,8 +98,8 @@
                                         <field name="type"/>
                                         <field name="amount"/>
                                         <field name="bank_id"/>
-										<field name="crossed"/>
-										<field name="not_order"/>
+                                        <field name="crossed"/>
+                                        <field name="not_order"/>
                                     </group>
                                     <group>
                                         <field name="receipt_date"/>
@@ -109,6 +110,7 @@
                                         <field name="signatory"/>
                                         <field name="signatory_vat"/>
                                         <field name="signatory_account"/>
+                                        <field name="is_electronic"/>
                                     </group>
                                 </group>
                                 <field name="state" invisible="1"/>

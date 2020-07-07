@@ -26,6 +26,7 @@ from datetime import datetime, timedelta
 from wsaa_suds import WSAA as wsaa
 from openerp import SUPERUSER_ID
 import pytz
+import urllib2
 
 
 class wsaa_config(models.Model):
@@ -91,6 +92,8 @@ class wsaa_ta(models.Model):
         try:
             _wsaa = wsaa(wsaa_config.certificate, wsaa_config.key, wsaa_config.url, service, tz)
             _wsaa.get_token_and_sign(wsaa_config.certificate, wsaa_config.key)
+        except urllib2.URLError as er:
+            raise er
         except Exception, e:
             raise osv.except_osv(_('WSAA Error!'), e)
 

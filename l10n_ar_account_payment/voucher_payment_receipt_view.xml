@@ -24,10 +24,9 @@
                     <attribute name="domain">[('type','=','receipt')]</attribute>
                 </field>
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="before">
-                    <label for="payment_line_ids"/>
-                    <field name="payment_line_ids" >
+                    <field name="payment_line_ids" nolabel="1" attrs="{'readonly': [('state', '!=', 'draft')]}">
                         <tree string="Payment Methods" editable="bottom" colors="gray:amount==0">
-                            <field name="payment_mode_id" invisible="1" />
+                            <field name="payment_mode_id" invisible="1"/>
                             <field name="name"/>
                             <field name="currency" readonly="1"/>
                             <field name="date"/>
@@ -37,10 +36,13 @@
                     </field>
                 </xpath>
                 <!-- Nombres de las etiquetas de los tree line_cr_ids y line_dr_ids -->
+                <!-- los ponemos invisibles por el momento -->
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                     <attribute name="string">Invoices and outstanding transactions</attribute>
                 </xpath>
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                     <attribute name="string">Credits</attribute>
                 </xpath>
 
@@ -107,9 +109,11 @@
 
                 <!-- Nombres de las etiquetas de los tree line_cr_ids y line_dr_ids -->
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_dr_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                     <attribute name="string">Supplier Invoices and Outstanding transactions</attribute>
                 </xpath>
                 <xpath expr="//page[@string='Payment Information']/label[@for='line_cr_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                     <attribute name="string">Credits</attribute>
                 </xpath>
 

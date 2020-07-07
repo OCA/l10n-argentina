@@ -14,6 +14,7 @@ access_wsfe_request_manager,wsfe.request manager,model_wsfe_request,account.grou
 access_wsfe_request_detail_payment,wsfe.request.detail payment,model_wsfe_request_detail,account.group_account_invoice,1,1,1,0
 access_wsfe_request_detail_user,wsfe.request.detail user,model_wsfe_request_detail,account.group_account_user,1,1,1,0
 access_wsfe_request_detail_manager,wsfe.request.detail manager,model_wsfe_request_detail,account.group_account_manager,1,1,1,0
+access_wsfe_request_detail_base,wsfe.request.detail base,model_wsfe_request_detail,base.group_user,1,0,0,0
 access_wsfex_request_detail_accountant,wsfex.request.detail accountant,model_wsfex_request_detail,account.group_account_user,1,1,1,1
 access_wsfex_request_detail_user,wsfex.request.detail user,model_wsfex_request_detail,base.group_user,1,0,0,0
 access_wsfex_request_detail_payments,wsfex.request.detail payments,model_wsfex_request_detail,account.group_account_invoice,1,0,0,0

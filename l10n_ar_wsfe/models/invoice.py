@@ -150,7 +150,7 @@ class account_invoice(models.Model):
         invoice = self
         cr = self.env.cr
         # Obtenemos el ultimo numero de comprobante para ese pos y ese tipo de comprobante
-        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s and is_debit_note=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type, invoice.is_debit_note))
+        cr.execute("select max(to_number(substring(internal_number from '[0-9]{8}$'), '99999999')) from account_invoice where internal_number ~ '^[0-9]{4}-[0-9]{8}$' and pos_ar_id=%s and state in %s and type=%s and is_debit_note=%s and denomination_id=%s", (invoice.pos_ar_id.id, ('open', 'paid', 'cancel',), invoice.type, invoice.is_debit_note, invoice.denomination_id.id))
         last_number = cr.fetchone()
         self.env.invalidate_all()
 
@@ -367,7 +367,6 @@ class account_invoice(models.Model):
             # Derivamos a la configuracion correspondiente
             fe_det_req = conf.prepare_details([inv])
             result = conf.get_invoice_CAE(pos, tipo_cbte, fe_det_req)
-
             new_cr = False
             try:
                 invoices_approbed = conf._parse_result([inv], result)
@@ -380,9 +379,9 @@ class account_invoice(models.Model):
                 self.env.cr.rollback()
                 raise e
             finally:
-                # Creamos el wsfe.request con otro cursor, porque puede pasar que
+                # creamos el wsfe.request con otro cursor, porque puede pasar que
                 # tengamos una excepcion e igualmente, tenemos que escribir la request
-                # Sino al hacer el rollback se pierde hasta el wsfe.request
+                # sino al hacer el rollback se pierde hasta el wsfe.request
                 if new_cr:
                     cr2 = pooler.get_db(new_cr).cursor()
                 else:
@@ -454,11 +453,11 @@ class account_invoice(models.Model):
     def wsfe_relate_invoice(self, pos, number, date_invoice, cae, cae_due_date):
         # Tomamos la factura y mandamos a realizar
         # el asiento contable primero.
+        self.write({'date_invoice': date_invoice})
         self.action_move_create()
 
         invoice_vals = {
             'internal_number': '%04d-%08d' % (pos, number),
-            'date_invoice': date_invoice,
             'cae': cae,
             'cae_due_date': cae_due_date,
         }

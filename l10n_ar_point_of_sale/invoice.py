@@ -365,7 +365,7 @@ class invoice(models.Model):
                 res['value'].update({'fiscal_position': fiscal_position_id})
                 denomination_id = fiscal_position.denomination_id.id
                 res.setdefault('domain', {}).update(
-                    {"pos_ar_id": [('denomination_id', '=', denomination_id)]}
+                    {"pos_ar_id": [('denomination_ids', 'in', [denomination_id])]}
                 )
 
                 if type in ['in_invoice', 'in_refund', 'in_debit']:  # Supplier invoice

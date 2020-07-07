@@ -8,7 +8,12 @@
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
         <form string="Accredit Checks">
-            <group colspan="8" col="8">
+            <group>
+                <group>
+                    <field name="date" />
+                </group>
+            </group>
+            <group col="8" colspan="8">
                 <field name="issued_checks" widget="many2many_checkboxes" colspan="8"/>
             </group>
             <footer>

@@ -125,12 +125,19 @@ class account_issued_check(models.Model):
 
             account_id = config.deferred_account_id.id
             date_maturity = self.payment_date
+            err_msg = _(
+                "Deferred check account is not configured. Please, " +
+                "configure an account for the deferred checks in the " +
+                "company's check configuration!")
         else:
             account_id = self.account_bank_id.account_id.id
             date_maturity = voucher.date_due
+            err_msg = _(
+                "Bank Account has no account configured. Please, " +
+                "configure an account for the bank account used for checks!")
 
         if not account_id:
-            raise osv.except_osv(_("Error"), _("Bank Account has no account configured. Please, configure an account for the bank account used for checks!"))
+            raise osv.except_osv(_("Error"), err_msg)
 
         # TODO: Chequear que funcione bien en multicurrency estas dos lineas de abajo
         company_currency = voucher.company_id.currency_id.id
@@ -198,8 +205,9 @@ class account_issued_check(models.Model):
             if not def_check_journal:
                 raise except_orm(_("Error!"),_("There is no Journal configured for deferred checks."))
 
-
-            current_date = time.strftime('%Y-%m-%d')
+            # Lookup in ctx (used in wizard to use another date instead of today)
+            current_date = self._context.get(
+                'date_to_use', time.strftime('%Y-%m-%d'))
 
             period_obj = self.env['account.period']
             current_period = period_obj.search([('date_start', '<=', current_date), ('date_stop', '>=', current_date)])
@@ -209,6 +217,7 @@ class account_issued_check(models.Model):
             name_ref = 'Clearance Check ' + check.number
             move_vals = {   'ref': name_ref,
                             'journal_id': def_check_journal.id,
+                            'date': current_date,
                         }
             move_id = move_obj.create(move_vals)
 
@@ -239,7 +248,6 @@ class account_issued_check(models.Model):
                                    }
 
             move_line_obj.create(bank_move_line_vals)
-
 
             move_lines_to_reconcile = []
             payment_move_line = move_line_obj.search([('issued_check_id', '=', check.id)])
@@ -339,6 +347,7 @@ class account_third_check(models.Model):
     not_order = fields.Boolean('Not Order')
     bank_branch = fields.Char('Bank Branch', size=64)
     zip = fields.Char('Zip Code', size=64)
+    is_electronic = fields.Boolean(string='Is Electronic?', default=False)
 
     @api.model
     def create_voucher_move_line(self, voucher):
