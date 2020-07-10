@@ -54,11 +54,17 @@ class ResCountry(models.Model):
 
     def get_or_create_country_for_wsfex(self, name, do_create=True):
         # Remove irrelevanta data between parenthesis in the given name
-        match = re.match(r"(^.+)\s(\(.*\))", name)
+        match = re.match(r"(^.+)(\(.*\))", name)
         if match:
-            name_to_search = match.groups()[0]
+            name_to_search = match.groups()[0].strip()
+        elif "," in name:
+            name_to_search = name.split(",")[0].strip()
         else:
-            name_to_search = name
+            name_to_search = name.strip()
+
+        # 'Republica' comes abbreviated as 'REP.'
+        if 'REP.' in name_to_search:
+            name_to_search = name_to_search.replace('REP.', '')
 
         # 'Reino' comes abbreviated as 'R.'
         #if 'R.' in name_to_search:
