@@ -239,27 +239,28 @@ class AccountVoucher(models.Model):
         # Creamos un hook para agregar los demas asientos contables de otros modulos
         self.create_move_line_hook(move_id, move_lines)
 
+        # Comentamos este chequeo por el momento porque trae problemas.
         # Recorremos las lineas para  hacer un chequeo de debit y credit contra total_debit y
         # total_credit
-        amount_credit = 0.0
-        amount_debit = 0.0
-        for line in move_lines:
-            amount_credit += line['credit']
-            amount_debit += line['debit']
+        #amount_credit = 0.0
+        #amount_debit = 0.0
+        #for line in move_lines:
+        #    amount_credit += line['credit']
+        #    amount_debit += line['debit']
 
-        if round(amount_credit, 3) != round(total_credit, 3) or\
-                round(amount_debit, 3) != round(total_debit, 3):
-            if self.type in ('purchase', 'payment'):
-                amount_credit -= amount_debit
-                amount_debit -= amount_debit
-            else:
-                amount_debit -= amount_credit
-                amount_credit -= amount_credit
+        #if round(amount_credit, 3) != round(total_credit, 3) or\
+        #        round(amount_debit, 3) != round(total_debit, 3):
+        #    if self.type in ('purchase', 'payment'):
+        #        amount_credit -= amount_debit
+        #        amount_debit -= amount_debit
+        #    else:
+        #        amount_debit -= amount_credit
+        #        amount_credit -= amount_credit
 
-            if round(amount_credit, 3) != round(total_credit, 3) or\
-                    round(amount_debit, 3) != round(total_debit, 3):
-                err = _('Voucher Paid Amount and sum of different payment mode must be equal')
-                raise exceptions.ValidationError(err)
+        #    if round(amount_credit, 3) != round(total_credit, 3) or\
+        #            round(amount_debit, 3) != round(total_debit, 3):
+        #        err = _('Voucher Paid Amount and sum of different payment mode must be equal')
+        #        raise exceptions.ValidationError(err)
 
         return move_lines
 
