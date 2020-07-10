@@ -23,6 +23,7 @@
 ##############################################################################
 
 from datetime import datetime
+from operator import attrgetter
 
 from openerp import _, api, exceptions, fields, models
 from openerp.osv import osv
@@ -90,7 +91,7 @@ class wsfex_dst_cuit_codes(models.Model):
     _description = "WSFEX DST CUIT Codes"
     _order = 'name'
 
-    code = fields.Float('Code', digits=(12,0), required=True)
+    code = fields.Float('Code', digits=(12, 0), required=True)
     name = fields.Char('Desc', required=True, size=64)
     wsfex_config_id = fields.Many2one('wsfex.config')
 
@@ -116,7 +117,7 @@ class wsfex_voucher_type_codes(models.Model):
     wsfex_config_id = fields.Many2one('wsfex.config')
 
 
-class wsfex_config(models.Model):
+class WsfexConfig(models.Model):
     _name = "wsfex.config"
     _description = "Configuration for WSFEX"
 
@@ -124,48 +125,48 @@ class wsfex_config(models.Model):
     cuit = fields.Char(related='company_id.partner_id.vat', string='Cuit')
     url = fields.Char('URL for WSFEX', size=60, required=True)
     homologation = fields.Boolean('Homologation', default=False,
-            help="If true, there will be some validations that are disabled, for example, invoice number correlativeness")
-    point_of_sale_ids = fields.Many2many('pos.ar', 'pos_ar_wsfex_rel', 'wsfex_config_id', 'pos_ar_id', 'Points of Sale')
+                                  help="If true, there will be some validations that are disabled,"
+                                  " for example, invoice number correlativeness")
+    point_of_sale_ids = fields.Many2many('pos.ar', 'pos_ar_wsfex_rel', 'wsfex_config_id',
+                                         'pos_ar_id', 'Points of Sale')
     wsaa_ticket_id = fields.Many2one('wsaa.ta', 'Ticket Access')
-    currency_ids = fields.One2many('wsfex.currency.codes', 'wsfex_config_id' , 'Currencies')
-    uom_ids = fields.One2many('wsfex.uom.codes', 'wsfex_config_id' , 'Units of Measure')
-    lang_ids = fields.One2many('wsfex.lang.codes', 'wsfex_config_id' , 'Languages')
-    country_ids = fields.One2many('wsfex.dst_country.codes', 'wsfex_config_id' , 'Countries')
-    incoterms_ids = fields.One2many('wsfex.incoterms.codes', 'wsfex_config_id' , 'Incoterms')
-    dst_cuit_ids = fields.One2many('wsfex.dst_cuit.codes', 'wsfex_config_id' , 'DST CUIT')
-    voucher_type_ids = fields.One2many('wsfex.voucher_type.codes', 'wsfex_config_id' , 'Voucher Type')
-    export_type_ids = fields.One2many('wsfex.export_type.codes', 'wsfex_config_id' , 'Export Type')
-    company_id = fields.Many2one('res.company', 'Company Name' , required=True)
+    currency_ids = fields.One2many('wsfex.currency.codes', 'wsfex_config_id', 'Currencies')
+    uom_ids = fields.One2many('wsfex.uom.codes', 'wsfex_config_id', 'Units of Measure')
+    lang_ids = fields.One2many('wsfex.lang.codes', 'wsfex_config_id', 'Languages')
+    country_ids = fields.One2many('wsfex.dst_country.codes', 'wsfex_config_id', 'Countries')
+    incoterms_ids = fields.One2many('wsfex.incoterms.codes', 'wsfex_config_id', 'Incoterms')
+    dst_cuit_ids = fields.One2many('wsfex.dst_cuit.codes', 'wsfex_config_id', 'DST CUIT')
+    voucher_type_ids = fields.One2many('wsfex.voucher_type.codes', 'wsfex_config_id',
+                                       'Voucher Type')
+    export_type_ids = fields.One2many('wsfex.export_type.codes', 'wsfex_config_id', 'Export Type')
+    company_id = fields.Many2one('res.company', 'Company Name', required=True,
+                                 default=lambda o: o.env.user.company_id.id)
 
-    _sql_constraints = [
-        #('company_uniq', 'unique (company_id)', 'The configuration must be unique per company !')
-    ]
+    @api.model
+    def create(self, vals):
+        """Extend to add a wsaa_ticket_id if not provided."""
 
-    _defaults = {
-        'company_id' : lambda self, cr, uid, context=None: self.pool.get('res.users')._get_company(cr, uid, context=context),
-        }
-
-    def create(self, cr, uid, vals, context):
-        # Creamos tambien un TA para este servcio y esta compania
-        ta_obj = self.pool.get('wsaa.ta')
-        wsaa_obj = self.pool.get('wsaa.config')
-        service_obj = self.pool.get('afipws.service')
+        if vals.get("wsaa_ticket_id"):
+            return super(WsfexConfig, self).create(vals)
 
         # Buscamos primero el wsaa que corresponde a esta compania
         # porque hay que recordar que son unicos por compania
-        wsaa_ids = wsaa_obj.search(cr, uid, [('company_id','=', vals['company_id'])], context=context)
-        service_ids = service_obj.search(cr, uid, [('name','=', 'wsfex')], context=context)
+        wsaa_obj = self.env['wsaa.config']
+        service_obj = self.env['afipws.service']
+        wsaa_ids = wsaa_obj.search([('company_id', '=', vals['company_id'])]).ids
+        service_ids = service_obj.search([('name', '=', 'wsfex')]).ids
         if wsaa_ids:
+            # Creamos tambien un TA para este servcio y esta compania
             ta_vals = {
                 'name': service_ids[0],
                 'company_id': vals['company_id'],
-                'config_id' : wsaa_ids[0],
-                }
-
-            ta_id = ta_obj.create(cr, uid, ta_vals, context)
+                'config_id': wsaa_ids[0],
+            }
+            ta_obj = self.env['wsaa.ta']
+            ta_id = ta_obj.create(ta_vals).id
             vals['wsaa_ticket_id'] = ta_id
 
-        return super(wsfex_config, self).create(cr, uid, vals, context)
+        return super(WsfexConfig, self).create(vals)
 
     def get_config(self, pos_ar, raise_err=True):
         # Obtenemos la compania que esta utilizando en este momento este usuario
@@ -183,241 +184,13 @@ class wsfex_config(models.Model):
 
         return ids
 
-    @api.one
-    def get_wsfex_currencies(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("MON")
-
-        wsfex_cur_obj = self.env['wsfex.currency.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            res_c = wsfex_cur_obj.search([('code','=', r.Mon_Id )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_cur_obj.create({'code': r.Mon_Id, 'name': r.Mon_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.Mon_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
-    @api.one
-    def get_wsfex_uoms(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("UMed")
-
-        wsfex_uom_obj = self.env['wsfex.uom.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-            res_c = wsfex_uom_obj.search([('code','=', r.Umed_Id )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_uom_obj.create({'code': r.Umed_Id, 'name': r.Umed_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.Umed_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
-    @api.one
-    def get_wsfex_langs(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("Idiomas")
-
-        wsfex_param_obj = self.env['wsfex.lang.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-            res_c = wsfex_param_obj.search([('code','=', r.Idi_Id )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_param_obj.create({'code': r.Idi_Id, 'name': r.Idi_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.Idi_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
-
-    @api.one
-    def get_wsfex_export_types(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("Tipo_Expo")
-
-        wsfex_param_obj = self.env['wsfex.export_type.codes']
-
-#        # Chequeamos los errores
-#        msg = self.check_errors(cr, uid, res, raise_exception=False, context=context)
-#        if msg:
-#            # TODO: Hacer un wrapping de los errores, porque algunos son
-#            # largos y se imprimen muy mal en pantalla
-#            raise osv.except_osv(_('Error reading taxes'), msg)
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-            res_c = wsfex_param_obj.search([('code','=', r.Tex_Id )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_param_obj.create({'code': r.Tex_Id, 'name': r.Tex_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.Tex_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
-    @api.multi
-    def get_wsfex_countries(self):
-        conf = self
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("DST_pais")
-        wsfex_param_obj = self.env['wsfex.dst_country.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-
-            res_c = wsfex_param_obj.search([('code', '=', r.DST_Codigo)])
-            if len(res_c):
-                # Si los codigos estan en la db los modifico
-                res_c.write({'name': r.DST_Ds, 'wsfex_config_id': self.id})
-            else:
-                # Si no tengo los codigos de esos Impuestos en la db, los creo
-                wsfex_param_obj.create({'code': r.DST_Codigo, 'name': r.DST_Ds,
-                                        'wsfex_config_id': self.id})
-
-        return True
-
-    @api.one
-    def get_wsfex_incoterms(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("Incoterms")
-
-        wsfex_param_obj = self.env['wsfex.incoterms.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-            res_c = wsfex_param_obj.search([('code','=', r.Inc_Id )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_param_obj.create({'code': r.Inc_Id, 'name': r.Inc_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.Inc_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
-    @api.one
-    def get_wsfex_dst_cuits(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("DST_CUIT")
-
-        wsfex_param_obj = self.env['wsfex.dst_cuit.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-            res_c = wsfex_param_obj.search([('code','=', r.DST_CUIT )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_param_obj.create({'code': r.DST_CUIT, 'name': r.DST_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.DST_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
-    @api.one
-    def get_wsfex_voucher_types(self):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
-        res = _wsfex.FEXGetPARAM("Tipo_Cbte")
-
-        wsfex_param_obj = self.env['wsfex.voucher_type.codes']
-
-        # Armo un lista con los codigos de los Impuestos
-        for r in res['response'][0]:
-            # El servicio de AFIP me devuelve dentro de la lista
-            # unos valores None
-            if not r:
-                continue
-            res_c = wsfex_param_obj.search([('code','=', r.Cbte_Id )])
-
-            # Si no tengo los codigos de esos Impuestos en la db, los creo
-            if not len(res_c):
-                wsfex_param_obj.create({'code': r.Cbte_Id, 'name': r.Cbte_Ds, 'wsfex_config_id': self.id})
-            #~ Si los codigos estan en la db los modifico
-            else :
-                res_c.write({'name': r.Cbte_Ds, 'wsfex_config_id': self.id})
-
-        return True
-
     def check_error(self, res, raise_exception=True):
         msg = ''
-        if 'error' in res:
+        if 'error' in res and raise_exception:
             error = res['error'].msg
             err_code = str(res['error'].code)
-            msg = 'Codigo/s Error: %s[%s]' % (error, err_code)
-
-            if msg != '' and raise_exception:
-                raise osv.except_osv(_('WSFE Error!'), msg)
+            msg = _('WSFE Error!\n\nCode: %s\n\nError: %s') % (error, err_code)
+            raise exceptions.ValidationError(msg)
 
         return msg
 
@@ -433,6 +206,194 @@ class wsfex_config(models.Model):
             #self.log(cr, uid, None, msg, context)
 
         return msg
+
+    def fetch_response(self, service):
+        """Ping `service` to get the required data. Raises an exception if the response is not
+        valid."""
+
+        conf = self
+        token, sign = conf.wsaa_ticket_id.get_token_sign()
+        _wsfex = wsfex(self.cuit, token, sign, self.url)
+        res = _wsfex.FEXGetPARAM(service)
+        self.check_error(res)
+        #self.check_event(res)
+        return res
+
+    def make_request(self, service, code_key, name_key):
+        # Armo un lista con los codigos de los Impuestos
+        res = self.fetch_response(service)
+        for r in res['response'][0]:
+            # El servicio de AFIP me devuelve dentro de la lista
+            # unos valores None
+            if not r:
+                continue
+
+            code = code_key(r)
+            name = name_key(r)
+            yield code, name, r
+
+    @api.multi
+    def get_wsfex_currencies(self):
+        wsfex_param_obj = self.env['wsfex.currency.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name in wsfex_obj.make_request(
+                service="MON",
+                code_key=attrgetter("Mon_Id"),
+                name_key=attrgetter("Mon_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+
+        return True
+
+    @api.multi
+    def get_wsfex_uoms(self):
+        wsfex_param_obj = self.env['wsfex.uom.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name in wsfex_obj.make_request(
+                service="UMed",
+                code_key=attrgetter("Umed_Id"),
+                name_key=attrgetter("Umed_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+
+        return True
+
+    @api.multi
+    def get_wsfex_langs(self):
+        wsfex_param_obj = self.env['wsfex.lang.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name in wsfex_obj.make_request(
+                service="Idiomas",
+                code_key=attrgetter("Idi_Id"),
+                name_key=attrgetter("Idi_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+
+        return True
+
+    @api.multi
+    def get_wsfex_export_types(self):
+        wsfex_param_obj = self.env['wsfex.export_type.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name in wsfex_obj.make_request(
+                service="Tipo_Expo",
+                code_key=attrgetter("Tex_Id"),
+                name_key=attrgetter("Tex_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+
+        return True
+
+    @api.multi
+    def get_wsfex_countries(self):
+        wsfex_param_obj = self.env['wsfex.dst_country.codes']
+        country_model = self.env["res.country"]
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name, __ in wsfex_obj.make_request(
+                service="DST_pais",
+                code_key=attrgetter("DST_Codigo"),
+                name_key=attrgetter("DST_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                country_id = country_model.get_or_create_country_for_wsfex(name).id
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id,
+                                 "country_id": country_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id,
+                                            "country_id": country_id})
+
+        return True
+
+    @api.multi
+    def get_wsfex_incoterms(self):
+        wsfex_param_obj = self.env['wsfex.incoterms.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name, __ in wsfex_obj.make_request(
+                service="Incoterms",
+                code_key=attrgetter("Inc_Id"),
+                name_key=attrgetter("Inc_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+        return True
+
+    @api.multi
+    def get_wsfex_dst_cuits(self):
+        wsfex_param_obj = self.env['wsfex.dst_cuit.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name in wsfex_obj.make_request(
+                service="DST_CUIT",
+                code_key=attrgetter("DST_CUIT"),
+                name_key=attrgetter("DST_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+
+        return True
+
+    @api.multi
+    def get_wsfex_voucher_types(self):
+        wsfex_param_obj = self.env['wsfex.voucher_type.codes']
+        for wsfex_obj in self:
+            ref_id = wsfex_obj.id
+            for code, name in wsfex_obj.make_request(
+                service="Tipo_Cbte",
+                code_key=attrgetter("Cbte_Id"),
+                name_key=attrgetter("Cbte_Ds"),
+            ):
+                res_c = wsfex_param_obj.search([('code', '=', code)])
+                # Si los codigos estan en la db los modifico
+                if res_c:
+                    res_c.write({'name': name, 'wsfex_config_id': ref_id})
+                # Si no tengo los codigos de esos Impuestos en la db, los creo
+                else:
+                    wsfex_param_obj.create({'code': code, 'name': name, 'wsfex_config_id': ref_id})
+
+        return True
 
     @api.multi
     def get_invoice_CAE(self, pos, voucher_type, details):
@@ -469,16 +430,19 @@ class wsfex_config(models.Model):
 
             # Chequeamos que se corresponda con la factura que enviamos a validar
 #            doc_num = comp['Cuit'] == int(inv.partner_id.vat)
-            cbte = True
+            #cbte = True
             if inv.internal_number:
-                cbte = comp['Cbte_nro'] == int(inv.internal_number.split('-')[1])
+                #cbte =
+                comp['Cbte_nro'] == int(inv.internal_number.split('-')[1])
             else:
                 # TODO: El nro de factura deberia unificarse para que se setee en una funcion
                 # o algo asi para que no haya posibilidad de que sea diferente nunca en su formato
-                invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'], comp['CbteHasta'])
+                invoice_vals['internal_number'] = '%04d-%08d' % (result['PtoVta'],
+                                                                 comp['CbteHasta'])
 
 #            if not all([cbte]):
-#                raise osv.except_osv(_("WSFE Error!"), _("Validated invoice that not corresponds!"))
+#                raise osv.except_osv(_("WSFE Error!"),
+#                                     _("Validated invoice that not corresponds!"))
 
             invoice_vals['cae'] = comp['Cae']
             invoice_vals['cae_due_date'] = comp['Fch_venc_Cae']
@@ -491,7 +455,7 @@ class wsfex_config(models.Model):
 
         wsfex_req_obj = self.pool.get('wsfex.request.detail')
         voucher_type_obj = self.pool.get('wsfe.voucher_type')
-        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code','=',voucher_type_code)])
+        voucher_type_ids = voucher_type_obj.search(cr, uid, [('code', '=', voucher_type_code)])
         #voucher_type_name = voucher_type_obj.read(cr, uid, voucher_type_ids, ['name'])[0]['name']
 
         error = 'error' in res
@@ -500,7 +464,8 @@ class wsfex_config(models.Model):
         # se hace el rollback por lo tanto el refund que se estaba creando ya no existe en
         # base de datos y estariamos violando una foreign key contraint. Por eso,
         # chequeamos que existe info de la invoice_id, sino lo seteamos en False
-        read_inv = self.pool.get('account.invoice').read(cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
+        read_inv = self.pool.get('account.invoice').read(
+            cr, uid, detail['invoice_id'], ['id', 'internal_number'], context=context)
 
         if not read_inv:
             invoice_id = False
@@ -564,7 +529,8 @@ class wsfex_config(models.Model):
             # cuenta que inv.number == 000X-00000NN o algo similar.
             if not inv.internal_number:
                 if not first_num:
-                    raise osv.except_osv(_("WSFE Error!"), _("There is no first invoice number declared!"))
+                    raise osv.except_osv(_("WSFE Error!"),
+                                         _("There is no first invoice number declared!"))
                 inv_number = first_num
             else:
                 inv_number = inv.internal_number

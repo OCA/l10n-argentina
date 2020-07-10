@@ -148,16 +148,17 @@
                             </div>
 							</page>
 							<page string="Countries">
-							  <field name="country_ids" nolabel="1">
-                                <tree string="WSFEX Countries" editable="top">
-                                    <field name="name" readonly="1"/>
-                                    <field name="code" readonly="1"/>
-                                    <field name="country_id"/>
-                                </tree>
-                            </field>
-                            <div class="oe_right oe_button_box" name="import_buttons">
-                                <button name="get_wsfex_countries" type="object" string="Get Countries" groups="account.group_account_user"/>
-                            </div>
+                                <div class="oe_right oe_button_box" name="import_buttons">
+                                    <button name="get_wsfex_countries" type="object" string="Get Countries"
+                                        groups="account.group_account_user" class="oe_link"/>
+                                </div>
+                                <field name="country_ids" nolabel="1">
+                                    <tree string="WSFEX Countries" editable="top" colors="blue:not country_id;">
+                                        <field name="name" readonly="1"/>
+                                        <field name="code" readonly="1"/>
+                                        <field name="country_id"/>
+                                    </tree>
+                                </field>
 							</page>
 							<page string="Languages">
 							  <field name="lang_ids" nolabel="1">
