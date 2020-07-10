@@ -152,7 +152,7 @@
                                     <button name="get_wsfex_countries" type="object" string="Get Countries"
                                         groups="account.group_account_user" class="oe_link"/>
                                 </div>
-                                <field name="country_ids" nolabel="1">
+                                <field name="country_ids" nolabel="1" context="{'force_create_country': False}">
                                     <tree string="WSFEX Countries" editable="top" colors="blue:not country_id;">
                                         <field name="name" readonly="1"/>
                                         <field name="code" readonly="1"/>

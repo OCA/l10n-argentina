@@ -316,6 +316,7 @@ class WsfexConfig(models.Model):
     def get_wsfex_countries(self):
         wsfex_param_obj = self.env['wsfex.dst_country.codes']
         country_model = self.env["res.country"]
+        do_create = self.env.context.get("force_create_country", True)
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
             for code, name, __ in wsfex_obj.make_request(
@@ -324,7 +325,8 @@ class WsfexConfig(models.Model):
                 name_key=attrgetter("DST_Ds"),
             ):
                 res_c = wsfex_param_obj.search([('code', '=', code)])
-                country_id = country_model.get_or_create_country_for_wsfex(name).id
+                country_id = country_model.get_or_create_country_for_wsfex(
+                    name, do_create=do_create).id
                 # Si los codigos estan en la db los modifico
                 if res_c:
                     res_c.write({'name': name, 'wsfex_config_id': ref_id,
