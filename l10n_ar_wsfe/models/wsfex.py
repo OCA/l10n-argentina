@@ -412,7 +412,7 @@ class WsfexConfig(models.Model):
     def get_invoice_CAE(self, pos, voucher_type, details):
         _wsfex = self.build_wsfex_service()
         # Agregamos la info que falta
-        details['Tipo_cbte'] = voucher_type
+        details['Cbte_Tipo'] = voucher_type
         details['Punto_vta'] = pos
         res = _wsfex.FEXAuthorize(details)
         return res
@@ -593,10 +593,11 @@ class WsfexConfig(models.Model):
 
                 Cmps_asoc.append(Cmp_asoc)
 
+            cbte_tipo = voucher_type_obj.get_voucher_type(inv)
             Cmp = {
-                'invoice_id': inv.id,
+                #'invoice_id': inv.id,
                 'Id': Id,
-                #'Tipo_cbte' : cbte_tipo,
+                'Cbte_Tipo': cbte_tipo,
                 'Fecha_cbte': formatted_date_invoice,
                 #'Punto_vta': pto_venta,
                 'Cbte_nro': cbte_nro,
