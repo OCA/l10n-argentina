@@ -388,7 +388,7 @@ class WsfexConfig(models.Model):
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
             for code, name, __ in wsfex_obj.make_request(
-                service="Tipo_Cbte",
+                service="Cbte_Tipo",
                 code_key=attrgetter("Cbte_Id"),
                 name_key=attrgetter("Cbte_Ds"),
             ):
