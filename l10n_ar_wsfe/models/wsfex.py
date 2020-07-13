@@ -168,7 +168,10 @@ class WsfexConfig(models.Model):
 
         return super(WsfexConfig, self).create(vals)
 
-    def get_config(self, pos_ar, raise_err=True):
+    def get_config(self, pos_ar=None, raise_err=True):
+        if not pos_ar:
+            return self.browse()
+
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
         if not company_id and raise_err:
@@ -178,17 +181,24 @@ class WsfexConfig(models.Model):
             ('company_id', '=', company_id),
             ('point_of_sale_ids', 'in', pos_ar.id),
         ])
-        if not ids and raise_err:
-            raise exceptions.ValidationError(
-                _('There is no WSFEX configuration set to this company'))
+
+        if raise_err:
+            # More than one valid configuration found
+            if len(ids) > 1:
+                raise exceptions.ValidationError(
+                    _("There is more than one configuration with this POS %s") % pos_ar.name)
+            # No valid configuration found
+            elif not ids:
+                raise exceptions.ValidationError(
+                    _('There is no WSFEX configuration set to this company'))
 
         return ids
 
-    def check_error(self, res, raise_exception=True):
+    def check_error(self, response, raise_exception=True):
         msg = ''
-        if 'error' in res and raise_exception:
-            error = res['error'].msg
-            err_code = str(res['error'].code)
+        if 'error' in response and raise_exception:
+            error = response['error'].msg
+            err_code = str(response['error'].code)
             msg = _('WSFE Error!\n\nCode: %s\n\nError: %s') % (error, err_code)
             raise exceptions.ValidationError(msg)
 
