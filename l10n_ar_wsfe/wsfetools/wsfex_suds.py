@@ -29,7 +29,7 @@ import logging
 
 logger = logging.getLogger('suds.client')
 logger.setLevel(logging.DEBUG)
- 
+
 WSFEXURLv1_HOMO = "https://wswhomo.afip.gov.ar/wsfex/service.asmx?wsdl"
 WSAAURL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl" # homologacion (pruebas)
 
@@ -61,7 +61,7 @@ class WSFEX:
 
         # Creamos el cliente
         self._create_client(token, sign)
- 
+
     def _create_client(self, token, sign):
         try:
             self.client = Client(self.wsfexurl)
@@ -156,7 +156,8 @@ class WSFEX:
     def FEXGetPARAM(self, param_func):
         # Llamamos a la funcion
         try:
-            result = eval("self.client.service.FEXGetPARAM_"+param_func+"(self.argauth)")
+            intended_service = getattr(self.client.service, "FEXGetPARAM_%s" % param_func)
+            result = intended_service(self.argauth)
             logger.debug('Result =>\n %s', result)
         except MethodNotFound:
             logger.exception("Metodo no encontrado: %s" % param_func)
@@ -178,14 +179,22 @@ class WSFEX:
         return res
 
     # Metodo verificador de existencia de Permiso/Pais
-    #def FEXCheck_Permiso(self):
+    def FEXCheck_Permiso(self, perm_number, dest_country_code):
+        if not self.connected:
+            self._create_client()
+
+        result = self.client.service.FEXCheck_Permiso(self.argauth, perm_number, dest_country_code)
+        try:
+            return result.FEXResultGet.Status.upper() == 'OK'
+        except AttributeError:
+            return False
 
     # Metodo chequeo servidor
     #def FEXDummy(self):
     def FEXAuthorize(self, Cmp):
         if not self.connected:
             self._create_client()
-        
+
         fexrequest = self.client.factory.create('ns0:ClsFEXRequest')
         for k, v in Cmp.iteritems():
             if k == 'Items':

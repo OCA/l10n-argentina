@@ -74,7 +74,7 @@ class wsfe_massive_sinchronize(models.TransientModel):
         wsfe_conf_model = self.env['wsfe.config']
         invoice_model = self.env['account.invoice']
 
-        conf = wsfe_conf_model.get_config()
+        conf = wsfe_conf_model.get_config(self.pos_id)
         pos = int(self.pos_id.name)
         voucher_type = self.voucher_type.code
 

@@ -23,7 +23,7 @@ import time
 import urllib2
 from datetime import datetime
 
-from openerp import _, api, fields, models
+from openerp import _, api, exceptions, fields, models
 from openerp.osv import osv
 
 from ..wsfetools.wsfe_suds import WSFEv1 as wsfe
@@ -111,6 +111,9 @@ class wsfe_config(models.Model):
 
     @api.model
     def get_config(self, pos_ar, raise_err=True):
+        if not pos_ar:
+            return self.browse()
+
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
         if not company_id and raise_err:
@@ -121,8 +124,15 @@ class wsfe_config(models.Model):
             ('point_of_sale_ids', 'in', pos_ar.id),
         ])
 
-        if not ids and raise_err:
-            raise osv.except_osv(_('WSFE Config Error!'), _('There is no WSFE configuration set to this company'))
+        if raise_err:
+            # More than one valid configuration found
+            if len(ids) > 1:
+                raise exceptions.ValidationError(
+                    _("There is more than one configuration with this POS %s") % pos_ar.name)
+            # No valid configuration found
+            elif not ids:
+                raise exceptions.ValidationError(
+                    _('There is no WSFEX configuration set to this company'))
 
         return ids
 
