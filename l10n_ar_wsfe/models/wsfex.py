@@ -237,7 +237,7 @@ class WsfexConfig(models.Model):
         wsfex_param_obj = self.env['wsfex.currency.codes']
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
-            for code, name in wsfex_obj.make_request(
+            for code, name, __ in wsfex_obj.make_request(
                 service="MON",
                 code_key=attrgetter("Mon_Id"),
                 name_key=attrgetter("Mon_Ds"),
@@ -257,7 +257,7 @@ class WsfexConfig(models.Model):
         wsfex_param_obj = self.env['wsfex.uom.codes']
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
-            for code, name in wsfex_obj.make_request(
+            for code, name, __ in wsfex_obj.make_request(
                 service="UMed",
                 code_key=attrgetter("Umed_Id"),
                 name_key=attrgetter("Umed_Ds"),
@@ -277,7 +277,7 @@ class WsfexConfig(models.Model):
         wsfex_param_obj = self.env['wsfex.lang.codes']
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
-            for code, name in wsfex_obj.make_request(
+            for code, name, __ in wsfex_obj.make_request(
                 service="Idiomas",
                 code_key=attrgetter("Idi_Id"),
                 name_key=attrgetter("Idi_Ds"),
@@ -297,7 +297,7 @@ class WsfexConfig(models.Model):
         wsfex_param_obj = self.env['wsfex.export_type.codes']
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
-            for code, name in wsfex_obj.make_request(
+            for code, name, __ in wsfex_obj.make_request(
                 service="Tipo_Expo",
                 code_key=attrgetter("Tex_Id"),
                 name_key=attrgetter("Tex_Ds"),
@@ -362,7 +362,7 @@ class WsfexConfig(models.Model):
         wsfex_param_obj = self.env['wsfex.dst_cuit.codes']
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
-            for code, name in wsfex_obj.make_request(
+            for code, name, __ in wsfex_obj.make_request(
                 service="DST_CUIT",
                 code_key=attrgetter("DST_CUIT"),
                 name_key=attrgetter("DST_Ds"),
@@ -382,7 +382,7 @@ class WsfexConfig(models.Model):
         wsfex_param_obj = self.env['wsfex.voucher_type.codes']
         for wsfex_obj in self:
             ref_id = wsfex_obj.id
-            for code, name in wsfex_obj.make_request(
+            for code, name, __ in wsfex_obj.make_request(
                 service="Tipo_Cbte",
                 code_key=attrgetter("Cbte_Id"),
                 name_key=attrgetter("Cbte_Ds"),
