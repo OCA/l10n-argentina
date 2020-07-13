@@ -28,7 +28,7 @@ from operator import attrgetter
 from openerp import _, api, exceptions, fields, models
 from openerp.osv import osv
 
-from ..wsfetools.wsfex_suds import WSFEX as wsfex
+from ..wsfetools.wsfex_suds import WSFEX
 
 
 class wsfex_currency_codes(models.Model):
@@ -169,19 +169,16 @@ class WsfexConfig(models.Model):
         return super(WsfexConfig, self).create(vals)
 
     def get_config(self, pos_ar=None, raise_err=True):
-        if not pos_ar:
-            return self.browse()
-
         # Obtenemos la compania que esta utilizando en este momento este usuario
         company_id = self.env.user.company_id.id
         if not company_id and raise_err:
             raise exceptions.ValidationError(_('There is no company being used by this user'))
 
-        ids = self.search([
-            ('company_id', '=', company_id),
-            ('point_of_sale_ids', 'in', pos_ar.id),
-        ])
+        search_domain = [('company_id', '=', company_id)]
+        if pos_ar:
+            search_domain.append(('point_of_sale_ids', 'in', pos_ar.id))
 
+        ids = self.search(search_domain)
         if raise_err:
             # More than one valid configuration found
             if len(ids) > 1:
@@ -221,9 +218,7 @@ class WsfexConfig(models.Model):
         """Ping `service` to get the required data. Raises an exception if the response is not
         valid."""
 
-        conf = self
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-        _wsfex = wsfex(self.cuit, token, sign, self.url)
+        _wsfex = self.build_wsfex_service()
         res = _wsfex.FEXGetPARAM(service)
         self.check_error(res)
         #self.check_event(res)
@@ -407,18 +402,19 @@ class WsfexConfig(models.Model):
 
         return True
 
-    @api.multi
-    def get_invoice_CAE(self, pos, voucher_type, details):
+    def build_wsfex_service(self):
         conf = self
         token, sign = conf.wsaa_ticket_id.get_token_sign()
+        _wsfex = WSFEX(conf.cuit, token, sign, conf.url)
+        return _wsfex
 
-        _wsfex = wsfex(conf.cuit, token, sign, conf.url)
-
+    @api.multi
+    def get_invoice_CAE(self, pos, voucher_type, details):
+        _wsfex = self.build_wsfex_service()
         # Agregamos la info que falta
         details['Tipo_cbte'] = voucher_type
         details['Punto_vta'] = pos
         res = _wsfex.FEXAuthorize(details)
-
         return res
 
     def _parse_result(self, invoices, result):
@@ -508,13 +504,8 @@ class WsfexConfig(models.Model):
 
     # TODO: Migrar a v8
     def get_last_voucher(self, pos, voucher_type):
-        conf = self
-
-        token, sign = conf.wsaa_ticket_id.get_token_sign()
-
-        _wsfe = wsfex(conf.cuit, token, sign, conf.url)
-        res = _wsfe.FEXGetLast_CMP(pos, voucher_type)
-
+        _wsfex = self.build_wsfex_service()
+        res = _wsfex.FEXGetLast_CMP(pos, voucher_type)
         self.check_error(res)
         self.check_event(res)
         last = res['response']
@@ -563,9 +554,10 @@ class WsfexConfig(models.Model):
 
             if curr_codes:
                 curr_code = curr_codes[0].code
-                curr_rate = company.currency_id.id==inv_currency_id and 1.0 or inv.currency_rate
+                curr_rate = company.currency_id.id == inv_currency_id and 1.0 or inv.currency_rate
             else:
-                raise osv.except_osv(_("WSFEX Error!"), _("Currency %s has not code configured") % inv.currency_id.name)
+                raise exceptions.ValidationError(
+                    _("Currency %s has not code configured") % inv.currency_id.name)
 
             # Items
             items = []

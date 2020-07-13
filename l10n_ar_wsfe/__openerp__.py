@@ -34,9 +34,10 @@
     """,
     'data': [
         'wsfe_data.xml',
-        'wsfe_view.xml',
-        'account_invoice_view.xml',
+        'views/wsfe_view.xml',
+        'views/account_invoice_view.xml',
         'account_invoice_workflow.xml',
+        'views/res_country_view.xml',
         'wizard/wsfe_sinchronize_voucher_view.xml',
         'wizard/wsfe_massive_sinchronize_view.xml',
         'security/ir.model.access.csv',
