@@ -595,7 +595,7 @@ class WsfexConfig(models.Model):
 
             cbte_tipo = voucher_type_obj.get_voucher_type(inv)
             Cmp = {
-                #'invoice_id': inv.id,
+                'invoice_id': inv.id,
                 'Id': Id,
                 'Cbte_Tipo': cbte_tipo,
                 'Fecha_cbte': formatted_date_invoice,
