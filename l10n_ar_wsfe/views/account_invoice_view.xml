@@ -14,9 +14,12 @@
                 <field name="fiscal_position" position="after">
                     <field name="local" invisible="1"/>
 					<field name="aut_cae" invisible="1"/>
-                    <field name="export_type_id" widget="selection" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
-                    <field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
-                    <field name="dst_cuit_id" widget="selection" attrs="{'invisible': [('local','=', True)]}"/>
+                    <field name="export_type_id" options='{"no_create_edit": true}'
+                        attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"/>
+                    <field name="dst_country_id" attrs="{'invisible': [('local','=', True)], 'required': [('local','=',False)]}"
+                        options='{"no_create_edit": true}'/>
+                    <field name="dst_cuit_id" attrs="{'invisible': [('local','=', True)]}"
+                        options='{"no_create_edit": true}'/>
                 </field>
                 <field name="pos_ar_id" position="after">
                     <field name="cae" string="CAE" readonly="1"/>
