@@ -30,6 +30,11 @@ msgid "Account Tax"
 msgstr "Impuesto"
 
 #. module: l10n_ar_wsfe
+#: field:res.partner,wsfex_cuit_code_id:0
+msgid "CUIT Code"
+msgstr "País CUIT"
+
+#. module: l10n_ar_wsfe
 #: field:wsfe.tax.codes,tax_code_id:0
 msgid "Account Tax Code"
 msgstr "Código de Impuesto"

@@ -19,8 +19,10 @@
 #
 ##############################################################################
 
+from . import partner
 from . import invoice
 from . import res_country
+from . import stock
 from . import wsfe
 from . import wsfe_request
 from . import wsfex

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+    <record id="view_partner_add_cuit_code_id" model="ir.ui.view">
+        <field name="name">res.partner.add.wsfex_cuit_code_id</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_vat_ar.view_partner_document_type_form"/>
+        <field name="arch" type="xml">
+            <field name="property_account_position" position="after">
+                <field name="wsfex_cuit_code_id" options='{"no_create_edit": true}'/>
+            </field>
+        </field>
+    </record>
+
+</data>
+</openerp>
