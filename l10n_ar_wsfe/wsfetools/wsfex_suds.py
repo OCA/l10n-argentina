@@ -125,7 +125,14 @@ class WSFEX:
     def FEXGetLast_CMP(self, pto_venta, tipo_cbte):
 
         # Llamamos a la funcion
-        result = self.client.service.FEXGetLast_CMP(self.argauth, pto_venta, tipo_cbte)
+        cls_lastCMP = self.client.factory.create('ClsFEX_LastCMP')
+        cls_lastCMP.Token = self.argauth.Token
+        cls_lastCMP.Sign = self.argauth.Sign
+        cls_lastCMP.Cuit = self.argauth.Cuit
+        cls_lastCMP.Pto_venta = pto_venta
+        cls_lastCMP.Cbte_Tipo = tipo_cbte
+
+        result = self.client.service.FEXGetLast_CMP(cls_lastCMP)
         logger.debug('Result =>\n %s', result)
 
         res = {}
