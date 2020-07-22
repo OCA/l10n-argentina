@@ -181,11 +181,11 @@ class invoice(models.Model):
             if count > 1:
                 raise ValidationError(_('Error! The Invoice is duplicated.'))
 
-    @api.depends("pos_ar_id")
+    @api.depends("fiscal_position")
     def _compute_local(self):
         for inv in self:
-            if inv.pos_ar_id:
-                inv.local = inv.pos_ar_id.local
+            if inv.fiscal_position:
+                inv.local = inv.fiscal_position.local
 
     @api.one
     def _check_fiscal_values(self):
