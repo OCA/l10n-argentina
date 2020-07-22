@@ -142,7 +142,7 @@ class invoice(models.Model):
     amount_untaxed = fields.Float(string='Subtotal', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
     amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
     amount_total = fields.Float(string='Total', digits=dp.get_precision('Account'), store=True, readonly=True, compute='_compute_amount')
-    local = fields.Boolean(string='Local', default=True)
+    local = fields.Boolean(string='Local', compute="_compute_local", store=True)
 
     #Validacion para que el total de una invoice no pueda ser negativo.
     @api.one
@@ -180,6 +180,12 @@ class invoice(models.Model):
             count = self.search_count([('denomination_id','=',denomination_id.id), ('is_debit_note','=',self.is_debit_note), ('partner_id','=',partner_id.id), ('internal_number','!=', False), ('internal_number','!=',''), ('internal_number','=', self.internal_number), ('type','=',self.type), ('state','!=','cancel')])
             if count > 1:
                 raise ValidationError(_('Error! The Invoice is duplicated.'))
+
+    @api.depends("pos_ar_id")
+    def _compute_local(self):
+        for inv in self:
+            if inv.pos_ar_id:
+                inv.local = inv.pos_ar_id.local
 
     @api.one
     def _check_fiscal_values(self):
