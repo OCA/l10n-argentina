@@ -191,10 +191,21 @@ class WSFEX:
             self._create_client()
 
         result = self.client.service.FEXCheck_Permiso(self.argauth, perm_number, dest_country_code)
-        try:
-            return result.FEXResultGet.Status.upper() == 'OK'
-        except AttributeError:
-            return False
+
+        # Obtenemos Errores y Eventos
+        res = {}
+        error = self._get_errors(result)
+        if error:
+            res['error'] = error
+
+        event = self._get_events(result)
+        if event:
+            res['event'] = event
+
+        if 'FEXResultGet' in result:
+            res['response'] = result.FEXResultGet
+
+        return res
 
     # Metodo chequeo servidor
     #def FEXDummy(self):
