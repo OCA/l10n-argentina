@@ -511,6 +511,53 @@ class WsfexConfig(models.Model):
         last = res['response']
         return last
 
+    @api.model
+    def get_voucher_info(self, pos, voucher_type, number):
+        _wsfex = self.build_wsfex_service()
+        res = _wsfex.fe_comp_consultar(pos, voucher_type, number)
+
+        wsfe_model = self.env["wsfe.config"]
+        wsfe_model.check_errors(res)
+        wsfe_model.check_observations(res)
+        #last = res['response'].CbteNro
+
+        res = res['response']
+
+        result = {
+            'Id': res[0].Id,
+            'Fecha_cbte': res[0].Fecha_cbte,
+            'Tipo_cbte': res[0].Tipo_cbte,
+            'Punto_vta': res[0].Punto_vta,
+            'Cbte_nro': res[0].Cbte_nro,
+            'Tipo_expo': res[0].Tipo_expo,
+            'Permiso_existente': res[0].Permiso_existente,
+            'Permisos': res[0].Permisos,
+            'Dst_cmp': res[0].Dst_cmp,
+            'Cliente': res[0].Cliente,
+            'Cuit_pais_cliente': res[0].Cuit_pais_cliente,
+            'Domicilio_cliente': res[0].Domicilio_cliente,
+            'Id_impositivo': res[0].Id_impositivo,
+            'Moneda_Id': res[0].Moneda_Id,
+            'Moneda_ctz': res[0].Moneda_ctz,
+            'Obs_comerciales': res[0].Obs_comerciales,
+            'Imp_total': res[0].Imp_total,
+            'Obs': res[0].Obs,
+            'Cmps_asoc': res[0].Cmps_asoc,
+            'Forma_pago': res[0].Forma_pago,
+            'Incoterms': res[0].Incoterms,
+            'Incoterms_Ds': res[0].Incoterms_Ds,
+            'Idioma_cbte': res[0].Idioma_cbte,
+            'Items': res[0].Items,
+            'Fecha_cbte_cae': res[0].Fecha_cbte_cae,
+            'Fch_venc_Cae': res[0].Fch_venc_Cae,
+            'Cae': res[0].Cae,
+            'Resultado': res[0].Resultado,
+            'Motivos_Obs': res[0].Motivos_Obs,
+            'Fecha_pago': res[0].Fecha_pago,
+        }
+
+        return result
+
     def prepare_details(self, invoices):
         company = self.env.user.company_id
         voucher_type_obj = self.env['wsfe.voucher_type']

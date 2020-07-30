@@ -18,11 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
+
+import time
+
+from dateutil.parse import parse
+from openerp import _, api, fields, models
 from openerp.addons import decimal_precision as dp
 from openerp.exceptions import except_orm
-import time
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+
 
 class wsfe_sinchronize_voucher(models.TransientModel):
 
@@ -111,30 +115,63 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             return
 
         res = self.config_id.get_voucher_info(pos, voucher_type, number)
+        if self.invoice_id.local:
+            doc_ids = self.env['res.document.type'].search([('afip_code', '=', res['DocTipo'])])
+            document_type = doc_ids and doc_ids[0] or False
+            di = time.strftime(DEFAULT_SERVER_DATE_FORMAT, time.strptime(str(res['CbteFch']),
+                                                                         '%Y%m%d'))
+            dd = time.strftime(DEFAULT_SERVER_DATE_FORMAT, time.strptime(str(res['FchVto']),
+                                                                         '%Y%m%d'))
+            dpr = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT, time.strptime(
+                str(res['FchProceso']), '%Y%m%d%H%M%S'))
+    #
+            # TODO: Tandriamos que filtrar las invoices por Tipo de Comprobante tambien
+            # para ello podemos agregar un par de campos mas para usarlos como filtros,
+            # por ejemplo, is_debit_note y type
+            self.document_type = document_type
+            self.document_number = str(res['DocNro'])
+            self.date_invoice = di  # str(res['CbteFch']),
+            self.amount_total = res['ImpTotal']
+            self.amount_no_taxed = res['ImpTotConc']
+            #'amount_untaxed':res['ImpNeto'],
+            self.amount_taxed = res['ImpNeto']
+            self.amount_tax = res['ImpIVA'] + res['ImpTrib']
+            self.amount_exempt = res['ImpOpEx']
+            #'currency':,
+            self.cae = str(res['CodAutorizacion'])
+            self.cae_due_date = dd
+            self.date_process = dpr
+        else:
+            doc_ids = self.env['res.document.type'].search([('afip_code', '=', res[''])])
+            try:
+                date_invoice = fields.Date.to_string(parse(res['Fecha_cbte']))
+            except ValueError:
+                date_invoice = False
 
-        doc_ids = self.env['res.document.type'].search([('afip_code', '=', res['DocTipo'])])
-        document_type = doc_ids and doc_ids[0] or False
+            try:
+                cae_due_date = fields.Date.to_string(parse(res['Fch_venc_Cae']))
+            except ValueError:
+                cae_due_date = False
 
-        di = time.strftime(DEFAULT_SERVER_DATE_FORMAT, time.strptime(str(res['CbteFch']), '%Y%m%d'))
-        dd = time.strftime(DEFAULT_SERVER_DATE_FORMAT, time.strptime(str(res['FchVto']), '%Y%m%d'))
-        dpr = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT, time.strptime(str(res['FchProceso']), '%Y%m%d%H%M%S'))
-#
-        # TODO: Tandriamos que filtrar las invoices por Tipo de Comprobante tambien
-        # para ello podemos agregar un par de campos mas para usarlos como filtros,
-        # por ejemplo, is_debit_note y type
-        self.document_type = document_type
-        self.document_number = str(res['DocNro'])
-        self.date_invoice = di  # str(res['CbteFch']),
-        self.amount_total = res['ImpTotal']
-        self.amount_no_taxed = res['ImpTotConc']
-        #'amount_untaxed':res['ImpNeto'],
-        self.amount_taxed = res['ImpNeto']
-        self.amount_tax = res['ImpIVA'] + res['ImpTrib']
-        self.amount_exempt = res['ImpOpEx']
-        #'currency':,
-        self.cae = str(res['CodAutorizacion'])
-        self.cae_due_date = dd
-        self.date_process = dpr
+            #try:
+            #    date_process = fields.Date.to_string(parse(res['Fch_venc_Cae']))
+            #except ValueError:
+            # We don't have
+            date_process = False
+            self.document_type = document_type
+            self.document_number = self.invoice_id.partner_id.vat
+            self.date_invoice = date_invoice
+            self.amount_total = res['Imp_total']
+            self.amount_no_taxed = res['Imp_total']
+            #'amount_untaxed':res['ImpNeto'],
+            self.amount_taxed = res['Imp_total']
+            self.amount_tax = 0
+            self.amount_exempt = 0
+            #'currency':,
+            self.cae = str(res['Cae'])
+            self.cae_due_date = cae_due_date
+            self.date_process = date_process
+
         self.infook = True
 
         domain = [
@@ -145,13 +182,13 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             ('amount_no_taxed', '=', self.amount_no_taxed),
             ('state', 'in', ('draft', 'proforma2', 'proforma'))]
 
-        invoice_ids = invoice_model.search(domain)
+        #invoice_ids = invoice_model.search(domain)
         #if len(invoice_ids) == 1:
         #    self.invoice_id = invoice_ids[0]
 
         return {'domain': {'invoice_id': domain}}
 
-    @api.one
+    @api.multi
     def relate_invoice(self):
 
         # Obtenemos los datos puestos por el usuario

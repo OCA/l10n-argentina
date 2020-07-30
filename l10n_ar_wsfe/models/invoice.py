@@ -420,7 +420,7 @@ class account_invoice(models.Model):
 
         return invoices_approbed
 
-    @api.one
+    @api.multi
     def wsfe_relate_invoice(self, pos, number, date_invoice, cae, cae_due_date):
         # Tomamos la factura y mandamos a realizar
         # el asiento contable primero.
