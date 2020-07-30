@@ -44,7 +44,8 @@ class wsfe_sinchronize_voucher(models.TransientModel):
     pos_id = fields.Many2one('pos.ar', 'POS', required=True)
     invoice_id = fields.Many2one('account.invoice', 'Invoice',
                                  default=lambda w: w.get_default_invoice_id())
-    config_id = fields.Reference(string='Config', selection=[('wsfe.config', 'wsfex.config')],
+    config_id = fields.Reference(string='Config',
+                                 selection=[('wsfe.config', 'WSFE'), ('wsfex.config', 'WSFEX')],
                                  size=512)
     voucher_number = fields.Integer('Number', required=True)
     document_type = fields.Many2one('res.document.type', 'Document Type', readonly=True)
