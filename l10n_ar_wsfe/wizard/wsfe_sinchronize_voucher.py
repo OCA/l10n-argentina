@@ -81,7 +81,8 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             pos_ar = inv.pos_ar_id
             self.pos_id = pos_ar.id
             self.voucher_type = voucher_type.id
-            self.config_id = config_model.get_config(pos_ar).id
+            conf = config_model.get_config(pos_ar)
+            self.config_id = "%s,%d" % (conf._name, conf.id)
         else:
             self.pos_id = False
             self.config_id = False
@@ -104,8 +105,6 @@ class wsfe_sinchronize_voucher(models.TransientModel):
 
     @api.onchange('voucher_number')
     def change_voucher_number(self):
-
-        invoice_model = self.env['account.invoice']
 
         voucher_type = self.voucher_type.code
         pos = int(self.pos_id.name)

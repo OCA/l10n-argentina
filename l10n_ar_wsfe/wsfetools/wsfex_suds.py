@@ -254,20 +254,20 @@ class WSFEX:
     def fe_comp_consultar(self, pto_venta, cbte_tipo, cbte_nro):
         # Llamamos a la funcion
         arg = self.client.factory.create('ns0:ClsFEXGetCMP')
-        arg.Tipo_cbte = cbte_tipo
+        arg.Cbte_tipo = cbte_tipo
         arg.Punto_vta = pto_venta
         arg.Cbte_nro = cbte_nro
         result = self.client.service.FEXGetCMP(self.argauth, arg)
 
         res = {}
         # Obtenemos Errores y Eventos
-        errors = self._get_errors(result)
-        if len(errors):
-            res['errors'] = errors
+        error = self._get_errors(result)
+        if error:
+            res['error'] = error
 
-        events = self._get_events(result)
-        if len(events):
-            res['events'] = events
+        event = self._get_events(result)
+        if event:
+            res['event'] = event
 
         res['response'] = result
 

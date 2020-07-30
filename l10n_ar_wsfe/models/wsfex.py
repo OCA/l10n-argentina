@@ -502,7 +502,6 @@ class WsfexConfig(models.Model):
 
         return wsfex_req_obj.create(cr, uid, vals)
 
-    # TODO: Migrar a v8
     def get_last_voucher(self, pos, voucher_type):
         _wsfex = self.build_wsfex_service()
         res = _wsfex.FEXGetLast_CMP(pos, voucher_type)
@@ -516,9 +515,8 @@ class WsfexConfig(models.Model):
         _wsfex = self.build_wsfex_service()
         res = _wsfex.fe_comp_consultar(pos, voucher_type, number)
 
-        wsfe_model = self.env["wsfe.config"]
-        wsfe_model.check_errors(res)
-        wsfe_model.check_observations(res)
+        self.check_error(res)
+        self.check_event(res)
         #last = res['response'].CbteNro
 
         res = res['response']
