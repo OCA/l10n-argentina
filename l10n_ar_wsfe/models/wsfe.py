@@ -673,7 +673,7 @@ It is a proof that a company sends to your client, which is notified to be charg
     denomination_id = fields.Many2one('invoice.denomination', 'Denomination', required=False)
 
     @api.model
-    def get_voucher_type(self, voucher):
+    def get_voucher_type(self, voucher, as_obj=False):
         # Chequeamos el modelo
         voucher_model = None
         model = voucher._table
@@ -696,11 +696,12 @@ It is a proof that a company sends to your client, which is notified to be charg
             if len(res) > 1:
                 raise osv.except_osv(_("Voucher type error!"), _("There is more than one voucher type that corresponds to this object"))
 
+            if as_obj:
+                return res
+
             return res.code
 
         elif model == 'account_voucher':
             voucher_model = 'voucher'
 
         return None
-
-wsfe_voucher_type()

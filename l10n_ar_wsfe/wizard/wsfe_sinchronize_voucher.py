@@ -32,13 +32,20 @@ class wsfe_sinchronize_voucher(models.TransientModel):
     _name = "wsfe.sinchronize.voucher"
     _description = "WSFE Sinchroniza Voucher"
 
+    @api.returns("account.invoice")
+    def get_default_invoice_id(self):
+        return self.env.context.get('active_id')
+
     def _get_def_config(self):
         wsfe_conf_model = self.env['wsfe.config']
         return wsfe_conf_model.get_config()
 
     voucher_type = fields.Many2one('wsfe.voucher_type', 'Voucher Type', required=True)
     pos_id = fields.Many2one('pos.ar', 'POS', required=True)
-    config_id = fields.Many2one('wsfe.config', 'Config', default=_get_def_config)
+    invoice_id = fields.Many2one('account.invoice', 'Invoice',
+                                 default=lambda w: w.get_default_invoice_id())
+    config_id = fields.Reference(string='Config', selection=[('wsfe.config', 'wsfex.config')],
+                                 size=512)
     voucher_number = fields.Integer('Number', required=True)
     document_type = fields.Many2one('res.document.type', 'Document Type', readonly=True)
     document_number = fields.Char('Document Number', readonly=True)
@@ -54,20 +61,41 @@ class wsfe_sinchronize_voucher(models.TransientModel):
     cae_due_date = fields.Date('CAE Due Date', readonly=False)
     date_process = fields.Datetime('Date Processed', readonly=True)
     infook = fields.Boolean('Info OK', default=False)
-    invoice_id = fields.Many2one('account.invoice', 'Invoice')
+
+    @api.onchange("invoice_id")
+    def onchange_invoice(self):
+        inv = self.invoice_id
+        if inv:
+            if inv.local:
+                config_model = self.env["wsfe.config"]
+            else:
+                config_model = self.env["wsfex.config"]
+
+            voucher_model = self.env['wsfe.voucher_type']
+            voucher_type = voucher_model.get_voucher_type(inv, as_obj=True)
+            pos_ar = inv.pos_ar_id
+            self.pos_id = pos_ar.id
+            self.voucher_type = voucher_type.id
+            self.config_id = config_model.get_config(pos_ar).id
+        else:
+            self.pos_id = False
+            self.config_id = False
+            self.voucher_type = False
 
     @api.onchange('config_id', 'voucher_type')
     def change_pos(self):
-        pos_model = self.env['pos.ar']
-        wsfe_conf = self.config_id
-        ids = [p.id for p in wsfe_conf.point_of_sale_ids]
-        denomination_id = self.voucher_type.denomination_id.id or False
-        domain = [('id', 'in', ids), ('denomination_id', '=', denomination_id)]
-        pos_ids = pos_model.search(domain)
-        if len(pos_ids) == 1:
-            self.pos_id = pos_ids[0]
+        #pos_model = self.env['pos.ar']
+        ws_config = self.config_id
+        if ws_config:
+            ids = [p.id for p in ws_config.point_of_sale_ids]
+            #denomination_id = self.voucher_type.denomination_id.id or False
+            domain = [('id', 'in', ids)]
+            #pos_ids = pos_model.search(domain)
+            #if len(pos_ids) == 1:
+            #    self.pos_id = pos_ids[0]
+            return {'domain': {'pos_id': domain}}
 
-        return {'domain': {'pos_id' :domain}}
+        return {'domain': {}}
 
     @api.onchange('voucher_number')
     def change_voucher_number(self):
@@ -114,11 +142,11 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             ('amount_exempt', '=', self.amount_exempt),
             ('amount_taxed', '=', self.amount_taxed),
             ('amount_no_taxed', '=', self.amount_no_taxed),
-            ('state', 'in', ('draft','proforma2','proforma'))]
+            ('state', 'in', ('draft', 'proforma2', 'proforma'))]
 
         invoice_ids = invoice_model.search(domain)
-        if len(invoice_ids) == 1:
-            self.invoice_id = invoice_ids and invoice_ids[0]
+        #if len(invoice_ids) == 1:
+        #    self.invoice_id = invoice_ids[0]
 
         return {'domain': {'invoice_id': domain}}
 
@@ -140,5 +168,3 @@ class wsfe_sinchronize_voucher(models.TransientModel):
                                     self.cae, self.cae_due_date)
 
         return {'type': 'ir.actions.act_window_close'}
-
-wsfe_sinchronize_voucher()
