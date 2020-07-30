@@ -21,7 +21,7 @@
 
 import time
 
-from dateutil.parse import parse
+from dateutil.parser import parse
 from openerp import _, api, fields, models
 from openerp.addons import decimal_precision as dp
 from openerp.exceptions import except_orm
