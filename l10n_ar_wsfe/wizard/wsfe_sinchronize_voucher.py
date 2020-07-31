@@ -141,7 +141,6 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             self.cae_due_date = dd
             self.date_process = dpr
         else:
-            doc_ids = self.env['res.document.type'].search([('afip_code', '=', res[''])])
             try:
                 date_invoice = fields.Date.to_string(parse(res['Fecha_cbte']))
             except ValueError:
