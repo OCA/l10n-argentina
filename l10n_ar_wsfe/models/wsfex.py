@@ -117,6 +117,18 @@ class wsfex_voucher_type_codes(models.Model):
     wsfex_config_id = fields.Many2one('wsfex.config')
 
 
+class NoAttErr(object):
+
+    def __init__(self, voucher_res):
+        self.voucher_res = voucher_res
+
+    def __getattr__(self, item):
+        try:
+            return getattr(self.voucher_res, item)
+        except AttributeError:
+            return False
+
+
 class WsfexConfig(models.Model):
     _name = "wsfex.config"
     _description = "Configuration for WSFEX"
@@ -520,43 +532,39 @@ class WsfexConfig(models.Model):
         #last = res['response'].CbteNro
 
         res = res['response']
+        voucher_res = NoAttErr(res[0])
         result = {
-            'Id': res[0].Id,
-            'Fecha_cbte': res[0].Fecha_cbte,
-            'Cbte_tipo': res[0].Cbte_tipo,
-            'Punto_vta': res[0].Punto_vta,
-            'Cbte_nro': res[0].Cbte_nro,
-            'Tipo_expo': res[0].Tipo_expo,
-            'Permiso_existente': res[0].Permiso_existente,
-            'Dst_cmp': res[0].Dst_cmp,
-            'Cliente': res[0].Cliente,
-            'Cuit_pais_cliente': res[0].Cuit_pais_cliente,
-            'Domicilio_cliente': res[0].Domicilio_cliente,
-            'Id_impositivo': res[0].Id_impositivo,
-            'Moneda_Id': res[0].Moneda_Id,
-            'Moneda_ctz': res[0].Moneda_ctz,
-            'Obs_comerciales': res[0].Obs_comerciales,
-            'Imp_total': res[0].Imp_total,
-            'Obs': res[0].Obs,
-            'Cmps_asoc': res[0].Cmps_asoc,
-            'Forma_pago': res[0].Forma_pago,
-            'Incoterms': res[0].Incoterms,
-            'Incoterms_Ds': res[0].Incoterms_Ds,
-            'Idioma_cbte': res[0].Idioma_cbte,
-            'Items': res[0].Items,
-            'Fecha_cbte_cae': res[0].Fecha_cbte_cae,
-            'Fch_venc_Cae': res[0].Fch_venc_Cae,
-            'Cae': res[0].Cae,
-            'Resultado': res[0].Resultado,
-            'Motivos_Obs': res[0].Motivos_Obs,
-            'Fecha_pago': res[0].Fecha_pago,
+            'Id': voucher_res.Id,
+            'Fecha_cbte': voucher_res.Fecha_cbte,
+            'Cbte_tipo': voucher_res.Cbte_tipo,
+            'Punto_vta': voucher_res.Punto_vta,
+            'Cbte_nro': voucher_res.Cbte_nro,
+            'Tipo_expo': voucher_res.Tipo_expo,
+            'Permiso_existente': voucher_res.Permiso_existente,
+            'Permisos': voucher_res.Permisos,
+            'Dst_cmp': voucher_res.Dst_cmp,
+            'Cliente': voucher_res.Cliente,
+            'Cuit_pais_cliente': voucher_res.Cuit_pais_cliente,
+            'Domicilio_cliente': voucher_res.Domicilio_cliente,
+            'Id_impositivo': voucher_res.Id_impositivo,
+            'Moneda_Id': voucher_res.Moneda_Id,
+            'Moneda_ctz': voucher_res.Moneda_ctz,
+            'Obs_comerciales': voucher_res.Obs_comerciales,
+            'Imp_total': voucher_res.Imp_total,
+            'Obs': voucher_res.Obs,
+            'Forma_pago': voucher_res.Forma_pago,
+            'Incoterms': voucher_res.Incoterms,
+            'Incoterms_Ds': voucher_res.Incoterms_Ds,
+            'Idioma_cbte': voucher_res.Idioma_cbte,
+            'Items': voucher_res.Items,
+            'Fecha_cbte_cae': voucher_res.Fecha_cbte_cae,
+            'Fch_venc_Cae': voucher_res.Fch_venc_Cae,
+            'Cae': voucher_res.Cae,
+            'Resultado': voucher_res.Resultado,
+            'Motivos_Obs': voucher_res.Motivos_Obs,
+            'Fecha_pago': voucher_res.Fecha_pago,
+            'Cmps_asoc': voucher_res.Cmps_asoc,
         }
-
-        try:
-            # Get Permisos if they exists
-            result['Permisos'] = res[0].Permisos
-        except AttributeError:
-            pass
 
         return result
 
