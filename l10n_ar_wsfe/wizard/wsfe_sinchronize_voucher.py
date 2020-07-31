@@ -156,7 +156,7 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             #except ValueError:
             # We don't have
             date_process = False
-            self.document_type = document_type
+            self.document_type = self.invoice_id.partner_id.document_type_id.afip_code
             self.document_number = self.invoice_id.partner_id.vat
             self.date_invoice = date_invoice
             self.amount_total = res['Imp_total']
