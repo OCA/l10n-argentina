@@ -524,7 +524,7 @@ class WsfexConfig(models.Model):
         result = {
             'Id': res[0].Id,
             'Fecha_cbte': res[0].Fecha_cbte,
-            'Tipo_cbte': res[0].Tipo_cbte,
+            'Cbte_tipo': res[0].Cbte_tipo,
             'Punto_vta': res[0].Punto_vta,
             'Cbte_nro': res[0].Cbte_nro,
             'Tipo_expo': res[0].Tipo_expo,
