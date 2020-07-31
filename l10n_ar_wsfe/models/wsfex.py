@@ -520,7 +520,6 @@ class WsfexConfig(models.Model):
         #last = res['response'].CbteNro
 
         res = res['response']
-
         result = {
             'Id': res[0].Id,
             'Fecha_cbte': res[0].Fecha_cbte,
@@ -529,7 +528,6 @@ class WsfexConfig(models.Model):
             'Cbte_nro': res[0].Cbte_nro,
             'Tipo_expo': res[0].Tipo_expo,
             'Permiso_existente': res[0].Permiso_existente,
-            'Permisos': res[0].Permisos,
             'Dst_cmp': res[0].Dst_cmp,
             'Cliente': res[0].Cliente,
             'Cuit_pais_cliente': res[0].Cuit_pais_cliente,
@@ -553,6 +551,12 @@ class WsfexConfig(models.Model):
             'Motivos_Obs': res[0].Motivos_Obs,
             'Fecha_pago': res[0].Fecha_pago,
         }
+
+        try:
+            # Get Permisos if they exists
+            result['Permisos'] = res[0].Permisos
+        except AttributeError:
+            pass
 
         return result
 
