@@ -174,8 +174,9 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             document_number = res.get("ID_impositivo", "")
             partner = self.env['res.partner'].search(
                 [
+                    ("vat", "!=", False),
                     '|',
-                    ("name", "=", customer_name),
+                    ("name", "ilike", customer_name),
                     ("vat", "=", document_number),
                 ],
                 limit=1,
@@ -186,7 +187,7 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             self.document_type = partner.document_type_id.afip_code
             self.document_number = document_number
             self.customer_name = customer_name
-            self.customer_address = res.get("Domicilio_cliente")
+            self.customer_address = res.get("Domicilio_cliente", "").strip()
             self.date_invoice = date_invoice
             self.amount_total = res['Imp_total']
             self.amount_no_taxed = res['Imp_total']
