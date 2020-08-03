@@ -66,6 +66,13 @@ class wsfe_sinchronize_voucher(models.TransientModel):
     cae_due_date = fields.Date('CAE Due Date', readonly=False)
     date_process = fields.Datetime('Date Processed', readonly=True)
     infook = fields.Boolean('Info OK', default=False)
+    # Expo fields
+    customer_name = fields.Char(string='Customer Name', size=512)
+    customer_address = fields.Char(string='Customer Address', size=512)
+    board_perm_info = fields.Char(string='Boarding Permissions', size=512)
+    dst_cuit_id = fields.Many2one('wsfex.dst_cuit.codes', 'Country CUIT')
+    dst_country_id = fields.Many2one('wsfex.dst_country.codes', 'Dest Country')
+    partner_id = fields.Many2one('res.partner', string='Partner')
 
     @api.onchange("invoice_id")
     def onchange_invoice(self):
@@ -140,6 +147,13 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             self.cae = str(res['CodAutorizacion'])
             self.cae_due_date = dd
             self.date_process = dpr
+            # Expo fields are set to False
+            self.partner_id = False
+            self.board_perm_info = False
+            self.dst_country_id = False
+            self.dst_cuit_id = False
+            self.customer_name = False
+            self.customer_address = False
         else:
             try:
                 date_invoice = fields.Date.to_string(parse(res['Fecha_cbte']))
@@ -154,20 +168,57 @@ class wsfe_sinchronize_voucher(models.TransientModel):
             #try:
             #    date_process = fields.Date.to_string(parse(res['Fch_venc_Cae']))
             #except ValueError:
-            # We don't have
-            date_process = False
-            self.document_type = self.invoice_id.partner_id.document_type_id.afip_code
-            self.document_number = self.invoice_id.partner_id.vat
+            #    pass
+
+            customer_name = res.get("Cliente", "")
+            document_number = res.get("ID_impositivo", "")
+            partner = self.env['res.partner'].search(
+                [
+                    '|',
+                    ("name", "=", customer_name),
+                    ("vat", "=", document_number),
+                ],
+                limit=1,
+                order="is_company desc",  # partners with is_company == True are fetched first
+            )
+
+            self.partner_id = partner.id
+            self.document_type = partner.document_type_id.afip_code
+            self.document_number = document_number
+            self.customer_name = customer_name
+            self.customer_address = res.get("Domicilio_cliente")
             self.date_invoice = date_invoice
             self.amount_total = res['Imp_total']
             self.amount_no_taxed = res['Imp_total']
-            #'amount_untaxed':res['ImpNeto'],
             self.amount_taxed = res['Imp_total']
             self.amount_tax = 0
             self.amount_exempt = 0
-            #'currency':,
             self.cae = str(res['Cae'])
             self.cae_due_date = cae_due_date
+
+            # Fetch destiny country id
+            dst_cmp = res.get("Dst_cmp")
+            if dst_cmp:
+                self.dst_country_id = self.env["wsfex.dst_country.codes"].search(
+                    [("code", "=", dst_cmp)]).id
+            else:
+                self.dst_country_id = False
+
+            # Fetch destiny cuit id
+            dst_cuit = res.get("Cuit_pais_cliente")
+            if dst_cuit:
+                self.dst_cuit_id = self.env["wsfex.dst_cuit.codes"].search(
+                    [("code", "=", dst_cuit)]).id
+            else:
+                self.dst_cuit_id = False
+
+            # Fetch Boarding Permission data
+            if res.get("Permiso_existente", "").upper() == "S":
+                perms = res.get("Permisos")
+                if perms:
+                    self.board_perm_info = ", ".join(map(str, perms))
+
+            date_process = False
             self.date_process = date_process
 
         self.infook = True
