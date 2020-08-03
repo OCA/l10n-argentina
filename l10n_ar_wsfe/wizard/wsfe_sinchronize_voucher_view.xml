@@ -26,7 +26,7 @@
                     </group>
                     <group string="Voucher Information">
                         <group>
-                            <group>
+                            <group colspan="2" col="4">
                                 <field name="document_type"/>
                                 <field name="document_number"/>
                                 <field name="date_process"/>
@@ -34,7 +34,7 @@
                                 <field name="cae" invisible="1"/>
                                 <field name="cae_due_date" invisible="1"/>
                             </group>
-                            <group>
+                            <group colspan="2" col="4">
                                 <field name="amount_no_taxed"/>
                                 <field name="amount_exempt"/>
                                 <field name="amount_taxed"/>
@@ -42,6 +42,15 @@
                                 <field name="amount_total"/>
                                 <!--<field name="amount_untaxed"/>-->
                                 <!--<field name="currency"/>-->
+                            </group>
+                            <group colspan="2" col="4" string="Expo Info."
+                                attrs="{'invisible': [('customer_name', '=', False)]}">
+                                <field name="customer_name"/>
+                                <field name="customer_address"/>
+                                <field name="dst_cuit_id" options='{"no_create_edit": true}'/>
+                                <field name="dst_country_id" options='{"no_create_edit": true}'/>
+                                <field name="board_perm_info"/>
+                                <field name="partner_id" colspan="4" options='{"no_create_edit": true}'/>
                             </group>
                         </group>
                     </group>

@@ -1,38 +1,40 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* l10n_ar_wsfe
+# 	* l10n_ar_wsfe
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-25 17:15+0000\n"
-"PO-Revision-Date: 2019-07-25 17:15+0000\n"
+"POT-Creation-Date: 2020-08-03 20:42+0000\n"
+"PO-Revision-Date: 2020-08-03 17:53-0300\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: es_AR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:396
-#: code:addons/l10n_ar_wsfe/wsfe.py:198
-#: code:addons/l10n_ar_wsfe/wsfe.py:268
-#: code:addons/l10n_ar_wsfe/wsfex.py:478
+#: field:res.country,afip_code:0
+msgid "AFIP Code"
+msgstr "Cód. AFIP"
+
+#. module: l10n_ar_wsfe
+#: code:addons/l10n_ar_wsfe/models/invoice.py:380
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:215
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:285
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:442
 #, python-format
 msgid "AFIP Web Service Error"
-msgstr "Error en el Web Service de AFIP"
+msgstr "Error en el WS de AFIP"
 
 #. module: l10n_ar_wsfe
 #: field:wsfe.tax.codes,tax_id:0
 msgid "Account Tax"
 msgstr "Impuesto"
-
-#. module: l10n_ar_wsfe
-#: field:res.partner,wsfex_cuit_code_id:0
-msgid "CUIT Code"
-msgstr "País CUIT"
 
 #. module: l10n_ar_wsfe
 #: field:wsfe.tax.codes,tax_code_id:0
@@ -61,8 +63,7 @@ msgid "Amount Total"
 msgstr "Monto Total"
 
 #. module: l10n_ar_wsfe
-#: selection:wsfe.request,result:0
-#: selection:wsfe.request.detail,result:0
+#: selection:wsfe.request,result:0 selection:wsfe.request.detail,result:0
 #: selection:wsfex.request.detail,result:0
 msgid "Approved"
 msgstr "Aprobada"
@@ -83,9 +84,13 @@ msgid "Autorizar"
 msgstr "Autorizar"
 
 #. module: l10n_ar_wsfe
+#: field:wsfe.sinchronize.voucher,board_perm_info:0
+msgid "Boarding Permissions"
+msgstr "Permisos de Embarque"
+
+#. module: l10n_ar_wsfe
 #: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
-#: field:wsfe.request.detail,cae:0
-#: field:wsfe.sinchronize.voucher,cae:0
+#: field:wsfe.request.detail,cae:0 field:wsfe.sinchronize.voucher,cae:0
 #: field:wsfex.request.detail,cae:0
 msgid "CAE"
 msgstr "CAE"
@@ -96,18 +101,17 @@ msgid "CAE (Codigo de Autorizacion Electronico assigned by AFIP.)"
 msgstr "CAE (Codigo de Autorizacion Electronico asignado por AFIP.)"
 
 #. module: l10n_ar_wsfe
-#: field:account.invoice,cae_due_date:0
-#: field:wsfe.request.detail,cae_duedate:0
+#: field:account.invoice,cae_due_date:0 field:wsfe.request.detail,cae_duedate:0
 #: field:wsfe.sinchronize.voucher,cae_due_date:0
 #: field:wsfex.request.detail,cae_duedate:0
 msgid "CAE Due Date"
 msgstr "Fecha de Vencimiento CAE "
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:269
+#: code:addons/l10n_ar_wsfe/models/invoice.py:271
 #, python-format
 msgid "CAE format is incorrect. Should be 14 numeric digits."
-msgstr "El formato de CAE es incorrecto. Deberían ser 14 dígitos numéricos."
+msgstr "CAE format is incorrect. Should be 14 numeric digits."
 
 #. module: l10n_ar_wsfe
 #: field:account.invoice,cae:0
@@ -118,6 +122,11 @@ msgstr "CAE/CAI"
 #: view:account.invoice:l10n_ar_wsfe.cai_account_supplier_invoice_form
 msgid "CAI"
 msgstr "CAI"
+
+#. module: l10n_ar_wsfe
+#: field:res.partner,wsfex_cuit_code_id:0
+msgid "CUIT Code"
+msgstr "País CUIT"
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.massive.sinchronize:l10n_ar_wsfe.view_wsfe_massive_sinchronize
@@ -131,29 +140,22 @@ msgid "Check it if this VAT Tax corresponds to vat tax exempts operations, such 
 msgstr "Check it if this VAT Tax corresponds to vat tax exempts operations, such as to sell books, milk, etc. The taxes with this checked, will be reported to AFIP as  exempt operations (base amount) without VAT applied on this"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.tax.codes,code:0
-#: field:wsfe.voucher_type,code:0
-#: field:wsfex.currency.codes,code:0
-#: field:wsfex.dst_country.codes,code:0
-#: field:wsfex.dst_cuit.codes,code:0
-#: field:wsfex.export_type.codes,code:0
-#: field:wsfex.incoterms.codes,code:0
-#: field:wsfex.lang.codes,code:0
-#: field:wsfex.uom.codes,code:0
-#: field:wsfex.voucher_type.codes,code:0
+#: field:wsfe.tax.codes,code:0 field:wsfe.voucher_type,code:0
+#: field:wsfex.currency.codes,code:0 field:wsfex.dst_country.codes,code:0
+#: field:wsfex.dst_cuit.codes,code:0 field:wsfex.export_type.codes,code:0
+#: field:wsfex.incoterms.codes,code:0 field:wsfex.lang.codes,code:0
+#: field:wsfex.uom.codes,code:0 field:wsfex.voucher_type.codes,code:0
 msgid "Code"
 msgstr "Código"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:114
-#: code:addons/l10n_ar_wsfe/wsfex.py:192
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:120
 #, python-format
 msgid "Company Error!"
-msgstr "Error de Compañía!"
+msgstr "¡Error en la Compañía!"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,company_id:0
-#: field:wsfex.config,company_id:0
+#: field:wsfe.config,company_id:0 field:wsfex.config,company_id:0
 msgid "Company Name"
 msgstr "Nombre de Compañía"
 
@@ -178,6 +180,11 @@ msgstr "Configuración Factura Electrónica"
 #: view:wsfex.config:l10n_ar_wsfe.view_wsfex_config_tree
 msgid "Config WSFEX"
 msgstr "Configuración WSFEX"
+
+#. module: l10n_ar_wsfe
+#: field:wsfe.config,config_id:0
+msgid "Config id"
+msgstr "Configuración"
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.voucher_type:l10n_ar_wsfe.view_wsfe_voucher_type_form
@@ -206,55 +213,49 @@ msgid "Countries"
 msgstr "Países"
 
 #. module: l10n_ar_wsfe
+#: model:ir.model,name:l10n_ar_wsfe.model_res_country
+msgid "Country"
+msgstr "País"
+
+#. module: l10n_ar_wsfe
 #: field:account.invoice,dst_cuit_id:0
+#: field:wsfe.sinchronize.voucher,dst_cuit_id:0
 msgid "Country CUIT"
 msgstr "País CUIT"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,create_uid:0
-#: field:wsfe.massive.sinchronize,create_uid:0
-#: field:wsfe.request,create_uid:0
-#: field:wsfe.request.detail,create_uid:0
+#: field:wsfe.config,create_uid:0 field:wsfe.massive.sinchronize,create_uid:0
+#: field:wsfe.request,create_uid:0 field:wsfe.request.detail,create_uid:0
 #: field:wsfe.sinchronize.voucher,create_uid:0
-#: field:wsfe.tax.codes,create_uid:0
-#: field:wsfe.voucher_type,create_uid:0
-#: field:wsfex.config,create_uid:0
-#: field:wsfex.currency.codes,create_uid:0
+#: field:wsfe.tax.codes,create_uid:0 field:wsfe.voucher_type,create_uid:0
+#: field:wsfex.config,create_uid:0 field:wsfex.currency.codes,create_uid:0
 #: field:wsfex.dst_country.codes,create_uid:0
 #: field:wsfex.dst_cuit.codes,create_uid:0
 #: field:wsfex.export_type.codes,create_uid:0
-#: field:wsfex.incoterms.codes,create_uid:0
-#: field:wsfex.lang.codes,create_uid:0
-#: field:wsfex.request.detail,create_uid:0
-#: field:wsfex.uom.codes,create_uid:0
+#: field:wsfex.incoterms.codes,create_uid:0 field:wsfex.lang.codes,create_uid:0
+#: field:wsfex.request.detail,create_uid:0 field:wsfex.uom.codes,create_uid:0
 #: field:wsfex.voucher_type.codes,create_uid:0
 msgid "Created by"
 msgstr "Creado por"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,create_date:0
-#: field:wsfe.massive.sinchronize,create_date:0
-#: field:wsfe.request,create_date:0
-#: field:wsfe.request.detail,create_date:0
+#: field:wsfe.config,create_date:0 field:wsfe.massive.sinchronize,create_date:0
+#: field:wsfe.request,create_date:0 field:wsfe.request.detail,create_date:0
 #: field:wsfe.sinchronize.voucher,create_date:0
-#: field:wsfe.tax.codes,create_date:0
-#: field:wsfe.voucher_type,create_date:0
-#: field:wsfex.config,create_date:0
-#: field:wsfex.currency.codes,create_date:0
+#: field:wsfe.tax.codes,create_date:0 field:wsfe.voucher_type,create_date:0
+#: field:wsfex.config,create_date:0 field:wsfex.currency.codes,create_date:0
 #: field:wsfex.dst_country.codes,create_date:0
 #: field:wsfex.dst_cuit.codes,create_date:0
 #: field:wsfex.export_type.codes,create_date:0
 #: field:wsfex.incoterms.codes,create_date:0
 #: field:wsfex.lang.codes,create_date:0
-#: field:wsfex.request.detail,create_date:0
-#: field:wsfex.uom.codes,create_date:0
+#: field:wsfex.request.detail,create_date:0 field:wsfex.uom.codes,create_date:0
 #: field:wsfex.voucher_type.codes,create_date:0
 msgid "Created on"
 msgstr "Creado en"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,cuit:0
-#: field:wsfex.config,cuit:0
+#: field:wsfe.config,cuit:0 field:wsfex.config,cuit:0
 msgid "Cuit"
 msgstr "CUIT"
 
@@ -270,10 +271,10 @@ msgid "Currency"
 msgstr "Moneda"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfex.py:607
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:617
 #, python-format
 msgid "Currency %s has not code configured"
-msgstr "La moneda %s no tiene código configurado"
+msgstr "La Moneda %s no tiene asignado un código de AFIP."
 
 #. module: l10n_ar_wsfe
 #: field:wsfe.request.detail,currency_rate:0
@@ -281,16 +282,26 @@ msgid "Currency Rate"
 msgstr "Tipo de Cambio"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:556
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:573
 #, python-format
 msgid "Currency has to be configured correctly in WSFEX Configuration."
-msgstr "La moneda tiene que estar correctamente configurada en WSFEX."
+msgstr " Debe configurar la Moneda en el apartado de de WSFEX."
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:510
+#: field:wsfe.sinchronize.voucher,customer_address:0
+msgid "Customer Address"
+msgstr "Dirección"
+
+#. module: l10n_ar_wsfe
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:527
 #, python-format
 msgid "Customer Configuration Error"
-msgstr "Error de Configuración de Cliente"
+msgstr "¡Error de Configuración de Cliente!"
+
+#. module: l10n_ar_wsfe
+#: field:wsfe.sinchronize.voucher,customer_name:0
+msgid "Customer Name"
+msgstr "Nombre de Cliente"
 
 #. module: l10n_ar_wsfe
 #: view:wsfex.config:l10n_ar_wsfe.view_wsfex_config_form
@@ -314,28 +325,24 @@ msgid "Denomination"
 msgstr "Denominación"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:103
-#: code:addons/l10n_ar_wsfe/invoice.py:116
+#: code:addons/l10n_ar_wsfe/models/invoice.py:102
+#: code:addons/l10n_ar_wsfe/models/invoice.py:115
 #, python-format
 msgid "Denomination not set in invoice"
-msgstr "La denominación no está configurada en la factura"
+msgstr "La Denominación no está completa en la Factura."
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.request,name:0
-#: field:wsfe.tax.codes,name:0
-#: field:wsfex.currency.codes,name:0
-#: field:wsfex.dst_country.codes,name:0
-#: field:wsfex.dst_cuit.codes,name:0
-#: field:wsfex.export_type.codes,name:0
-#: field:wsfex.incoterms.codes,name:0
-#: field:wsfex.lang.codes,name:0
-#: field:wsfex.uom.codes,name:0
-#: field:wsfex.voucher_type.codes,name:0
+#: field:wsfe.request,name:0 field:wsfe.tax.codes,name:0
+#: field:wsfex.currency.codes,name:0 field:wsfex.dst_country.codes,name:0
+#: field:wsfex.dst_cuit.codes,name:0 field:wsfex.export_type.codes,name:0
+#: field:wsfex.incoterms.codes,name:0 field:wsfex.lang.codes,name:0
+#: field:wsfex.uom.codes,name:0 field:wsfex.voucher_type.codes,name:0
 msgid "Desc"
 msgstr "Descripción"
 
 #. module: l10n_ar_wsfe
 #: field:account.invoice,dst_country_id:0
+#: field:wsfe.sinchronize.voucher,dst_country_id:0
 msgid "Dest Country"
 msgstr "País Destino"
 
@@ -354,13 +361,10 @@ msgstr "Detalles"
 #. module: l10n_ar_wsfe
 #: field:wsfe.config,display_name:0
 #: field:wsfe.massive.sinchronize,display_name:0
-#: field:wsfe.request,display_name:0
-#: field:wsfe.request.detail,display_name:0
+#: field:wsfe.request,display_name:0 field:wsfe.request.detail,display_name:0
 #: field:wsfe.sinchronize.voucher,display_name:0
-#: field:wsfe.tax.codes,display_name:0
-#: field:wsfe.voucher_type,display_name:0
-#: field:wsfex.config,display_name:0
-#: field:wsfex.currency.codes,display_name:0
+#: field:wsfe.tax.codes,display_name:0 field:wsfe.voucher_type,display_name:0
+#: field:wsfex.config,display_name:0 field:wsfex.currency.codes,display_name:0
 #: field:wsfex.dst_country.codes,display_name:0
 #: field:wsfex.dst_cuit.codes,display_name:0
 #: field:wsfex.export_type.codes,display_name:0
@@ -370,7 +374,7 @@ msgstr "Detalles"
 #: field:wsfex.uom.codes,display_name:0
 #: field:wsfex.voucher_type.codes,display_name:0
 msgid "Display Name"
-msgstr "Display Name"
+msgstr "Nombre a mostrar"
 
 #. module: l10n_ar_wsfe
 #: field:wsfe.request.detail,docnum:0
@@ -397,45 +401,46 @@ msgstr "Desde"
 
 #. module: l10n_ar_wsfe
 #: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
-#: code:addons/l10n_ar_wsfe/invoice.py:110
-#: code:addons/l10n_ar_wsfe/invoice.py:120
-#: code:addons/l10n_ar_wsfe/invoice.py:125
-#: code:addons/l10n_ar_wsfe/invoice.py:250
-#: code:addons/l10n_ar_wsfe/invoice.py:258
-#: code:addons/l10n_ar_wsfe/invoice.py:263
-#: code:addons/l10n_ar_wsfe/invoice.py:269
+#: code:addons/l10n_ar_wsfe/models/invoice.py:109
+#: code:addons/l10n_ar_wsfe/models/invoice.py:119
+#: code:addons/l10n_ar_wsfe/models/invoice.py:124
+#: code:addons/l10n_ar_wsfe/models/invoice.py:260
+#: code:addons/l10n_ar_wsfe/models/invoice.py:265
+#: code:addons/l10n_ar_wsfe/models/invoice.py:271
 #: field:wsfex.request.detail,error:0
 #, python-format
 msgid "Error"
 msgstr "Error"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:611
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:628
 #, python-format
 msgid "Error in amount_total!"
-msgstr "Error en monto total!"
+msgstr "Error in amount_total!"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:445
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:462
 #, python-format
 msgid "Error reading taxes"
-msgstr "Error leyendo impuestos"
+msgstr "¡Error leyendo los impuestos!"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:229
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:246
 #, python-format
-msgid "Error received was: \n"
+msgid ""
+"Error received was: \n"
 " %s"
-msgstr "Error recibido fue: \n"
+msgstr ""
+"El error recibido fue: \n"
 " %s"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:103
-#: code:addons/l10n_ar_wsfe/invoice.py:106
-#: code:addons/l10n_ar_wsfe/invoice.py:116
+#: code:addons/l10n_ar_wsfe/models/invoice.py:102
+#: code:addons/l10n_ar_wsfe/models/invoice.py:105
+#: code:addons/l10n_ar_wsfe/models/invoice.py:115
 #, python-format
 msgid "Error!"
-msgstr "Error!"
+msgstr "¡Error!"
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.request:l10n_ar_wsfe.view_wsfe_request_form
@@ -444,7 +449,7 @@ msgid "Errors"
 msgstr "Errores"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:195
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:212
 #, python-format
 msgid "Errors: "
 msgstr "Errores: "
@@ -464,6 +469,11 @@ msgstr "Operaciones Exentas"
 #: view:wsfe.config:l10n_ar_wsfe.view_wsfe_config_form
 msgid "Exempt Operations Taxes Mapping"
 msgstr "Mapeo Impuestos de Operaciones Exentas"
+
+#. module: l10n_ar_wsfe
+#: view:wsfe.sinchronize.voucher:l10n_ar_wsfe.view_wsfe_sinchronize_voucher
+msgid "Expo Info."
+msgstr "Expo Info."
 
 #. module: l10n_ar_wsfe
 #: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
@@ -548,35 +558,25 @@ msgid "History Requests"
 msgstr "Solicitudes de Historial"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,homologation:0
-#: field:wsfex.config,homologation:0
+#: field:wsfe.config,homologation:0 field:wsfex.config,homologation:0
 msgid "Homologation"
 msgstr "Homologación"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,id:0
-#: field:wsfe.massive.sinchronize,id:0
-#: field:wsfe.request,id:0
-#: field:wsfe.request.detail,id:0
-#: field:wsfe.sinchronize.voucher,id:0
-#: field:wsfe.tax.codes,id:0
-#: field:wsfe.voucher_type,id:0
-#: field:wsfex.config,id:0
-#: field:wsfex.currency.codes,id:0
-#: field:wsfex.dst_country.codes,id:0
-#: field:wsfex.dst_cuit.codes,id:0
-#: field:wsfex.export_type.codes,id:0
-#: field:wsfex.incoterms.codes,id:0
-#: field:wsfex.lang.codes,id:0
-#: field:wsfex.request.detail,id:0
-#: field:wsfex.uom.codes,id:0
+#: field:wsfe.config,id:0 field:wsfe.massive.sinchronize,id:0
+#: field:wsfe.request,id:0 field:wsfe.request.detail,id:0
+#: field:wsfe.sinchronize.voucher,id:0 field:wsfe.tax.codes,id:0
+#: field:wsfe.voucher_type,id:0 field:wsfex.config,id:0
+#: field:wsfex.currency.codes,id:0 field:wsfex.dst_country.codes,id:0
+#: field:wsfex.dst_cuit.codes,id:0 field:wsfex.export_type.codes,id:0
+#: field:wsfex.incoterms.codes,id:0 field:wsfex.lang.codes,id:0
+#: field:wsfex.request.detail,id:0 field:wsfex.uom.codes,id:0
 #: field:wsfex.voucher_type.codes,id:0
 msgid "ID"
 msgstr "ID"
 
 #. module: l10n_ar_wsfe
-#: help:wsfe.config,homologation:0
-#: help:wsfex.config,homologation:0
+#: help:wsfe.config,homologation:0 help:wsfex.config,homologation:0
 msgid "If true, there will be some validations that are disabled, for example, invoice number correlativeness"
 msgstr "If true, there will be some validations that are disabled, for example, invoice number correlativeness"
 
@@ -641,13 +641,15 @@ msgid "Key: %s is not in tribute or tax values"
 msgstr "Llave: %s no está en los valores tributo o de IVA"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:397
-#: code:addons/l10n_ar_wsfe/wsfe.py:269
-#: code:addons/l10n_ar_wsfe/wsfex.py:479
+#: code:addons/l10n_ar_wsfe/models/invoice.py:381
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:286
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:443
 #, python-format
-msgid "La factura no fue aprobada. \n"
+msgid ""
+"La factura no fue aprobada. \n"
 "%s"
-msgstr "La factura no fue aprobada. \n"
+msgstr ""
+"La factura no fue aprobada. \n"
 "%s"
 
 #. module: l10n_ar_wsfe
@@ -659,11 +661,9 @@ msgstr "Idiomas"
 #. module: l10n_ar_wsfe
 #: field:wsfe.config,__last_update:0
 #: field:wsfe.massive.sinchronize,__last_update:0
-#: field:wsfe.request,__last_update:0
-#: field:wsfe.request.detail,__last_update:0
+#: field:wsfe.request,__last_update:0 field:wsfe.request.detail,__last_update:0
 #: field:wsfe.sinchronize.voucher,__last_update:0
-#: field:wsfe.tax.codes,__last_update:0
-#: field:wsfe.voucher_type,__last_update:0
+#: field:wsfe.tax.codes,__last_update:0 field:wsfe.voucher_type,__last_update:0
 #: field:wsfex.config,__last_update:0
 #: field:wsfex.currency.codes,__last_update:0
 #: field:wsfex.dst_country.codes,__last_update:0
@@ -675,49 +675,37 @@ msgstr "Idiomas"
 #: field:wsfex.uom.codes,__last_update:0
 #: field:wsfex.voucher_type.codes,__last_update:0
 msgid "Last Modified on"
-msgstr "Last Modified on"
+msgstr "Última modificación en"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,write_uid:0
-#: field:wsfe.massive.sinchronize,write_uid:0
-#: field:wsfe.request,write_uid:0
-#: field:wsfe.request.detail,write_uid:0
-#: field:wsfe.sinchronize.voucher,write_uid:0
-#: field:wsfe.tax.codes,write_uid:0
-#: field:wsfe.voucher_type,write_uid:0
-#: field:wsfex.config,write_uid:0
+#: field:wsfe.config,write_uid:0 field:wsfe.massive.sinchronize,write_uid:0
+#: field:wsfe.request,write_uid:0 field:wsfe.request.detail,write_uid:0
+#: field:wsfe.sinchronize.voucher,write_uid:0 field:wsfe.tax.codes,write_uid:0
+#: field:wsfe.voucher_type,write_uid:0 field:wsfex.config,write_uid:0
 #: field:wsfex.currency.codes,write_uid:0
 #: field:wsfex.dst_country.codes,write_uid:0
 #: field:wsfex.dst_cuit.codes,write_uid:0
 #: field:wsfex.export_type.codes,write_uid:0
-#: field:wsfex.incoterms.codes,write_uid:0
-#: field:wsfex.lang.codes,write_uid:0
-#: field:wsfex.request.detail,write_uid:0
-#: field:wsfex.uom.codes,write_uid:0
+#: field:wsfex.incoterms.codes,write_uid:0 field:wsfex.lang.codes,write_uid:0
+#: field:wsfex.request.detail,write_uid:0 field:wsfex.uom.codes,write_uid:0
 #: field:wsfex.voucher_type.codes,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización por"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,write_date:0
-#: field:wsfe.massive.sinchronize,write_date:0
-#: field:wsfe.request,write_date:0
-#: field:wsfe.request.detail,write_date:0
+#: field:wsfe.config,write_date:0 field:wsfe.massive.sinchronize,write_date:0
+#: field:wsfe.request,write_date:0 field:wsfe.request.detail,write_date:0
 #: field:wsfe.sinchronize.voucher,write_date:0
-#: field:wsfe.tax.codes,write_date:0
-#: field:wsfe.voucher_type,write_date:0
-#: field:wsfex.config,write_date:0
-#: field:wsfex.currency.codes,write_date:0
+#: field:wsfe.tax.codes,write_date:0 field:wsfe.voucher_type,write_date:0
+#: field:wsfex.config,write_date:0 field:wsfex.currency.codes,write_date:0
 #: field:wsfex.dst_country.codes,write_date:0
 #: field:wsfex.dst_cuit.codes,write_date:0
 #: field:wsfex.export_type.codes,write_date:0
-#: field:wsfex.incoterms.codes,write_date:0
-#: field:wsfex.lang.codes,write_date:0
-#: field:wsfex.request.detail,write_date:0
-#: field:wsfex.uom.codes,write_date:0
+#: field:wsfex.incoterms.codes,write_date:0 field:wsfex.lang.codes,write_date:0
+#: field:wsfex.request.detail,write_date:0 field:wsfex.uom.codes,write_date:0
 #: field:wsfex.voucher_type.codes,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización el"
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.request:l10n_ar_wsfe.view_wsfe_request_form
@@ -730,8 +718,7 @@ msgid "Massive Sinchronize"
 msgstr "Sincronización Masiva"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,name:0
-#: field:wsfe.voucher_type,name:0
+#: field:wsfe.config,name:0 field:wsfe.voucher_type,name:0
 #: field:wsfex.config,name:0
 msgid "Name"
 msgstr "Nombre"
@@ -786,23 +773,23 @@ msgstr "Moneda"
 #. module: l10n_ar_wsfe
 #: field:wsfex.incoterms.codes,incoterms_id:0
 msgid "OpenERP Incoterm"
-msgstr "OpenERP Incoterm"
+msgstr "Incoterm Odoo"
 
 #. module: l10n_ar_wsfe
 #: field:wsfex.lang.codes,lang_id:0
 msgid "OpenERP Language"
-msgstr "OpenERP Language"
+msgstr "Idioma Odoo"
 
 #. module: l10n_ar_wsfe
 #: field:wsfex.uom.codes,uom_id:0
 msgid "OpenERP UoM"
-msgstr "OpenERP UoM"
+msgstr "UdM Odoo"
 
 #. module: l10n_ar_wsfe
 #: field:wsfex.request.detail,voucher_type_id:0
 #: field:wsfex.voucher_type.codes,voucher_type_id:0
 msgid "OpenERP Voucher Type"
-msgstr "OpenERP Voucher Type"
+msgstr "Tipo de Comprobante Odoo"
 
 #. module: l10n_ar_wsfe
 #: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
@@ -815,16 +802,21 @@ msgid "Other Information"
 msgstr "Otra Información"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.massive.sinchronize,pos_id:0
-#: field:wsfe.request,pos_ar:0
+#: field:wsfe.massive.sinchronize,pos_id:0 field:wsfe.request,pos_ar:0
 #: field:wsfe.sinchronize.voucher,pos_id:0
 msgid "POS"
-msgstr "POS"
+msgstr "PdV"
 
 #. module: l10n_ar_wsfe
 #: selection:wsfe.request,result:0
 msgid "Partial"
 msgstr "Parcial"
+
+#. module: l10n_ar_wsfe
+#: model:ir.model,name:l10n_ar_wsfe.model_res_partner
+#: field:wsfe.sinchronize.voucher,partner_id:0
+msgid "Partner"
+msgstr "Empresa"
 
 #. module: l10n_ar_wsfe
 #: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
@@ -837,10 +829,15 @@ msgid "Pedido de autorizacion a la AFIP"
 msgstr "Pedido de autorizacion a la AFIP"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:106
+#: model:ir.model,name:l10n_ar_wsfe.model_stock_picking
+msgid "Picking List"
+msgstr "Lista de Remitos"
+
+#. module: l10n_ar_wsfe
+#: code:addons/l10n_ar_wsfe/models/invoice.py:105
 #, python-format
 msgid "Point of sale has not the same denomination as the invoice."
-msgstr "El punto de venta no tiene la misma denominación que la factura."
+msgstr "Point of sale has not the same denomination as the invoice."
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.config:l10n_ar_wsfe.view_wsfe_config_form
@@ -849,8 +846,7 @@ msgid "Points Of Sale"
 msgstr "Puntos de Venta"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,point_of_sale_ids:0
-#: field:wsfex.config,point_of_sale_ids:0
+#: field:wsfe.config,point_of_sale_ids:0 field:wsfex.config,point_of_sale_ids:0
 msgid "Points of Sale"
 msgstr "Puntos de Venta"
 
@@ -867,7 +863,7 @@ msgstr "Productos y Servicios"
 #. module: l10n_ar_wsfe
 #: view:wsfe.sinchronize.voucher:l10n_ar_wsfe.view_wsfe_sinchronize_voucher
 msgid "Query Information"
-msgstr "Informacion"
+msgstr "Información"
 
 #. module: l10n_ar_wsfe
 #: selection:wsfe.voucher_type,voucher_model:0
@@ -875,8 +871,7 @@ msgid "Recibo"
 msgstr "Recibo"
 
 #. module: l10n_ar_wsfe
-#: selection:wsfe.request,result:0
-#: selection:wsfe.request.detail,result:0
+#: selection:wsfe.request,result:0 selection:wsfe.request.detail,result:0
 #: selection:wsfex.request.detail,result:0
 msgid "Rejected"
 msgstr "Rechazada"
@@ -887,8 +882,7 @@ msgid "Relate"
 msgstr "Relacionar"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.request,reprocess:0
-#: field:wsfex.request.detail,reprocess:0
+#: field:wsfe.request,reprocess:0 field:wsfex.request.detail,reprocess:0
 msgid "Reprocess"
 msgstr "Reprocesar"
 
@@ -898,8 +892,7 @@ msgid "Request"
 msgstr "Petición"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.request,date_request:0
-#: field:wsfex.request.detail,date:0
+#: field:wsfe.request,date_request:0 field:wsfex.request.detail,date:0
 msgid "Request Date"
 msgstr "Fecha Petición"
 
@@ -924,8 +917,7 @@ msgid "Residual Amount"
 msgstr "Importe residual"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.request,result:0
-#: field:wsfe.request.detail,result:0
+#: field:wsfe.request,result:0 field:wsfe.request.detail,result:0
 #: field:wsfex.request.detail,result:0
 msgid "Result"
 msgstr "Resultado"
@@ -934,16 +926,6 @@ msgstr "Resultado"
 #: selection:wsfe.request.detail,concept:0
 msgid "Services"
 msgstr "Servicios"
-
-#. module: l10n_ar_wsfe
-#: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
-msgid "Shipping Permission"
-msgstr "Permisos de Envío"
-
-#. module: l10n_ar_wsfe
-#: view:account.invoice:l10n_ar_wsfe.wsfe_account_invoice_form
-msgid "Shipping Permissions"
-msgstr "Permisos de Envío"
 
 #. module: l10n_ar_wsfe
 #: selection:wsfex.request.detail,reprocess:0
@@ -956,7 +938,7 @@ msgid "Sichronize"
 msgstr "Sincronizar"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wizard/wsfe_sinchronize_voucher.py:133
+#: code:addons/l10n_ar_wsfe/wizard/wsfe_sinchronize_voucher.py:249
 #, python-format
 msgid "Sinchronize process is not correct!"
 msgstr "El proceso de sincronizado no es correcto!"
@@ -972,8 +954,7 @@ msgid "Tax Codes"
 msgstr "Códigos de Impuesto"
 
 #. module: l10n_ar_wsfe
-#: help:wsfe.config,cuit:0
-#: help:wsfex.config,cuit:0
+#: help:wsfe.config,cuit:0 help:wsfex.config,cuit:0
 msgid "Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements."
 msgstr "Tax Identification Number. Check the box if this contact is subjected to taxes. Used by the some of the legal statements."
 
@@ -989,111 +970,107 @@ msgid "Taxes"
 msgstr "Impuestos"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:258
+#: code:addons/l10n_ar_wsfe/models/invoice.py:260
 #, python-format
 msgid "The Invoice Number should be filled"
-msgstr "Debe llenar el Número de Factura"
+msgstr "El número de la Factura debería estar lleno."
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:250
-#: code:addons/l10n_ar_wsfe/invoice.py:263
+#: code:addons/l10n_ar_wsfe/models/invoice.py:252
+#: code:addons/l10n_ar_wsfe/models/invoice.py:265
 #, python-format
 msgid "The Invoice Number should be the format XXXX-XXXXXXXX"
-msgstr "El formato del número de factura debería ser XXXX-XXXXXXXX"
+msgstr "El numero de factura debe ser de formato XXXX[X]-XXXXXXXX"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:199
+#: help:res.country,wsfex_country_code_ids:0
+msgid "The codes assgined by AFIP to this Country for export and import operations."
+msgstr "The codes assgined by AFIP to this Country for export and import operations."
+
+#. module: l10n_ar_wsfe
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:216
 #, python-format
-msgid "The documents was not approved. \n"
+msgid ""
+"The documents was not approved. \n"
 "%s"
-msgstr "El/los documento/s no fue/ron aprobado/s. \n"
+msgstr ""
+"Documento no aprobado. \n"
 "%s"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:111
-#: code:addons/l10n_ar_wsfe/invoice.py:121
+#: code:addons/l10n_ar_wsfe/models/invoice.py:110
+#: code:addons/l10n_ar_wsfe/models/invoice.py:120
 #, python-format
 msgid "The invoice denomination does not corresponds with this fiscal position."
-msgstr "La denominación de factura no corresponde con la posición fiscal."
+msgstr "La Denominación de la Factura no se corresponde con la de la Posición Fiscal."
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:126
+#: code:addons/l10n_ar_wsfe/models/invoice.py:125
 #, python-format
 msgid "The invoice fiscal position is not the same as the partner's fiscal position."
-msgstr "La posición fiscal no es la misma que la del Partner."
+msgstr "La Posición Fiscal de la Factura no es la misma que la del Contacto."
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:234
+#: code:addons/l10n_ar_wsfe/models/invoice.py:235
 #: code:addons/l10n_ar_wsfe/wizard/wsfe_massive_validation.py:94
 #, python-format
 msgid "The next number [%d] does not corresponds to that obtained from AFIP WSFE [%d]"
-msgstr "El próximo número [%d] no corresponde al que se obtuvo desde el Servicio Web de AFIP [%d]"
+msgstr "El siguiente número calculado [%d] es distinto al informado por AFIP: [%d]"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:611
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:628
 #, python-format
 msgid "The total amount of the invoice does not corresponds to the total calculated.Maybe there is an rounding error!. (Amount Calculated: %f)"
-msgstr "El monto total de la factura no corresponde al total calculardo. Quizás hay un error de redondeo!. (El monto calculado es: %f)"
+msgstr "The total amount of the invoice does not corresponds to the total calculated.Maybe there is an rounding error!. (Amount Calculated: %f)"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:224
-#: code:addons/l10n_ar_wsfe/invoice.py:336
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:131
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:198
 #, python-format
 msgid "There is more than one configuration with this POS %s"
-msgstr "There is more than one configuration with this POS %s"
+msgstr "Hay más de una configuración para este PdV: %s"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:680
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:697
 #, python-format
 msgid "There is more than one voucher type that corresponds to this object"
-msgstr "There is more than one voucher type that corresponds to this object"
+msgstr "Hasy más de un Tipo de Comprobante asignado a este objeto"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfex.py:617
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:627
 #, python-format
 msgid "There is no UoM Code defined for %s in line %s"
 msgstr "There is no UoM Code defined for %s in line %s"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:118
-#, python-format
-msgid "There is no WSFE configuration set to this company"
-msgstr "No hay una configuración para el Servicio Web WSFE para la compañía"
-
-#. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfex.py:196
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:135
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:202
 #, python-format
 msgid "There is no WSFEX configuration set to this company"
-msgstr "No hay una configuración para el Servicio Web WSFEX para la compañía"
+msgstr "Configuración de WSFEX"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:114
-#: code:addons/l10n_ar_wsfe/wsfex.py:192
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:120
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:187
 #, python-format
 msgid "There is no company being used by this user"
-msgstr "There is no company being used by this user"
+msgstr "¡No hay compañía por defecto para el usuario actual!"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:341
-#, python-format
-msgid "There is no configuration for this POS %s"
-msgstr "There is no configuration for this POS %s"
-
-#. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:517
-#: code:addons/l10n_ar_wsfe/wsfex.py:584
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:534
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:593
 #, python-format
 msgid "There is no first invoice number declared!"
-msgstr "There is no first invoice number declared!"
+msgstr "El número de la Factura debería estar lleno."
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:511
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:528
 #, python-format
 msgid "There is no fiscal position configured for the customer %s"
-msgstr "There is no fiscal position configured for the customer %s"
+msgstr "Falta la Pos. Fiscal para el Cliente:  %s"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:677
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:694
 #, python-format
 msgid "There is no voucher type that corresponds to this object"
 msgstr "There is no voucher type that corresponds to this object"
@@ -1105,8 +1082,7 @@ msgid "There is not values to send in details"
 msgstr "There is not values to send in details"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.config,wsaa_ticket_id:0
-#: field:wsfex.config,wsaa_ticket_id:0
+#: field:wsfe.config,wsaa_ticket_id:0 field:wsfex.config,wsaa_ticket_id:0
 msgid "Ticket Access"
 msgstr "Ticket Acceso"
 
@@ -1152,11 +1128,11 @@ msgid "VAT Taxes"
 msgstr "Impuestos IVA"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:426
-#: code:addons/l10n_ar_wsfe/wsfe.py:292
+#: code:addons/l10n_ar_wsfe/models/invoice.py:410
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:309
 #, python-format
 msgid "Validated invoice that not corresponds!"
-msgstr "La factura validada no coincide!"
+msgstr "Validated invoice that not corresponds!"
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.config:l10n_ar_wsfe.view_wsfe_config_form
@@ -1164,8 +1140,7 @@ msgid "Vat Taxes Mapping"
 msgstr "Mapeo de IVA"
 
 #. module: l10n_ar_wsfe
-#: field:wsfe.request.detail,name:0
-#: field:wsfex.request.detail,invoice_id:0
+#: field:wsfe.request.detail,name:0 field:wsfex.request.detail,invoice_id:0
 msgid "Voucher"
 msgstr "Comprobante"
 
@@ -1202,6 +1177,11 @@ msgid "Voucher Number"
 msgstr "Número de Comprobante"
 
 #. module: l10n_ar_wsfe
+#: field:wsfe.request.detail,voucher_number_from:0
+msgid "Voucher Number From"
+msgstr "Voucher Number From"
+
+#. module: l10n_ar_wsfe
 #: field:wsfe.massive.sinchronize,voucher_type:0
 #: field:wsfe.request,voucher_type:0
 #: field:wsfe.sinchronize.voucher,voucher_type:0
@@ -1229,22 +1209,21 @@ msgid "Voucher Types"
 msgstr "Tipo de Comprobante"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:677
-#: code:addons/l10n_ar_wsfe/wsfe.py:680
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:694
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:697
 #, python-format
 msgid "Voucher type error!"
-msgstr "Error en Tipo de Comprobante!"
+msgstr "Voucher type error!"
+
+#. module: l10n_ar_wsfe
+#: selection:wsfe.sinchronize.voucher,config_id:0
+msgid "WSFE"
+msgstr "WSFE"
 
 #. module: l10n_ar_wsfe
 #: model:ir.actions.act_window,name:l10n_ar_wsfe.action_wsfe_config
 msgid "WSFE Config"
 msgstr "Configuración WSFE"
-
-#. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:118
-#, python-format
-msgid "WSFE Config Error!"
-msgstr "Error de Configuración de WSFE!"
 
 #. module: l10n_ar_wsfe
 #: model:ir.ui.menu,name:l10n_ar_wsfe.wsfe_config_menu
@@ -1253,31 +1232,42 @@ msgid "WSFE Configuration"
 msgstr "Configuración WSFE"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:224
-#: code:addons/l10n_ar_wsfe/invoice.py:336
-#: code:addons/l10n_ar_wsfe/invoice.py:341
-#: code:addons/l10n_ar_wsfe/wizard/wsfe_sinchronize_voucher.py:132
+#: code:addons/l10n_ar_wsfe/wizard/wsfe_sinchronize_voucher.py:248
 #, python-format
 msgid "WSFE Error"
-msgstr "Error WSFE"
+msgstr "WSFE Error"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:234
-#: code:addons/l10n_ar_wsfe/invoice.py:426
+#: code:addons/l10n_ar_wsfe/models/invoice.py:410
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:149
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:309
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:534
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:573
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:592
 #: code:addons/l10n_ar_wsfe/wizard/wsfe_massive_validation.py:59
 #: code:addons/l10n_ar_wsfe/wizard/wsfe_massive_validation.py:69
 #: code:addons/l10n_ar_wsfe/wizard/wsfe_massive_validation.py:75
 #: code:addons/l10n_ar_wsfe/wizard/wsfe_massive_validation.py:86
 #: code:addons/l10n_ar_wsfe/wizard/wsfe_massive_validation.py:94
-#: code:addons/l10n_ar_wsfe/wsfe.py:132
-#: code:addons/l10n_ar_wsfe/wsfe.py:292
-#: code:addons/l10n_ar_wsfe/wsfe.py:517
-#: code:addons/l10n_ar_wsfe/wsfe.py:556
-#: code:addons/l10n_ar_wsfe/wsfex.py:437
-#: code:addons/l10n_ar_wsfe/wsfex.py:584
 #, python-format
 msgid "WSFE Error!"
-msgstr "Error WSFE!"
+msgstr "WSFE Error!"
+
+#. module: l10n_ar_wsfe
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:211
+#, python-format
+msgid ""
+"WSFE Error!\n"
+"\n"
+"Code: %s\n"
+"\n"
+"Error: %s"
+msgstr ""
+"WSFE Error!\n"
+"\n"
+"Code: %s\n"
+"\n"
+"Error: %s"
 
 #. module: l10n_ar_wsfe
 #: model:ir.actions.act_window,name:l10n_ar_wsfe.action_wsfe_massive_sinchronize
@@ -1323,21 +1313,20 @@ msgid "WSFE Sinchronize Voucher"
 msgstr "Sincronizar Comprobante WSFE"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfe.py:228
+#: code:addons/l10n_ar_wsfe/models/wsfe.py:245
 #, python-format
 msgid "WSFE Validation Error"
-msgstr "Error de Validación WSFE"
+msgstr "WSFE Validation Error"
+
+#. module: l10n_ar_wsfe
+#: selection:wsfe.sinchronize.voucher,config_id:0
+msgid "WSFEX"
+msgstr "WSFEX"
 
 #. module: l10n_ar_wsfe
 #: model:ir.actions.act_window,name:l10n_ar_wsfe.action_wsfex_config
 msgid "WSFEX Config"
 msgstr "Configuración WSFEX"
-
-#. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfex.py:196
-#, python-format
-msgid "WSFEX Config Error!"
-msgstr "Error de Configuración WSFEX!"
 
 #. module: l10n_ar_wsfe
 #: model:ir.ui.menu,name:l10n_ar_wsfe.wsfex_config_menu
@@ -1348,6 +1337,11 @@ msgstr "Configuración WSFEX"
 #: view:wsfex.config:l10n_ar_wsfe.view_wsfex_config_form
 msgid "WSFEX Countries"
 msgstr "Países WSFEX"
+
+#. module: l10n_ar_wsfe
+#: field:res.country,wsfex_country_code_ids:0
+msgid "WSFEX Country Codes"
+msgstr "WSFEX Country Codes"
 
 #. module: l10n_ar_wsfe
 #: view:wsfex.config:l10n_ar_wsfe.view_wsfex_config_form
@@ -1375,12 +1369,10 @@ msgid "WSFEX Dest Country Codes"
 msgstr "Códigos de país destino WSFEX"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfex.py:572
-#: code:addons/l10n_ar_wsfe/wsfex.py:607
-#: code:addons/l10n_ar_wsfe/wsfex.py:617
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:627
 #, python-format
 msgid "WSFEX Error!"
-msgstr "Error WSFEX!"
+msgstr "WSFEX Error!"
 
 #. module: l10n_ar_wsfe
 #: model:ir.model,name:l10n_ar_wsfe.model_wsfex_export_type_codes
@@ -1416,6 +1408,11 @@ msgstr "Códigos de Idioma WSFEX"
 #: model:ir.model,name:l10n_ar_wsfe.model_wsfex_request_detail
 msgid "WSFEX Request Detail"
 msgstr "Detalle de Peticiones WSFEX"
+
+#. module: l10n_ar_wsfe
+#: model:ir.model,name:l10n_ar_wsfe.model_wsfex_shipping_permission
+msgid "WSFEX Shipping Permission"
+msgstr "WSFEX Shipping Permission"
 
 #. module: l10n_ar_wsfe
 #: model:ir.model,name:l10n_ar_wsfe.model_wsfex_uom_codes
@@ -1484,16 +1481,16 @@ msgid "You are trying to validate several invoices but not all of them belongs t
 msgstr "You are trying to validate several invoices but not all of them belongs to the same point of sale"
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/invoice.py:171
+#: code:addons/l10n_ar_wsfe/models/invoice.py:170
 #, python-format
 msgid "You cannot cancel an Electronic Invoice because it has been informed to AFIP."
-msgstr "No puede cancelar una Factura Electrónica porque ya fue informada a AFIP."
+msgstr "You cannot cancel an Electronic Invoice because it has been informed to AFIP."
 
 #. module: l10n_ar_wsfe
-#: code:addons/l10n_ar_wsfe/wsfex.py:572
+#: code:addons/l10n_ar_wsfe/models/wsfex.py:579
 #, python-format
 msgid "You cannot inform more than one invoice to AFIP WSFEX"
-msgstr "No puede informar más de una factura de exportación a AFIP"
+msgstr "You cannot inform more than one invoice to AFIP WSFEX"
 
 #. module: l10n_ar_wsfe
 #: view:wsfe.massive.sinchronize:l10n_ar_wsfe.view_wsfe_massive_sinchronize
