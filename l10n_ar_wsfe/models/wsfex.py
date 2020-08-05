@@ -603,7 +603,6 @@ class WsfexConfig(models.Model):
 
             date_invoice = datetime.strptime(inv.date_invoice, '%Y-%m-%d')
             formatted_date_invoice = date_invoice.strftime('%Y%m%d')
-            #date_due = inv.date_due and datetime.strptime(inv.date_due, '%Y-%m-%d').strftime('%Y%m%d') or formatted_date_invoice
 
             cuit_pais = inv.dst_cuit_id and int(inv.dst_cuit_id.code) or 0
             inv_currency_id = inv.currency_id.id
@@ -619,8 +618,6 @@ class WsfexConfig(models.Model):
             # Items
             items = []
             for i, line in enumerate(inv.invoice_line):
-                #product_id = line.product_id
-                #product_code = product_id and product_id.default_code or i
                 uom_id = line.uos_id.id
                 uom_codes = uom_code_obj.search([('uom_id','=',uom_id)])
                 if not uom_codes:
@@ -642,15 +639,18 @@ class WsfexConfig(models.Model):
             for associated_inv in inv.associated_inv_ids:
                 tipo_cbte = voucher_type_obj.get_voucher_type(associated_inv)
                 pos, number = associated_inv.internal_number.split('-')
-                Cmp_asoc = {
+                Cmp_asoc = {'Cmp_asoc': {
                     'Cbte_tipo': tipo_cbte,
                     'Cbte_punto_vta': int(pos),
                     'Cbte_nro': int(number),
-                }
+                }}
 
                 Cmps_asoc.append(Cmp_asoc)
 
             cbte_tipo = voucher_type_obj.get_voucher_type(inv)
+            if cbte_tipo in ('20', '21'):
+                formatted_date_invoice = ''
+
             Cmp = {
                 'invoice_id': inv.id,
                 'Id': Id,
@@ -678,6 +678,6 @@ class WsfexConfig(models.Model):
                 Cmp['Incoterms_Ds'] = inv.incoterm_id.name
 
             if Cmps_asoc:
-                Cmp['Cmps_Asoc'] = Cmps_asoc
+                Cmp['Cmps_asoc'] = Cmps_asoc
 
         return Cmp
