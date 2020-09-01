@@ -214,7 +214,8 @@ class wsfe_sinchronize_voucher(models.TransientModel):
                 self.dst_cuit_id = False
 
             # Fetch Boarding Permission data
-            if res.get("Permiso_existente", "").upper() == "S":
+            PermisoExistente = res.get("Permiso_existente", "") or ""
+            if PermisoExistente.upper() == "S":
                 perms = res.get("Permisos")
                 if perms:
                     self.board_perm_info = ", ".join(map(str, perms))
