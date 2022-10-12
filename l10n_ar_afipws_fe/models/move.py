@@ -630,7 +630,7 @@ class AccountMove(models.Model):
             moneda_id = inv.currency_id.l10n_ar_afip_code
             moneda_ctz = round(1 / inv.currency_id.rate, 2)
             if not moneda_id:
-                raise ValidationError("No esta definido el codigo AFIP en la moneda")
+                raise ValidationError(_("No esta definido el codigo AFIP en la moneda"))
 
             CbteAsoc = inv.get_related_invoices_data()
 
