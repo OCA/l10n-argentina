@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from odoo import _, fields, models
 from odoo.exempt import ValidationError
 
 
@@ -28,9 +28,9 @@ class AccountMoveReversal(models.TransientModel):
                     limit=1,
                 )
                 if not doc_type:
-                    raise ValidationError(_(
-                        "No se puede determinar el tipo de documento nota de credito"
-                    ))
+                    raise ValidationError(
+                        _("No se puede determinar el tipo de documento nota de credito")
+                    )
                 doc_type = doc_type.id
             else:
                 doc_type = move.l10n_latam_document_type_id.id
