@@ -6,6 +6,7 @@
     "author": "ADHOC SA, Moldeo Interactive, Exemax, Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "summary": "",
+    "website": "https://github.com/OCA/l10n-argentina",
     "depends": [
         "l10n_ar_afipws",
         "base",

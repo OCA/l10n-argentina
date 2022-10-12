@@ -8,6 +8,7 @@
     "summary": "",
     "depends": [],
     "external_dependencies": {"python": ["pyafipws", "OpenSSL", "pysimplesoap"]},
+    "website": "https://github.com/OCA/l10n-argentina",
     "data": [
         "wizard/upload_certificate_view.xml",
         "views/afipws_menuitem.xml",
