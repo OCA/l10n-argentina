@@ -170,7 +170,7 @@ class L10nLatamDocumentType(models.Model):
         else:
             sequence = sequence
         if not sequence or len(sequence) > 1:
-            raise UserError("Problema de configuracion de secuencias")
+            raise UserError(_("Problema de configuracion de secuencias"))
         next_local = sequence.number_next_actual
         if next_ws != next_local:
             msg = (
