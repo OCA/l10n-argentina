@@ -19,6 +19,7 @@
         "views/move_view.xml",
         "security/ir.model.access.csv",
     ],
+    "maintainers": ["nimarosa", "ibuioli"],
     "demo": [],
     "images": [],
     "installable": True,

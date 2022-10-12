@@ -22,6 +22,7 @@
         "demo/certificate_demo.xml",
         "demo/parameter_demo.xml",
     ],
+    "maintainers": ["nimarosa", "ibuioli"],
     "images": [],
     "installable": True,
     "auto_install": False,
