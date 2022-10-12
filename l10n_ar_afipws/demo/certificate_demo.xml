@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="main_company_certificate_alias" model="afipws.certificate_alias">
         <field name="common_name">AFIPWShomologationYourCompany14092018</field>
@@ -30,8 +30,8 @@ UP5X/eu06EMYVLamZit64kJMdumKcJuVDo4jyz+DYhz6T3bMPbAzRBqsZA4M8l73
 XWp9z1bKS/AHsZSXLLRKk1C/OR7z5zLz/j8BgbqKpjNtRCp1DFu1IgPC2+3rVr89
 mQa1nuu+xYOkgxcs7F5qM7g=
 -----END PRIVATE KEY-----</field>
-        <field name="company_id" ref="base.main_company"/>
-        <field name="country_id" ref="base.ar"/>
+        <field name="company_id" ref="base.main_company" />
+        <field name="country_id" ref="base.ar" />
         <!-- <field name="state_id" ref="l10n_ar_account.demo_S"/> -->
         <field name="city">Rosario</field>
         <field name="service_provider_cuit">20313932975</field>
@@ -43,7 +43,7 @@ mQa1nuu+xYOkgxcs7F5qM7g=
     </record>
 
     <record id="main_company_certificate" model="afipws.certificate">
-        <field name="alias_id" ref="main_company_certificate_alias"/>
+        <field name="alias_id" ref="main_company_certificate_alias" />
         <field name="state">confirmed</field>
         <field name="csr">-----BEGIN CERTIFICATE REQUEST-----
 MIICzjCCAbYCAQAwgYgxCzAJBgNVBAYTAkFSMRAwDgYDVQQHDAdSb3NhcmlvMRQw

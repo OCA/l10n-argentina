@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_afipws_auth_form" model="ir.ui.view">
         <field name="name">afipws.auth.form</field>
@@ -7,16 +7,16 @@
             <form string="AFIP Connector">
                 <sheet string="AFIP Servers">
                     <group>
-                        <field name="afip_ws" string="AFIP WS"/>
-                        <field name="type" string="Tipo"/>
-                        <field name="uniqueid" string="Unique ID"/>
-                        <field name="generationtime" string="Fecha de Generación"/>
-                        <field name="expirationtime" string="Fecha de Expiración"/>
-                        <field name="sign" string="Firma"/>
-                        <field name="token" string="Token"/>
-                        <field name="afip_login_url" string="AFIP Login URL"/>
-                        <field name="afip_ws_url" string="AFIP WS URL"/>
-                        <field name="company_id" string="Compañía"/>
+                        <field name="afip_ws" string="AFIP WS" />
+                        <field name="type" string="Tipo" />
+                        <field name="uniqueid" string="Unique ID" />
+                        <field name="generationtime" string="Fecha de Generación" />
+                        <field name="expirationtime" string="Fecha de Expiración" />
+                        <field name="sign" string="Firma" />
+                        <field name="token" string="Token" />
+                        <field name="afip_login_url" string="AFIP Login URL" />
+                        <field name="afip_ws_url" string="AFIP WS URL" />
+                        <field name="company_id" string="Compañía" />
                     </group>
                 </sheet>
             </form>
@@ -28,12 +28,12 @@
         <field name="model">afipws.connection</field>
         <field name="arch" type="xml">
             <tree string="AFIP Conector" create="false" edit="false">
-                <field name="afip_ws" string="AFIP WS"/>
-                <field name="type" string="Tipo"/>
-                <field name="uniqueid" string="Unique ID"/>
-                <field name="generationtime" string="Fecha de Generación"/>
-                <field name="expirationtime" string="Fecha de Expiración"/>
-                <field name="company_id" string="Compañía"/>
+                <field name="afip_ws" string="AFIP WS" />
+                <field name="type" string="Tipo" />
+                <field name="uniqueid" string="Unique ID" />
+                <field name="generationtime" string="Fecha de Generación" />
+                <field name="expirationtime" string="Fecha de Expiración" />
+                <field name="company_id" string="Compañía" />
             </tree>
         </field>
     </record>
@@ -45,6 +45,11 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem name="Conexiones" action="act_afipws_auth" id="menu_action_afipws_auth" parent="menu_afipws"/>
+    <menuitem
+        name="Conexiones"
+        action="act_afipws_auth"
+        id="menu_action_afipws_auth"
+        parent="menu_afipws"
+    />
 
 </odoo>
