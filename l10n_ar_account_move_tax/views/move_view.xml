@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="name">account.move.afip.form</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+	<field name="arch" type="xml">
+		<field name="state" position="before">
+			<button name="compute_taxes" type="object" string="Computar Impuestos" states="draft" />
+		</field>
+		<field name="line_ids" position="after">
+			<field name="move_tax_ids" readonly="1" attrs="{'invisible': [('move_type','=','entry')]}">
+				<tree>
+					<field name="move_id" />
+					<field name="tax_id" />
+					<field name="base_amount" />
+					<field name="tax_amount" />
+				</tree>
+			</field>
+			<group string="Montos agrupados de impuestos">
+				<field name="vat_taxable_amount" />
+				<field name="vat_amount" />
+				<field name="other_taxes_amount" />
+				<field name="vat_untaxed_base_amount" />
+			</group>
+		</field>
+	</field>
+    </record>
+
+</odoo>

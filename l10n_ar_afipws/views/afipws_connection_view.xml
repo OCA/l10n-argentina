@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_afipws_auth_form" model="ir.ui.view">
+        <field name="name">afipws.auth.form</field>
+        <field name="model">afipws.connection</field>
+        <field name="arch" type="xml">
+            <form string="AFIP Connector">
+                <sheet string="AFIP Servers">
+                    <group>
+                        <field name="afip_ws" string="AFIP WS"/>
+                        <field name="type" string="Tipo"/>
+                        <field name="uniqueid" string="Unique ID"/>
+                        <field name="generationtime" string="Fecha de Generación"/>
+                        <field name="expirationtime" string="Fecha de Expiración"/>
+                        <field name="sign" string="Firma"/>
+                        <field name="token" string="Token"/>
+                        <field name="afip_login_url" string="AFIP Login URL"/>
+                        <field name="afip_ws_url" string="AFIP WS URL"/>
+                        <field name="company_id" string="Compañía"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_afipws_auth_tree" model="ir.ui.view">
+        <field name="name">afipws.auth.tree</field>
+        <field name="model">afipws.connection</field>
+        <field name="arch" type="xml">
+            <tree string="AFIP Conector" create="false" edit="false">
+                <field name="afip_ws" string="AFIP WS"/>
+                <field name="type" string="Tipo"/>
+                <field name="uniqueid" string="Unique ID"/>
+                <field name="generationtime" string="Fecha de Generación"/>
+                <field name="expirationtime" string="Fecha de Expiración"/>
+                <field name="company_id" string="Compañía"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="act_afipws_auth">
+        <field name="name">AFIP Connections</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afipws.connection</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Conexiones" action="act_afipws_auth" id="menu_action_afipws_auth" parent="menu_afipws"/>
+
+</odoo>

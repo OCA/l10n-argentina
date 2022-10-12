@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+        <record id="comp_consultar_wizard_view" model="ir.ui.view">
+            <field name="name">Wizard Consultar Comprobante</field>
+            <field name="model">wizard.comp.consultar</field>
+            <field name="arch" type="xml">
+                <form string="Crear Ruta Entrega">
+                        <sheet>
+                                <group>
+                                        <field name="journal_id" readonly="1" />
+                                        <field name="doc_type" readonly="1" />
+                                        <field name="doc_nro" />
+                                </group>
+                    </sheet>
+                    <footer>
+                        <button string="Confirmar" name="btn_confirm" type="object" default_focus="1" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
+    <!-- record id="afip_ws_consult_wizard_form" model="ir.ui.view">
+        <field name="name">AFIP WS Consult Wizard form</field>
+        <field name="model">afip.ws.consult.wizard</field>
+        <field name="arch" type="xml">
+            <form string="AFIP WS Consult Wizard">
+                <group>
+                    <field name="number"/>
+                </group>
+                <footer>
+                    <button string="Confirm" name="confirm" type="object" class="oe_highlight" />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_afip_ws_consult_wizard" model="ir.actions.act_window">
+        <field name="name">AFIP WS Consult Wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afip.ws.consult.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record -->
+</odoo>

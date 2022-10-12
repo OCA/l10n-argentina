@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_afipws_certificate_alias_form" model="ir.ui.view">
+        <field name="name">afipws.certificate_alias.form</field>
+        <field name="model">afipws.certificate_alias</field>
+        <field name="arch" type="xml">
+            <form string="AFIP Certificados">
+                <header>
+                    <button name="action_confirm"
+                        type="object"
+                        states="draft"
+                        string="Confirmar"
+                        class="oe_highlight"
+                        help="Confirm and generate Key"
+                        />
+                    <button name="action_create_certificate_request"
+                        type="object"
+                        states="confirmed"
+                        class="oe_highlight"
+                        string="Crear Solicitud de Certificado"
+                        />
+                    <button name="action_cancel"
+                        type="object"
+                        states="draft,confirmed"
+                        string="Cancelar"
+                        />
+                    <button name="action_to_draft"
+                        type="object"
+                        states="cancel"
+                        string="Volver a Borrador"
+                        />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="AFIP Certificados">
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" string="Compañía" />
+                            <field name="type" string="Tipo" />
+                            <field name="service_type" groups="base.group_no_one" string="Tipo de Servicio" />
+                            <field name="service_provider_cuit" attrs="{'invisible':[('service_type','!=','outsourced')],'required':[('service_type','=','outsourced')]}" />
+                            <field name="company_cuit" attrs="{'invisible':[('service_type','!=','in_house')],'required':[('service_type','=','in_house')]}" string="CUIT de la Compañía" />
+                        </group>
+                        <group>
+                            <field name="common_name" string="Nombre Común"/>
+                            <field name="country_id" string="País" />
+                            <field name="state_id" string="Provincia" />
+                            <field name="city" string="Ciudad" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ceritificados">
+                            <field name="certificate_ids"/>
+                        </page>
+                        <page string="Key" groups="base.group_no_one">
+                            <field name="key"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_afipws_certificate_alias_filter" model="ir.ui.view">
+        <field name="name">afipws.certificate_alias.filter</field>
+        <field name="model">afipws.certificate_alias</field>
+        <field name="arch" type="xml">
+            <search string="AFIP Certificados">
+                <field name="type" string="Tipo" />
+                <field name="common_name" string="Nombre Común" />
+                <field name="company_id" string="Compañía" />
+                <field name="state" string="Estado" />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_afipws_certificate_alias_tree" model="ir.ui.view">
+        <field name="name">afipws.certificate_alias.tree</field>
+        <field name="model">afipws.certificate_alias</field>
+        <field name="arch" type="xml">
+            <tree string="AFIP Certificados">
+                <field name="type" string="Tipo" />
+                <field name="common_name" string="Nombre Común" />
+                <field name="company_id" string="Compañía" />
+                <field name="state" string="Estado" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="act_afipws_certificate_alias">
+        <field name="name">AFIP Certificado</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">afipws.certificate_alias</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Certificados" action="act_afipws_certificate_alias" id="menu_action_afipws_certificate_alias" parent="menu_afipws"/>
+
+</odoo>
