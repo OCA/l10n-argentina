@@ -8,7 +8,7 @@ class IrSequence(models.Model):
     def comp_consultar(self):
         self.ensure_one()
         if not self.journal_id or not self.l10n_latam_document_type_id:
-            raise ValidationError("Faltan datos para consultar AFIP")
+            raise ValidationError(_("Faltan datos para consultar AFIP"))
         vals = {
             "journal_id": self.journal_id.id,
             "doc_type": self.l10n_latam_document_type_id.id,
