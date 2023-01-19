@@ -8,6 +8,11 @@
     "summary": "",
     "depends": [],
     "external_dependencies": {"python": ["pyafipws", "OpenSSL", "pysimplesoap"]},
+    "external_dependencies_override": {
+        "python": {
+            "pyafipws": "pyafipws@https://github.com/reingart/pyafipws/archive/py3k.zip"
+        }
+    },
     "website": "https://github.com/OCA/l10n-argentina",
     "data": [
         "wizard/upload_certificate_view.xml",
