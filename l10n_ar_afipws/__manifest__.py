@@ -7,7 +7,7 @@
     "license": "AGPL-3",
     "summary": "",
     "depends": [],
-    "external_dependencies": {"python": ["pyafipws", "OpenSSL", "pysimplesoap"]},
+    "external_dependencies": {"python": ["OpenSSL", "pysimplesoap"]},
     "external_dependencies_override": {
         "python": {
             "pyafipws": "pyafipws@https://github.com/reingart/pyafipws/archive/py3k.zip"
