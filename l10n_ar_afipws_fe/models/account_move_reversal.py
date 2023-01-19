@@ -1,5 +1,5 @@
 from odoo import _, fields, models
-from odoo.exempt import ValidationError
+from odoo.exceptions import ValidationError
 
 
 class AccountMoveReversal(models.TransientModel):
@@ -112,5 +112,8 @@ class AccountMoveReversal(models.TransientModel):
         string="Credit Method",
         required=True,
         default="refund",
-        help='Choose how you want to credit this invoice. You cannot "modify" nor "cancel" if the invoice is already reconciled.',
+        help="""
+        Choose how you want to credit this invoice.
+        You cannot "modify" nor "cancel" if the invoice is already reconciled.
+        """,
     )
