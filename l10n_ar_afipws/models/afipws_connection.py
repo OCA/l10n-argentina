@@ -155,7 +155,7 @@ class AfipwsConnection(models.Model):
         wsdl = self.afip_ws_url
 
         # connect to the webservice and call to the test method
-        ws.Conectar("", wsdl or "", "")
+        ws.Conectar("", wsdl or "", "", cacert=True)
         cuit = self.company_id.vat
         ws.Cuit = cuit
         ws.Token = self.token

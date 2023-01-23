@@ -111,11 +111,11 @@ class AccountJournalDocumentType(models.Model):
         company = self.journal_id.company_id
         afip_ws = self.journal_id.afip_ws
 
+        # check webservic available
         if not afip_ws:
             return _("No AFIP WS selected on point of sale %s") % (self.journal_id.name)
-        ws = company.get_connection(afip_ws).connect()
-        # call the webservice method to get the last invoice at AFIP:
 
+        ws = company.get_connection(afip_ws).connect()
         try:
             if afip_ws in ("wsfe", "wsmtxca"):
                 last = ws.CompUltimoAutorizado(
@@ -138,9 +138,7 @@ class AccountJournalDocumentType(models.Model):
                         " proveedor de Odoo para mas información"
                     )
                 )
-
         msg = " - ".join([ws.Excepcion, ws.ErrMsg, ws.Obs])
-
         next_ws = int(last or 0) + 1
         next_local = self.sequence_id.number_next_actual
         if next_ws != next_local:

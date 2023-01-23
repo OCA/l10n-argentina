@@ -2,7 +2,7 @@
 # For copyright and license notices, see __manifest__.py file in module root
 # directory
 ##############################################################################
-from . import move
+from . import account_move
 from . import l10n_latam_document_type
 from . import afipws_connection
 from . import journal
