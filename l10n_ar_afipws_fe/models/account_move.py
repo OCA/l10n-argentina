@@ -437,15 +437,15 @@ class AccountMove(models.Model):
                 )
 
             # -- AFIP Authorization: initialize -- #
-            ws = invoice.company_id.get_connection(afip_ws).connect()
+            ws = self.company_id.get_connection(afip_ws).connect()
             if afip_ws == "wsfe":
                 # Create objects invoice objects in ws
                 header = invoice._build_afip_wsfe_header(afip_ws)
                 vat_taxes = invoice._build_afip_wsfe_vat_taxes(afip_ws)
                 other_taxes = invoice._build_afip_wsfe_other_taxes(afip_ws)
                 cbte_asoc = invoice._build_afip_wsfe_cbte_asoc(afip_ws)
+                opcionales = invoice._build_afip_wsfe_opcionals(afip_ws)
                 # Assign next invoice number
-                pos_number = self.journal_id.l10n_ar_afip_pos_number
                 cbte_nro = invoice._get_afip_next_invoice_number()
                 header["cbt_desde"] = header["cbt_hasta"] = header[
                     "cbte_nro"
@@ -457,69 +457,75 @@ class AccountMove(models.Model):
                 for other_tax in other_taxes:
                     ws.AgregarTributo(**other_tax)
                 for cbte in cbte_asoc:
-                    _logger.info(
-                        "AFIP Authorization: Adding asociated document - %s" % str(cbte)
-                    )
                     ws.AgregarCmpAsoc(**cbte)
+                for opt in opcionales:
+                    ws.AgregarOpcional(**opt)
 
-            # -- AFIP Authorization: Authorize -- #
-            error_msg = False
-            try:
-                if afip_ws == "wsfe":
-                    ws.CAESolicitar()
-            except SoapFault as soap_fault:
-                error_msg = "Falla SOAP %s: %s" % (
-                    soap_fault.faultcode,
-                    soap_fault.faultstring,
-                )
-            except Exception as ex:
-                error_msg = ex
-            except Exception:
-                if ws.Excepcion:
-                    error_msg = ws.Excepcion
-                else:
-                    error_msg = traceback.format_exception_only(
-                        sys.exc_type, sys.exc_value
-                    )[0]
-            if error_msg:
-                _logger.warning(
-                    _("AFIP Validation Error. %s" % error_msg)
-                    + " XML Request: %s XML Response: %s"
-                    % (ws.XmlRequest, ws.XmlResponse)
-                )
-                raise UserError(_("AFIP Validation Error. %s" % error_msg))
-            msg = "\n".join([ws.Obs or "", ws.ErrMsg or ""])
-            if not ws.CAE or ws.Resultado != "A":
-                _logger.warning("AFIP Validation Error. Error en la obtencion del CAE.")
-                raise UserError(_("AFIP Validation Error. %s" % msg))
-            _logger.info(
-                "CAE solicitado con exito. CAE: %s. Resultado %s"
-                % (ws.CAE, ws.Resultado)
-            )
+            # -- AFIP Authorization: AFIP authorize -- #
+            ws = invoice._get_ws_authorization(ws, afip_ws)
 
             # -- AFIP Authorization: AFIP Result -- #
-            cae_vto = afip_ws == "wsfex" and ws.FchVencCAE or ws.Vencimiento
-            cae_vto = cae_vto[:4] + "-" + cae_vto[4:6] + "-" + cae_vto[6:8]
-            invoice.write(
-                {
-                    "afip_auth_mode": "CAE",
-                    "afip_auth_code": ws.CAE,
-                    "afip_auth_code_due": cae_vto,
-                    "afip_result": ws.Resultado,
-                    "afip_message": "\n".join([ws.Obs or "", ws.ErrMsg or ""]),
-                    "afip_xml_request": ws.XmlRequest,
-                    "afip_xml_response": ws.XmlResponse,
-                    "document_number": str(pos_number).zfill(5)
-                    + "-"
-                    + str(cbte_nro).zfill(8),
-                    "name": self.l10n_latam_document_type_id.doc_code_prefix
-                    + " "
-                    + str(pos_number).zfill(5)
-                    + "-"
-                    + str(cbte_nro).zfill(8),
-                }
+            ws = invoice._parse_afip_response(ws, afip_ws)
+
+    def _get_ws_authorization(self, ws, afip_ws):
+        error_msg = False
+        try:
+            if afip_ws == "wsfe":
+                ws.CAESolicitar()
+        except SoapFault as soap_fault:
+            error_msg = "Falla SOAP %s: %s" % (
+                soap_fault.faultcode,
+                soap_fault.faultstring,
             )
-            invoice._cr.commit()
+        except Exception as ex:
+            error_msg = ex
+        except Exception:
+            if ws.Excepcion:
+                error_msg = ws.Excepcion
+            else:
+                error_msg = traceback.format_exception_only(
+                    sys.exc_type, sys.exc_value
+                )[0]
+        if error_msg:
+            _logger.warning(
+                _("AFIP Validation Error. %s" % error_msg)
+                + " XML Request: %s XML Response: %s" % (ws.XmlRequest, ws.XmlResponse)
+            )
+            raise UserError(_("AFIP Validation Error. %s" % error_msg))
+        msg = "\n".join([ws.Obs or "", ws.ErrMsg or ""])
+        if not ws.CAE or ws.Resultado != "A":
+            _logger.warning("AFIP Validation Error. Error en la obtencion del CAE.")
+            raise UserError(_("AFIP Validation Error. %s" % msg))
+        _logger.info(
+            "CAE solicitado con exito. CAE: %s. Resultado %s" % (ws.CAE, ws.Resultado)
+        )
+        return ws
+
+    def _parse_afip_response(self, ws, afip_ws):
+        result_cbte_nro = ws.CbteNro
+        result_pos_number = ws.PuntoVenta
+        cae_vto = afip_ws == "wsfex" and ws.FchVencCAE or ws.Vencimiento
+        cae_vto = cae_vto[:4] + "-" + cae_vto[4:6] + "-" + cae_vto[6:8]
+        self.write(
+            {
+                "afip_auth_mode": "CAE",
+                "afip_auth_code": ws.CAE,
+                "afip_auth_code_due": cae_vto,
+                "afip_result": ws.Resultado,
+                "afip_message": "\n".join([ws.Obs or "", ws.ErrMsg or ""]),
+                "afip_xml_request": ws.XmlRequest,
+                "afip_xml_response": ws.XmlResponse,
+                "document_number": str(result_pos_number).zfill(5)
+                + "-"
+                + str(result_cbte_nro).zfill(8),
+                "name": self.l10n_latam_document_type_id.doc_code_prefix
+                + " "
+                + str(result_pos_number).zfill(5)
+                + "-"
+                + str(result_cbte_nro).zfill(8),
+            }
+        )
+        self._cr.commit()
 
     def _build_afip_wsfe_header(self, afip_ws):
         partner = self.commercial_partner_id
@@ -572,7 +578,9 @@ class AccountMove(models.Model):
         mipyme_fce = int(doc_afip_code) in [201, 206, 211]
         other_fce = int(doc_afip_code) not in [202, 203, 207, 208, 212, 213]
         if int(header["concepto"]) != 1 and other_fce or mipyme_fce:
-            header["fecha_venc_pago"] = self.invoice_date_due or self.invoice_date
+            header["fecha_venc_pago"] = self.invoice_date_due.strftime(
+                "%Y%m%d"
+            ) or self.invoice_date.strftime("%Y%m%d")
         return header
 
     def _build_afip_wsfe_vat_taxes(self, afip_ws):
@@ -618,6 +626,28 @@ class AccountMove(models.Model):
                     }
                 )
         return other_taxes
+
+    def _build_afip_wsfe_opcionals(self, afip_ws):
+        opcionales = []
+        doc_afip_code = self.l10n_latam_document_type_id.code
+        mipyme_fce = int(doc_afip_code) in [201, 206, 211]
+        if afip_ws in ["wsfe", "wsbfe"]:
+            if mipyme_fce:
+                # agregamos cbu para factura de credito electronica
+                opcionales.append(
+                    {"opcional_id": 2101, "valor": self.partner_bank_id.cbu}
+                )
+                opcionales.append(
+                    {"opcional_id": 27, "valor": self.afip_mypyme_sca_adc}
+                )
+            elif int(doc_afip_code) in [202, 203, 207, 208, 212, 213]:
+                opcionales.append(
+                    {
+                        "opcional_id": 22,
+                        "valor": self.afip_fce_es_anulacion and "S" or "N",
+                    }
+                )
+        return opcionales
 
     def _get_afip_next_invoice_number(self):
         return (

@@ -11,19 +11,12 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
-# old_selection = account_journal.AccountJournal._point_of_sale_types_selection
-# new_selection = old_selection.append(('electronic', 'Electronic'))
-# account_journal.AccountJournal._point_of_sale_types_selection = new_selection
-
 
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
     sequences = fields.One2many(
         comodel_name="ir.sequence", inverse_name="journal_id", string="Secuencias"
-    )
-    _afip_ws_selection = lambda self, *args, **kwargs: self._get_afip_ws_selection(
-        *args, **kwargs
     )
 
     @api.model
@@ -36,7 +29,7 @@ class AccountJournal(models.Model):
         ]
 
     afip_ws = fields.Selection(
-        _afip_ws_selection,
+        _get_afip_ws_selection(),
         "AFIP WS",
     )
 
