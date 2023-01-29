@@ -6,14 +6,9 @@
     "author": "Nimarosa, ADHOC SA, Moldeo Interactive, Exemax, \
          Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "summary": "",
+    "summary": "Integration for Argentina Electronic invoice webservices",
     "depends": [],
     "external_dependencies": {"python": ["OpenSSL", "pysimplesoap"]},
-    "external_dependencies_override": {
-        "python": {
-            "pyafipws": "pyafipws@https://github.com/reingart/pyafipws/archive/py3k.zip"
-        }
-    },
     "website": "https://github.com/OCA/l10n-argentina",
     "data": [
         "wizard/upload_certificate_view.xml",

@@ -1,12 +1,12 @@
 {
     "name": "Factura Electrónica Argentina",
-    "version": "14.0.1.3.0",
+    "version": "14.0.1.0.0",
     "category": "Accounting/Localizations",
     "sequence": 14,
     "author": "Nimarosa, ADHOC SA, Moldeo Interactive, Exemax, \
         Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "summary": "",
+    "summary": "Integrate AFIP webservice for Argentina electronic documents",
     "website": "https://github.com/OCA/l10n-argentina",
     "depends": [
         "l10n_ar_afipws",
@@ -30,6 +30,4 @@
     "demo": [],
     "images": [],
     "installable": True,
-    "auto_install": False,
-    "application": False,
 }
