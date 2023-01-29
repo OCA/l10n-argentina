@@ -21,12 +21,6 @@ except ImportError:
     _logger.debug("Can not `from pyafipws.soap import SoapFault`.")
 
 
-class IrSequence(models.Model):
-    _inherit = "ir.sequence"
-
-    journal_id = fields.Many2one("account.journal", "Diario facturacion")
-
-
 class AccountMove(models.Model):
     _inherit = "account.move"
 
@@ -76,31 +70,6 @@ class AccountMove(models.Model):
         string="CAE/CAI/CAEA due Date",
         states={"draft": [("readonly", False)]},
     )
-    # for compatibility
-    afip_cae = fields.Char(
-        related="afip_auth_code",
-        readonly=False,
-        string="CAE (only for backward compatibility)",
-    )
-    afip_cae_due = fields.Date(
-        related="afip_auth_code_due",
-        readonly=False,
-        string="CAE due date (only for backward compatibility)",
-    )
-
-    afip_barcode = fields.Char(
-        compute="_compute_barcode",
-        string="AFIP Barcode",
-        # store=True
-    )
-    l10n_ar_afip_barcode = fields.Char(
-        compute="_compute_barcode",
-        string="AFIP Barcode",
-    )
-    afip_barcode_img = fields.Binary(
-        compute="_compute_barcode",
-        string="AFIP Barcode Image",
-    )
     afip_message = fields.Text(string="AFIP Message", copy=False, readonly=True)
     afip_xml_request = fields.Text(string="AFIP XML Request", copy=False, readonly=True)
     afip_xml_response = fields.Text(
@@ -128,7 +97,6 @@ class AccountMove(models.Model):
         encuentra rechazado por el comprador
         """,
     )
-
     show_credit_button = fields.Boolean(
         "show_credit_button", compute="_compute_show_credit_button"
     )
@@ -407,23 +375,15 @@ class AccountMove(models.Model):
                 }
             )
 
-    def _afip_auth_prechecks(self):
-        # Ignore invoices with CAE saved
-        if self.afip_auth_code:
-            return False
-        # Ignore invoice if pos_system not factura en linea
-        if self.journal_id.l10n_ar_afip_pos_system not in ["RLI_RLM", "FEERCEL"]:
-            return False
-        # Check currency code set
-        if not self.currency_id.l10n_ar_afip_code:
-            raise ValidationError(_("No esta definido el codigo AFIP en la moneda"))
-        return True
-
     def authorize_afip(self):
         for invoice in self:
-            # Do checks before continuing with auth
-            if not invoice._afip_auth_prechecks():
+            # Ignore invoices with CAE saved
+            if self.afip_auth_code:
                 continue
+
+            # Check currency code set
+            if not self.currency_id.l10n_ar_afip_code:
+                raise ValidationError(_("No esta definido el codigo AFIP en la moneda"))
 
             afip_ws = invoice.journal_id.afip_ws
             # Raise error if invoice has no WS defined and is electronic
@@ -438,28 +398,7 @@ class AccountMove(models.Model):
 
             # -- AFIP Authorization: initialize -- #
             ws = self.company_id.get_connection(afip_ws).connect()
-            if afip_ws == "wsfe":
-                # Create objects invoice objects in ws
-                header = invoice._build_afip_wsfe_header(afip_ws)
-                vat_taxes = invoice._build_afip_wsfe_vat_taxes(afip_ws)
-                other_taxes = invoice._build_afip_wsfe_other_taxes(afip_ws)
-                cbte_asoc = invoice._build_afip_wsfe_cbte_asoc(afip_ws)
-                opcionales = invoice._build_afip_wsfe_opcionals(afip_ws)
-                # Assign next invoice number
-                cbte_nro = invoice._get_afip_next_invoice_number()
-                header["cbt_desde"] = header["cbt_hasta"] = header[
-                    "cbte_nro"
-                ] = cbte_nro
-                # Crate webservice objects
-                ws.CrearFactura(**header)
-                for vat_tax in vat_taxes:
-                    ws.AgregarIva(**vat_tax)
-                for other_tax in other_taxes:
-                    ws.AgregarTributo(**other_tax)
-                for cbte in cbte_asoc:
-                    ws.AgregarCmpAsoc(**cbte)
-                for opt in opcionales:
-                    ws.AgregarOpcional(**opt)
+            ws = invoice._build_afip_invoice(ws, afip_ws)
 
             # -- AFIP Authorization: AFIP authorize -- #
             ws = invoice._get_ws_authorization(ws, afip_ws)
@@ -467,11 +406,51 @@ class AccountMove(models.Model):
             # -- AFIP Authorization: AFIP Result -- #
             ws = invoice._parse_afip_response(ws, afip_ws)
 
+    def _build_afip_invoice(self, ws, afip_ws):
+        if afip_ws == "wsfe":
+            ws.CrearFactura(**self._build_afip_wsfe_header())
+            for vat_tax in self._build_afip_wsfe_vat_taxes():
+                ws.AgregarIva(**vat_tax)
+            for other_tax in self._build_afip_wsfe_other_taxes():
+                ws.AgregarTributo(**other_tax)
+            for cbte_asoc in self._build_afip_wsfe_cbte_asoc():
+                ws.AgregarCmpAsoc(**cbte_asoc)
+            for opt in self._build_afip_wsfe_opcionals(afip_ws):
+                ws.AgregarOpcional(**opt)
+        elif afip_ws == "wsfex":
+            ws.CrearFactura(**self._build_afip_wsfex_header())
+            for item in self._build_afip_wsfex_items():
+                ws.AgregarItem(**item)
+            for cbte_asoc in self._build_afip_wsfex_cbte_asoc():
+                ws.AgregarCmpAsoc(**cbte_asoc)
+            for permiso in self._build_afip_wsfex_permisos():
+                ws.AgregarPermiso(**permiso)
+        elif afip_ws == "wsbfe":
+            ws.CrearFactura(**self._build_afip_wsbfe_header())
+            for item in self._build_afip_wsbfe_items():
+                ws.AgregarItem(**item)
+        else:
+            raise UserError(
+                _(
+                    "Autorizacion AFIP: ERROR. El webservice \
+                    seleccionado %s no esta emplementado"
+                )
+                % afip_ws
+            )
+        return ws
+
     def _get_ws_authorization(self, ws, afip_ws):
         error_msg = False
         try:
             if afip_ws == "wsfe":
                 ws.CAESolicitar()
+            elif afip_ws == "wsfex":
+                ws.Authorize(self.id)
+            else:
+                raise UserError(
+                    _("Error al autorizar comprobante. Webservice %s no implementado!")
+                    % afip_ws
+                )
         except SoapFault as soap_fault:
             error_msg = "Falla SOAP %s: %s" % (
                 soap_fault.faultcode,
@@ -503,7 +482,7 @@ class AccountMove(models.Model):
 
     def _parse_afip_response(self, ws, afip_ws):
         result_cbte_nro = ws.CbteNro
-        result_pos_number = ws.PuntoVenta
+        result_pos_number = ws.PuntoVenta or self.journal_id.l10n_ar_afip_pos_number
         cae_vto = afip_ws == "wsfex" and ws.FchVencCAE or ws.Vencimiento
         cae_vto = cae_vto[:4] + "-" + cae_vto[4:6] + "-" + cae_vto[6:8]
         self.write(
@@ -525,9 +504,12 @@ class AccountMove(models.Model):
                 + str(result_cbte_nro).zfill(8),
             }
         )
-        self._cr.commit()
+        self._cr.commit()  # pylint: disable=invalid-commit
+        # Inoring flake8 check on cr.commit() here, because we really need to
+        # commit this changes, since if the invoices is authorized by AFIP,
+        # we cannot rollback it.
 
-    def _build_afip_wsfe_header(self, afip_ws):
+    def _build_afip_wsfe_header(self):
         partner = self.commercial_partner_id
         journal = self.journal_id
         pos_number = journal.l10n_ar_afip_pos_number
@@ -559,11 +541,6 @@ class AccountMove(models.Model):
             "moneda_id": self.currency_id.l10n_ar_afip_code or "PES",
             "moneda_ctz": round(1 / self.currency_id.rate, 2) or 1.000,
         }
-        # assign amount_total
-        amount_total = self.amount_untaxed
-        for move_tax in self.move_tax_ids:
-            amount_total += move_tax.tax_amount
-        header["imp_total"] = amount_total
 
         # Si el concepto no es "1", se debe indicar fecha de servicios
         if int(header["concepto"]) != 1:
@@ -574,16 +551,101 @@ class AccountMove(models.Model):
                 "%Y%m%d"
             )
 
-        # Webserice: Facturacion - Caso Facturas Mipyme
+        # wsfe: caso facturas mipyme
         mipyme_fce = int(doc_afip_code) in [201, 206, 211]
         other_fce = int(doc_afip_code) not in [202, 203, 207, 208, 212, 213]
         if int(header["concepto"]) != 1 and other_fce or mipyme_fce:
             header["fecha_venc_pago"] = self.invoice_date_due.strftime(
                 "%Y%m%d"
             ) or self.invoice_date.strftime("%Y%m%d")
+
+        # compute and assign amount total
+        header = self._compute_amount_total(header)
+
+        # Assign next afip number for this header
+        header = self._assign_next_afip_number(header)
+
         return header
 
-    def _build_afip_wsfe_vat_taxes(self, afip_ws):
+    def _build_afip_wsfex_header(self):
+        header = self._build_afip_wsfe_header()
+        partner = self.commercial_partner_id
+
+        wsfex_header = {
+            "tipo_expo": int(self.l10n_ar_afip_concept) or 1,
+            "permiso_existente": "N",
+            "pais_dst_cmp": partner.country_id.l10n_ar_afip_code,
+            "nombre_cliente": partner.name,
+            "cuit_pais_cliente": partner.vat
+            or partner.country_id.l10n_ar_legal_entity_vat,
+            # TODO: Ver cuando se usa esto o cuando no
+            "domicilio_cliente": " - ".join(
+                [
+                    partner.name or "",
+                    partner.street or "",
+                    partner.street2 or "",
+                    partner.zip or "",
+                    partner.city or "",
+                ]
+            ),
+            "id_impositivo": partner.vat or None,
+            "obs_comerciales": self.invoice_payment_term_id.name or None,
+            "obs_generales": self.narration or None,
+            "forma_pago": self.invoice_payment_term_id.name or None,
+            "fecha_pago": None,
+            "incoterms": self.invoice_incoterm_id.code or None,
+            "incoterms_ds": self.invoice_incoterm_id.name or None,
+            "idioma_cbte": 1,  # Hardcoded "Español"
+        }
+
+        # solo informar fecha de pago si son servicios
+        if int(wsfex_header["tipo_expo"]) != 1:
+            wsfex_header["fecha_pago"] = self.invoice_date_due.strftime(
+                "%Y%m%d"
+            ) or self.invoice_date.strftime("%Y%m%d")
+
+        return {**header, **wsfex_header}
+
+    def _build_afip_wsbfe_header(self):
+        header = self._build_afip_wsfe_header()
+        wsbfe_header = {
+            "zona": 1,
+            "impto_liq_rni": 0.0,
+            "imp_iibb": sum(
+                self.tax_line_ids.filtered(
+                    lambda r: (
+                        r.tax_id.tax_group_id.type == "perception"
+                        and r.tax_id.tax_group_id.application == "provincial_taxes"
+                    )
+                ).mapped("amount")
+            ),
+            "imp_perc_mun": sum(
+                self.tax_line_ids.filtered(
+                    lambda r: (
+                        r.tax_id.tax_group_id.type == "perception"
+                        and r.tax_id.tax_group_id.application == "municipal_taxes"
+                    )
+                ).mapped("amount")
+            ),
+            "imp_internos": sum(
+                self.tax_line_ids.filtered(
+                    lambda r: r.tax_id.tax_group_id.application == "others"
+                ).mapped("amount")
+            ),
+            "imp_perc": sum(
+                self.tax_line_ids.filtered(
+                    lambda r: (
+                        r.tax_id.tax_group_id.type == "perception"
+                        and r.tax_id.tax_group_id.application == "national_taxes"
+                    )
+                ).mapped("amount")
+            ),
+            "imp_moneda_id": self.currency_id.l10n_ar_afip_code or "PES",
+            "imp_moneda_ctz": round(1 / self.currency_id.rate, 2) or 1.000,
+        }
+        return {**header, **wsbfe_header}
+
+    def _build_afip_wsfe_vat_taxes(self):
         vat_taxes = []
         for move_tax in self.move_tax_ids:
             if (
@@ -599,7 +661,7 @@ class AccountMove(models.Model):
                 )
         return vat_taxes
 
-    def _build_afip_wsfe_cbte_asoc(self, afip_ws):
+    def _build_afip_wsfe_cbte_asoc(self):
         cbte_asocs = []
         for cbte in self.get_related_invoices_data():
             cbte_asocs.append(
@@ -613,7 +675,20 @@ class AccountMove(models.Model):
             )
         return cbte_asocs
 
-    def _build_afip_wsfe_other_taxes(self, afip_ws):
+    def _build_afip_wsfex_cbte_asoc(self):
+        cbte_asocs = []
+        for cbte in self.get_related_invoices_data():
+            cbte_asocs.append(
+                {
+                    "cbte_tipo": cbte.l10n_latam_document_type_id.code,
+                    "cbte_punto_vta": cbte.journal_id.l10n_ar_afip_pos_number,
+                    "cbte_nro": int(cbte.document_number.split("-")[1]),
+                    "cbte_cuit": self.company_id.vat,
+                }
+            )
+        return cbte_asocs
+
+    def _build_afip_wsfe_other_taxes(self):
         other_taxes = []
         for move_tax in self.move_tax_ids:
             if move_tax.tax_id.tax_group_id.tax_type != "vat":
@@ -626,6 +701,56 @@ class AccountMove(models.Model):
                     }
                 )
         return other_taxes
+
+    def _build_afip_wsfex_items(self):
+        items = []
+        for line in self.invoice_line_ids:
+            items.append(
+                {
+                    "codigo": line.product_id.default_code,
+                    "ds": line.name,
+                    "qty": line.quantity,
+                    "umed": line.product_uom_id
+                    and line.product_uom_id.l10n_ar_afip_code
+                    or "7",
+                    "precio": line.price_unit,
+                    "bonif": None,  # TODO: Implementar
+                    "importe": line.price_subtotal,
+                }
+            )
+        return items
+
+    def _build_afip_wsbfe_items(self):
+        items = []
+        for line in self.invoice_line_ids:
+            vat_taxes_amounts = line.vat_tax_id.compute_all(
+                line.price_unit,
+                self.currency_id,
+                line.quantity,
+                product=line.product_id,
+                partner=self.partner_id,
+            )
+            imp_taxes = sum([x["amount"] for x in vat_taxes_amounts["taxes"]])
+            items.append(
+                {
+                    "ncm": line.product_id.default_code,
+                    "sec": None,  # TODO: Implementar codigo
+                    "ds": line.name,
+                    "qty": line.quantity,
+                    "umed": line.product_uom_id
+                    and line.product_uom_id.l10n_ar_afip_code
+                    or "7",
+                    "precio": line.price_unit,
+                    "bonif": None,  # TODO: Implementar
+                    "iva_id": line.vat_tax_id.tax_group_id.afip_code,
+                    "imp_total": line.price_subtotal + imp_taxes,
+                }
+            )
+        return items
+
+    def _build_afip_wsfex_permisos(self):
+        permisos = []
+        return permisos
 
     def _build_afip_wsfe_opcionals(self, afip_ws):
         opcionales = []
@@ -649,12 +774,15 @@ class AccountMove(models.Model):
                 )
         return opcionales
 
-    def _get_afip_next_invoice_number(self):
-        return (
-            int(
-                self.l10n_latam_document_type_id.get_pyafipws_last_invoice(self)[
-                    "result"
-                ]
-            )
-            + 1
-        )
+    def _assign_next_afip_number(self, header):
+        cbte_nro = self.l10n_latam_document_type_id.get_last_invoice_number(self) + 1
+        header["cbte_nro"] = cbte_nro
+        header["cbt_desde"] = header["cbt_hasta"] = cbte_nro
+        return header
+
+    def _compute_amount_total(self, header):
+        amount_total = self.amount_untaxed
+        for move_tax in self.move_tax_ids:
+            amount_total += move_tax.tax_amount
+        header["imp_total"] = amount_total
+        return header

@@ -3,7 +3,8 @@
     "version": "14.0.1.3.0",
     "category": "Localization/Argentina",
     "sequence": 14,
-    "author": "ADHOC SA, Moldeo Interactive, Exemax, Codize, Odoo Community Association (OCA)",
+    "author": "Nimarosa, ADHOC SA, Moldeo Interactive, Exemax, \
+         Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "summary": "",
     "website": "https://github.com/OCA/l10n-argentina",

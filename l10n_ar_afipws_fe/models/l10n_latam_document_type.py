@@ -14,9 +14,7 @@ class L10nLatamDocumentType(models.Model):
     _inherit = "l10n_latam.document.type"
 
     journal_id = fields.Many2one("account.journal", "Journal")
-    afip_ws = fields.Selection(
-        related="journal_id.afip_ws",
-    )
+    afip_ws = fields.Selection(related="journal_id.afip_ws")
 
     def get_pyafipws_consult_invoice(self, document_number):
         self.ensure_one()
@@ -100,45 +98,26 @@ class L10nLatamDocumentType(models.Model):
         _logger.info("%s\n%s" % (title, msg))
         raise UserError(title + msg)
 
-    def action_get_pyafipws_last_invoice(self):
-        self.ensure_one()
-        raise UserError(self.get_pyafipws_last_invoice()["msg"])
-
-    def get_pyafipws_last_invoice(
-        self, invoice=None, invoice_doc_type=None, journal_id=None, sequence=None
-    ):
-        if not invoice_doc_type and not invoice:
-            return "Problema de implementacion. No hay parametro definido"
-        self.ensure_one()
-        if not invoice:
-            document_type = invoice_doc_type.code
-            company = journal_id.company_id
-            if journal_id.l10n_ar_afip_pos_system != "FEERCEL":
-                afip_ws = journal_id.afip_ws
-            else:
-                afip_ws = "wsfex"
-            pos_number = journal_id.l10n_ar_afip_pos_number
-        else:
+    def get_last_invoice_number(self, invoice=None):
+        if invoice:
+            pos_number = invoice.journal_id.l10n_ar_afip_pos_number
             document_type = invoice.l10n_latam_document_type_id.code
             company = invoice.journal_id.company_id
-            pos_number = invoice.journal_id.l10n_ar_afip_pos_number
-            if invoice.journal_id.l10n_ar_afip_pos_system != "FEERCEL":
-                afip_ws = invoice.journal_id.afip_ws
-            else:
-                afip_ws = "wsfex"
-
+            afip_ws = invoice.journal_id.afip_ws
         if not afip_ws:
-            return _("No AFIP WS selected on point of sale %s") % (
-                invoice.journal_id.name
+            raise UserError(
+                _(
+                    "Can't determine afip_ws to use in journal %s"
+                    % invoice.journal_id.name
+                )
             )
+        # Call webservice instance
         ws = company.get_connection(afip_ws).connect()
-        # call the webservice method to get the last invoice at AFIP:
-
         try:
             if afip_ws in ("wsfe", "wsmtxca"):
-                last = ws.CompUltimoAutorizado(document_type, pos_number)
+                last_cbte = ws.CompUltimoAutorizado(document_type, pos_number)
             elif afip_ws in ["wsfex", "wsbfe"]:
-                last = ws.GetLastCMP(document_type, pos_number)
+                last_cbte = ws.GetLastCMP(document_type, pos_number)
             else:
                 return _("AFIP WS %s not implemented") % afip_ws
         except ValueError as error:
@@ -149,36 +128,7 @@ class L10nLatamDocumentType(models.Model):
                 raise UserError(
                     _(
                         "Hubo un error al conectarse a AFIP, contacte a su"
-                        " proveedor de Odoo para mas información"
+                        " administrador de sistemas"
                     )
                 )
-
-        msg = " - ".join([ws.Excepcion, ws.ErrMsg, ws.Obs])
-
-        next_ws = int(last or 0) + 1
-        if invoice:
-            sequence = self.env["ir.sequence"].search(
-                [
-                    ("journal_id", "=", invoice.journal_id.id),
-                    (
-                        "l10n_latam_document_type_id",
-                        "=",
-                        invoice.l10n_latam_document_type_id.id,
-                    ),
-                ]
-            )
-        else:
-            sequence = sequence
-        if not sequence or len(sequence) > 1:
-            raise UserError(_("Problema de configuracion de secuencias"))
-        next_local = sequence.number_next_actual
-        if next_ws != next_local:
-            msg = (
-                _("ERROR! Local (%i) and remote (%i) next number " "mismatch!\n")
-                % (next_local, next_ws)
-                + msg
-            )
-        else:
-            msg = _("OK! Local and remote next number match!") + msg
-        title = _("Last Invoice %s\n" % last)
-        return {"msg": (title + msg), "result": last}
+        return int(last_cbte)

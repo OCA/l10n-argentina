@@ -3,7 +3,8 @@
     "version": "14.0.1.0.0",
     "category": "Accounting/Localizations",
     "sequence": 14,
-    "author": "ADHOC SA, Moldeo Interactive, Exemax, Codize, Odoo Community Association (OCA)",
+    "author": "Nimarosa, ADHOC SA, Moldeo Interactive, Exemax, \
+         Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "summary": "",
     "depends": [],

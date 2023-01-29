@@ -3,7 +3,8 @@
     "version": "14.0.1.3.0",
     "category": "Accounting/Localizations",
     "sequence": 14,
-    "author": "ADHOC SA, Moldeo Interactive, Exemax, Codize, Odoo Community Association (OCA)",
+    "author": "Nimarosa, ADHOC SA, Moldeo Interactive, Exemax, \
+        Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "summary": "",
     "website": "https://github.com/OCA/l10n-argentina",
@@ -19,7 +20,7 @@
     "external_dependencies": {},
     "data": [
         "wizard/afip_ws_consult_wizard_view.xml",
-        "views/move_view.xml",
+        "views/account_move_view.xml",
         "views/account_journal_view.xml",
         "views/product_uom_view.xml",
         "views/res_currency_view.xml",

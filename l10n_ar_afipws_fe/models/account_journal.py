@@ -7,69 +7,41 @@ import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-# from odoo.addons.l10n_ar.models import account_journal
-
 _logger = logging.getLogger(__name__)
 
 
 class AccountJournal(models.Model):
     _inherit = "account.journal"
 
-    sequences = fields.One2many(
-        comodel_name="ir.sequence", inverse_name="journal_id", string="Secuencias"
-    )
-
-    @api.model
-    def _get_afip_ws_selection(self):
-        return [
+    afip_ws = fields.Selection(
+        [
             ("wsfe", "Mercado interno -sin detalle- RG2485 (WSFEv1)"),
             ("wsmtxca", "Mercado interno -con detalle- RG2904 (WSMTXCA)"),
             ("wsfex", "Exportación -con detalle- RG2758 (WSFEXv1)"),
             ("wsbfe", "Bono Fiscal -con detalle- RG2557 (WSBFE)"),
-        ]
-
-    afip_ws = fields.Selection(
-        _get_afip_ws_selection(),
-        "AFIP WS",
+        ],
+        "Webservice AFIP",
+        readonly="True",
     )
 
-    def get_name_and_code_suffix(self):
-        name = super(AccountJournal, self).get_name_and_code_suffix()
-        if self.afip_ws == "wsfex":
-            name += " Exportación"
-        return name
-
-    @api.model
-    def create(self, vals):
-        journal = super(AccountJournal, self).create(vals)
-        if journal.l10n_ar_afip_pos_system == "RLI_RLM" and journal.afip_ws:
-            try:
-                journal.sync_document_local_remote_number()
-            except Exception:
-                _logger.info("Could not sincronize local and remote numbers")
-        return journal
-
-    # @api.model
-    # def _get_point_of_sale_types(self):
-    #     types = super(AccountJournal, self)._get_point_of_sale_types()
-    #     types.append(['electronic', _('Electronic')])
-    #     return types
-
-    @api.constrains("point_of_sale_type", "afip_ws")
-    def check_afip_ws_and_type(self):
-        for rec in self:
-            if rec.l10n_ar_afip_pos_system != "RLI_RLM" and rec.afip_ws:
-                raise UserError(
-                    _('You can only use an AFIP WS if type is "Electronic"')
-                )
+    @api.onchange("l10n_ar_afip_pos_system")
+    def _select_afip_webservice(self):
+        if self.l10n_ar_afip_pos_system == "RLI_RLM":
+            self.afip_ws = "wsfe"
+        elif self.l10n_ar_afip_pos_system == "FEERCEL":
+            self.afip_ws = "wsfex"
+        elif self.l10n_ar_afip_pos_system == "CPERCEL":
+            self.afip_ws = "wsmtxca"
+        elif self.l10n_ar_afip_pos_system == "BFERCEL":
+            self.afip_ws = "wsbfe"
+        else:
+            self.afip_ws = None
 
     def get_journal_letter(self, counterpart_partner=False):
         """Function to be inherited by afip ws fe"""
         letters = super(AccountJournal, self).get_journal_letter(
             counterpart_partner=counterpart_partner
         )
-        # filter only for sales journals
-
         if self.type != "sale":
             return letters
         if self.afip_ws == "wsfe":
