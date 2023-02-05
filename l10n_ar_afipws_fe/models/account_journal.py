@@ -22,10 +22,12 @@ class AccountJournal(models.Model):
         ],
         "Webservice AFIP",
         readonly="True",
+        compute="_compute_afip_webservice",
+        store=True,
     )
 
-    @api.onchange("l10n_ar_afip_pos_system")
-    def _select_afip_webservice(self):
+    @api.depends("l10n_ar_afip_pos_system")
+    def _compute_afip_webservice(self):
         if self.l10n_ar_afip_pos_system == "RLI_RLM":
             self.afip_ws = "wsfe"
         elif self.l10n_ar_afip_pos_system == "FEERCEL":
@@ -36,6 +38,55 @@ class AccountJournal(models.Model):
             self.afip_ws = "wsbfe"
         else:
             self.afip_ws = None
+
+    def get_pyafipws_last_invoice(self, document_type):
+        self.ensure_one()
+        company = self.company_id
+        afip_ws = self.afip_ws
+        if not afip_ws:
+            return _("No AFIP WS selected on point of sale %s") % (self.name)
+        ws = company.get_connection(afip_ws).connect()
+        # call the webservice method to get the last invoice at AFIP:
+        try:
+            if hasattr(self, "%s_get_pyafipws_last_invoice" % afip_ws):
+                last = getattr(self, "%s_get_pyafipws_last_invoice" % afip_ws)(
+                    self.l10n_ar_afip_pos_number, document_type, ws
+                )
+                _logger.info("AFIP Auth - Get last AFIP Number: %s" % last)
+            else:
+                return _("AFIP WS %s not implemented") % afip_ws
+            return last
+        except ValueError as error:
+            _logger.warning("exception in get_pyafipws_last_invoice: %s" % (str(error)))
+            if "The read operation timed out" in str(error):
+                raise UserError(_("Servicio AFIP Ocupado reintente en unos minutos"))
+            else:
+                raise UserError(
+                    _(
+                        "Hubo un error al conectarse a AFIP, contacte a su"
+                        " proveedor de Odoo para mas información"
+                    )
+                )
+
+    def wsfe_get_pyafipws_last_invoice(
+        self, l10n_ar_afip_pos_number, document_type, ws
+    ):
+        return ws.CompUltimoAutorizado(document_type.code, l10n_ar_afip_pos_number)
+
+    def wsmtxca_get_pyafipws_last_invoice(
+        self, l10n_ar_afip_pos_number, document_type, ws
+    ):
+        return ws.CompUltimoAutorizado(document_type.code, l10n_ar_afip_pos_number)
+
+    def wsfex_get_pyafipws_last_invoice(
+        self, l10n_ar_afip_pos_number, document_type, ws
+    ):
+        return ws.GetLastCMP(document_type.code, l10n_ar_afip_pos_number)
+
+    def wsbfe_get_pyafipws_last_invoice(
+        self, l10n_ar_afip_pos_number, document_type, ws
+    ):
+        return ws.GetLastCMP(document_type.code, l10n_ar_afip_pos_number)
 
     def get_journal_letter(self, counterpart_partner=False):
         """Function to be inherited by afip ws fe"""

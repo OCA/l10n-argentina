@@ -17,7 +17,7 @@
     ],
     "external_dependencies": {},
     "data": [
-        "views/move_view.xml",
+        "views/account_move_view.xml",
         "security/ir.model.access.csv",
     ],
     "maintainers": ["nimarosa", "ibuioli"],

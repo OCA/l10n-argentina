@@ -11,11 +11,78 @@
         </field>
     </record>
 
+    <record id="account_move_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
+        <field name="name">account.move.view.afip.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="afip_auth_code" invisible="1" />
+                <field name="afip_document_number" invisible="1" />
+                <field
+                    name="afip_result"
+                    string="AFIP Auth"
+                    widget="badge"
+                    decoration-danger="afip_result == 'R'"
+                    decoration-success="afip_result == 'A'"
+                    optional="hide"
+                />
+            </field>
+            <field name="name" position="attributes">
+                <attribute name="help">
+                    - Referencias de colores -
+                    * Color Gris: El comprobante no ha sido autorizado en AFIP o ha sido rechazado
+                    * Color Rojo: El numero de comprobante difiere con el numero autorizado en AFIP (desincronizacion)
+                    * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta
+                </attribute>
+                <attribute name="decoration-muted">afip_auth_code == False</attribute>
+                <attribute
+                    name="decoration-danger"
+                >afip_document_number != False and afip_document_number != name</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="account_move_search_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
+        <field name="name">account.move.view.search.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter" />
+        <field name="arch" type="xml">
+            <filter name="cancel" position="after">
+                <separator />
+                <filter
+                    name="afip_ok"
+                    string="AFIP - Autorizadas"
+                    domain="[('afip_result','=','A')]"
+                />
+                <filter
+                    name="afip_auth_pending"
+                    string="AFIP - Sin autorizar"
+                    domain="[('afip_result','!=','A')]"
+                />
+            </filter>
+        </field>
+    </record>
+
     <record id="view_move_form" model="ir.ui.view">
         <field name="model">account.move</field>
         <field name="name">account.move.afip.form</field>
         <field name="inherit_id" ref="l10n_ar.view_move_form" />
         <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="help">
+                    - Referencias de colores -
+                    * Color Gris: El comprobante no ha sido autorizado en AFIP o ha sido rechazado
+                    * Color Rojo: El numero de comprobante difiere con el numero autorizado en AFIP (desincronizacion)
+                    * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta
+                </attribute>
+                <attribute
+                    name="decoration-muted"
+                >afip_document_number == False</attribute>
+                <attribute
+                    name="decoration-danger"
+                >afip_document_number != False and afip_document_number != name</attribute>
+            </field>
             <button name="action_post" position="attributes">
                 <attribute name="attrs">
                     {'invisible': ['|', ('state', '!=', 'draft'), ('validation_type', '!=', False)]}
@@ -98,6 +165,11 @@
                                 />
                             </div>
                             <field
+                                name="afip_document_number"
+                                decoration-danger="afip_document_number != name"
+                                decoration-success="afip_document_number == name"
+                            />
+                            <field
                                 name='afip_auth_verify_observation'
                                 attrs="{'invisible': [('afip_auth_verify_observation', '=', False)]}"
                             />
@@ -107,7 +179,11 @@
                             />
                         </group>
                         <group>
-                            <field name='afip_message' string="Mensaje AFIP" />
+                            <div>
+                                <h5>Observaciones / Errores</h5>
+                                <hr />
+                                <field name='afip_message' nolabel="1" />
+                            </div>
                         </group>
                     </group>
                     <group>
