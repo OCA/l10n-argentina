@@ -5,14 +5,6 @@
         <field name="name">account.move.afip.form</field>
         <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
-            <field name="state" position="before">
-                <button
-                    name="compute_taxes"
-                    type="object"
-                    string="Computar Impuestos"
-                    states="draft"
-                />
-            </field>
             <field name="line_ids" position="after">
                 <field
                     name="move_tax_ids"
