@@ -28,16 +28,17 @@ class AccountJournal(models.Model):
 
     @api.depends("l10n_ar_afip_pos_system")
     def _compute_afip_webservice(self):
-        if self.l10n_ar_afip_pos_system == "RLI_RLM":
-            self.afip_ws = "wsfe"
-        elif self.l10n_ar_afip_pos_system == "FEERCEL":
-            self.afip_ws = "wsfex"
-        elif self.l10n_ar_afip_pos_system == "CPERCEL":
-            self.afip_ws = "wsmtxca"
-        elif self.l10n_ar_afip_pos_system == "BFERCEL":
-            self.afip_ws = "wsbfe"
-        else:
-            self.afip_ws = None
+        for record in self:
+            if record.l10n_ar_afip_pos_system == "RLI_RLM":
+                record.afip_ws = "wsfe"
+            elif record.l10n_ar_afip_pos_system == "FEERCEL":
+                self.afip_ws = "wsfex"
+            elif record.l10n_ar_afip_pos_system == "CPERCEL":
+                record.afip_ws = "wsmtxca"
+            elif record.l10n_ar_afip_pos_system == "BFERCEL":
+                record.afip_ws = "wsbfe"
+            else:
+                record.afip_ws = None
 
     def get_pyafipws_last_invoice(self, document_type):
         self.ensure_one()
