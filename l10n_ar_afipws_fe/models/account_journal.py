@@ -89,51 +89,6 @@ class AccountJournal(models.Model):
     ):
         return ws.GetLastCMP(document_type.code, l10n_ar_afip_pos_number)
 
-    def get_journal_letter(self, counterpart_partner=False):
-        """Function to be inherited by afip ws fe"""
-        letters = super(AccountJournal, self).get_journal_letter(
-            counterpart_partner=counterpart_partner
-        )
-        if self.type != "sale":
-            return letters
-        if self.afip_ws == "wsfe":
-            letters = letters.filtered(lambda r: r.name != "E")
-        elif self.afip_ws == "wsfex":
-            letters = letters.filtered(lambda r: r.name == "E")
-        return letters
-
-    def sync_document_local_remote_number(self):
-        if self.type != "sale":
-            return True
-        for journal_document_type in self.journal_document_type_ids:
-            next_by_ws = (
-                int(journal_document_type.get_pyafipws_last_invoice()["result"]) + 1
-            )
-            journal_document_type.sequence_id.number_next_actual = next_by_ws
-
-    def check_document_local_remote_number(self):
-        msg = ""
-        if self.type != "sale":
-            return True
-        # for journal_document_type in self.journal_document_type_ids:
-        for sequence in self.l10n_ar_sequence_ids:
-            journal_document_type = sequence.l10n_latam_document_type_id
-            result = journal_document_type.get_pyafipws_last_invoice(
-                None, journal_document_type, self, sequence
-            )
-            next_by_ws = int(result["result"]) + 1
-            next_by_seq = sequence.number_next_actual
-            if next_by_ws != next_by_seq:
-                msg += _(
-                    "* Document Type %s, Local %i, Remote %i\n"
-                    % (journal_document_type.name, next_by_seq, next_by_ws)
-                )
-        if msg:
-            msg = _("There are some doument desynchronized:\n") + msg
-            raise UserError(msg)
-        else:
-            raise UserError(_("All documents are synchronized"))
-
     def test_pyafipws_dummy(self):
         """
         AFIP Description: Método Dummy para verificación de funcionamiento de

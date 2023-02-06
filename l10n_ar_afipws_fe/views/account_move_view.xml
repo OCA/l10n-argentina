@@ -29,12 +29,6 @@
                 />
             </field>
             <field name="name" position="attributes">
-                <attribute name="help">
-                    - Referencias de colores -
-                    * Color Gris: El comprobante no ha sido autorizado en AFIP o ha sido rechazado
-                    * Color Rojo: El numero de comprobante difiere con el numero autorizado en AFIP (desincronizacion)
-                    * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta
-                </attribute>
                 <attribute name="decoration-muted">afip_auth_code == False</attribute>
                 <attribute
                     name="decoration-danger"
