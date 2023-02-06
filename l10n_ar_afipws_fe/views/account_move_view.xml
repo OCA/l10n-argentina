@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <!-- Inherit account.move.reversal - form -->
     <record id="l10n_ar_view_account_move_reversal" model="ir.ui.view">
         <field name="name">l10n_ar.account.move.reversal.form</field>
         <field name="model">account.move.reversal</field>
@@ -10,7 +11,7 @@
             </field>
         </field>
     </record>
-
+    <!-- Inherit account.move - tree -->
     <record id="account_move_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
         <field name="name">account.move.view.afip.tree</field>
         <field name="model">account.move</field>
@@ -36,7 +37,7 @@
             </field>
         </field>
     </record>
-
+    <!-- Inherit account.move - search -->
     <record id="account_move_search_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
         <field name="name">account.move.view.search.inherit</field>
         <field name="model">account.move</field>
@@ -57,7 +58,7 @@
             </filter>
         </field>
     </record>
-
+    <!-- Inherit account.move - form -->
     <record id="view_move_form" model="ir.ui.view">
         <field name="model">account.move</field>
         <field name="name">account.move.afip.form</field>

@@ -13,7 +13,7 @@
                         name="action_get_pyafipws_currency_rate"
                         string="⇒ Get Rate"
                         type="object"
-                        attrs="{'invisible':['|', ('afip_code','=',False), ('afip_code', '=', 'PES')]}"
+                        attrs="{'invisible':['|', ('l10n_ar_afip_code','=',False), ('l10n_ar_afip_code', '=', 'PES')]}"
                         class="oe_link"
                     />
                     <button

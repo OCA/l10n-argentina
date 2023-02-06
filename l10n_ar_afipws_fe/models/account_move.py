@@ -7,13 +7,17 @@
 # from io import BytesIO
 
 
+import base64
+import json
 import logging
 import sys
 import traceback
+from collections import defaultdict
 from datetime import datetime
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import float_repr
 
 _logger = logging.getLogger(__name__)
 try:
@@ -113,6 +117,37 @@ class AccountMove(models.Model):
                 is_invoice and is_posted and is_not_paid_or_reversed
             )
 
+    @api.depends("l10n_latam_document_type_id")
+    def _compute_name(self):
+        """
+        [MonkeyPatch] Fix sequence computation in batch:
+        We need to group moves by document type since _compute_name will apply the
+        same name prefix of the first record to the others in the batch
+        TODO: PR a Odoo l10n_latam_invoice_document
+        """
+        without_doc_type = self.filtered(
+            lambda x: x.journal_id.l10n_latam_use_documents
+            and not x.l10n_latam_document_type_id
+        )
+        manual_documents = self.filtered(
+            lambda x: x.journal_id.l10n_latam_use_documents
+            and x.l10n_latam_manual_document_number
+        )
+        (
+            without_doc_type
+            + manual_documents.filtered(
+                lambda x: not x.name
+                or x.name
+                and x.state == "draft"
+                and not x.posted_before
+            )
+        ).name = "/"
+        group_by_document_type = defaultdict(self.env["account.move"].browse)
+        for move in self - without_doc_type - manual_documents:
+            group_by_document_type[move.l10n_latam_document_type_id.id] += move
+        for group in group_by_document_type.values():
+            super(AccountMove, group)._compute_name()
+
     def _get_starting_sequence(self):
         """
         If use documents then will create a new starting sequence
@@ -168,6 +203,45 @@ class AccountMove(models.Model):
         """
         user_debug_mode = self.user_has_groups("base.group_no_one")
         return True if user_debug_mode else super()._is_manual_document_number(journal)
+
+    @api.depends("afip_auth_code")
+    def _compute_qr_code(self):
+        for rec in self:
+            if rec.afip_auth_mode in ["CAE", "CAEA"] and rec.afip_auth_code:
+                number_parts = self._l10n_ar_get_document_number_parts(
+                    rec.l10n_latam_document_number, rec.l10n_latam_document_type_id.code
+                )
+
+                qr_dict = {
+                    "ver": 1,
+                    "fecha": str(rec.invoice_date),
+                    "cuit": int(rec.company_id.partner_id.l10n_ar_vat),
+                    "ptoVta": number_parts["point_of_sale"],
+                    "tipoCmp": int(rec.l10n_latam_document_type_id.code),
+                    "nroCmp": number_parts["invoice_number"],
+                    "importe": float(float_repr(rec.amount_total, 2)),
+                    "moneda": rec.currency_id.l10n_ar_afip_code,
+                    "ctz": float(float_repr(rec.l10n_ar_currency_rate, 2)),
+                    "tipoCodAut": "E" if rec.afip_auth_mode == "CAE" else "A",
+                    "codAut": int(rec.afip_auth_code),
+                }
+                if (
+                    len(rec.commercial_partner_id.l10n_latam_identification_type_id)
+                    and rec.commercial_partner_id.vat
+                ):
+                    qr_dict["tipoDocRec"] = int(
+                        rec.commercial_partner_id.l10n_latam_identification_type_id.l10n_ar_afip_code  # noqa: B950
+                    )
+                    qr_dict["nroDocRec"] = int(
+                        rec.commercial_partner_id.vat.replace("-", "").replace(".", "")
+                    )
+                qr_data = base64.encodestring(
+                    json.dumps(qr_dict, indent=None).encode("ascii")
+                ).decode("ascii")
+                qr_data = str(qr_data).replace("\n", "")
+                rec.afip_qr_code = "https://www.afip.gob.ar/fe/qr/?p=%s" % qr_data
+            else:
+                rec.afip_qr_code = False
 
     @api.depends("journal_id", "afip_auth_code")
     def _compute_validation_type(self):
@@ -367,8 +441,6 @@ class AccountMove(models.Model):
     def authorize_afip(self):
         for invoice in self:
             afip_ws = invoice.journal_id.afip_ws
-
-            # -- AFIP Authorization -- #
             ws = invoice.company_id.get_connection(afip_ws).connect()
             invoice._build_afip_invoice(ws, afip_ws)
             invoice._get_ws_authorization(ws, afip_ws)
@@ -443,17 +515,6 @@ class AccountMove(models.Model):
         self.write(response_vals)
         self._cr.commit()  # pylint: disable=invalid-commit
 
-    def _get_next_invoice_number(self):
-        return (
-            int(
-                self.journal_id.get_pyafipws_last_invoice(
-                    self.l10n_latam_document_type_id
-                )
-            )
-            + 1
-        )
-
-    # Webservice: General Intercambiable
     def _init_afip_base_header(self):
         invoice = {}
         partner = self.commercial_partner_id

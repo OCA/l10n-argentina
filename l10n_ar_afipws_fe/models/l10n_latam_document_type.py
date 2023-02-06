@@ -97,38 +97,3 @@ class L10nLatamDocumentType(models.Model):
 
         _logger.info("%s\n%s" % (title, msg))
         raise UserError(title + msg)
-
-    def get_last_invoice_number(self, invoice=None):
-        if invoice:
-            pos_number = invoice.journal_id.l10n_ar_afip_pos_number
-            document_type = invoice.l10n_latam_document_type_id.code
-            company = invoice.journal_id.company_id
-            afip_ws = invoice.journal_id.afip_ws
-        if not afip_ws:
-            raise UserError(
-                _(
-                    "Can't determine afip_ws to use in journal %s"
-                    % invoice.journal_id.name
-                )
-            )
-        # Call webservice instance
-        ws = company.get_connection(afip_ws).connect()
-        try:
-            if afip_ws in ("wsfe", "wsmtxca"):
-                last_cbte = ws.CompUltimoAutorizado(document_type, pos_number)
-            elif afip_ws in ["wsfex", "wsbfe"]:
-                last_cbte = ws.GetLastCMP(document_type, pos_number)
-            else:
-                return _("AFIP WS %s not implemented") % afip_ws
-        except ValueError as error:
-            _logger.warning("exception in get_pyafipws_last_invoice: %s" % (str(error)))
-            if "The read operation timed out" in str(error):
-                raise UserError(_("Servicio AFIP Ocupado reintente en unos minutos"))
-            else:
-                raise UserError(
-                    _(
-                        "Hubo un error al conectarse a AFIP, contacte a su"
-                        " administrador de sistemas"
-                    )
-                )
-        return int(last_cbte)
