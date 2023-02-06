@@ -2,19 +2,13 @@
 # For copyright and license notices, see __manifest__.py file in module root
 # directory
 ##############################################################################
+import logging
+from base64 import encodebytes
+
+from OpenSSL import crypto
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-
-try:
-    from OpenSSL import crypto
-except ImportError:
-    crypto = None
-try:
-    from base64 import encodestring
-except ImportError:
-    from base64 import encodebytes as encodestring
-
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -85,7 +79,7 @@ class AfipwsCertificate(models.Model):
         for rec in self.filtered("csr"):
             rec.request_filename = "request.csr"
             # rec.request_file = base64.encodestring(self.csr.encode('utf-8'))
-            rec.request_file = encodestring(self.csr.encode("utf-8"))
+            rec.request_file = encodebytes(self.csr.encode("utf-8"))
 
     def action_to_draft(self):
         if self.alias_id.state != "confirmed":

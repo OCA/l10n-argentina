@@ -2,6 +2,7 @@
 # For copyright and license notices, see __manifest__.py file in module root
 # directory
 ##############################################################################
+
 import logging
 
 from odoo import _, api, fields, models
@@ -112,7 +113,7 @@ class AfipwsConnection(models.Model):
         return afip_ws_url
 
     def check_afip_ws(self, afip_ws):
-        # TODO tal vez cambiar nombre cuando veamos si devuelve otra cosa
+        # TODO: tal vez cambiar nombre cuando veamos si devuelve otra cosa
         self.ensure_one()
         if self.afip_ws != afip_ws:
             raise UserError(
@@ -124,9 +125,7 @@ class AfipwsConnection(models.Model):
             )
 
     def connect(self):
-        """
-        Method to be called
-        """
+        """Method to be called"""
         self.ensure_one()
         _logger.info(
             "Getting connection to ws %s from libraries on "

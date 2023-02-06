@@ -19,17 +19,6 @@ class AfipwsCertificateAlias(models.Model):
     _description = "AFIP Distingish Name / Alias"
     _rec_name = "common_name"
 
-    """
-    Para poder acceder a un servicio, la aplicación a programar debe utilizar
-    un certificado de seguridad, que se obtiene en la web de afip. Entre otras
-    cosas, el certificado contiene un Distinguished Name (DN) que incluye una
-    CUIT. Cada DN será identificado por un "alias" o "nombre simbólico",
-    que actúa como una abreviación.
-    EJ alias: AFIP WS Prod - ADHOC SA
-    EJ DN: C=ar, ST=santa fe, L=rosario, O=adhoc s.a., OU=it,
-           SERIALNUMBER=CUIT 30714295698, CN=afip web services - adhoc s.a.
-    """
-
     common_name = fields.Char(
         "Common Name",
         size=64,
@@ -168,7 +157,7 @@ class AfipwsCertificateAlias(models.Model):
 
     def generate_key(self, key_length=2048):
         """Generates a private key with pyafipws"""
-        # TODO: reemplazar todo esto por las funciones nativas de pyafipws
+        # TODO: Reemplazar por las funciones nativas de pyafipws
         for rec in self:
             k = crypto.PKey()
             k.generate_key(crypto.TYPE_RSA, key_length)
@@ -185,7 +174,7 @@ class AfipwsCertificateAlias(models.Model):
 
     def action_create_certificate_request(self):
         """Generates a certificate request to ask AFIP for the certificate"""
-        # TODO: Reemplazas toro esto por las funciones nativas de pyafipws
+        # TODO: Reemplazar por las funciones nativas de pyafipws
         for record in self:
             req = crypto.X509Req()
             req.get_subject().C = self.country_id.code.encode("ascii", "ignore")
