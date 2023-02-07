@@ -22,6 +22,7 @@
         "wizard/afip_ws_consult_wizard_view.xml",
         "views/account_move_view.xml",
         "views/account_journal_view.xml",
+        "views/res_currency.xml",
         "security/ir.model.access.csv",
     ],
     "maintainers": ["nimarosa", "ibuioli"],
