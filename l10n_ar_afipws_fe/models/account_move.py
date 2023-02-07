@@ -29,14 +29,6 @@ except ImportError:
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    afip_mypyme_sca_adc = fields.Selection(
-        selection=[
-            ("SCA", "Sistema Circulacion Abierta"),
-            ("ADC", "Agente Deposito Colectivo"),
-        ],
-        string="SCA o ADC",
-        default="SCA",
-    )
     afip_auth_verify_type = fields.Selection(
         related="company_id.afip_auth_verify_type",
     )
@@ -90,9 +82,11 @@ class AccountMove(models.Model):
         copy=False,
         help="AFIP request result",
     )
+    afip_qr_code = fields.Char(compute="_compute_qr_code", string="AFIP QR Code")
     validation_type = fields.Char(
         "Validation Type", compute="_compute_validation_type", store=True
     )
+    # MiPyme Fields
     afip_fce_es_anulacion = fields.Boolean(
         string="FCE: Es anulacion?",
         help="""
@@ -104,18 +98,14 @@ class AccountMove(models.Model):
         encuentra rechazado por el comprador
         """,
     )
-    show_credit_button = fields.Boolean(
-        "show_credit_button", compute="_compute_show_credit_button"
+    afip_mypyme_sca_adc = fields.Selection(
+        selection=[
+            ("SCA", "SCA - Sistema Circulacion Abierta"),
+            ("ADC", "AGC - Agente Deposito Colectivo"),
+        ],
+        string="FCE: Opcion de Trasmision",
+        default="SCA",
     )
-
-    def _compute_show_credit_button(self):
-        for rec in self:
-            is_invoice = rec.move_type in ["in_invoice", "out_invoice"]
-            is_posted = rec.state == "posted"
-            is_not_paid_or_reversed = rec.payment_state not in ["paid", "reversed"]
-            rec.show_credit_button = (
-                is_invoice and is_posted and is_not_paid_or_reversed
-            )
 
     @api.depends("l10n_latam_document_type_id")
     def _compute_name(self):
