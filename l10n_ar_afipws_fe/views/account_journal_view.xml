@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_account_journal_form" model="ir.ui.view">
+        <field name="name">account.journal.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="l10n_ar.view_account_journal_form" />
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <header>
+                    <button
+                        name="action_get_connection"
+                        string="Obtener Conexión"
+                        help="Obtiene la Conexión para el WebService y lo crea si no fuese válido."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '=', False)]}"
+                    />
+                    <button
+                        name="test_pyafipws_dummy"
+                        string="Probar Conexión"
+                        help="Dummy Test probar la conexión en el WebService seleccionado."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '=', False)]}"
+                    />
+                    <button
+                        name="test_pyafipws_point_of_sales"
+                        string="Punto de Ventas"
+                        help="Obtiene el Punto de Venta habilitado para este WebService."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '=', False)]}"
+                    />
+                    <button
+                        name="test_pyafipws_taxes"
+                        string="Tributos"
+                        help="Obtiene Tabla de Tributos de AFIP."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '=', False)]}"
+                    />
+                    <button
+                        name="get_pyafipws_cuit_document_classes"
+                        string="Tipos de Documento"
+                        help="Obtiene los Tipos de Documento válidos para este WebService."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '=', False)]}"
+                    />
+                    <button
+                        name="get_pyafipws_zonas"
+                        string="Zonas"
+                        help="Obtiene Zonas para este WebService."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '!=', 'wsbfe')]}"
+                    />
+                    <button
+                        name="get_pyafipws_NCM"
+                        string="NCM"
+                        help="Obteniene Códigos del Nomenclador Común del Mercosur."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '!=', 'wsbfe')]}"
+                    />
+                    <button
+                        name="get_pyafipws_currencies"
+                        string="Monedas"
+                        help="Obtiene las monedas válidas para este WebService."
+                        type="object"
+                        attrs="{'invisible':[('afip_ws', '=', False)]}"
+                    />
+                </header>
+            </sheet>
+            <field name="l10n_ar_afip_pos_system" position="after">
+                    <field name="afip_ws" />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit account.move.reversal - form -->
+    <record id="l10n_ar_view_account_move_reversal" model="ir.ui.view">
+        <field name="name">l10n_ar.account.move.reversal.form</field>
+        <field name="model">account.move.reversal</field>
+        <field name="inherit_id" ref="account.view_account_move_reversal" />
+        <field name="arch" type="xml">
+            <field name="refund_method" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+        </field>
+    </record>
+    <!-- Inherit account.move - tree -->
+    <record id="account_move_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
+        <field name="name">account.move.view.afip.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="afip_auth_code" invisible="1" />
+                <field name="afip_document_number" invisible="1" />
+                <field
+                    name="afip_result"
+                    string="AFIP Auth"
+                    widget="badge"
+                    decoration-danger="afip_result == 'R'"
+                    decoration-success="afip_result == 'A'"
+                    optional="hide"
+                />
+            </field>
+            <field name="name" position="attributes">
+                <attribute name="decoration-muted">afip_auth_code == False</attribute>
+                <attribute
+                    name="decoration-danger"
+                >afip_document_number != False and afip_document_number != name</attribute>
+            </field>
+        </field>
+    </record>
+    <!-- Inherit account.move - search -->
+    <record id="account_move_search_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
+        <field name="name">account.move.view.search.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter" />
+        <field name="arch" type="xml">
+            <filter name="cancel" position="after">
+                <separator />
+                <filter
+                    name="afip_ok"
+                    string="AFIP - Autorizadas"
+                    domain="[('afip_result','=','A')]"
+                />
+                <filter
+                    name="afip_auth_pending"
+                    string="AFIP - Sin autorizar"
+                    domain="[('afip_result','!=','A')]"
+                />
+            </filter>
+        </field>
+    </record>
+    <!-- Inherit account.move - form -->
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="name">account.move.afip.form</field>
+        <field name="inherit_id" ref="l10n_ar.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="help">
+                    - Referencias de colores -
+                    * Color Gris: El comprobante no ha sido autorizado en AFIP o ha sido rechazado
+                    * Color Rojo: El numero de comprobante difiere con el numero autorizado en AFIP (desincronizacion)
+                    * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta
+                </attribute>
+                <attribute name="decoration-muted">
+                    afip_document_number == False
+                </attribute>
+                <attribute name="decoration-danger">
+                    afip_document_number != False and afip_document_number != name
+                </attribute>
+            </field>
+            <field name="l10n_ar_afip_concept" position="after">
+                <field name="l10n_ar_currency_rate" readonly="1" />
+                <separator />
+                <field name="afip_mypyme_sca_adc" />
+                <field name="afip_fce_es_anulacion" />
+            </field>
+            <notebook>
+                <page string="AFIP" name="afip">
+                    <group>
+                        <group>
+                            <field
+                                name='afip_result'
+                                widget="badge"
+                                decoration-success="afip_result == 'A'"
+                                decoration-danger="afip_result == 'R'"
+                            />
+                            <label for="afip_auth_code" string="Autorizacion" />
+                            <div class="oe_inline">
+                                <field
+                                    name="afip_auth_mode"
+                                    class="oe_inline"
+                                    decoration-bf="1"
+                                />
+                                 -
+                                <field
+                                    name="afip_auth_code"
+                                    class="oe_inline"
+                                    attrs="{'required': [('afip_auth_mode', '!=', False)]}"
+                                    placeholder="Code"
+                                    decoration-bf="1"
+                                />
+                            </div>
+                            <field
+                                name="afip_document_number"
+                                decoration-danger="afip_document_number != name"
+                                decoration-success="afip_document_number == name"
+                            />
+                            <field
+                                name='afip_auth_code_due'
+                                string="CAE/CAI/CAEA Vencimiento"
+                            />
+                        </group>
+                        <group>
+                            <div>
+                                <h5>Observaciones / Errores</h5>
+                                <hr />
+                                <field name='afip_message' nolabel="1" />
+                            </div>
+                        </group>
+                    </group>
+                    <group>
+                    <field
+                            name='afip_xml_request'
+                            groups="base.group_no_one"
+                            widget="ace"
+                        />
+                    <field
+                            name='afip_xml_response'
+                            groups="base.group_no_one"
+                            widget="ace"
+                        />
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
