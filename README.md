@@ -17,7 +17,14 @@ Odoo localization for Argentina / Localizacion de odoo para Argentina
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[l10n_ar_account_move_tax](l10n_ar_account_move_tax/) | 14.0.1.3.0 | [![nimarosa](https://github.com/nimarosa.png?size=30px)](https://github.com/nimarosa) [![ibuioli](https://github.com/ibuioli.png?size=30px)](https://github.com/ibuioli) | Account Move Tax
+[l10n_ar_afipws](l10n_ar_afipws/) | 14.0.1.0.0 | [![nimarosa](https://github.com/nimarosa.png?size=30px)](https://github.com/nimarosa) [![ibuioli](https://github.com/ibuioli.png?size=30px)](https://github.com/ibuioli) | Integration for Argentina Electronic invoice webservices
+[l10n_ar_afipws_fe](l10n_ar_afipws_fe/) | 14.0.1.0.0 | [![nimarosa](https://github.com/nimarosa.png?size=30px)](https://github.com/nimarosa) [![ibuioli](https://github.com/ibuioli.png?size=30px)](https://github.com/ibuioli) | Integrate AFIP webservice for Argentina electronic documents
+[l10n_ar_bank](l10n_ar_bank/) | 14.0.1.0.0 |  | Listado de Bancos Argentinos
 
 [//]: # (end addons)
 
