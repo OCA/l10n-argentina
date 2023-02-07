@@ -1,0 +1,615 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_afipws_fe
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_fce_es_anulacion
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_account_move__afip_fce_es_anulacion
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_account_payment__afip_fce_es_anulacion
+msgid ""
+"\n"
+"        Solo utilizado en comprobantes MiPyMEs (FCE)\n"
+"        del tipo débito o crédito. Debe informar:\n"
+"\n"
+"        \"- SI: sí el comprobante asociado (original) se\n"
+"        encuentra rechazado por el comprador\n"
+"\"\n"
+"        \"- NO: sí el comprobante asociado (original) NO se\n"
+"        encuentra rechazado por el comprador\n"
+"        "
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid " %s %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid ""
+"- Referencias de colores -\n"
+"                    * Color Gris: El comprobante no ha sido autorizado en AFIP o ha sido rechazado\n"
+"                    * Color Rojo: El numero de comprobante difiere con el numero autorizado en AFIP (desincronizacion)\n"
+"                    * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "AFIP"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.account_move_search_inherit_l10n_ar_afipws_fe
+msgid "AFIP - Autorizadas"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.account_move_search_inherit_l10n_ar_afipws_fe
+msgid "AFIP - Sin autorizar"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.account_move_inherit_l10n_ar_afipws_fe
+msgid "AFIP Auth"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
+#, python-format
+msgid "AFIP Auth Error. %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_document_number
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_document_number
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_document_number
+msgid "AFIP Document Number"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_message
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_message
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_message
+msgid "AFIP Message"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_qr_code
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_qr_code
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_qr_code
+msgid "AFIP QR Code"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
+#, python-format
+msgid "AFIP Validation Error. %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_afipws_connection__afip_ws
+msgid "AFIP WS"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/afipws_connection.py:0
+#, python-format
+msgid "AFIP WS %s Not implemented yet"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/l10n_latam_document_type.py:0
+#, python-format
+msgid "AFIP WS %s not implemented"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model,name:l10n_ar_afipws_fe.model_afipws_connection
+msgid "AFIP WS Connection"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_xml_request
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_xml_request
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_xml_request
+msgid "AFIP XML Request"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_xml_response
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_xml_response
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_xml_response
+msgid "AFIP XML Response"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_auth_mode
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_auth_mode
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_auth_mode
+msgid "AFIP authorization mode"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_company__afip_auth_verify_type
+msgid "AFIP authorization verification"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_result
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_account_move__afip_result
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_account_payment__afip_result
+msgid "AFIP request result"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "AFIP service %s\n"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_mypyme_sca_adc__adc
+msgid "AGC - Agente Deposito Colectivo"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_result__a
+msgid "Aceptado"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid ""
+"Authorized Document Clases on AFIP\n"
+"%s\n"
+". \n"
+"Observations: %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "Autorizacion"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
+#, python-format
+msgid ""
+"Autorizacion AFIP: ERROR. El webservice                     seleccionado %s "
+"no esta emplementado"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__res_company__afip_auth_verify_type__available
+msgid "Available"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_journal__afip_ws__wsbfe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__wsbfe
+msgid "Bono Fiscal -con detalle- RG2557 (WSBFE)"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_auth_mode__cae
+msgid "CAE"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_auth_code
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_auth_code
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_auth_code
+msgid "CAE/CAI/CAEA Code"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "CAE/CAI/CAEA Vencimiento"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_auth_code_due
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_auth_code_due
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_auth_code_due
+msgid "CAE/CAI/CAEA due Date"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_auth_mode__caea
+msgid "CAEA"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_auth_mode__cai
+msgid "CAI"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "Code"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model,name:l10n_ar_afipws_fe.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__wscdc
+msgid "Constatación de Comprobantes (WSCDC)"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model,name:l10n_ar_afipws_fe.model_res_currency
+msgid "Currency"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_journal__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_afipws_connection__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_l10n_latam_document_type__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_company__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_currency__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Dummy Test probar la conexión en el WebService seleccionado."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Enabled Point Of Sales on AFIP\n"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
+#, python-format
+msgid "Error al autorizar comprobante. Webservice %s no implementado!"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_journal__afip_ws__wsfex
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__wsfex
+msgid "Exportación -con detalle- RG2758 (WSFEXv1)"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_fce_es_anulacion
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_fce_es_anulacion
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_fce_es_anulacion
+msgid "FCE: Es anulacion?"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_mypyme_sca_adc
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_mypyme_sca_adc
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_mypyme_sca_adc
+msgid "FCE: Opcion de Trasmision"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
+#, python-format
+msgid "Facturas de exportacion (wsfex) deben tener incoterm asignado."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move_wsfex.py:0
+#, python-format
+msgid "For WS \"%s\" country afip code is mandatoryCountry: %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move_wsfex.py:0
+#, python-format
+msgid "For WS \"%s\" country code is mandatoryCountry: %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move_wsfex.py:0
+#, python-format
+msgid "For WS \"%s\" country is required on partner"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Get NCM for ws %s is not implemented yet"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Get document types for ws %s is not implemented yet"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Get point of sale for ws %s is not implemented yet"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Get zonas for ws %s is not implemented yet"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid ""
+"Hubo un error al conectarse a AFIP, contacte a su proveedor de Odoo para mas"
+" información"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_journal__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_afipws_connection__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_l10n_latam_document_type__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_company__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_currency__id
+msgid "ID"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/l10n_latam_document_type.py:0
+#, python-format
+msgid "Invoice number %s\n"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,help:l10n_ar_afipws_fe.field_res_company__afip_auth_verify_type
+msgid ""
+"It adds an option on invoices to verify the afip authorization data (for documents with CAE, CAI or CAEA).\n"
+"If you choose required, then on supplier invoices, verification is mandatory before invoice validation"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model,name:l10n_ar_afipws_fe.model_account_journal
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_l10n_latam_document_type__journal_id
+msgid "Journal"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model,name:l10n_ar_afipws_fe.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_journal____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_afipws_connection____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_l10n_latam_document_type____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_company____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_res_currency____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model,name:l10n_ar_afipws_fe.model_l10n_latam_document_type
+msgid "Latam Document Type"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_journal__afip_ws__wsmtxca
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__wsmtxca
+msgid "Mercado interno -con detalle- RG2904 (WSMTXCA)"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_journal__afip_ws__wsfe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__wsfe
+msgid "Mercado interno -sin detalle- RG2485 (WSFEv1)"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Monedas"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "NCM"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "No AFIP WS selected"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/l10n_latam_document_type.py:0
+#, python-format
+msgid "No AFIP WS selected on point of sale %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_move_wsfex.py:0
+#, python-format
+msgid "No vat defined for the partner and also no CUIT set on country"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__res_company__afip_auth_verify_type__not_available
+msgid "Not Available"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "Observaciones / Errores"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_result__o
+msgid "Observado"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtener Conexión"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obteniene Códigos del Nomenclador Común del Mercosur."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtiene Tabla de Tributos de AFIP."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtiene Zonas para este WebService."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtiene el Punto de Venta habilitado para este WebService."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtiene la Conexión para el WebService y lo crea si no fuese válido."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtiene las monedas válidas para este WebService."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Obtiene los Tipos de Documento válidos para este WebService."
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Probar Conexión"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Punto de Ventas"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_result__r
+msgid "Rechazado"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__res_company__afip_auth_verify_type__required
+msgid "Required"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_result
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_result
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_result
+msgid "Resultado"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_mypyme_sca_adc__sca
+msgid "SCA - Sistema Circulacion Abierta"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Servicio AFIP Ocupado reintente en unos minutos"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__ws_sr_padron_a10
+msgid "Servicio de Consulta de Padrón Alcance 10"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__ws_sr_padron_a100
+msgid "Servicio de Consulta de Padrón Alcance 100"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__ws_sr_padron_a4
+msgid "Servicio de Consulta de Padrón Alcance 4"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__afipws_connection__afip_ws__ws_sr_padron_a5
+msgid "Servicio de Consulta de Padrón Alcance 5"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Tipos de Documento"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Tributos"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid "Tributos en AFIP\n"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_journal__afip_ws
+#: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_l10n_latam_document_type__afip_ws
+msgid "Webservice AFIP"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_account_journal_form
+msgid "Zonas"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
+#, python-format
+msgid ""
+"Zonas on AFIP\n"
+"%s\n"
+". \n"
+"Observations: %s"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_result__
+msgid "n/a"
+msgstr ""
