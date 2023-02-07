@@ -94,9 +94,6 @@
                                 decoration-success="afip_result == 'A'"
                                 decoration-danger="afip_result == 'R'"
                             />
-                            <field name='afip_auth_verify_type' invisible="1" />
-                            <field name='afip_batch_number' invisible="1" />
-                            <field name='validation_type' invisible="1" />
                             <label for="afip_auth_code" string="Autorizacion" />
                             <div class="oe_inline">
                                 <field
@@ -111,15 +108,6 @@
                                     attrs="{'required': [('afip_auth_mode', '!=', False)]}"
                                     placeholder="Code"
                                     decoration-bf="1"
-                                />
-                                <button
-                                    name="verify_on_afip"
-                                    type="object"
-                                    attrs="{'invisible': ['|', ('afip_auth_mode', '=', False), ('afip_auth_verify_type', '=', 'not_available')]}"
-                                    string="Constantar"
-                                    help="Constatar en AFIP"
-                                    class="oe_inline oe_link"
-                                    groups="base.group_user"
                                 />
                             </div>
                             <field

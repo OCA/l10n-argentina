@@ -7,7 +7,6 @@
 * Decoracion visual de numero de comprobante, para en la ux ofrecer informacion al usuario sobre el estado de AFIP del comprobantes
 * Se mejoraron las vistas y su usabilidad
 * Ahora es posible en caso de desincronizacion o probelmas con un comprobante, forzar su numero de cbte para recuperar los datos de AFIP.
-* La cotizacion de las monedas se obtiene directamente en el momento de autorizacion de la factura
 * Se eliminaron metodos sin usar y codigo legacy
 * Se crearon nuevos metodos builders y archivos por webservice, para mejor mantenimiento del codigo
 *

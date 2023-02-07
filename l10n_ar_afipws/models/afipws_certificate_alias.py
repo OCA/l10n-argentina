@@ -1,15 +1,12 @@
-##############################################################################
 # For copyright and license notices, see __manifest__.py file in module root
-# directory
-##############################################################################
+# directory or check the readme files
+
+import logging
+
+from OpenSSL import crypto
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-
-try:
-    from OpenSSL import crypto
-except ImportError:
-    crypto = None
-import logging
 
 _logger = logging.getLogger(__name__)
 

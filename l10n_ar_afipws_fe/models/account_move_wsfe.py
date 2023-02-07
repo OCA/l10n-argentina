@@ -1,3 +1,7 @@
+# For copyright and license notices, see __manifest__.py file in module root
+# directory or check the readme files
+
+
 import logging
 
 from odoo import models
@@ -112,18 +116,4 @@ class AccountMove(models.Model):
         return cbte_asoc
 
     def _build_afip_wsfe_opcionals(self):
-        opcionales = []
-        doc_afip_code = self.l10n_latam_document_type_id.code
-        mipyme_fce = int(doc_afip_code) in [201, 206, 211]
-        if mipyme_fce:
-            # agregamos cbu para factura de credito electronica
-            opcionales.append({"opcional_id": 2101, "valor": self.partner_bank_id.cbu})
-            opcionales.append({"opcional_id": 27, "valor": self.afip_mypyme_sca_adc})
-        elif int(doc_afip_code) in [202, 203, 207, 208, 212, 213]:
-            opcionales.append(
-                {
-                    "opcional_id": 22,
-                    "valor": self.afip_fce_es_anulacion and "S" or "N",
-                }
-            )
-        return opcionales
+        return []

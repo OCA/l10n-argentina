@@ -1,3 +1,6 @@
+# For copyright and license notices, see __manifest__.py file in module root
+# directory or check the readme files
+
 {
     "name": "Modulo Base para los Web Services de AFIP",
     "version": "14.0.1.0.0",
@@ -7,7 +10,9 @@
          Codize, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "summary": "Integration for Argentina Electronic invoice webservices",
-    "depends": [],
+    "depends": [
+        "l10n_ar",
+    ],
     "external_dependencies": {"python": ["OpenSSL", "pysimplesoap"]},
     "website": "https://github.com/OCA/l10n-argentina",
     "data": [
@@ -18,10 +23,6 @@
         "views/afipws_connection_view.xml",
         "security/ir.model.access.csv",
         "security/security.xml",
-    ],
-    "demo": [
-        "demo/certificate_demo.xml",
-        "demo/parameter_demo.xml",
     ],
     "maintainers": ["nimarosa", "ibuioli"],
     "images": [],

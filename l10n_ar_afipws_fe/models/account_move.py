@@ -1,11 +1,5 @@
-##############################################################################
 # For copyright and license notices, see __manifest__.py file in module root
-# directory
-##############################################################################
-# from .pyi25 import PyI25
-# import base64
-# from io import BytesIO
-
+# directory or check the readme files
 
 import base64
 import json
@@ -15,37 +9,20 @@ import traceback
 from collections import defaultdict
 from datetime import datetime
 
+from pysimplesoap.client import SoapFault
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_repr
 
 _logger = logging.getLogger(__name__)
-try:
-    from pysimplesoap.client import SoapFault
-except ImportError:
-    _logger.debug("Can not `from pyafipws.soap import SoapFault`.")
 
 
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    afip_auth_verify_type = fields.Selection(
-        related="company_id.afip_auth_verify_type",
-    )
     afip_document_number = fields.Char(
         copy=False, string="AFIP Document Number", readonly=True
-    )
-    afip_batch_number = fields.Integer(copy=False, string="Batch Number", readonly=True)
-    afip_auth_verify_result = fields.Selection(
-        [("A", "Aprobado"), ("O", "Observado"), ("R", "Rechazado")],
-        string="AFIP authorization verification result",
-        copy=False,
-        readonly=True,
-    )
-    afip_auth_verify_observation = fields.Char(
-        string="AFIP authorization verification observation",
-        copy=False,
-        readonly=True,
     )
     afip_auth_mode = fields.Selection(
         [("CAE", "CAE"), ("CAI", "CAI"), ("CAEA", "CAEA")],
@@ -83,29 +60,6 @@ class AccountMove(models.Model):
         help="AFIP request result",
     )
     afip_qr_code = fields.Char(compute="_compute_qr_code", string="AFIP QR Code")
-    validation_type = fields.Char(
-        "Validation Type", compute="_compute_validation_type", store=True
-    )
-    # MiPyme Fields
-    afip_fce_es_anulacion = fields.Boolean(
-        string="FCE: Es anulacion?",
-        help="""
-        Solo utilizado en comprobantes MiPyMEs (FCE)
-        del tipo débito o crédito. Debe informar:\n
-        "- SI: sí el comprobante asociado (original) se
-        encuentra rechazado por el comprador\n"
-        "- NO: sí el comprobante asociado (original) NO se
-        encuentra rechazado por el comprador
-        """,
-    )
-    afip_mypyme_sca_adc = fields.Selection(
-        selection=[
-            ("SCA", "SCA - Sistema Circulacion Abierta"),
-            ("ADC", "AGC - Agente Deposito Colectivo"),
-        ],
-        string="FCE: Opcion de Trasmision",
-        default="SCA",
-    )
 
     @api.depends("l10n_latam_document_type_id")
     def _compute_name(self):
@@ -233,20 +187,6 @@ class AccountMove(models.Model):
             else:
                 rec.afip_qr_code = False
 
-    @api.depends("journal_id", "afip_auth_code")
-    def _compute_validation_type(self):
-        for rec in self:
-            if rec.journal_id.afip_ws and not rec.afip_auth_code:
-                validation_type = self.env["res.company"]._get_environment_type()
-                # if we are on homologation env and we dont have certificates
-                # we validate only locally
-                if validation_type == "homologation":
-                    try:
-                        rec.company_id.get_key_and_certificate(validation_type)
-                    except Exception:
-                        validation_type = False
-                rec.validation_type = validation_type
-
     def get_related_invoices_data(self):
         """
         List related invoice information to fill CbtesAsoc.
@@ -270,163 +210,6 @@ class AccountMove(models.Model):
         ).sorted("id")
         posted_l10n_ar_invoices.authorize_afip()
         return posted
-
-    def check_afip_auth_verify_required(self):
-        verify_codes = [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "15",
-            "19",
-            "20",
-            "21",
-            "49",
-            "51",
-            "52",
-            "53",
-            "54",
-            "60",
-            "61",
-            "63",
-            "64",
-        ]
-        verification_required = self.filtered(
-            lambda inv: inv.move_type in ["in_invoice", "in_refund"]
-            and inv.afip_auth_verify_type == "required"
-            and (inv.document_type_id and inv.document_type_id.code in verify_codes)
-            and not inv.afip_auth_verify_result
-        )
-        if verification_required:
-            raise UserError(
-                _(
-                    "You can not validate invoice as AFIP authorization "
-                    "verification is required"
-                )
-            )
-
-    def verify_on_afip(self):
-        """
-        cbte_modo = "CAE"                    # modalidad de emision: CAI, CAE,
-        CAEA
-        cuit_emisor = "20267565393"          # proveedor
-        pto_vta = 4002                       # punto de venta habilitado en AFIP
-        cbte_tipo = 1                        # 1: factura A (ver tabla de parametros)
-        cbte_nro = 109                       # numero de factura
-        cbte_fch = "20131227"                # fecha en formato aaaammdd
-        imp_total = "121.0"                  # importe total
-        cod_autorizacion = "63523178385550"  # numero de CAI, CAE o CAEA
-        doc_tipo_receptor = 80               # CUIT (obligatorio Facturas A o M)
-        doc_nro_receptor = "30628789661"     # numero de CUIT del cliente
-
-        ok = wscdc.ConstatarComprobante(
-            cbte_modo, cuit_emisor, pto_vta, cbte_tipo,
-            cbte_nro, cbte_fch, imp_total, cod_autorizacion,
-            doc_tipo_receptor, doc_nro_receptor)
-
-        print "Resultado:", wscdc.Resultado
-        print "Mensaje de Error:", wscdc.ErrMsg
-        print "Observaciones:", wscdc.Obs
-        """
-        afip_ws = "wscdc"
-        ws = self.company_id.get_connection(afip_ws).connect()
-        for inv in self:
-            cbte_modo = inv.afip_auth_mode
-            cod_autorizacion = inv.afip_auth_code
-            if not cbte_modo or not cod_autorizacion:
-                raise UserError(_("AFIP authorization mode and Code are required!"))
-
-            # get issuer and receptor depending on supplier or customer invoice
-            if inv.type in ["in_invoice", "in_refund"]:
-                issuer = inv.commercial_partner_id
-                receptor = inv.company_id.partner_id
-            else:
-                issuer = inv.company_id.partner_id
-                receptor = inv.commercial_partner_id
-
-            cuit_emisor = issuer.cuit_required()
-
-            receptor_doc_code = str(receptor.main_id_category_id.afip_code)
-            doc_tipo_receptor = receptor_doc_code or "99"
-            doc_nro_receptor = receptor_doc_code and receptor.main_id_number or "0"
-            doc_type = inv.document_type_id
-            if (
-                doc_type.document_letter_id.name in ["A", "M"]
-                and doc_tipo_receptor != "80"
-                or not doc_nro_receptor
-            ):
-                raise UserError(
-                    _(
-                        "Para Comprobantes tipo A o tipo M:\n"
-                        "*  el documento del receptor debe ser CUIT\n"
-                        "*  el documento del Receptor es obligatorio\n"
-                    )
-                )
-
-            cbte_nro = inv.invoice_number
-            pto_vta = inv.journal_id.l10n_ar_afip_pos_number
-            cbte_tipo = doc_type.code
-            if not pto_vta or not cbte_nro or not cbte_tipo:
-                raise UserError(
-                    _(
-                        "Point of sale and document number and document type "
-                        "are required!"
-                    )
-                )
-            cbte_fch = inv.invoice_date
-            if not cbte_fch:
-                raise UserError(_("Invoice Date is required!"))
-            cbte_fch = cbte_fch.strftime("%Y%m%d")
-            imp_total = str("%.2f" % inv.amount_total)
-
-            _logger.info("Constatando Comprobante en afip")
-
-            # atrapado de errores en afip
-            msg = False
-            try:
-                ws.ConstatarComprobante(
-                    cbte_modo,
-                    cuit_emisor,
-                    pto_vta,
-                    cbte_tipo,
-                    cbte_nro,
-                    cbte_fch,
-                    imp_total,
-                    cod_autorizacion,
-                    doc_tipo_receptor,
-                    doc_nro_receptor,
-                )
-            except SoapFault as fault:
-                msg = "Falla SOAP %s: %s" % (fault.faultcode, fault.faultstring)
-            except Exception as e:
-                msg = e
-            except Exception:
-                if ws.Excepcion:
-                    # get the exception already parsed by the helper
-                    msg = ws.Excepcion
-                else:
-                    # avoid encoding problem when raising error
-                    msg = traceback.format_exception_only(sys.exc_type, sys.exc_value)[
-                        0
-                    ]
-            if msg:
-                raise UserError(_("AFIP Verification Error. %s" % msg))
-
-            inv.write(
-                {
-                    "afip_auth_verify_result": ws.Resultado,
-                    "afip_auth_verify_observation": "%s%s" % (ws.Obs, ws.ErrMsg),
-                }
-            )
 
     def authorize_afip(self):
         for invoice in self:

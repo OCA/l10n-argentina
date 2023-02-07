@@ -1,3 +1,6 @@
+# For copyright and license notices, see __manifest__.py file in module root
+# directory or check the readme files
+
 {
     "name": "Factura Electrónica Argentina",
     "version": "14.0.1.0.0",
@@ -9,21 +12,17 @@
     "summary": "Integrate AFIP webservice for Argentina electronic documents",
     "website": "https://github.com/OCA/l10n-argentina",
     "depends": [
-        "l10n_ar_afipws",
         "base",
-        "uom",
-        "l10n_latam_invoice_document",
         "l10n_ar",
-        "l10n_ar_account_move_tax",
+        "l10n_latam_invoice_document",
+        "l10n_ar_afipws",
         "account_debit_note",
     ],
-    "external_dependencies": {},
+    "external_dependencies": {"python": ["OpenSSL", "pysimplesoap"]},
     "data": [
-        "wizard/afip_ws_consult_wizard_view.xml",
         "views/account_move_view.xml",
         "views/account_journal_view.xml",
         "views/res_currency.xml",
-        "security/ir.model.access.csv",
     ],
     "maintainers": ["nimarosa", "ibuioli"],
     "demo": [],
