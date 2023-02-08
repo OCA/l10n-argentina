@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- res.company inherit form view -->
+    <record id="inherit_res_company_form" model="ir.ui.view">
+        <field name="name">res.company.inherit.view.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page id="l10n_ar_invoice" string="Invoicing Options (Argentina)">
+                    <group>
+                        <group string="Invoice PDF Options">
+                            <field
+                                name="show_invoice_payment_methods_info"
+                                widget="boolean_toggle"
+                            />
+                            <field
+                                name="show_invoice_account_debt_info"
+                                widget="boolean_toggle"
+                            />
+                            <field name="show_logo_on_footer" widget="boolean_toggle" />
+                        </group>
+                        <group string="Invoice Resources">
+                            <field name="invoice_fixed_terms" />
+                            <field name="invoice_payment_terms" />
+                            <field name="invoice_mercadopago_qr" widget="image" />
+                            <field name="invoice_background_image" widget="image" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
