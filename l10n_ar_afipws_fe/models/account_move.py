@@ -264,11 +264,11 @@ class AccountMove(models.Model):
                     sys.exc_type, sys.exc_value
                 )[0]
         if error_msg:
-            _logger.warning(
-                _("AFIP Auth Error. %s" % error_msg)
-                + " XML Request: %s XML Response: %s" % (ws.XmlRequest, ws.XmlResponse)
-            )
-            raise UserError(_("AFIP Validation Error. %s" % error_msg))
+            formatted_message = _(
+                "AFIP Auth Error. %s" % error_msg
+            ) + " XML Request: %s XML Response: %s" % (ws.XmlRequest, ws.XmlResponse)
+            _logger.error(formatted_message)
+            self.write({"afip_message": formatted_message})
 
     def _parse_afip_response(self, ws, afip_ws):
         response_vals = {
