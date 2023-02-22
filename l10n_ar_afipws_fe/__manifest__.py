@@ -18,7 +18,13 @@
         "l10n_ar_afipws",
         "account_debit_note",
     ],
-    "external_dependencies": {"python": ["OpenSSL", "pysimplesoap"]},
+    "external_dependencies": {
+        "python": [
+            "OpenSSL",
+            "pysimplesoap",
+            "pyafipws@https://github.com/reingart/pyafipws/archive/main.zip",
+        ]
+    },
     "data": [
         "views/account_move_view.xml",
         "views/account_journal_view.xml",
