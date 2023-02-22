@@ -141,12 +141,21 @@ class AccountMove(models.Model):
 
     def _is_manual_document_number(self, journal):
         """
-        If user is in debug_mode, we show the field as in manual input.
+        If user is in debug_mode and sequence mismatch, we show the field as in manual input.
         This is useful for forcing AFIP webservice to retrieve an already authorized invoice
         in case sequence mismatches. Otherwise, it uses super normal functionality.
         """
         user_debug_mode = self.user_has_groups("base.group_no_one")
-        return True if user_debug_mode else super()._is_manual_document_number(journal)
+        sequence_mismatch = (
+            self.afip_document_number
+            and self.name
+            and self.afip_document_number != self.name
+        )
+        return (
+            True
+            if user_debug_mode and sequence_mismatch
+            else super()._is_manual_document_number(journal)
+        )
 
     @api.depends("afip_auth_code")
     def _compute_qr_code(self):
