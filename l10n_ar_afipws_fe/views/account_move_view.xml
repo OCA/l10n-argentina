@@ -82,7 +82,6 @@
             </field>
             <field name="l10n_ar_afip_concept" position="after">
                 <field name="l10n_ar_currency_rate" readonly="1" />
-                <separator />
                 <field name="afip_mypyme_sca_adc" />
                 <field name="afip_fce_es_anulacion" />
             </field>
@@ -92,7 +91,7 @@
             </page>
             <notebook>
                 <page
-                    string="AFIP"
+                    string="AFIP Authorization"
                     name="afip"
                     attrs="{'invisible': [('move_type', 'in', ['in_invoice', 'in_refund'])]}"
                 >
