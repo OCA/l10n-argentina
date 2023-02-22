@@ -86,6 +86,10 @@
                 <field name="afip_mypyme_sca_adc" />
                 <field name="afip_fce_es_anulacion" />
             </field>
+            <!-- Do not show EDI tab in Argentinian Localization since it's not used -->
+            <page id="edi_documents" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </page>
             <notebook>
                 <page
                     string="AFIP"
