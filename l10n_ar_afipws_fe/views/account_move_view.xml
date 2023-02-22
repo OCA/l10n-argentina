@@ -87,7 +87,11 @@
                 <field name="afip_fce_es_anulacion" />
             </field>
             <notebook>
-                <page string="AFIP" name="afip">
+                <page
+                    string="AFIP"
+                    name="afip"
+                    attrs="{'invisible': [('move_type', 'in', ['in_invoice', 'in_refund'])]}"
+                >
                     <group>
                         <group>
                             <field
