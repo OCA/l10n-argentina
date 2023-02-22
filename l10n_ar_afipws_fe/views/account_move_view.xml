@@ -30,10 +30,12 @@
                 />
             </field>
             <field name="name" position="attributes">
-                <attribute name="decoration-muted">afip_auth_code == False</attribute>
+                <attribute
+                    name="decoration-muted"
+                >afip_auth_code == False and move_type not in ["in_invoice", "in_refund"]</attribute>
                 <attribute
                     name="decoration-danger"
-                >afip_document_number != False and afip_document_number != name</attribute>
+                >afip_document_number != False and afip_document_number != name and move_type not in ["in_invoice", "in_refund"]</attribute>
             </field>
         </field>
     </record>
@@ -72,10 +74,10 @@
                     * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta
                 </attribute>
                 <attribute name="decoration-muted">
-                    afip_document_number == False
+                    afip_document_number == False and move_type not in ["in_invoice", "in_refund"]
                 </attribute>
                 <attribute name="decoration-danger">
-                    afip_document_number != False and afip_document_number != name
+                    afip_document_number != False and afip_document_number != name and move_type not in ["in_invoice", "in_refund"]
                 </attribute>
             </field>
             <field name="l10n_ar_afip_concept" position="after">
