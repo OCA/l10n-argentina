@@ -29,6 +29,7 @@
         "views/account_move_view.xml",
         "views/account_journal_view.xml",
         "views/res_currency.xml",
+        "data/automatic_post_cron.xml",
     ],
     "maintainers": ["nimarosa", "ibuioli"],
     "demo": [],

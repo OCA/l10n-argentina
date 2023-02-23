@@ -22,7 +22,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     afip_document_number = fields.Char(
-        copy=False, string="AFIP Document Number", readonly=True
+        copy=False, string="AFIP Document Number", readonly=True, default="/"
     )
     afip_auth_mode = fields.Selection(
         [("CAE", "CAE"), ("CAI", "CAI"), ("CAEA", "CAEA")],
@@ -146,16 +146,7 @@ class AccountMove(models.Model):
         in case sequence mismatches. Otherwise, it uses super normal functionality.
         """
         user_debug_mode = self.user_has_groups("base.group_no_one")
-        sequence_mismatch = (
-            self.afip_document_number
-            and self.name
-            and self.afip_document_number != self.name
-        )
-        return (
-            True
-            if user_debug_mode and sequence_mismatch
-            else super()._is_manual_document_number(journal)
-        )
+        return True if user_debug_mode else super()._is_manual_document_number(journal)
 
     @api.depends("afip_auth_code")
     def _compute_qr_code(self):
@@ -227,6 +218,24 @@ class AccountMove(models.Model):
             invoice._build_afip_invoice(ws, afip_ws)
             invoice._get_ws_authorization(ws, afip_ws)
             invoice._parse_afip_response(ws, afip_ws)
+
+    @api.model
+    def authorize_afip_cron(self):
+        _logger.info("Starting to run AFIP Auto-Post Authorization")
+        invoices = (
+            self.env["account.move"]
+            .search([])
+            .filtered(
+                lambda x: x.company_id.country_id.code == "AR"
+                and x.is_invoice()
+                and x.move_type in ["out_invoice", "out_refund"]
+                and x.journal_id.afip_ws
+                and not x.afip_auth_code
+                and x.state == "draft"
+            )
+        )
+        invoices._post(soft=True)
+        _logger.info("AFIP Auto-Post Cron Job Finished Successfully")
 
     def _build_afip_invoice(self, ws, afip_ws):
         if not hasattr(self, "_build_afip_%s_invoice" % afip_ws):
