@@ -221,7 +221,6 @@ class AccountMove(models.Model):
 
     @api.model
     def authorize_afip_cron(self):
-        _logger.info("Starting to run AFIP Auto-Post Authorization")
         invoices = (
             self.env["account.move"]
             .search([])
@@ -235,7 +234,6 @@ class AccountMove(models.Model):
             )
         )
         invoices._post(soft=True)
-        _logger.info("AFIP Auto-Post Cron Job Finished Successfully")
 
     def _build_afip_invoice(self, ws, afip_ws):
         if not hasattr(self, "_build_afip_%s_invoice" % afip_ws):
