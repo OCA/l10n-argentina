@@ -12,6 +12,7 @@ setuptools.setup(
         'odoo14-addon-l10n_ar_afipws',
         'odoo14-addon-l10n_ar_afipws_fe',
         'odoo14-addon-l10n_ar_bank',
+        'odoo14-addon-l10n_ar_partner',
     ],
     classifiers=[
         'Programming Language :: Python',
