@@ -15,8 +15,8 @@ odoo_version: 14.0
 org_name: Odoo Community Association (OCA)
 org_slug: OCA
 rebel_module_groups: []
-repo_description: Odoo localization for Argentina / Localizacion de odoo para Argentina
-repo_name: Odoo localization for Argentina
+repo_description: Localizacion oficial de Odoo Community para Argentina
+repo_name: Official Odoo Community Localization for Argentina
 repo_slug: l10n-argentina
 repo_website: https://github.com/OCA/l10n-argentina
 travis_apt_packages: []

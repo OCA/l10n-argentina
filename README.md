@@ -7,9 +7,9 @@
 
 <!-- /!\ do not modify above this line -->
 
-# Odoo localization for Argentina
+# Official Odoo Community Localization for Argentina
 
-Odoo localization for Argentina / Localizacion de odoo para Argentina
+Localizacion oficial de Odoo Community para Argentina
 
 <!-- /!\ do not modify below this line -->
 
