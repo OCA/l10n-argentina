@@ -45,7 +45,6 @@ msgstr ""
 
 #. module: l10n_ar_afipws_fe
 #: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
 #, python-format
 msgid " %s %s"
 msgstr " %s %s"
@@ -54,9 +53,12 @@ msgstr " %s %s"
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
 msgid ""
 "- Referencias de colores -\n"
-"                    * Color Gris: El comprobante no ha sido autorizado en AFIP o ha sido rechazado\n"
-"                    * Color Rojo: El numero de comprobante difiere con el numero autorizado en AFIP (desincronizacion)\n"
-"                    * Color Normal: El comprobante ha sido autorizado y la numeracion es correcta"
+"                    * Color Gris: El comprobante no ha sido autorizado en "
+"AFIP o ha sido rechazado\n"
+"                    * Color Rojo: El numero de comprobante difiere con el "
+"numero autorizado en AFIP (desincronizacion)\n"
+"                    * Color Normal: El comprobante ha sido autorizado y la "
+"numeracion es correcta"
 msgstr ""
 "- Referencias de colores -\n"
 "                    * Color Gris: El comprobante no ha sido autorizado en "
@@ -65,11 +67,6 @@ msgstr ""
 "numero autorizado en AFIP (desincronización)\n"
 "                    * Color Normal: El comprobante ha sido autorizado y la "
 "numeración es correcta"
-
-#. module: l10n_ar_afipws_fe
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
-msgid "AFIP"
-msgstr "AFIP"
 
 #. module: l10n_ar_afipws_fe
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.account_move_search_inherit_l10n_ar_afipws_fe
@@ -93,6 +90,11 @@ msgid "AFIP Auth Error. %s"
 msgstr "AFIP Error de Autorización. %s"
 
 #. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "AFIP Authorization"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_document_number
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_document_number
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_document_number
@@ -112,12 +114,6 @@ msgstr "Mensaje de AFIP"
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_qr_code
 msgid "AFIP QR Code"
 msgstr "Código QR de AFIP"
-
-#. module: l10n_ar_afipws_fe
-#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
-#, python-format
-msgid "AFIP Validation Error. %s"
-msgstr "Error de Validación de AFIP. %s"
 
 #. module: l10n_ar_afipws_fe
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_afipws_connection__afip_ws
@@ -219,6 +215,13 @@ msgid ""
 msgstr ""
 "Autorización de AFIP: ERROR. El webservice                     seleccionado "
 "%s no esta implementado"
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.actions.server,name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron_ir_actions_server
+#: model:ir.cron,cron_name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron
+#: model:ir.cron,name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron
+msgid "Autorizacion automatica de facturas - l10n_argentina"
+msgstr ""
 
 #. module: l10n_ar_afipws_fe
 #: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__res_company__afip_auth_verify_type__available
@@ -384,8 +387,8 @@ msgstr "Obtener zonas para el WS \"%s\" aún no está implementado"
 #: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
 #, python-format
 msgid ""
-"Hubo un error al conectarse a AFIP, contacte a su proveedor de Odoo para mas"
-" información"
+"Hubo un error al conectarse a AFIP, contacte a su proveedor de Odoo para mas "
+"información"
 msgstr ""
 "Hubo un error al conectarse a AFIP, contacte a su proveedor de Odoo para mas "
 "información"
@@ -409,8 +412,10 @@ msgstr "Número de factura %s\n"
 #. module: l10n_ar_afipws_fe
 #: model:ir.model.fields,help:l10n_ar_afipws_fe.field_res_company__afip_auth_verify_type
 msgid ""
-"It adds an option on invoices to verify the afip authorization data (for documents with CAE, CAI or CAEA).\n"
-"If you choose required, then on supplier invoices, verification is mandatory before invoice validation"
+"It adds an option on invoices to verify the afip authorization data (for "
+"documents with CAE, CAI or CAEA).\n"
+"If you choose required, then on supplier invoices, verification is mandatory "
+"before invoice validation"
 msgstr ""
 "Agrega una opción en las facturas para verificar los datos de autorización "
 "de la AFIP (para documentos con CAE, CAI o CAEA).\n"
@@ -466,12 +471,6 @@ msgid "NCM"
 msgstr "NCM"
 
 #. module: l10n_ar_afipws_fe
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
 #: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
 #, python-format
 msgid "No AFIP WS selected"
@@ -634,7 +633,6 @@ msgstr "Zonas"
 
 #. module: l10n_ar_afipws_fe
 #: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
-#: code:addons/l10n_ar_afipws_fe/models/account_journal.py:0
 #, python-format
 msgid ""
 "Zonas on AFIP\n"
@@ -651,3 +649,10 @@ msgstr ""
 #: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_result__
 msgid "n/a"
 msgstr "n/a"
+
+#~ msgid "AFIP"
+#~ msgstr "AFIP"
+
+#, python-format
+#~ msgid "AFIP Validation Error. %s"
+#~ msgstr "Error de Validación de AFIP. %s"
