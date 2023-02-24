@@ -47,11 +47,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_afipws_fe
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
-msgid "AFIP"
-msgstr ""
-
-#. module: l10n_ar_afipws_fe
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.account_move_search_inherit_l10n_ar_afipws_fe
 msgid "AFIP - Autorizadas"
 msgstr ""
@@ -73,6 +68,11 @@ msgid "AFIP Auth Error. %s"
 msgstr ""
 
 #. module: l10n_ar_afipws_fe
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws_fe.view_move_form
+msgid "AFIP Authorization"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_bank_statement_line__afip_document_number
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_document_number
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_document_number
@@ -91,12 +91,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_move__afip_qr_code
 #: model:ir.model.fields,field_description:l10n_ar_afipws_fe.field_account_payment__afip_qr_code
 msgid "AFIP QR Code"
-msgstr ""
-
-#. module: l10n_ar_afipws_fe
-#: code:addons/l10n_ar_afipws_fe/models/account_move.py:0
-#, python-format
-msgid "AFIP Validation Error. %s"
 msgstr ""
 
 #. module: l10n_ar_afipws_fe
@@ -192,6 +186,13 @@ msgstr ""
 msgid ""
 "Autorizacion AFIP: ERROR. El webservice                     seleccionado %s "
 "no esta emplementado"
+msgstr ""
+
+#. module: l10n_ar_afipws_fe
+#: model:ir.actions.server,name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron_ir_actions_server
+#: model:ir.cron,cron_name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron
+#: model:ir.cron,name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron
+msgid "Autorizacion automatica de facturas - l10n_argentina"
 msgstr ""
 
 #. module: l10n_ar_afipws_fe
