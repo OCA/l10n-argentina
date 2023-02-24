@@ -22,7 +22,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     afip_document_number = fields.Char(
-        copy=False, string="AFIP Document Number", readonly=True
+        copy=False, string="AFIP Document Number", readonly=True, default="/"
     )
     afip_auth_mode = fields.Selection(
         [("CAE", "CAE"), ("CAI", "CAI"), ("CAEA", "CAEA")],
@@ -141,7 +141,7 @@ class AccountMove(models.Model):
 
     def _is_manual_document_number(self, journal):
         """
-        If user is in debug_mode, we show the field as in manual input.
+        If user is in debug_mode and sequence mismatch, we show the field as in manual input.
         This is useful for forcing AFIP webservice to retrieve an already authorized invoice
         in case sequence mismatches. Otherwise, it uses super normal functionality.
         """
@@ -219,6 +219,22 @@ class AccountMove(models.Model):
             invoice._get_ws_authorization(ws, afip_ws)
             invoice._parse_afip_response(ws, afip_ws)
 
+    @api.model
+    def authorize_afip_cron(self):
+        invoices = (
+            self.env["account.move"]
+            .search([])
+            .filtered(
+                lambda x: x.company_id.country_id.code == "AR"
+                and x.is_invoice()
+                and x.move_type in ["out_invoice", "out_refund"]
+                and x.journal_id.afip_ws
+                and not x.afip_auth_code
+                and x.state == "draft"
+            )
+        )
+        invoices._post(soft=True)
+
     def _build_afip_invoice(self, ws, afip_ws):
         if not hasattr(self, "_build_afip_%s_invoice" % afip_ws):
             raise UserError(
@@ -255,11 +271,11 @@ class AccountMove(models.Model):
                     sys.exc_type, sys.exc_value
                 )[0]
         if error_msg:
-            _logger.warning(
-                _("AFIP Auth Error. %s" % error_msg)
-                + " XML Request: %s XML Response: %s" % (ws.XmlRequest, ws.XmlResponse)
-            )
-            raise UserError(_("AFIP Validation Error. %s" % error_msg))
+            formatted_message = _(
+                "AFIP Auth Error. %s" % error_msg
+            ) + " XML Request: %s XML Response: %s" % (ws.XmlRequest, ws.XmlResponse)
+            _logger.error(formatted_message)
+            self.write({"afip_message": formatted_message})
 
     def _parse_afip_response(self, ws, afip_ws):
         response_vals = {

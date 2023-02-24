@@ -16,5 +16,6 @@
         "data/res_bank.xml",
         "views/l10n_ar_bank_views.xml",
     ],
+    "maintainers": ["nimarosa", "ibuioli"],
     "installable": True,
 }
