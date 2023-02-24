@@ -3,7 +3,7 @@
 
 {
     "name": "Factura Electrónica Argentina",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "category": "Accounting/Localizations",
     "sequence": 14,
     "author": "Nimarosa, ADHOC SA, Moldeo Interactive, Exemax, \
