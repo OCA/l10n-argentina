@@ -379,22 +379,23 @@ This module integrates the following webservices:</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#known-issues-roadmap" id="id2">Known issues / Roadmap</a></li>
-<li><a class="reference internal" href="#changelog" id="id3">Changelog</a><ul>
-<li><a class="reference internal" href="#id1" id="id4">14.0.1.0.0 (2023-01-29)</a></li>
+<li><a class="reference internal" href="#known-issues-roadmap" id="id3">Known issues / Roadmap</a></li>
+<li><a class="reference internal" href="#changelog" id="id4">Changelog</a><ul>
+<li><a class="reference internal" href="#id1" id="id5">14.0.1.0.0 (2023-01-29)</a></li>
+<li><a class="reference internal" href="#id2" id="id6">14.0.1.0.1 (2023-02-23)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#bug-tracker" id="id5">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="id6">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="id7">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="id8">Contributors</a></li>
-<li><a class="reference internal" href="#maintainers" id="id9">Maintainers</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="id7">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="id8">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="id9">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="id10">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="id11">Maintainers</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="known-issues-roadmap">
-<h1><a class="toc-backref" href="#id2">Known issues / Roadmap</a></h1>
+<h1><a class="toc-backref" href="#id3">Known issues / Roadmap</a></h1>
 <ul class="simple">
 <li>Integracion de webserice de facturacion con detalle de items “WSMTXCA”</li>
 <li>Integrar la recuperacion de cotizacion de dolar desde el webservice de AFIP</li>
@@ -402,12 +403,13 @@ This module integrates the following webservices:</p>
 <li>Si la factura se valido en homologacion y no en prod, mostrar un ribbon</li>
 <li>Integrar metodo ConsultarComprobante e integrarlo en los comprobantes de compra para comprobar su validez</li>
 <li>Mejorar el retorno de los metodos informativos del journal</li>
+<li>Deprecar la libreria “pyafipws” y realizar una integracion nativa del webservice de AFIP, para evitar mapeos inecesarios.</li>
 </ul>
 </div>
 <div class="section" id="changelog">
-<h1><a class="toc-backref" href="#id3">Changelog</a></h1>
+<h1><a class="toc-backref" href="#id4">Changelog</a></h1>
 <div class="section" id="id1">
-<h2><a class="toc-backref" href="#id4">14.0.1.0.0 (2023-01-29)</a></h2>
+<h2><a class="toc-backref" href="#id5">14.0.1.0.0 (2023-01-29)</a></h2>
 <ul class="simple">
 <li>Refactorizacion completa del modulo y de sus metodos</li>
 <li>Se elimina necesidad de utilizar secuencias individuales para la numeracion de comprobantes, se usa las de odoo nativo</li>
@@ -417,12 +419,22 @@ This module integrates the following webservices:</p>
 <li>Ahora es posible en caso de desincronizacion o probelmas con un comprobante, forzar su numero de cbte para recuperar los datos de AFIP.</li>
 <li>Se eliminaron metodos sin usar y codigo legacy</li>
 <li>Se crearon nuevos metodos builders y archivos por webservice, para mejor mantenimiento del codigo</li>
-<li></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2><a class="toc-backref" href="#id6">14.0.1.0.1 (2023-02-23)</a></h2>
+<ul class="simple">
+<li>Solo se permite forzar el número de comprobante en facturas de venta, si el usuario está en modo debug y si hay una desincronización de secuencias. Esto es útil para reparar errores de secuencias directamente desde la UI.</li>
+<li>Se agrega pyafipws al manifest y requirements para que la instalación de la librería sea automática.</li>
+<li>Se eliminan raise error en los mensajes de error XML. De esta forma, el mensaje de error se guarda en afip_message. El usuario puede entrar al registro y consultar el error. Esto es útil cuando se autorizan múltiples facturas.</li>
+<li>FIX: Solo se muestran los decoradores de errores de secuencia en facturas de venta</li>
+<li>FIX: Solo se muestra la pestaña AFIP si el comprobante es de venta. TODO: Luego al implementar la validación automática de comprobantes de venta contra AFIP se volverá a mostrar la tab.</li>
+<li>No se muestra mas la tab de “EDI” ya que esta localización no usa la funcionalidad EDI de odoo.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#id5">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#id7">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/l10n-argentina/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
@@ -430,9 +442,9 @@ If you spotted it first, help us smashing it by providing a detailed and welcome
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#id6">Credits</a></h1>
+<h1><a class="toc-backref" href="#id8">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#id7">Authors</a></h2>
+<h2><a class="toc-backref" href="#id9">Authors</a></h2>
 <ul class="simple">
 <li>Nimarosa</li>
 <li>ADHOC SA</li>
@@ -442,7 +454,7 @@ If you spotted it first, help us smashing it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="contributors">
-<h2><a class="toc-backref" href="#id8">Contributors</a></h2>
+<h2><a class="toc-backref" href="#id10">Contributors</a></h2>
 <ul class="simple">
 <li>Nimarosa</li>
 <li>ADHOC S.A.</li>
@@ -452,7 +464,7 @@ If you spotted it first, help us smashing it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#id9">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#id11">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
 <a class="reference external image-reference" href="https://odoo-community.org"><img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" /></a>
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose

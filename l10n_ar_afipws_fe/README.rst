@@ -48,6 +48,7 @@ Known issues / Roadmap
 * Si la factura se valido en homologacion y no en prod, mostrar un ribbon
 * Integrar metodo ConsultarComprobante e integrarlo en los comprobantes de compra para comprobar su validez
 * Mejorar el retorno de los metodos informativos del journal
+* Deprecar la libreria "pyafipws" y realizar una integracion nativa del webservice de AFIP, para evitar mapeos inecesarios.
 
 Changelog
 =========
@@ -63,7 +64,15 @@ Changelog
 * Ahora es posible en caso de desincronizacion o probelmas con un comprobante, forzar su numero de cbte para recuperar los datos de AFIP.
 * Se eliminaron metodos sin usar y codigo legacy
 * Se crearon nuevos metodos builders y archivos por webservice, para mejor mantenimiento del codigo
-*
+
+14.0.1.0.1 (2023-02-23)
+~~~~~~~~~~~~~~~~~~~~~~~
+- Solo se permite forzar el número de comprobante en facturas de venta, si el usuario está en modo debug y si hay una desincronización de secuencias. Esto es útil para reparar errores de secuencias directamente desde la UI.
+- Se agrega pyafipws al manifest y requirements para que la instalación de la librería sea automática.
+- Se eliminan raise error en los mensajes de error XML. De esta forma, el mensaje de error se guarda en afip_message. El usuario puede entrar al registro y consultar el error. Esto es útil cuando se autorizan múltiples facturas.
+- FIX: Solo se muestran los decoradores de errores de secuencia en facturas de venta
+- FIX: Solo se muestra la pestaña AFIP si el comprobante es de venta. TODO: Luego al implementar la validación automática de comprobantes de venta contra AFIP se volverá a mostrar la tab.
+- No se muestra mas la tab de "EDI" ya que esta localización no usa la funcionalidad EDI de odoo.
 
 Bug Tracker
 ===========

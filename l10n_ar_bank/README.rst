@@ -78,6 +78,17 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
+.. |maintainer-nimarosa| image:: https://github.com/nimarosa.png?size=40px
+    :target: https://github.com/nimarosa
+    :alt: nimarosa
+.. |maintainer-ibuioli| image:: https://github.com/ibuioli.png?size=40px
+    :target: https://github.com/ibuioli
+    :alt: ibuioli
+
+Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
+
+|maintainer-nimarosa| |maintainer-ibuioli| 
+
 This module is part of the `OCA/l10n-argentina <https://github.com/OCA/l10n-argentina/tree/14.0/l10n_ar_bank>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
