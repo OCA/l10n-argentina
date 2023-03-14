@@ -19,6 +19,15 @@ class ResCompany(models.Model):
 
     _inherit = "res.company"
 
+    afip_ws_env_type = fields.Selection(
+        [("homologation", "Homologation"), ("production", "Production")],
+        string="AFIP WS Environment",
+        default="production",
+        help="Environment is used to connect AFIP Web Services.\n"
+        "Production: This is the connection used in real world.\n"
+        "Homologation: Use this environment to test AFIP Web Services.",
+    )
+
     alias_ids = fields.One2many(
         "afipws.certificate_alias",
         "company_id",
@@ -31,34 +40,6 @@ class ResCompany(models.Model):
         "Connections",
         auto_join=True,
     )
-
-    @api.model
-    def _get_environment_type(self):
-        """
-        Function to define homologation/production environment
-        First it search for a paramter "afip.ws.env.type" if exists and:
-        * is production --> production
-        * is homologation --> homologation
-        Else
-        Search for 'server_mode' parameter on conf file. If that parameter is:
-        * 'test' or 'develop' -->  homologation
-        * other or no parameter -->  production
-        """
-        parameter_env_type = (
-            self.env["ir.config_parameter"].sudo().get_param("afip.ws.env.type")
-        )
-        if parameter_env_type == "production":
-            environment_type = "production"
-        elif parameter_env_type == "homologation":
-            environment_type = "homologation"
-        else:
-            server_mode = tools.config.get("server_mode")
-            if not server_mode or server_mode == "production":
-                environment_type = "production"
-            else:
-                environment_type = "homologation"
-        _logger.info("Running arg electronic invoice on %s mode" % environment_type)
-        return environment_type
 
     def get_key_and_certificate(self, environment_type):
         """
@@ -129,7 +110,7 @@ class ResCompany(models.Model):
             "Getting connection for company %s and ws %s" % (self.name, afip_ws)
         )
         now = fields.Datetime.now()
-        environment_type = self._get_environment_type()
+        environment_type = self.afip_ws_env_type
 
         connection = self.connection_ids.search(
             [

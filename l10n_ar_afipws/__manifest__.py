@@ -23,6 +23,7 @@
         "views/afipws_connection_view.xml",
         "security/ir.model.access.csv",
         "security/security.xml",
+        "views/res_config_settings.xml",
     ],
     "maintainers": ["nimarosa", "ibuioli"],
     "images": [],
