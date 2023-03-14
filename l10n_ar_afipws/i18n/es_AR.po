@@ -19,9 +19,11 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,help:l10n_ar_afipws.field_afipws_certificate__state
 msgid ""
-"* The 'Draft' state is used when a user is creating a new pair key. Warning: everybody can see the key.\n"
+"* The 'Draft' state is used when a user is creating a new pair key. Warning: "
+"everybody can see the key.\n"
 "* The 'Confirmed' state is used when a certificate is valid.\n"
-"* The 'Canceled' state is used when the key is not more used. You cant use this key again."
+"* The 'Canceled' state is used when the key is not more used. You cant use "
+"this key again."
 msgstr ""
 "* El estado 'Borrador' se usa cuando un usuario está creando una nueva clave "
 "de emparejamiento. Advertencia: todos pueden ver la clave.\n"
@@ -32,15 +34,27 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,help:l10n_ar_afipws.field_afipws_certificate_alias__state
 msgid ""
-"* The 'Draft' state is used when a user is creating a new pair key. Warning: everybody can see the key.\n"
-"* The 'Confirmed' state is used when the key is completed with public or private key.\n"
-"* The 'Canceled' state is used when the key is not more used. You cant use this key again."
+"* The 'Draft' state is used when a user is creating a new pair key. Warning: "
+"everybody can see the key.\n"
+"* The 'Confirmed' state is used when the key is completed with public or "
+"private key.\n"
+"* The 'Canceled' state is used when the key is not more used. You cant use "
+"this key again."
 msgstr ""
 "* El estado 'Borrador' se usa cuando un usuario está creando una nueva clave "
 "de emparejamiento. Advertencia: todos pueden ver la clave.\n"
 "* El estado 'Confirmado' se utiliza cuando un certificado es válido.\n"
 "* El estado 'Cancelado' se usa cuando la clave no se usa más. No puede usar "
 "esta clave de nuevo."
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">AFIP Web Services</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title="
+"\"Values set here are company-specific.\" groups=\"base.group_multi_company"
+"\"/>"
+msgstr ""
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_certificate_alias
@@ -109,6 +123,12 @@ msgid "AFIP WS Connection"
 msgstr "Conexión AFIP WS"
 
 #. module: l10n_ar_afipws
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__afip_ws_env_type
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__afip_ws_env_type
+msgid "AFIP WS Environment"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__afip_ws_url
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 msgid "AFIP WS URL"
@@ -129,6 +149,11 @@ msgstr "El Webservice de AFIP %s no ha sido implementado"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__alias_ids
 msgid "Aliases"
 msgstr "Alias"
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "Argentina Localization"
+msgstr ""
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_certificate_alias__state__draft
@@ -255,6 +280,11 @@ msgid "Conexiones"
 msgstr "Conexiones"
 
 #. module: l10n_ar_afipws
+#: model:ir.model,name:l10n_ar_afipws.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_upload_certificate_form
 msgid "Confirm"
@@ -328,6 +358,7 @@ msgstr "Departamento"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__display_name
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__display_name
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__display_name
 msgid "Display Name"
 msgstr "Nombre Mostrado"
 
@@ -345,6 +376,15 @@ msgstr "Borrador"
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_certificate_alias__service_type__in_house
 msgid "En Casa"
 msgstr "En Casa"
+
+#. module: l10n_ar_afipws
+#: model:ir.model.fields,help:l10n_ar_afipws.field_res_company__afip_ws_env_type
+#: model:ir.model.fields,help:l10n_ar_afipws.field_res_config_settings__afip_ws_env_type
+msgid ""
+"Environment is used to connect AFIP Web Services.\n"
+"Production: This is the connection used in real world.\n"
+"Homologation: Use this environment to test AFIP Web Services."
+msgstr ""
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_filter
@@ -391,11 +431,17 @@ msgid "Homologación"
 msgstr "Homologación"
 
 #. module: l10n_ar_afipws
+#: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__res_company__afip_ws_env_type__homologation
+msgid "Homologation"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate_alias__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__id
 msgid "ID"
 msgstr "ID"
 
@@ -433,6 +479,7 @@ msgstr "Clave"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection____last_update
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard____last_update
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
@@ -480,6 +527,11 @@ msgstr "Clave Privada"
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_connection__type__production
 msgid "Producción"
 msgstr "Producción"
+
+#. module: l10n_ar_afipws
+#: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__res_company__afip_ws_env_type__production
+msgid "Production"
+msgstr ""
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
@@ -551,8 +603,7 @@ msgstr "El Nombre Común debe tener una longitud menor a 50 caracteres"
 #. module: l10n_ar_afipws
 #: code:addons/l10n_ar_afipws/models/afipws_connection.py:0
 #, python-format
-msgid ""
-"This method is for %s connections and you call it from an %s connection"
+msgid "This method is for %s connections and you call it from an %s connection"
 msgstr ""
 "Este método es para las conexiones %s y puede llamarla desde una conexión %s"
 
