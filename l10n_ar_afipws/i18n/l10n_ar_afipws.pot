@@ -30,6 +30,13 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">AFIP Web Services</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_certificate_alias
 msgid "AFIP Certificado"
 msgstr ""
@@ -96,6 +103,12 @@ msgid "AFIP WS Connection"
 msgstr ""
 
 #. module: l10n_ar_afipws
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__afip_ws_env_type
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__afip_ws_env_type
+msgid "AFIP WS Environment"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__afip_ws_url
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 msgid "AFIP WS URL"
@@ -115,6 +128,11 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__alias_ids
 msgid "Aliases"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "Argentina Localization"
 msgstr ""
 
 #. module: l10n_ar_afipws
@@ -242,6 +260,11 @@ msgid "Conexiones"
 msgstr ""
 
 #. module: l10n_ar_afipws
+#: model:ir.model,name:l10n_ar_afipws.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_upload_certificate_form
 msgid "Confirm"
@@ -315,6 +338,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__display_name
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__display_name
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__display_name
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -331,6 +355,15 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_certificate_alias__service_type__in_house
 msgid "En Casa"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model:ir.model.fields,help:l10n_ar_afipws.field_res_company__afip_ws_env_type
+#: model:ir.model.fields,help:l10n_ar_afipws.field_res_config_settings__afip_ws_env_type
+msgid ""
+"Environment is used to connect AFIP Web Services.\n"
+"Production: This is the connection used in real world.\n"
+"Homologation: Use this environment to test AFIP Web Services."
 msgstr ""
 
 #. module: l10n_ar_afipws
@@ -378,11 +411,17 @@ msgid "Homologación"
 msgstr ""
 
 #. module: l10n_ar_afipws
+#: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__res_company__afip_ws_env_type__homologation
+msgid "Homologation"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate_alias__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__id
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__id
 msgid "ID"
 msgstr ""
 
@@ -416,6 +455,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection____last_update
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard____last_update
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company____last_update
+#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings____last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -462,6 +502,11 @@ msgstr ""
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_certificate_alias__type__production
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_connection__type__production
 msgid "Producción"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__res_company__afip_ws_env_type__production
+msgid "Production"
 msgstr ""
 
 #. module: l10n_ar_afipws
