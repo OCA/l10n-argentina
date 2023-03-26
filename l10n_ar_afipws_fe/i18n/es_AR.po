@@ -217,13 +217,6 @@ msgstr ""
 "%s no esta implementado"
 
 #. module: l10n_ar_afipws_fe
-#: model:ir.actions.server,name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron_ir_actions_server
-#: model:ir.cron,cron_name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron
-#: model:ir.cron,name:l10n_ar_afipws_fe.l10n_ar_afipws_fe_cron
-msgid "Autorizacion automatica de facturas - l10n_argentina"
-msgstr "Autorizacion automatica de facturas - l10n_argentina"
-
-#. module: l10n_ar_afipws_fe
 #: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__res_company__afip_auth_verify_type__available
 msgid "Available"
 msgstr "Disponible"
@@ -649,6 +642,9 @@ msgstr ""
 #: model:ir.model.fields.selection,name:l10n_ar_afipws_fe.selection__account_move__afip_result__
 msgid "n/a"
 msgstr "n/a"
+
+#~ msgid "Autorizacion automatica de facturas - l10n_argentina"
+#~ msgstr "Autorizacion automatica de facturas - l10n_argentina"
 
 #~ msgid "AFIP"
 #~ msgstr "AFIP"
