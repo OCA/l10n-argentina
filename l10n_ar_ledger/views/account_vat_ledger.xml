@@ -20,12 +20,16 @@
             <field name='arch' type='xml'>
                 <form string="VAT Ledger">
                     <field name="type" invisible="1" />
-                    <!--header>
-                        <button name="action_present" string="Present" states="draft" type="object" class="oe_highlight"/>
+                    <header>
+                        <!--button name="action_present" string="Present" states="draft" type="object" class="oe_highlight"/>
                         <button name="action_cancel" string="Cancel" states="draft,presented" type="object"/>
-                        <button name="action_to_draft" string="Back to Draft" states="cancel" type="object"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,presented"/>
-                    </header-->
+                        <button name="action_to_draft" string="Back to Draft" states="cancel" type="object"/-->
+                        <field
+                            name="state"
+                            widget="statusbar"
+                            statusbar_visible="draft,presented"
+                        />
+                    </header>
                     <sheet>
                         <group>
                             <group>
@@ -68,7 +72,12 @@
                                 <field name="note" />
                             </page>
                             <page string="Digital VAT" name="digital_vat">
-                                <!--button name="compute_digital_data" type="object" string="Generate VAT Digital Information" help="Create TXT files with invoices information in the present period, on AFIP VAT Digital Ledger format." /-->
+                                <button
+                                    name="compute_digital_data"
+                                    type="object"
+                                    string="Generate VAT Digital Information"
+                                    help="Create TXT files with invoices information in the present period, on AFIP VAT Digital Ledger format."
+                                />
                                 <group>
                                     <field
                                         name="digital_vouchers_filename"
