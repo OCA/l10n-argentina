@@ -379,42 +379,17 @@ class AccountVatLedger(models.Model):
             )
 
         for inv in invoices:
+            vat_taxes = inv._get_vat()
             lines = []
-            vat_taxes = self.env["account.move.line"]
-            for mvl_tax in inv.l10n_latam_tax_ids:
-                tax_group_id = mvl_tax.tax_group_id
-                if tax_group_id.l10n_ar_vat_afip_code in [
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6",
-                    "8",
-                    "9",
-                ]:
-                    vat_taxes += mvl_tax
 
-            for mvl_tax in inv.line_ids:
-                if (
-                    mvl_tax.tax_ids
-                    and mvl_tax.tax_ids[0].tax_group_id.l10n_ar_vat_afip_code == "3"
-                ):
-                    lines.append("".join(self.get_tax_row(inv, 0.0, 3, 0.0, impo=impo)))
-
-            for afip_code in vat_taxes.mapped("tax_group_id.l10n_ar_vat_afip_code"):
-                taxes = vat_taxes.filtered(
-                    lambda x: x.tax_group_id.l10n_ar_vat_afip_code == afip_code
-                )
-                imp_neto = sum(taxes.mapped("tax_base_amount"))
-                imp_liquidado = sum(taxes.mapped("price_subtotal"))
+            for tax in vat_taxes:
                 lines.append(
                     "".join(
                         self.get_tax_row(
                             inv,
-                            imp_neto,
-                            afip_code,
-                            imp_liquidado,
+                            tax["BaseImp"],
+                            tax["Id"],
+                            tax["Importe"],
                             impo=impo,
                         )
                     )
@@ -465,10 +440,11 @@ class AccountVatLedger(models.Model):
         self._check_partners(invoices)
 
         for inv in invoices:
-            qty_ali = len(self._get_aliquots(inv))
+            qty_ali = self._get_aliquots(inv)
             currency_rate = inv.l10n_ar_currency_rate
             currency_code = inv.currency_id.l10n_ar_afip_code
             doc_number = int(inv.name.split("-")[2])
+            amounts = inv._l10n_ar_get_amounts()
 
             row = [
                 # Campo 1: Fecha de comprobante
@@ -510,119 +486,39 @@ class AccountVatLedger(models.Model):
                 row += [
                     # Campo 10: Importe total de conceptos que no integran el
                     # precio neto gravado
-                    # self.format_amount(
-                    #    inv.vat_untaxed_base_amount, invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["vat_untaxed_base_amount"],
-                        invoice=inv,
-                    ),
-                    # Campo 11: Percepción a no categorizados
-                    # self.format_amount(
-                    #    sum(inv.move_tax_ids.filtered(lambda r: (
-                    #        r.tax_id.tax_group_id.tax_type == 'withholding' and
-                    #        r.tax_id.tax_group_id.tax == 'vat' and
-                    #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code \
-                    #        == '01')
-                    #    ).mapped('tax_amount')), invoice=inv),
+                    self.format_amount(amounts["vat_untaxed_base_amount"], invoice=inv),
+                    # Campo 11: Percepción a no categorizados TODO
                     self.format_amount(0, invoice=inv),
                     # Campo 12: Importe de operaciones exentas
-                    # self.format_amount(
-                    #    inv.vat_exempt_base_amount, invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["vat_exempt_base_amount"],
-                        invoice=inv,
-                    ),
+                    self.format_amount(amounts["vat_exempt_base_amount"], invoice=inv),
                     # Campo 13: Importe de percepciones o pagos a cuenta de
-                    # impuestos nacionales
-                    # self.format_amount(
-                    #    sum(inv.move_tax_ids.filtered(lambda r: (
-                    #        r.tax_id.tax_group_id.tax_type == 'withholding' and
-                    #        r.tax_id.tax_group_id.tax != 'vat' and
-                    #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code == '01')
-                    #    ).mapped('tax_amount')), invoice=inv),
+                    # impuestos nacionales TODO
                     self.format_amount(0, invoice=inv),
                     # Campo 14: Importe de percepciones de ingresos brutos
-                    # self.format_amount(
-                    #    sum(inv.move_tax_ids.filtered(lambda r: (
-                    #        r.tax_id.tax_group_id.tax_type == 'withholding' and
-                    #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code \
-                    #        == '02')
-                    #    ).mapped('tax_amount')), invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["iibb_perc_amount"], invoice=inv
-                    ),
+                    self.format_amount(amounts["iibb_perc_amount"], invoice=inv),
                 ]
             else:
                 row += [
                     # Campo 10: Importe total de conceptos que no integran el
                     # precio neto gravado
-                    # self.format_amount(
-                    #    vat_exempt_base_amount, invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["vat_untaxed_base_amount"],
-                        invoice=inv,
-                    ),
+                    self.format_amount(amounts["vat_untaxed_base_amount"], invoice=inv),
                     # Campo 11: Importe de operaciones exentas
-                    # self.format_amount(
-                    #    inv.vat_untaxed_base_amount, invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["vat_exempt_base_amount"],
-                        invoice=inv,
-                    ),
+                    self.format_amount(amounts["vat_exempt_base_amount"], invoice=inv),
                     # Campo 12: Importe de percepciones o pagos a cuenta del
                     # Impuesto al Valor Agregado
-                    # self.format_amount(
-                    #    sum(inv.move_tax_ids.filtered(lambda r: (
-                    #        r.tax_id.tax_group_id.tax_type == 'withholding' and
-                    #        r.tax_id.tax_group_id.tax == 'vat' and
-                    #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code == '01' or
-                    #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code == '06'
-                    #        )
-                    #    ).mapped(
-                    #        'tax_amount')), invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["vat_perc_amount"], invoice=inv
-                    ),
+                    self.format_amount(amounts["vat_perc_amount"], invoice=inv),
                     # Campo 13: Importe de percepciones o pagos a cuenta de
-                    # impuestos nacionales
-                    # self.format_amount(
-                    #    sum(inv.move_tax_ids.filtered(lambda r: (
-                    #        r.tax_id.tax_group_id.tax_type == 'withholding' and
-                    #        r.tax_id.tax_group_id.tax != 'vat' and
-                    #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code == '01')
-                    #    ).mapped('tax_amount')), invoice=inv),
+                    # impuestos nacionales TODO
                     self.format_amount(0, invoice=inv),
                     # Campo 14: Importe de percepciones de ingresos brutos
-                    #    self.format_amount(
-                    #        sum(inv.l10n_latam_tax_ids.filtered(lambda r: (
-                    #            r.tax_line_id.tax_group_id.tax_type == 'withholdings' and
-                    #            r.tax_line_id.tax_group_id.l10n_ar_tribute_afip_code \
-                    #            == '07')
-                    #        ).mapped(type_internal)), invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["iibb_perc_amount"], invoice=inv
-                    ),
+                    self.format_amount(amounts["iibb_perc_amount"], invoice=inv),
                 ]
 
             row += [
                 # Campo 15: Importe de percepciones de impuestos municipales
-                # self.format_amount(
-                #    sum(inv.move_tax_ids.filtered(lambda r: (
-                #        r.tax_id.tax_group_id.tax_type == 'withholding' and
-                #        r.tax_id.tax_group_id.l10n_ar_tribute_afip_code == '03')
-                #    ).mapped('tax_amount')), invoice=inv),
-                self.format_amount(
-                    inv._l10n_ar_get_amounts()["mun_perc_amount"], invoice=inv
-                ),
+                self.format_amount(amounts["mun_perc_amount"], invoice=inv),
                 # Campo 16: Importe de impuestos internos
-                # self.format_amount(
-                #    sum(inv.move_tax_ids.filtered(
-                #        lambda r: r.tax_id.tax_group_id.l10n_ar_tribute_afip_code \
-                #        == '04'
-                #    ).mapped('tax_amount')), invoice=inv),
-                self.format_amount(
-                    inv._l10n_ar_get_amounts()["intern_tax_amount"], invoice=inv
-                ),
+                self.format_amount(amounts["intern_tax_amount"], invoice=inv),
                 # Campo 17: Código de Moneda
                 str(currency_code),
                 # Campo 18: Tipo de Cambio
@@ -641,14 +537,7 @@ class AccountVatLedger(models.Model):
             if self.type == "sale":
                 row += [
                     # Campo 21: Otros Tributos
-                    # self.format_amount(
-                    #    sum(inv.move_tax_ids.filtered(
-                    #        lambda r: r.tax_id.tax_group_id.l10n_ar_tribute_afip_code \
-                    #        == '99'
-                    #    ).mapped('tax_amount')), invoice=inv),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["other_taxes_amount"], invoice=inv
-                    ),
+                    self.format_amount(amounts["other_taxes_amount"], invoice=inv),
                     # Campo 22: Vencimiento comprobante
                     (
                         inv.l10n_latam_document_type_id.code
@@ -722,10 +611,7 @@ class AccountVatLedger(models.Model):
 
                 row += [
                     # Campo 22: Otros Tributos
-                    # self.format_amount(0),
-                    self.format_amount(
-                        inv._l10n_ar_get_amounts()["other_taxes_amount"], invoice=inv
-                    ),
+                    self.format_amount(amounts["other_taxes_amount"], invoice=inv),
                     # TODO Implementar Campo 23, 24 y 25
                     # Campo 23: CUIT Emisor / Corredor
                     # Se informará sólo si en el campo "Tipo de Comprobante" se
