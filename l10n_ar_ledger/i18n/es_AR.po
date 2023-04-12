@@ -6,50 +6,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-04-12 19:32+0000\n"
+"Last-Translator: Ignacio Buioli <ibuioli@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es_AR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "%s VAT Ledger %s - %s"
-msgstr ""
+msgstr "%s Libro IVA %s - %s"
 
 #. module: l10n_ar_ledger
 #: model:ir.model,name:l10n_ar_ledger.model_account_vat_ledger
 msgid "Account VAT Ledger"
-msgstr ""
+msgstr "Libro IVA"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_needaction
 msgid "Action Needed"
-msgstr ""
+msgstr "Acción Requerida"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "Alicuots_%s_%s.txt"
-msgstr ""
+msgstr "Alicuotas_%s_%s.txt"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_attachment_count
 msgid "Attachment Count"
-msgstr ""
+msgstr "Cuenta de Adjuntos"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__state__cancel
 msgid "Cancelled"
-msgstr ""
+msgstr "Cancelado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__company_id
 msgid "Company"
-msgstr ""
+msgstr "Compañía"
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
@@ -57,68 +59,70 @@ msgid ""
 "Create TXT files with invoices information in the present period, on AFIP "
 "VAT Digital Ledger format."
 msgstr ""
+"Crea los archivos TXT con la información de las facturas en el presente "
+"período, en formato de Libro IVA Digital de AFIP."
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creado por"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creado el"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__date_from
 msgid "Date From"
-msgstr ""
+msgstr "Fecha Desde"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__date_to
 msgid "Date To"
-msgstr ""
+msgstr "Fecha Hasta"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_aliquots_file
 msgid "Digital Aliquots File"
-msgstr ""
+msgstr "Archivo Digital de Alícuotas"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_aliquots_filename
 msgid "Digital Aliquots Filename"
-msgstr ""
+msgstr "Nombre de Archivo Digital de Alícuotas"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_import_aliquots_file
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_import_aliquots_filename
 msgid "Digital Import Aliquots File"
-msgstr ""
+msgstr "Archivo Digital de Alícuotas de Importación"
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 msgid "Digital VAT"
-msgstr ""
+msgstr "IVA Digital"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_vouchers_file
 msgid "Digital Voucher File"
-msgstr ""
+msgstr "Archivo de Comprobante Digital"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_vouchers_filename
 msgid "Digital Voucher Filename"
-msgstr ""
+msgstr "Nombre de Archivo de Comprobante Digital"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__display_name
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nombre Mostrado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__state__draft
 msgid "Draft"
-msgstr ""
+msgstr "Borrador"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__digital_skip_lines
@@ -126,56 +130,58 @@ msgid ""
 "Enter a list of lines, for eg '1, 2, 3'. If you skip some lines you would "
 "need to enter them manually"
 msgstr ""
+"Ingrese una lista de línea, por ejemplo '1, 2, 3'. Si saltea algunas línea "
+"necesitará ingresarlas manualmente"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type__export_to_digital
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.view_document_type_digital_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.view_document_type_digital_tree
 msgid "Export to Digital"
-msgstr ""
+msgstr "Exportar a Digital"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_follower_ids
 msgid "Followers"
-msgstr ""
+msgstr "Seguidores"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_channel_ids
 msgid "Followers (Channels)"
-msgstr ""
+msgstr "Seguidores (Canales)"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_partner_ids
 msgid "Followers (Partners)"
-msgstr ""
+msgstr "Seguidores (Contactos)"
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 msgid "Generate VAT Digital Information"
-msgstr ""
+msgstr "Generar Información de IVA Digital"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__id
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_needaction
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_unread
 msgid "If checked, new messages require your attention."
-msgstr ""
+msgstr "Si está marcado, los nuevos mensajes requieren su atención."
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_error
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr ""
+msgstr "Si está marcado, algunos mensajes tienen error de entrega."
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.view_document_type_digital_form
 msgid "If set, document type will export to digital."
-msgstr ""
+msgstr "Si se configura, el tipo de documento será exportado a digital."
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__digital_skip_invoice_tests
@@ -183,110 +189,112 @@ msgid ""
 "If you skip invoice tests probably you will have errors when loading the "
 "files in digital."
 msgstr ""
+"Si saltea las pruebas de factura posiblemente tendrá errores cuando cargue "
+"los archivos en digital."
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "Import_Alicuots_%s_%s.txt"
-msgstr ""
+msgstr "Alicuotas_Importacion_%s_%s.txt"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__invoice_ids
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 msgid "Invoices"
-msgstr ""
+msgstr "Facturas"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_is_follower
 msgid "Is Follower"
-msgstr ""
+msgstr "Es Seguidor"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__journal_ids
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 msgid "Journals"
-msgstr ""
+msgstr "Diarios"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger____last_update
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última modificación el"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Última actualización por"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Última actualización el"
 
 #. module: l10n_ar_ledger
 #: model:ir.model,name:l10n_ar_ledger.model_l10n_latam_document_type
 msgid "Latam Document Type"
-msgstr ""
+msgstr "Tipo de Documento Latam"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_skip_lines
 msgid "Lines list to skip with digital files"
-msgstr ""
+msgstr "Lista de línea a saltear con archivos digitales"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_main_attachment_id
 msgid "Main Attachment"
-msgstr ""
+msgstr "Adjunto Principal"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_has_error
 msgid "Message Delivery error"
-msgstr ""
+msgstr "Mensaje de Error de Entrega"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_ids
 msgid "Messages"
-msgstr ""
+msgstr "Mensajes"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__name
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__note
 msgid "Note"
-msgstr ""
+msgstr "Nota"
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 msgid "Notes"
-msgstr ""
+msgstr "Notas"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_needaction_counter
 msgid "Number of Actions"
-msgstr ""
+msgstr "Número de Acciones"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_has_error_counter
 msgid "Number of errors"
-msgstr ""
+msgstr "Número de errores"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_needaction_counter
 msgid "Number of messages which requires an action"
-msgstr ""
+msgstr "Número de mensajes que requieren una acción"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr ""
+msgstr "Número de mensajes con error de entrega"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_unread_counter
 msgid "Number of unread messages"
-msgstr ""
+msgstr "Número de mensajes sin leer"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
@@ -296,6 +304,10 @@ msgid ""
 "\r\n"
 "%s"
 msgstr ""
+"En compra digital, el tipo de documento en el contacto es obligatorio y debe "
+"ser diferente de 99. Contacos:\n"
+"\n"
+"%s"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
@@ -306,145 +318,151 @@ msgid ""
 "2) Importe los mismos en el aplicativo\n"
 "3) En el aplicativo de afip, comprobante por comprobante, indique el valor correspondiente en el campo \"Crédito Fiscal Computable\""
 msgstr ""
+"Para utilizar el prorrateo por comprobante:\n"
+"1) Exporte los archivos sin la opción \"Prorratear Crédito de Impuestos\"\n"
+"2) Importe los mismos en el aplicativo\n"
+"3) En el aplicativo de AFIP, comprobante por comprobante, indique el valor "
+"correspondiente en el campo \"Crédito Fiscal Computable\""
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "Partner  has not CUIT/CUIL or DNI. Required fro VAT Ledger Book."
 msgstr ""
+"El contacto no tiene CUIT/CUIL o DNI. Requerido para el Libro IVA Digital."
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__state__presented
 msgid "Presented"
-msgstr ""
+msgstr "Presentado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__presented_ledger
 msgid "Presented Ledger"
-msgstr ""
+msgstr "Libro Presentado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__presented_ledger_name
 msgid "Presented Ledger Name"
-msgstr ""
+msgstr "Nombre del Libro Presentado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__prorate_tax_credit
 msgid "Prorate Tax Credit"
-msgstr ""
+msgstr "Crédito Fiscal Prorrateado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__type__purchase
 msgid "Purchase"
-msgstr ""
+msgstr "Compra"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "Purchases"
-msgstr ""
+msgstr "Compras"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__REGDIGITAL_CV_ALICUOTAS
 msgid "REGDIGITAL_CV_ALICUOTAS"
-msgstr ""
+msgstr "REGDIGITAL_CV_ALICUOTAS"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__REGDIGITAL_CV_CABECERA
 msgid "REGDIGITAL_CV_CABECERA"
-msgstr ""
+msgstr "REGDIGITAL_CV_CABECERA"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__REGDIGITAL_CV_CBTE
 msgid "REGDIGITAL_CV_CBTE"
-msgstr ""
+msgstr "REGDIGITAL_CV_CBTE"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__REGDIGITAL_CV_COMPRAS_IMPORTACIONES
 msgid "REGDIGITAL_CV_COMPRAS_IMPORTACIONES"
-msgstr ""
+msgstr "REGDIGITAL_CV_COMPRAS_IMPORTACIONES"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__reference
 msgid "Reference"
-msgstr ""
+msgstr "Referencia"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "Error de Entrega de SMS"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__type__sale
 msgid "Sale"
-msgstr ""
+msgstr "Venta"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "Sales"
-msgstr ""
+msgstr "Ventas"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_l10n_latam_document_type__export_to_digital
 msgid "Set this to export this document on Digital VAT Ledger"
-msgstr ""
+msgstr "Configurar esto para exportar este documento en el Libro IVA Digital"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_skip_invoice_tests
 msgid "Skip invoice test?"
-msgstr ""
+msgstr "¿Saltear pruebas de factura?"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__state
 msgid "State"
-msgstr ""
+msgstr "Estado"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__type
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_unread
 msgid "Unread Messages"
-msgstr ""
+msgstr "Mensajes Sin leer"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_unread_counter
 msgid "Unread Messages Counter"
-msgstr ""
+msgstr "Contador de Mensajes Sin Leer"
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_tree
 msgid "VAT Ledger"
-msgstr ""
+msgstr "Libro IVA"
 
 #. module: l10n_ar_ledger
 #: model:ir.actions.act_window,name:l10n_ar_ledger.action_account_purchase_vat_ledger
 #: model:ir.ui.menu,name:l10n_ar_ledger.menu_account_purchase_vat_ledger
 msgid "VAT Purchase"
-msgstr ""
+msgstr "IVA Compra"
 
 #. module: l10n_ar_ledger
 #: model:ir.actions.act_window,name:l10n_ar_ledger.action_account_sale_vat_ledger
 #: model:ir.ui.menu,name:l10n_ar_ledger.menu_account_sale_vat_ledger
 msgid "VAT Sales"
-msgstr ""
+msgstr "IVA Venta"
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid "Vouchers_%s_%s.txt"
-msgstr ""
+msgstr "Comprobantes_%s_%s.txt"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__website_message_ids
 msgid "Website Messages"
-msgstr ""
+msgstr "Mensajes del Sitio Web"
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__website_message_ids
 msgid "Website communication history"
-msgstr ""
+msgstr "Historial de comunicación del Sitio Web"
