@@ -17,5 +17,5 @@
         "views/reports.xml",
     ],
     "installable": True,
-    "maintainers": ["Nimarosa"],
+    "maintainers": ["nimarosa", "ibuioli"],
 }
