@@ -7,7 +7,7 @@
     "summary": "Advanced invoice report for Argentina localization",
     "author": "Nimarosa, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-argentina",
-    "license": "LGPL-3",
+    "license": "AGPL-3",
     "category": "Invoicing",
     "depends": ["l10n_ar_afipws_fe", "report_qweb_pdf_watermark"],
     "data": [
