@@ -8,7 +8,6 @@ setuptools.setup(
     description="Meta package for oca-l10n-argentina Odoo addons",
     version=version,
     install_requires=[
-        'odoo14-addon-l10n_ar_account_move_tax',
         'odoo14-addon-l10n_ar_afipws',
         'odoo14-addon-l10n_ar_afipws_fe',
         'odoo14-addon-l10n_ar_bank',
