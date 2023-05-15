@@ -13,7 +13,6 @@
     "data": [
         "views/res_company_views.xml",
         "views/report_invoice_fe_template.xml",
-        "views/report_payment_template.xml",
         "views/reports.xml",
     ],
     "installable": True,
