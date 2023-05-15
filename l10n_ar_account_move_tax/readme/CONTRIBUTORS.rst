@@ -1,5 +1,0 @@
-- Nimarosa
-- ADHOC S.A.
-- Modeo Interactive
-- Exemax
-- Codize
