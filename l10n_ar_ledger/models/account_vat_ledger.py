@@ -399,6 +399,13 @@ class AccountVatLedger(models.Model):
 
     # REGDIGITAL_CV_CBTE Methods
 
+    def get_vat_import(self, vat, code):
+        import_vat = 0
+        for v in vat:
+            if v["Id"] == code:
+                import_vat = import_vat + v["Importe"]
+        return import_vat
+
     def _check_partners(self, invoices):
         if self.type == "purchase":
             partners = invoices.mapped("commercial_partner_id").filtered(
@@ -602,11 +609,11 @@ class AccountVatLedger(models.Model):
                 else:
                     imp_neto = 0
                     imp_liquidado = 0
-                    for mvl_tax in inv.l10n_latam_tax_ids:
-                        tax_group_id = mvl_tax.tax_group_id
-                        if tax_group_id.l10n_ar_vat_afip_code in [3, 4, 5, 6, 8, 9]:
-                            imp_neto += mvl_tax.tax_base_amount
-                            imp_liquidado += mvl_tax.price_subtotal
+                    vats = inv._get_vat()
+                    for v in vats:
+                        if v["Id"] in ["3", "4", "5", "6", "8", "9"]:
+                            imp_neto += v["BaseImp"]
+                            imp_liquidado = v["BaseImp"] + v["Importe"]
                     row.append(self.format_amount(round(imp_liquidado, 2), invoice=inv))
 
                 row += [

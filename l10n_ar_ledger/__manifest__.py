@@ -15,6 +15,8 @@
         "security/ir.model.access.csv",
         "security/security.xml",
         "views/account_vat_ledger.xml",
+        "views/account_vat_ledger_pdf.xml",
+        "views/account_vat_ledger_xlsx.xml",
     ],
     "maintainers": ["nimarosa", "ibuioli"],
     "installable": True,
