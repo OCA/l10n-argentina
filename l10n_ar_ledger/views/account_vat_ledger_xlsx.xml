@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <odoo>
-        <data>
+  <data>
 
-		<report
+    <report
             id="account_vat_ledger_xlsx"
             model="account.vat.ledger"
             string="VAT Ledger (XLSX)"
@@ -12,5 +12,5 @@
             attachment_use="False"
         />
 
-	</data>
+  </data>
 </odoo>
