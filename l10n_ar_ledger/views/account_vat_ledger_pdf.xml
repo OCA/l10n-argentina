@@ -1,0 +1,306 @@
+<odoo>
+  <data>
+    <template id="ledger_report">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+          <t t-call="web.external_layout">
+            <div class="page">
+              <h2>
+                Libro IVA
+
+                <span class="pl-1" t-if="o.type == 'sale'">
+                  Ventas
+                </span>
+                <span class="pl-1" t-if="o.type == 'purchase'">
+                  Compras
+                </span>
+              </h2>
+              <table class="table table-sm" style="font-size:11px;">
+                <thead class="thead-dark">
+                  <tr>
+                    <th style="width:auto;">Fecha</th>
+                    <th>Raz&#xF3;n Social</th>
+                    <th>CUIT</th>
+                    <th>Responsabilidad AFIP</th>
+                    <th>Tipo Comprobante</th>
+                    <th>Nro Comprobante</th>
+                    <th>Neto gravado</th>
+                    <th>Neto no gravado</th>
+                    <th>Neto exento</th>
+                    <th>IVA 27</th>
+                    <th>IVA 21</th>
+                    <th>IVA 10.5</th>
+                    <th>Otros</th>
+                    <th>Total gravado</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- TOTALs VARs -->
+                  <t t-set="total_neto_gravado" t-value="0" />
+                  <t t-set="total_neto_no_gravado" t-value="0" />
+                  <t t-set="total_neto_exento" t-value="0" />
+                  <t t-set="total_iva105" t-value="0" />
+                  <t t-set="total_iva21" t-value="0" />
+                  <t t-set="total_iva27" t-value="0" />
+                  <t t-set="total_otros" t-value="0" />
+                  <t t-set="total_gravado" t-value="0" />
+                  <t t-set="total_total" t-value="0" />
+                  <!-- END TOTALs VARs -->
+                  <tr t-foreach="o.invoice_ids" t-as="invoice">
+                    <t t-set="amounts" t-value="invoice._l10n_ar_get_amounts()" />
+                    <td>
+                      <span t-field="invoice.invoice_date" />
+                    </td>
+                    <td>
+                      <span t-field="invoice.partner_id.name" />
+                    </td>
+                    <td>
+                      <span
+                                                t-if="invoice.partner_id.l10n_latam_identification_type_id.name == 'CUIT'"
+                                                t-field="invoice.partner_id.vat"
+                                            />
+                    </td>
+                    <td>
+                      <span
+                                                t-field="invoice.partner_id.l10n_ar_afip_responsibility_type_id"
+                                            />
+                    </td>
+                    <td>
+                      <span t-field="invoice.l10n_latam_document_type_id.name" />
+                    </td>
+                    <td>
+                      <span t-field="invoice.name" />
+                    </td>
+                    <td name="Neto Gravado">
+                      <t t-set="netoG" t-value="amounts['vat_taxable_amount']" />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="netoG" t-value="netoG * -1" />
+                      </t>
+                      <t
+                                                t-set="total_neto_gravado"
+                                                t-value="total_neto_gravado + netoG"
+                                            />
+                      <t
+                                                t-esc="netoG"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td name="Neto No Gravado">
+                      <t t-set="netoN" t-value="amounts['vat_untaxed_base_amount']" />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="netoN" t-value="netoN * -1" />
+                      </t>
+                      <t
+                                                t-set="total_neto_no_gravado"
+                                                t-value="total_neto_no_gravado + netoN"
+                                            />
+                      <t
+                                                t-esc="netoN"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td name="Neto Exento">
+                      <t t-set="netoE" t-value="amounts['vat_exempt_base_amount']" />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="netoE" t-value="netoE * -1" />
+                      </t>
+                      <t
+                                                t-set="total_neto_exento"
+                                                t-value="total_neto_exento + netoE"
+                                            />
+                      <t
+                                                t-esc="netoE"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td name="iva27">
+                      <t
+                                                t-set="iva27"
+                                                t-value="o.get_vat_import(invoice._get_vat(), '6')"
+                                            />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="iva27" t-value="iva27 * -1" />
+                      </t>
+                      <t t-set="total_iva27" t-value="total_iva27 + iva27" />
+                      <t
+                                                t-esc="iva27"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td name="iva21">
+                      <t
+                                                t-set="iva21"
+                                                t-value="o.get_vat_import(invoice._get_vat(), '5')"
+                                            />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="iva21" t-value="iva21 * -1" />
+                      </t>
+                      <t t-set="total_iva21" t-value="total_iva21 + iva21" />
+                      <t
+                                                t-esc="iva21"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td name="iva10.5">
+                      <t
+                                                t-set="iva105"
+                                                t-value="o.get_vat_import(invoice._get_vat(), '4')"
+                                            />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="iva105" t-value="iva105 * -1" />
+                      </t>
+                      <t t-set="total_iva105" t-value="total_iva105 + iva105" />
+                      <t
+                                                t-esc="iva105"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <t
+                                                t-set="otros"
+                                                t-value="amounts['iibb_perc_amount'] + amounts['mun_perc_amount'] + amounts['intern_tax_amount'] + amounts['other_taxes_amount'] + amounts['profits_perc_amount'] + amounts['vat_perc_amount'] + amounts['other_perc_amount']"
+                                            />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="otros" t-value="netoE * -1" />
+                      </t>
+                      <t t-set="total_otros" t-value="total_otros + otros" />
+                      <t
+                                                t-esc="otros"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="netoG + iva27 + iva21 + iva105 + otros"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                      <t
+                                                t-set="total_gravado"
+                                                t-value="total_gravado + netoG + iva27 + iva21 + iva105 + otros"
+                                            />
+                    </td>
+                    <td>
+                      <t t-set="total_amount" t-value="invoice.amount_total" />
+                      <t
+                                                t-if="invoice.l10n_latam_document_type_id.internal_type == 'credit_note'"
+                                            >
+                        <t t-set="total_amount" t-value="total_amount * -1" />
+                      </t>
+                      <span
+                                                t-esc="total_amount"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
+                                            />
+                      <t t-set="total_total" t-value="total_total + total_amount" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td>
+                      <p
+                                                t-esc="total_neto_gravado"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_neto_no_gravado"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_neto_exento"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_iva27"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_iva21"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_iva105"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_otros"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_gravado"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                    <td>
+                      <p
+                                                t-esc="total_total"
+                                                t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
+                                            />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+    <record id="paperformat_landscape" model="report.paperformat">
+      <field name="name">Apaisado - Libro IVA</field>
+      <field name="default" eval="False" />
+      <field name="format">A4</field>
+      <field name="page_height">0</field>
+      <field name="page_width">0</field>
+      <field name="orientation">Landscape</field>
+      <field name="margin_top">10</field>
+      <field name="margin_bottom">10</field>
+      <field name="margin_left">2</field>
+      <field name="margin_right">2</field>
+      <field name="header_line" eval="False" />
+      <field name="header_spacing">40</field>
+      <field name="dpi">95</field>
+    </record>
+    <report
+            id="l10n_ar_action_report_ledger"
+            model="account.vat.ledger"
+            string="Libro IVA"
+            report_type="qweb-pdf"
+            paperformat="l10n_ar_ledger.paperformat_landscape"
+            name="l10n_ar_ledger.ledger_report"
+            file="l10n_ar_ledger.ledger_report"
+            print_report_name="'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' + (object.date_to.strftime('%d-%m-%Y')) + '.pdf'"
+        />
+  </data>
+</odoo>

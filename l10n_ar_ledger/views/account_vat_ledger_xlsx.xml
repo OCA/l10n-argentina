@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<odoo>
+  <data>
+
+    <report
+            id="account_vat_ledger_xlsx"
+            model="account.vat.ledger"
+            string="VAT Ledger (XLSX)"
+            report_type="xlsx"
+            name="l10n_ar_ledger.account_vat_ledger_xlsx"
+            file="account_vat_ledger"
+            attachment_use="False"
+        />
+
+  </data>
+</odoo>
