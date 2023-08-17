@@ -23,6 +23,13 @@ msgid "%s VAT Ledger %s - %s"
 msgstr "%s Libro IVA %s - %s"
 
 #. module: l10n_ar_ledger
+#: model:ir.actions.report,print_report_name:l10n_ar_ledger.l10n_ar_action_report_ledger
+msgid ""
+"'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' "
+"+ (object.date_to.strftime('%d-%m-%Y')) + '.pdf'"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.model,name:l10n_ar_ledger.model_account_vat_ledger
 msgid "Account VAT Ledger"
 msgstr "Libro IVA"
@@ -44,6 +51,11 @@ msgid "Attachment Count"
 msgstr "Cuenta de Adjuntos"
 
 #. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "CUIT"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__state__cancel
 msgid "Cancelled"
 msgstr "Cancelado"
@@ -52,6 +64,11 @@ msgstr "Cancelado"
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__company_id
 msgid "Company"
 msgstr "Compañía"
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Compras"
+msgstr ""
 
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
@@ -116,6 +133,7 @@ msgstr "Nombre de Archivo de Comprobante Digital"
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__display_name
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type__display_name
+#: model:ir.model.fields,field_description:l10n_ar_ledger.field_report_l10n_ar_ledger_account_vat_ledger_xlsx__display_name
 msgid "Display Name"
 msgstr "Nombre Mostrado"
 
@@ -141,6 +159,11 @@ msgid "Export to Digital"
 msgstr "Exportar a Digital"
 
 #. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Fecha"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_follower_ids
 msgid "Followers"
 msgstr "Seguidores"
@@ -163,8 +186,24 @@ msgstr "Generar Información de IVA Digital"
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__id
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type__id
+#: model:ir.model.fields,field_description:l10n_ar_ledger.field_report_l10n_ar_ledger_account_vat_ledger_xlsx__id
 msgid "ID"
 msgstr "ID"
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "IVA 10.5"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "IVA 21"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "IVA 27"
+msgstr ""
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_needaction
@@ -218,6 +257,7 @@ msgstr "Diarios"
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger____last_update
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_l10n_latam_document_type____last_update
+#: model:ir.model.fields,field_description:l10n_ar_ledger.field_report_l10n_ar_ledger_account_vat_ledger_xlsx____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
@@ -235,6 +275,12 @@ msgstr "Última actualización el"
 #: model:ir.model,name:l10n_ar_ledger.model_l10n_latam_document_type
 msgid "Latam Document Type"
 msgstr "Tipo de Documento Latam"
+
+#. module: l10n_ar_ledger
+#: model:ir.actions.report,name:l10n_ar_ledger.l10n_ar_action_report_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Libro IVA"
+msgstr ""
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__digital_skip_lines
@@ -262,6 +308,21 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Neto exento"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Neto gravado"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Neto no gravado"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__note
 msgid "Note"
 msgstr "Nota"
@@ -270,6 +331,11 @@ msgstr "Nota"
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.account_vat_ledger_form
 msgid "Notes"
 msgstr "Notas"
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Nro Comprobante"
+msgstr ""
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_needaction_counter
@@ -300,7 +366,8 @@ msgstr "Número de mensajes sin leer"
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid ""
-"On purchase digital, partner document type is mandatory and it must be different from 99. Partners: \r\n"
+"On purchase digital, partner document type is mandatory and it must be "
+"different from 99. Partners: \r\n"
 "\r\n"
 "%s"
 msgstr ""
@@ -310,13 +377,19 @@ msgstr ""
 "%s"
 
 #. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Otros"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
 #, python-format
 msgid ""
 "Para utilizar el prorrateo por comprobante:\n"
 "1) Exporte los archivos sin la opción \"Proratear Crédito de Impuestos\"\n"
 "2) Importe los mismos en el aplicativo\n"
-"3) En el aplicativo de afip, comprobante por comprobante, indique el valor correspondiente en el campo \"Crédito Fiscal Computable\""
+"3) En el aplicativo de afip, comprobante por comprobante, indique el valor "
+"correspondiente en el campo \"Crédito Fiscal Computable\""
 msgstr ""
 "Para utilizar el prorrateo por comprobante:\n"
 "1) Exporte los archivos sin la opción \"Prorratear Crédito de Impuestos\"\n"
@@ -383,9 +456,24 @@ msgid "REGDIGITAL_CV_COMPRAS_IMPORTACIONES"
 msgstr "REGDIGITAL_CV_COMPRAS_IMPORTACIONES"
 
 #. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Razón Social"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__reference
 msgid "Reference"
 msgstr "Referencia"
+
+#. module: l10n_ar_ledger
+#: model:ir.model,name:l10n_ar_ledger.model_report_l10n_ar_ledger_account_vat_ledger_xlsx
+msgid "Report VAT Ledger XLSX"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Responsabilidad AFIP"
+msgstr ""
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
@@ -419,6 +507,21 @@ msgid "State"
 msgstr "Estado"
 
 #. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Tipo Comprobante"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Total"
+msgstr ""
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Total gravado"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__type
 msgid "Type"
 msgstr "Tipo"
@@ -440,6 +543,11 @@ msgid "VAT Ledger"
 msgstr "Libro IVA"
 
 #. module: l10n_ar_ledger
+#: model:ir.actions.report,name:l10n_ar_ledger.account_vat_ledger_xlsx
+msgid "VAT Ledger (XLSX)"
+msgstr ""
+
+#. module: l10n_ar_ledger
 #: model:ir.actions.act_window,name:l10n_ar_ledger.action_account_purchase_vat_ledger
 #: model:ir.ui.menu,name:l10n_ar_ledger.menu_account_purchase_vat_ledger
 msgid "VAT Purchase"
@@ -450,6 +558,11 @@ msgstr "IVA Compra"
 #: model:ir.ui.menu,name:l10n_ar_ledger.menu_account_sale_vat_ledger
 msgid "VAT Sales"
 msgstr "IVA Venta"
+
+#. module: l10n_ar_ledger
+#: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
+msgid "Ventas"
+msgstr ""
 
 #. module: l10n_ar_ledger
 #: code:addons/l10n_ar_ledger/models/account_vat_ledger.py:0
