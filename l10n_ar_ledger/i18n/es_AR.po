@@ -28,8 +28,8 @@ msgid ""
 "'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' "
 "+ (object.date_to.strftime('%d-%m-%Y')) + '.pdf'"
 msgstr ""
-"'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' +"
-" (object.date_to.strftime('%d-%m-%Y')) + '.pdf'"
+"'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' "
+"+ (object.date_to.strftime('%d-%m-%Y')) + '.pdf'"
 
 #. module: l10n_ar_ledger
 #: model:ir.model,name:l10n_ar_ledger.model_account_vat_ledger
