@@ -57,8 +57,8 @@ msgid ""
 msgstr ""
 "<span class=\"o_form_label\">Servicios Web AFIP</span>\n"
 "                            <span class=\"fa fa-lg fa-building-o\" title="
-"\"Values set here are company-specific.\" groups=\"base.group_multi_company\""
-"/>"
+"\"Values set here are company-specific.\" groups=\"base.group_multi_company"
+"\"/>"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_certificate_alias
