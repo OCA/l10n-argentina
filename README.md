@@ -7,9 +7,9 @@
 
 <!-- /!\ do not modify above this line -->
 
-# l10n-argentina
+# Odoo addons for Argentina
 
-TODO: add repo description.
+Odoo addons for Argentina
 
 <!-- /!\ do not modify below this line -->
 
