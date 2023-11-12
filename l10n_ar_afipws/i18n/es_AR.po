@@ -57,8 +57,8 @@ msgid ""
 msgstr ""
 "<span class=\"o_form_label\">Servicios Web AFIP</span>\n"
 "                            <span class=\"fa fa-lg fa-building-o\" title="
-"\"Values set here are company-specific.\" groups=\"base.group_multi_company\""
-"/>"
+"\"Values set here are company-specific.\" groups=\"base.group_multi_company"
+"\"/>"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_certificate_alias
@@ -68,20 +68,13 @@ msgstr "Certificado AFIP"
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_filter
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_tree
 msgid "AFIP Certificados"
 msgstr "Certificados AFIP"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_tree
 msgid "AFIP Certificates"
 msgstr "Certificados AFIP"
-
-#. module: l10n_ar_afipws
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_tree
-msgid "AFIP Conector"
-msgstr "Conector AFIP"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_auth
@@ -144,6 +137,7 @@ msgid "AFIP Web Services"
 msgstr "AFIP Web Services"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_connection.py:0
 #, python-format
 msgid "AFIP Webservice %s not implemented yet"
@@ -217,6 +211,7 @@ msgid "Certificate Alias"
 msgstr "Alias del Certificado"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_certificate.py:0
 #, python-format
 msgid "Certificate Alias must be confirmed first!"
@@ -320,6 +315,7 @@ msgid "Connections"
 msgstr "Conexiones"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/res_company.py:0
 #, python-format
 msgid "Could not connect. This is the what we received: %s"
@@ -361,8 +357,6 @@ msgstr "Departamento"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate_alias__display_name
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__display_name
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__display_name
-#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__display_name
-#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__display_name
 msgid "Display Name"
 msgstr "Nombre Mostrado"
 
@@ -447,12 +441,11 @@ msgstr "Homologación"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate_alias__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__id
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__id
-#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__id
-#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__id
 msgid "ID"
 msgstr "ID"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_certificate.py:0
 #, python-format
 msgid "Invalid action! Please, set the certification string to continue."
@@ -461,6 +454,7 @@ msgstr ""
 "continuar."
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_certificate.py:0
 #, python-format
 msgid ""
@@ -485,8 +479,6 @@ msgstr "Clave"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_certificate_alias____last_update
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection____last_update
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard____last_update
-#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company____last_update
-#: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
@@ -514,10 +506,13 @@ msgid "Nombre Común"
 msgstr "Nombre Común"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/res_company.py:0
 #, python-format
-msgid "Not confirmed certificate for %s on company %s"
-msgstr "No existe un certificado confirmado para %s en la compañía %s"
+msgid ""
+"Not confirmed certificate for \"%(environment_type)s\" on company \"%(name)s"
+"\""
+msgstr ""
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
@@ -602,27 +597,20 @@ msgid "Subcontratado"
 msgstr "Subcontratado"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_certificate_alias.py:0
 #, python-format
 msgid "The Common Name must be lower than 50 characters long"
 msgstr "El Nombre Común debe tener una longitud menor a 50 caracteres"
 
 #. module: l10n_ar_afipws
-#: code:addons/l10n_ar_afipws/models/afipws_connection.py:0
-#, python-format
-msgid "This method is for %s connections and you call it from an %s connection"
-msgstr ""
-"Este método es para las conexiones %s y puede llamarla desde una conexión %s"
-
-#. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/res_company.py:0
 #, python-format
 msgid ""
-"Tiene más de un certificado de \"%s\" confirmado. Por favor deje un solo "
-"certificado de \"%s\" confirmado."
+"Tiene más de un certificado de \"%(environment_type)s\" confirmado.Por "
+"favor, deje un solo certificado de \"%(environment_type)s\" confirmado."
 msgstr ""
-"Tiene más de un certificado de \"%s\" confirmado. Por favor deje un solo "
-"certificado de \"%s\" confirmado."
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
@@ -663,6 +651,7 @@ msgid "Unique ID"
 msgstr "ID Único"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_certificate.py:0
 #, python-format
 msgid ""
@@ -687,12 +676,14 @@ msgid "Volver a Borrador"
 msgstr "Volver a Borrador"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_connection.py:0
 #, python-format
 msgid "Webservice %s not supported"
 msgstr "El Webservice %s no está soportado"
 
 #. module: l10n_ar_afipws
+#. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_certificate.py:0
 #, python-format
 msgid ""
@@ -716,3 +707,25 @@ msgstr "afipws.upload_certificate.wizard"
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_upload_certificate_form
 msgid "or"
 msgstr "o"
+
+#~ msgid "AFIP Conector"
+#~ msgstr "Conector AFIP"
+
+#, python-format
+#~ msgid "Not confirmed certificate for %s on company %s"
+#~ msgstr "No existe un certificado confirmado para %s en la compañía %s"
+
+#, python-format
+#~ msgid ""
+#~ "This method is for %s connections and you call it from an %s connection"
+#~ msgstr ""
+#~ "Este método es para las conexiones %s y puede llamarla desde una conexión "
+#~ "%s"
+
+#, python-format
+#~ msgid ""
+#~ "Tiene más de un certificado de \"%s\" confirmado. Por favor deje un solo "
+#~ "certificado de \"%s\" confirmado."
+#~ msgstr ""
+#~ "Tiene más de un certificado de \"%s\" confirmado. Por favor deje un solo "
+#~ "certificado de \"%s\" confirmado."
