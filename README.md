@@ -17,7 +17,11 @@ Odoo addons for Argentina
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[l10n_ar_afipws](l10n_ar_afipws/) | 16.0.1.0.0 | [![nimarosa](https://github.com/nimarosa.png?size=30px)](https://github.com/nimarosa) [![ibuioli](https://github.com/ibuioli.png?size=30px)](https://github.com/ibuioli) | Integration for Argentina Electronic invoice webservices
 
 [//]: # (end addons)
 
