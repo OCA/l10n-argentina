@@ -31,9 +31,7 @@ msgstr ""
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
-msgid ""
-"<span class=\"o_form_label\">AFIP Web Services</span>\n"
-"                            <span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" groups=\"base.group_multi_company\"/>"
+msgid "<span class=\"o_form_label\">AFIP Webservices</span>"
 msgstr ""
 
 #. module: l10n_ar_afipws
@@ -122,11 +120,6 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__alias_ids
 msgid "Aliases"
-msgstr ""
-
-#. module: l10n_ar_afipws
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
-msgid "Argentina Localization"
 msgstr ""
 
 #. module: l10n_ar_afipws
@@ -257,6 +250,11 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model:ir.model,name:l10n_ar_afipws.model_res_config_settings
 msgid "Config Settings"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "Configure AFIP web-services"
 msgstr ""
 
 #. module: l10n_ar_afipws
@@ -465,6 +463,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__write_date
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_upload_certificate_wizard__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "List certificates"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "List conections"
 msgstr ""
 
 #. module: l10n_ar_afipws
