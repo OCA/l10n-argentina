@@ -49,16 +49,8 @@ msgstr ""
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
-msgid ""
-"<span class=\"o_form_label\">AFIP Web Services</span>\n"
-"                            <span class=\"fa fa-lg fa-building-o\" title="
-"\"Values set here are company-specific.\" groups=\"base.group_multi_company"
-"\"/>"
+msgid "<span class=\"o_form_label\">AFIP Webservices</span>"
 msgstr ""
-"<span class=\"o_form_label\">Servicios Web AFIP</span>\n"
-"                            <span class=\"fa fa-lg fa-building-o\" title="
-"\"Values set here are company-specific.\" groups=\"base.group_multi_company"
-"\"/>"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_certificate_alias
@@ -147,11 +139,6 @@ msgstr "El Webservice de AFIP %s no ha sido implementado"
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__alias_ids
 msgid "Aliases"
 msgstr "Alias"
-
-#. module: l10n_ar_afipws
-#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
-msgid "Argentina Localization"
-msgstr "Localización Argentina"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields.selection,name:l10n_ar_afipws.selection__afipws_certificate_alias__state__draft
@@ -282,6 +269,11 @@ msgstr "Conexiones"
 #: model:ir.model,name:l10n_ar_afipws.model_res_config_settings
 msgid "Config Settings"
 msgstr "Configurar Ajustes"
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "Configure AFIP web-services"
+msgstr ""
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
@@ -499,6 +491,16 @@ msgid "Last Updated on"
 msgstr "Última actualización el"
 
 #. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "List certificates"
+msgstr ""
+
+#. module: l10n_ar_afipws
+#: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
+msgid "List conections"
+msgstr ""
+
+#. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_filter
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_tree
@@ -707,6 +709,20 @@ msgstr "afipws.upload_certificate.wizard"
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_upload_certificate_form
 msgid "or"
 msgstr "o"
+
+#~ msgid ""
+#~ "<span class=\"o_form_label\">AFIP Web Services</span>\n"
+#~ "                            <span class=\"fa fa-lg fa-building-o\" title="
+#~ "\"Values set here are company-specific.\" groups=\"base."
+#~ "group_multi_company\"/>"
+#~ msgstr ""
+#~ "<span class=\"o_form_label\">Servicios Web AFIP</span>\n"
+#~ "                            <span class=\"fa fa-lg fa-building-o\" title="
+#~ "\"Values set here are company-specific.\" groups=\"base."
+#~ "group_multi_company\"/>"
+
+#~ msgid "Argentina Localization"
+#~ msgstr "Localización Argentina"
 
 #~ msgid "AFIP Conector"
 #~ msgstr "Conector AFIP"
