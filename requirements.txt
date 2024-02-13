@@ -1,1 +1,5 @@
 # generated from manifests external_dependencies
+future
+pyafipws@https://github.com/reingart/pyafipws/archive/main.zip
+pyOpenSSL
+pysimplesoap
