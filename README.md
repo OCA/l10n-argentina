@@ -22,6 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [l10n_ar_afipws](l10n_ar_afipws/) | 16.0.1.0.0 | [![nimarosa](https://github.com/nimarosa.png?size=30px)](https://github.com/nimarosa) [![ibuioli](https://github.com/ibuioli.png?size=30px)](https://github.com/ibuioli) | Integration for Argentina Electronic invoice webservices
+[l10n_ar_afipws_fe](l10n_ar_afipws_fe/) | 16.0.1.0.0 | [![nimarosa](https://github.com/nimarosa.png?size=30px)](https://github.com/nimarosa) [![ibuioli](https://github.com/ibuioli.png?size=30px)](https://github.com/ibuioli) | Integrate AFIP webservice for Argentina electronic documents
 
 [//]: # (end addons)
 

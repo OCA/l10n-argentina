@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo-addon-l10n_ar_afipws>=16.0dev,<16.1dev',
+        'odoo-addon-l10n_ar_afipws_fe>=16.0dev,<16.1dev',
     ],
     classifiers=[
         'Programming Language :: Python',
