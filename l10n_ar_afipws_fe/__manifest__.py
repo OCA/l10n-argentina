@@ -20,7 +20,7 @@
             "OpenSSL",
             "pysimplesoap",
             "future",
-            "pyafipws@https://github.com/reingart/pyafipws/archive/main.zip",
+            # "pyafipws@https://github.com/reingart/pyafipws/archive/main.zip",
         ]
     },
     "data": [
