@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="l10n_ar_afipws_fe_cron" model="ir.cron">
+        <field name="model_id" ref="model_account_move" />
+        <field name="state">code</field>
+        <field name="name">(l10n_ar) Invoice: Post draft entries asynchronous</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False" />
+        <field name="code">model.cron_asynchronous_post()</field>
+        <field name="active" eval="True" />
+    </record>
+</odoo>

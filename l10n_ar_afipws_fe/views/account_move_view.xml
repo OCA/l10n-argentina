@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit account.move - search -->
+    <record id="account_move_search_inherit_l10n_ar_afipws_fe" model="ir.ui.view">
+        <field name="name">account.move.view.search.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter" />
+        <field name="arch" type="xml">
+            <filter name="cancel" position="after">
+                <separator />
+                <filter
+                    name="afip_ok"
+                    string="AFIP - Autorizadas"
+                    domain="[('afip_result','=','A')]"
+                />
+                <filter
+                    name="afip_auth_pending"
+                    string="AFIP - Sin autorizar"
+                    domain="[('afip_result','!=','A')]"
+                />
+            </filter>
+        </field>
+    </record>
+    <!-- Inherit account.move - form -->
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="name">account.move.afip.form</field>
+        <field name="inherit_id" ref="l10n_ar.view_move_form" />
+        <field name="arch" type="xml">
+            <!-- Add AFIP Fields -->
+            <field name="l10n_ar_afip_concept" position="after">
+                <field name="l10n_ar_currency_rate" />
+                <field name="afip_fce_es_anulacion" />
+            </field>
+            <!-- Do not show EDI tab in Argentinian Localization since it's not used -->
+            <page id="edi_documents" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </page>
+            <!-- Add AFIP Tab -->
+            <notebook>
+                <page
+                    string="AFIP"
+                    name="afip"
+                    attrs="{'invisible': [('move_type', 'in', ['in_invoice', 'in_refund'])]}"
+                >
+                    <group>
+                        <group>
+                            <field
+                                name='afip_result'
+                                widget="badge"
+                                decoration-success="afip_result == 'A'"
+                                decoration-danger="afip_result == 'R'"
+                            />
+                            <label for="afip_auth_code" string="Autorizacion" />
+                            <div class="oe_inline">
+                                <field
+                                    name="afip_auth_mode"
+                                    class="oe_inline"
+                                    decoration-bf="1"
+                                /> - <field
+                                    name="afip_auth_code"
+                                    class="oe_inline"
+                                    attrs="{'required': [('afip_auth_mode', '!=', False)]}"
+                                    placeholder="Code"
+                                    decoration-bf="1"
+                                />
+                            </div>
+                            <field
+                                name='afip_auth_code_due'
+                                string="CAE/CAI/CAEA Vencimiento"
+                            />
+                        </group>
+                        <group>
+                            <field name='afip_message' />
+                        </group>
+                    </group>
+                    <group>
+                        <field
+                            name='afip_xml_request'
+                            groups="base.group_no_one"
+                            widget="ace"
+                        />
+                        <field
+                            name='afip_xml_response'
+                            groups="base.group_no_one"
+                            widget="ace"
+                        />
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+- Nimarosa
+- ADHOC S.A.
+- Codize
