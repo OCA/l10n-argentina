@@ -14,6 +14,14 @@
         "l10n_ar",
     ],
     "website": "https://github.com/OCA/l10n-argentina",
+    "external_dependencies": {
+        "python": [
+            "OpenSSL",
+            "pysimplesoap",
+            "future",
+            # "pyafipws@https://github.com/reingart/pyafipws/archive/main.zip",
+        ]
+    },
     "data": [
         "wizard/upload_certificate_view.xml",
         "views/afipws_menuitem.xml",
