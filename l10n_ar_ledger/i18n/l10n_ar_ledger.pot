@@ -206,7 +206,6 @@ msgstr ""
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_error
-#: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -452,11 +451,6 @@ msgstr ""
 #. module: l10n_ar_ledger
 #: model_terms:ir.ui.view,arch_db:l10n_ar_ledger.ledger_report
 msgid "Responsabilidad AFIP"
-msgstr ""
-
-#. module: l10n_ar_ledger
-#: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
-msgid "SMS Delivery error"
 msgstr ""
 
 #. module: l10n_ar_ledger
