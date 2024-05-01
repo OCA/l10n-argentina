@@ -215,7 +215,6 @@ msgstr "Si está marcado, los nuevos mensajes requieren su atención."
 
 #. module: l10n_ar_ledger
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_error
-#: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado, algunos mensajes tienen error de entrega."
 
@@ -478,11 +477,6 @@ msgid "Responsabilidad AFIP"
 msgstr "Responsabilidad AFIP"
 
 #. module: l10n_ar_ledger
-#: model:ir.model.fields,field_description:l10n_ar_ledger.field_account_vat_ledger__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Error de Entrega de SMS"
-
-#. module: l10n_ar_ledger
 #: model:ir.model.fields.selection,name:l10n_ar_ledger.selection__account_vat_ledger__type__sale
 msgid "Sale"
 msgstr "Venta"
@@ -581,3 +575,6 @@ msgstr "Mensajes del Sitio Web"
 #: model:ir.model.fields,help:l10n_ar_ledger.field_account_vat_ledger__website_message_ids
 msgid "Website communication history"
 msgstr "Historial de comunicación del Sitio Web"
+
+#~ msgid "SMS Delivery error"
+#~ msgstr "Error de Entrega de SMS"
