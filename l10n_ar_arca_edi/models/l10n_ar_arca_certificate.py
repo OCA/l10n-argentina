@@ -26,7 +26,6 @@ class L10nArArcaCertificate(models.Model):
     _order = "id desc"
 
     name = fields.Char(
-        string="Name",
         required=True,
         help="Symbolic name for this certificate (used as CN in the CSR)",
     )
@@ -43,7 +42,6 @@ class L10nArArcaCertificate(models.Model):
     )
     environment = fields.Selection(
         ARCA_ENVIRONMENTS,
-        string="Environment",
         required=True,
         default="testing",
     )
@@ -55,19 +53,17 @@ class L10nArArcaCertificate(models.Model):
             ("expired", "Expired"),
             ("revoked", "Revoked"),
         ],
-        string="State",
         default="draft",
         readonly=True,
     )
 
     # Private key (stored encrypted in DB)
     private_key = fields.Binary(
-        string="Private Key",
         attachment=True,
         groups="base.group_system",
         help="RSA 2048-bit private key in PEM format",
     )
-    private_key_filename = fields.Char(string="Private Key Filename")
+    private_key_filename = fields.Char()
 
     # CSR
     csr = fields.Binary(
@@ -84,10 +80,9 @@ class L10nArArcaCertificate(models.Model):
 
     # Certificate (uploaded after ARCA signs the CSR)
     certificate = fields.Binary(
-        string="Certificate",
         attachment=True,
     )
-    certificate_filename = fields.Char(string="Certificate Filename")
+    certificate_filename = fields.Char()
 
     # Certificate info (populated after upload)
     cert_subject = fields.Char(string="Subject", readonly=True)

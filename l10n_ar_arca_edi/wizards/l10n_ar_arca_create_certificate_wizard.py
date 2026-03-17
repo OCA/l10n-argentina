@@ -26,7 +26,6 @@ class L10nArArcaCreateCertificateWizard(models.TransientModel):
     )
     environment = fields.Selection(
         [("testing", "Testing (Staging)"), ("production", "Production")],
-        string="Environment",
         required=True,
         default="testing",
     )

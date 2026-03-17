@@ -150,14 +150,14 @@ class AccountMove(models.Model):
                     "title": self.env._("ARCA Verification - %s", env_label),
                     "message": self.env._(
                         "CAE verified successfully.\n"
-                        "CAE: %s\n"
-                        "Result: %s\n"
-                        "Total: %s\n"
-                        "Date: %s",
-                        arca_cae,
-                        arca_result,
-                        arca_total,
-                        arca_date,
+                        "CAE: %(cae)s\n"
+                        "Result: %(result)s\n"
+                        "Total: %(total)s\n"
+                        "Date: %(date)s",
+                        cae=arca_cae,
+                        result=arca_result,
+                        total=arca_total,
+                        date=arca_date,
                     ),
                     "type": "success",
                     "sticky": True,
@@ -170,9 +170,11 @@ class AccountMove(models.Model):
                 "params": {
                     "title": self.env._("ARCA Verification - %s", env_label),
                     "message": self.env._(
-                        "CAE mismatch!\nLocal CAE: %s\nARCA CAE: %s",
-                        self.l10n_ar_arca_cae,
-                        arca_cae or "Not found",
+                        "CAE mismatch!\n"
+                        "Local CAE: %(local_cae)s\n"
+                        "ARCA CAE: %(arca_cae)s",
+                        local_cae=self.l10n_ar_arca_cae,
+                        arca_cae=arca_cae or "Not found",
                     ),
                     "type": "warning",
                     "sticky": True,
@@ -193,9 +195,9 @@ class AccountMove(models.Model):
             "params": {
                 "title": self.env._("CAE Obtained"),
                 "message": self.env._(
-                    "CAE: %s (valid until %s)",
-                    self.l10n_ar_arca_cae,
-                    self.l10n_ar_arca_cae_due_date,
+                    "CAE: %(cae)s (valid until %(valid_until)s)",
+                    cae=self.l10n_ar_arca_cae,
+                    valid_until=self.l10n_ar_arca_cae_due_date,
                 ),
                 "type": "success",
                 "sticky": False,
@@ -304,10 +306,10 @@ class AccountMove(models.Model):
         if code not in SUPPORTED_ARCA_DOC_TYPES:
             raise UserError(
                 self.env._(
-                    "Document type '%s' (code %s) is not supported for "
+                    "Document type '%(doc_type)s' (code %(code)s) is not supported for "
                     "electronic invoicing.",
-                    doc_type.name,
-                    doc_type.code,
+                    doc_type=doc_type.name,
+                    code=doc_type.code,
                 )
             )
         return code
