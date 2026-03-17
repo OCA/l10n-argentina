@@ -19,7 +19,7 @@ class ResConfigSettings(models.TransientModel):
     # Company selector (dropdown from available companies)
     l10n_ar_arca_company_id = fields.Many2one(
         "res.company",
-        string="Company",
+        string="ARCA Company",
         related="company_id",
         readonly=False,
     )

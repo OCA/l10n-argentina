@@ -296,7 +296,7 @@
         inherit_id="account.document_tax_totals_template"
         priority="99"
     >
-        <xpath expr="//tr[@class='o_total']/td/strong" position="replace">
+        <xpath expr="//tr[hasclass('o_total')]/td/strong" position="replace">
             <strong>TOTAL</strong>
         </xpath>
     </template>
