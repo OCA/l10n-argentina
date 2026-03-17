@@ -1,0 +1,7 @@
+*.crt
+*.key
+*.pem
+*.p12
+*.pfx
+__pycache__/
+*.pyc

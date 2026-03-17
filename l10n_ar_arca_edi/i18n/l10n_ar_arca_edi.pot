@@ -1,0 +1,1098 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_arca_edi
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260305\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-17 01:33+0000\n"
+"PO-Revision-Date: 2026-03-17 01:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<br/><strong>Payment Terms: </strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<br/><strong>Reference:</strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<br/><strong>Source:</strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid ""
+"<span class=\"o_form_label fw-bold\">CUIT</span>\n"
+"                        <span class=\"fa fa-info-circle ms-1 text-primary\" title=\"CUIT number from the selected company.\"/>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid ""
+"<span class=\"o_form_label fw-bold\">Certificate</span>\n"
+"                        <span class=\"fa fa-info-circle ms-1 text-primary\" title=\"How to connect with ARCA:&#10;&#10;1. Click Create Certificate&#10;2. Fill name and select environment&#10;3. Click Generate Key &amp; CSR&#10;4. Copy CSR to ARCA portal:&#10;   • Testing: wsass-homo.afip.gob.ar&#10;   • Production: Administración de Certificados&#10;5. In ARCA: Nuevo Certificado → paste CSR → download .crt&#10;6. In ARCA: Crear autorización a servicio → select wsfe&#10;7. Back in Odoo: Upload Certificate (.crt)&#10;8. Click Test Connection\"/>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid ""
+"<span class=\"o_form_label fw-bold\">Company</span>\n"
+"                        <span class=\"fa fa-info-circle ms-1 text-primary\" title=\"Company for ARCA electronic invoicing.\"/>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "<span class=\"text-muted\">Or select an existing one: </span>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<strong>C.A.E. N°:</strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<strong>CAE Exp. Date:</strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid ""
+"<strong>Copy CSR</strong>: Copy the CSR content from the \"CSR Content\" "
+"section below."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid ""
+"<strong>Create certificate</strong>: Paste the CSR content and create the "
+"certificate in the ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<strong>Customer: </strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid ""
+"<strong>Download &amp; Upload</strong>: Download the signed certificate "
+"(.crt) and upload it here using the \"Upload Certificate\" button."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<strong>Due Date: </strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid ""
+"<strong>Generate Key &amp; CSR</strong>: Click the button above to generate "
+"your private key and CSR."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "<strong>Go to ARCA portal</strong>:"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid ""
+"<strong>Production</strong>: Access \"Administración de Certificados "
+"Digitales\" through \"Administrador de Relaciones de Clave Fiscal\""
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<strong>Supplier: </strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.document_tax_totals_template
+msgid "<strong>TOTAL</strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid ""
+"<strong>Testing</strong>: Access WSASS (Autogestión Certificados "
+"Homologación) at arca.gob.ar"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "<strong>VAT Cond: </strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "<strong>✉</strong>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.ui.menu,name:l10n_ar_arca_edi.l10n_ar_arca_menu_root
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_form_arca
+msgid "ARCA"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_barcode
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_barcode
+msgid "ARCA Barcode"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_company__l10n_ar_arca_certificate_id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_certificate_id
+msgid "ARCA Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.actions.act_window,name:l10n_ar_arca_edi.l10n_ar_arca_certificate_action
+msgid "ARCA Certificates"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_l10n_ar_arca_certificate
+msgid "ARCA Digital Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "ARCA Electronic Invoicing"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_observations
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_observations
+msgid "ARCA Observations"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_qr_code
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_qr_code
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "ARCA QR Code"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_result
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_result
+msgid "ARCA Result"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "ARCA Verification - %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_l10n_ar_arca_wsaa
+msgid "ARCA WSAA Authentication Service"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_l10n_ar_arca_wsfe
+msgid "ARCA WSFEv1 Electronic Invoice Service"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "ARCA electronic invoicing is not enabled for journal '%s'."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsfe.py:0
+msgid ""
+"ARCA rejected the invoice:\n"
+"%s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "ARCA verification failed: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.actions.server,name:l10n_ar_arca_edi.ir_cron_check_arca_certificate_expiration_ir_actions_server
+msgid "ARCA: Check Certificate Expiration"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__state__active
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__res_config_settings__l10n_ar_arca_cert_state__active
+msgid "Active"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_res_company__l10n_ar_arca_certificate_id
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_certificate_id
+msgid "Active ARCA digital certificate for electronic invoicing."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Active Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__account_move__l10n_ar_arca_result__a
+msgid "Approved"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Are you sure you want to revoke this certificate?"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_form_arca
+msgid "Barcode"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_barcode
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_barcode
+msgid "Barcode data for Interleaved 2 of 5 code on invoice PDF."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_cae
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_cae
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_list_arca
+msgid "CAE"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_cae_due_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_cae_due_date
+msgid "CAE Due Date"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "CAE Obtained"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_cae_due_date
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_cae_due_date
+msgid "CAE expiration date (YYYYMMDD format)."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid ""
+"CAE mismatch!\n"
+"Local CAE: %s\n"
+"ARCA CAE: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid ""
+"CAE verified successfully.\n"
+"CAE: %s\n"
+"Result: %s\n"
+"Total: %s\n"
+"Date: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "CAE: %s (valid until %s)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "CSR"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__csr_pem
+msgid "CSR (PEM text)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_cert_csr_pem
+msgid "CSR Content"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "CSR Content (copy to ARCA portal)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__csr_filename
+msgid "CSR Filename"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__state__csr_generated
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__res_config_settings__l10n_ar_arca_cert_state__csr_generated
+msgid "CSR Generated"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__csr_pem
+msgid "CSR content in PEM format. Copy this to paste in ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cuit
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__cuit
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_company_cuit
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_view_form
+msgid "CUIT"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "CUIT must be exactly 11 digits (e.g., 20-29318820-4)."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cuit
+msgid "CUIT number (e.g., 20-29318820-4 or 20293188204)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "CUIT:"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "Can only generate CSR in draft state."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__certificate
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__certificate_id
+msgid "Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_create_certificate_wizard.py:0
+msgid "Certificate '%s' created. Now click 'Generate Key & CSR'."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsaa.py:0
+msgid "Certificate '%s' is not active."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_create_certificate_wizard.py:0
+msgid "Certificate Created"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__certificate_file
+msgid "Certificate File (.crt)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__certificate_filename
+msgid "Certificate Filename"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Certificate Info"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__name
+msgid "Certificate Name"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__csr
+msgid "Certificate Signing Request"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_certificate_wizard.py:0
+msgid "Certificate Uploaded"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_certificate_wizard.py:0
+msgid "Certificate has been activated successfully."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "Certificate must be active to test the connection."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.ui.menu,name:l10n_ar_arca_edi.l10n_ar_arca_menu_certificates
+msgid "Certificates"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__company_id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__company_id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_company_id
+msgid "Company"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Configuration"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_cert_state
+msgid "Connection Status"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "Connection Successful"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "Connection test failed: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Copy this content and paste it in the ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.actions.act_window,name:l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_action
+msgid "Create ARCA Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_l10n_ar_arca_create_certificate_wizard
+msgid "Create ARCA Certificate Wizard"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Create Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.actions.act_window,help:l10n_ar_arca_edi.l10n_ar_arca_certificate_action
+msgid "Create your first ARCA certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__create_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__create_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__create_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsaa__create_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsfe__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__create_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__create_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__create_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsaa__create_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsfe__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_cert_environment
+msgid "Current Environment"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Currently selected ARCA certificate."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_cae
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_cae
+msgid "Código de Autorización Electrónico assigned by ARCA."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.actions.act_window,help:l10n_ar_arca_edi.l10n_ar_arca_certificate_action
+msgid ""
+"Digital certificates are required to communicate with ARCA\n"
+"                web services for electronic invoicing."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsaa__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsfe__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_company__display_name
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid ""
+"Document type '%s' (code %s) is not supported for electronic invoicing."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__state__draft
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__res_config_settings__l10n_ar_arca_cert_state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_form_arca
+msgid "Electronic Invoice"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid ""
+"Electronic invoice authorized by ARCA (ex-AFIP) pursuant to RG 4892/2020 and"
+" RG 2485."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid ""
+"Electronic invoice authorized by ARCA (ex-AFIP)<br/>\n"
+"                                        pursuant to RG 4892/2020 and RG 2485. Verify by scanning the QR code."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsfe.py:0
+msgid "Empty response from WSFE."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
+msgid "Enable electronic invoicing via ARCA for this journal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__environment
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__environment
+msgid "Environment"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "Exempt"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__state__expired
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__res_config_settings__l10n_ar_arca_cert_state__expired
+msgid "Expired"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsaa.py:0
+msgid "Failed to parse WSAA response: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__certificate_filename
+msgid "Filename"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Files"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Generate Key & CSR"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Generate a private key and CSR to upload to the ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "Gross Income:"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_has_certificate
+msgid "Has Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "How to get your ARCA certificate:"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsaa__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsfe__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_company__id
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Instructions"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_certificate_wizard.py:0
+msgid ""
+"Invalid certificate format. Please upload the .crt file downloaded from the "
+"ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "Invoice Date:"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "Invoice N°:"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cert_issuer
+msgid "Issuer"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_account_journal
+msgid "Journal"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__write_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__write_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__write_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsaa__write_uid
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsfe__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__write_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate_wizard__write_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_create_certificate_wizard__write_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsaa__write_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_wsfe__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__name
+msgid "Name"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "No active ARCA certificate configured for company '%s'."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid ""
+"No active ARCA certificate configured for company '%s'. Go to Settings > "
+"Invoicing > ARCA Electronic Invoicing."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid ""
+"No certificate found for '%s'. Upload the signed certificate from ARCA "
+"first."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/res_config_settings.py:0
+msgid "No certificate selected."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "No document type set for this invoice."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "No private key found for certificate '%s'."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "Not registered"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_form_arca
+msgid "Observations"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__account_move__l10n_ar_arca_result__o
+msgid "Observed"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document
+msgid "Page <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_certificate_wizard.py:0
+msgid "Please select a certificate file."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__private_key
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Private Key"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__private_key_filename
+msgid "Private Key Filename"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid ""
+"Private key and CSR have been generated. Download the CSR and upload it to "
+"the ARCA portal (%s environment)."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__environment__production
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_create_certificate_wizard__environment__production
+msgid "Production"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__private_key
+msgid "RSA 2048-bit private key in PEM format"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__account_move__l10n_ar_arca_result__r
+msgid "Rejected"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_form_arca
+msgid "Request CAE"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Revoke"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__state__revoked
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__res_config_settings__l10n_ar_arca_cert_state__revoked
+msgid "Revoked"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cert_serial_number
+msgid "Serial Number"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "Signed Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__state
+msgid "State"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Step 1: Generate Key & CSR"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Step 2: Copy CSR to ARCA Portal"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Step 3: Upload Signed Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cert_subject
+msgid "Subject"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__name
+msgid "Symbolic name for this certificate (used as CN in the CSR)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Test Connection"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_certificate__environment__testing
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__l10n_ar_arca_create_certificate_wizard__environment__testing
+msgid "Testing (Staging)"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/wizards/l10n_ar_arca_create_certificate_wizard.py:0
+msgid ""
+"The selected company does not have a CUIT/VAT configured. Set it in Settings"
+" > General Settings > Companies."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "This invoice already has a CAE: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "This invoice has no CAE to verify."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "This will generate a new private key and CSR. Continue?"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__wsaa_token_expiration
+msgid "Token Expiration"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_qr_code
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_qr_code
+msgid "URL for ARCA QR code verification (RG 4892/2020)."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_wizard_view_form
+msgid "Upload"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "Upload ARCA Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_l10n_ar_arca_certificate_wizard
+msgid "Upload ARCA Certificate Wizard"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Upload Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid "Upload the .crt file downloaded from the ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_wizard_view_form
+msgid "Upload the signed certificate (.crt) downloaded from the ARCA portal."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cert_date_start
+msgid "Valid From"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__cert_date_end
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_res_config_settings__l10n_ar_arca_cert_date_end
+msgid "Valid Until"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.account_move_view_form_arca
+msgid "Verify CAE"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.res_config_settings_view_form_arca
+msgid ""
+"Verify authentication with ARCA WSAA servers. Make sure you authorized the "
+"wsfe service in the ARCA portal first."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__wsaa_sign
+msgid "WSAA Sign"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_l10n_ar_arca_certificate__wsaa_token
+msgid "WSAA Token"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsaa.py:0
+msgid "WSAA authentication failed: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_certificate.py:0
+msgid "WSAA authentication successful. Token valid until %s."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsaa.py:0
+msgid "WSAA response missing token or sign credentials."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsfe.py:0
+msgid "WSCDC verification failed: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsfe.py:0
+msgid ""
+"WSFE Error:\n"
+"%s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsfe.py:0
+msgid "WSFE FECAESolicitar failed: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/l10n_ar_arca_wsfe.py:0
+msgid "WSFE FECompUltimoAutorizado failed: %s"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_certificate_view_form
+msgid "e.g., MiEmpresa-Production"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_view_form
+msgid "e.g., MyCompany-Testing"
+msgstr ""
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.custom_header
+msgid "| Start Date:"
+msgstr ""

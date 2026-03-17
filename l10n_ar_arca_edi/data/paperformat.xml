@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_arca_invoice" model="report.paperformat">
+        <field name="name">ARCA Invoice (A4)</field>
+        <field name="format">A4</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">38</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="orientation">Portrait</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_arca_invoice"/>
+    </record>
+
+</odoo>

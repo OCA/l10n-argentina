@@ -1,0 +1,116 @@
+/* ARCA Electronic Invoicing - Argentine themed status badges */
+
+/* Argentine flag colors */
+$arca-celeste: #75AADB;
+$arca-celeste-light: #B8D4ED;
+$arca-celeste-dark: #5A8FB8;
+$arca-white: #FFFFFF;
+$arca-gold: #F6B40E;
+$arca-gold-dark: #D4960A;
+
+/* Badge base */
+.o_arca_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85em;
+    letter-spacing: 0.3px;
+}
+
+/* Status: Not configured (grey) */
+.o_arca_badge_draft {
+    background: #E8E8E8;
+    color: #666666;
+    border: 1px solid #D0D0D0;
+}
+
+/* Status: CSR Generated (celeste light) */
+.o_arca_badge_csr {
+    background: $arca-celeste-light;
+    color: $arca-celeste-dark;
+    border: 1px solid $arca-celeste;
+}
+
+/* Status: Active / Connected (celeste + gold sun) */
+.o_arca_badge_active {
+    background: linear-gradient(135deg, $arca-celeste 0%, $arca-celeste-dark 100%);
+    color: $arca-white;
+    border: 1px solid $arca-celeste-dark;
+    box-shadow: 0 1px 3px rgba($arca-celeste-dark, 0.3);
+
+    .o_arca_sun {
+        color: $arca-gold;
+        font-size: 1.1em;
+        text-shadow: 0 0 4px rgba($arca-gold, 0.5);
+    }
+}
+
+/* Status: Expired (red/warning) */
+.o_arca_badge_expired {
+    background: #FDE8E8;
+    color: #B91C1C;
+    border: 1px solid #FBBCBC;
+}
+
+/* Status: Revoked */
+.o_arca_badge_revoked {
+    background: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FCD34D;
+}
+
+/* ARCA section in Settings - position at top */
+.o_arca_settings_block {
+    order: -1;
+}
+
+/* Callout for environment info */
+.o_arca_env_info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    margin-top: 4px;
+
+    &.o_arca_env_testing {
+        background: $arca-celeste-light;
+        color: $arca-celeste-dark;
+        border: 1px solid $arca-celeste;
+    }
+
+    &.o_arca_env_production {
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FCD34D;
+    }
+}
+
+/* CSR wrapper - CopyClipboardChar single-line input */
+.o_arca_csr_wrapper {
+    width: 100%;
+    max-width: 80vw;
+
+    .o_field_copy_text, .o_field_copy_char {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        input {
+            font-family: monospace !important;
+            font-size: 0.8em;
+            background: #F8F9FA;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .o_clipboard_button {
+            flex-shrink: 0;
+        }
+    }
+}

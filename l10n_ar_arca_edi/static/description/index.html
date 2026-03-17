@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: sans-serif; max-width: 860px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6; }
+        h1 { color: #875A7B; }
+        h2 { color: #875A7B; border-bottom: 2px solid #875A7B; padding-bottom: 5px; margin-top: 30px; }
+        h3 { color: #555; margin-top: 20px; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-success { background: #28a745; color: white; }
+        .badge-info { background: #17a2b8; color: white; }
+        .badge-warning { background: #ffc107; color: #333; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f5f5f5; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 15px 0; border-radius: 4px; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 12px 16px; margin: 15px 0; border-radius: 4px; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Argentina - ARCA Electronic Invoicing</h1>
+    <p>
+        <img src="https://img.shields.io/badge/pre--commit-passing-brightgreen" alt="pre-commit">
+        <img src="https://img.shields.io/badge/tests-passing-brightgreen" alt="tests">
+        <img src="https://img.shields.io/badge/license-AGPL--3-blue.svg" alt="License: AGPL-3">
+        <img src="https://img.shields.io/badge/Odoo-19.0-blueviolet" alt="Odoo 19">
+    </p>
+
+    <h2>Functional</h2>
+    <p>
+        This module integrates Odoo with <strong>ARCA</strong> (Agencia de Recaudaci&oacute;n y Control Aduanero, formerly AFIP)
+        web services for electronic invoicing in Argentina. It handles the full lifecycle of electronic invoice authorization,
+        from digital certificate management to CAE (C&oacute;digo de Autorizaci&oacute;n Electr&oacute;nico) requests and verification.
+    </p>
+
+    <h3>Configuration Steps</h3>
+    <ol>
+        <li><strong>Generate Certificate</strong>: Go to <em>Settings &gt; Invoicing &gt; ARCA Electronic Invoicing</em> and create a new digital certificate. The module generates RSA keys and CSR directly from Odoo.</li>
+        <li><strong>Register in ARCA Portal</strong>: Download the CSR file and upload it to the ARCA portal (<a href="https://auth.afip.gob.ar/contribuyente">auth.afip.gob.ar</a>) to obtain the signed certificate (.crt).</li>
+        <li><strong>Authorize Web Service</strong>: In the ARCA portal, authorize the <code>wsfe</code> service for your CUIT and the certificate's Distinguished Name (DN).</li>
+        <li><strong>Upload Certificate</strong>: Back in Odoo, upload the signed .crt file and click <em>Test Connection</em> to validate the WSAA authentication.</li>
+        <li><strong>Configure Journal</strong>: Go to your Sales journal and set the ARCA POS System to <em>"Online Invoice"</em> with the corresponding POS number.</li>
+    </ol>
+
+    <div class="info">
+        <strong>Dual Environment Support:</strong> The module supports both <em>Testing</em> (homologaci&oacute;n) and <em>Production</em> environments.
+        Use the testing environment to validate your setup before going live.
+    </div>
+
+    <h3>How It Works</h3>
+    <ul>
+        <li><strong>Automatic CAE</strong>: When you confirm (post) an invoice, the module automatically requests a CAE from ARCA. The CAE, expiration date, QR code, and barcode are stored on the invoice.</li>
+        <li><strong>Manual CAE Request</strong>: If automatic CAE fails or is disabled, use the <em>"Request CAE"</em> button in the invoice header.</li>
+        <li><strong>Verify CAE</strong>: Use the <em>"Verify CAE"</em> button to validate an invoice's CAE against ARCA servers (works with both testing and production).</li>
+        <li><strong>PDF Invoice</strong>: The printed invoice includes the ARCA QR code, CAE number, and expiration date in the footer, compliant with RG 4892/2020.</li>
+        <li><strong>Token Caching</strong>: WSAA authentication tokens are cached for their full validity period (~12 hours), minimizing API calls.</li>
+        <li><strong>Certificate Monitoring</strong>: A scheduled action monitors certificate expiration and sends alerts before they expire.</li>
+    </ul>
+
+    <h3>Supported Document Types</h3>
+    <table>
+        <tr><th>Type</th><th>A</th><th>B</th><th>C</th><th>E</th><th>M</th></tr>
+        <tr><td>Invoice (Factura)</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td></tr>
+        <tr><td>Debit Note (Nota de D&eacute;bito)</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>-</td></tr>
+        <tr><td>Credit Note (Nota de Cr&eacute;dito)</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>-</td></tr>
+        <tr><td>Receipt (Recibo)</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>-</td></tr>
+        <tr><td>MiPyme Credit Invoice</td><td>&#10004;</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>-</td></tr>
+    </table>
+
+    <h2>Technical</h2>
+    <p>This module implements the ARCA electronic invoicing web services using SOAP (via <code>zeep</code>) and CMS/PKCS#7 authentication (via <code>cryptography</code>).</p>
+
+    <h3>ARCA Web Services</h3>
+    <table>
+        <tr><th>Service</th><th>Description</th><th>Endpoint</th></tr>
+        <tr><td><code>WSAA</code></td><td>Authentication &amp; Authorization</td><td>Login Ticket Request via CMS signed XML</td></tr>
+        <tr><td><code>WSFEv1</code></td><td>Electronic Invoice (Domestic)</td><td>CAE request, invoice query, parameters</td></tr>
+        <tr><td><code>WSCDC</code></td><td>Invoice Verification</td><td>Third-party invoice validation</td></tr>
+    </table>
+
+    <h3>Models</h3>
+    <table>
+        <tr><th>Model</th><th>Description</th></tr>
+        <tr><td><code>l10n_ar.arca.certificate</code></td><td>Digital certificate management (RSA keys, CSR, CRT). Handles key generation, CSR creation, certificate upload, and connection testing.</td></tr>
+        <tr><td><code>l10n_ar.arca.wsaa</code></td><td>WSAA authentication service. Creates CMS-signed Login Ticket Requests, manages token caching with automatic refresh.</td></tr>
+        <tr><td><code>l10n_ar.arca.wsfe</code></td><td>WSFEv1 invoice service. Handles CAE requests (<code>FECAESolicitar</code>), invoice queries (<code>FECompConsultar</code>), and parameter retrieval.</td></tr>
+        <tr><td><code>account.move</code></td><td>Extended with CAE fields, QR code generation (RG 4892/2020), barcode generation, and automatic CAE on invoice confirmation.</td></tr>
+        <tr><td><code>account.journal</code></td><td>Extended with <code>l10n_ar_arca_edi_enabled</code> flag to enable/disable electronic invoicing per journal.</td></tr>
+    </table>
+
+    <h3>Key Fields on <code>account.move</code></h3>
+    <table>
+        <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+        <tr><td><code>l10n_ar_arca_cae</code></td><td>Char</td><td>CAE number assigned by ARCA</td></tr>
+        <tr><td><code>l10n_ar_arca_cae_due_date</code></td><td>Char</td><td>CAE expiration date (YYYYMMDD)</td></tr>
+        <tr><td><code>l10n_ar_arca_result</code></td><td>Selection</td><td>Authorization result: Approved / Rejected / Observed</td></tr>
+        <tr><td><code>l10n_ar_arca_qr_code</code></td><td>Char</td><td>QR code URL for ARCA verification (RG 4892/2020)</td></tr>
+        <tr><td><code>l10n_ar_arca_barcode</code></td><td>Char</td><td>Interleaved 2 of 5 barcode data</td></tr>
+    </table>
+
+    <h3>Regulatory Compliance</h3>
+    <ul>
+        <li><strong>RG 4892/2020</strong>: QR code on printed invoices for digital verification</li>
+        <li><strong>RG 2485</strong>: Electronic invoicing general regulations</li>
+        <li><strong>RG 5616</strong>: Customer IVA condition reporting (mandatory since April 2025)</li>
+    </ul>
+
+    <h3>Dependencies</h3>
+    <table>
+        <tr><th>Type</th><th>Name</th><th>Description</th></tr>
+        <tr><td>Odoo Module</td><td><code>l10n_ar</code></td><td>Argentina Accounting Localization</td></tr>
+        <tr><td>Odoo Module</td><td><code>account_edi</code></td><td>Electronic Data Interchange base</td></tr>
+        <tr><td>Python Library</td><td><code>cryptography</code></td><td>RSA key generation, CMS/PKCS#7 signing</td></tr>
+        <tr><td>Python Library</td><td><code>zeep</code></td><td>SOAP client for ARCA web services</td></tr>
+        <tr><td>Python Library</td><td><code>lxml</code></td><td>XML processing for WSAA tickets</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Note:</strong> All Python dependencies (<code>cryptography</code>, <code>zeep</code>, <code>lxml</code>) are included in the official Odoo 19 Docker image.
+    </div>
+
+    <h2>Authors</h2>
+    <p>
+        <a href="https://leonobitech.com">Leonobitech</a><br>
+        <a href="https://odoo-community.org">Odoo Community Association (OCA)</a>
+    </p>
+
+    <h2>Maintainers</h2>
+    <p>This module is maintained by the OCA.</p>
+    <p><a href="https://odoo-community.org">
+        <img src="https://odoo-community.org/logo.png" alt="Odoo Community Association" width="200">
+    </a></p>
+</body>
+</html>

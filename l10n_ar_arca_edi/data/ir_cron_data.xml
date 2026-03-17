@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ir_cron_check_arca_certificate_expiration" model="ir.cron">
+        <field name="name">ARCA: Check Certificate Expiration</field>
+        <field name="model_id" ref="model_l10n_ar_arca_certificate"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_certificate_expiration()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>
