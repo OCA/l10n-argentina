@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Certificate Tree View -->
+    <record id="l10n_ar_arca_certificate_view_list" model="ir.ui.view">
+        <field name="name">l10n_ar.arca.certificate.list</field>
+        <field name="model">l10n_ar.arca.certificate</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="cuit" />
+                <field
+                    name="environment"
+                    widget="badge"
+                    decoration-info="environment == 'testing'"
+                    decoration-success="environment == 'production'"
+                />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state == 'csr_generated'"
+                    decoration-success="state == 'active'"
+                    decoration-danger="state in ('expired', 'revoked')"
+                />
+                <field name="cert_date_end" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Certificate Form View -->
+    <record id="l10n_ar_arca_certificate_view_form" model="ir.ui.view">
+        <field name="name">l10n_ar.arca.certificate.form</field>
+        <field name="model">l10n_ar.arca.certificate</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="action_generate_key_and_csr"
+                        type="object"
+                        string="Generate Key &amp; CSR"
+                        class="btn-primary"
+                        invisible="state != 'draft'"
+                        confirm="This will generate a new private key and CSR. Continue?"
+                    />
+                    <button
+                        name="action_upload_certificate"
+                        type="object"
+                        string="Upload Certificate"
+                        class="btn-primary"
+                        invisible="state != 'csr_generated'"
+                    />
+                    <button
+                        name="action_test_connection"
+                        type="object"
+                        string="Test Connection"
+                        class="btn-secondary"
+                        invisible="state != 'active'"
+                    />
+                    <button
+                        name="action_revoke"
+                        type="object"
+                        string="Revoke"
+                        invisible="state not in ('active', 'csr_generated')"
+                        confirm="Are you sure you want to revoke this certificate?"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,csr_generated,active"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1>
+                            <field
+                                name="name"
+                                placeholder="e.g., MiEmpresa-Production"
+                                readonly="state != 'draft'"
+                            />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuration">
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                                readonly="state != 'draft'"
+                            />
+                            <field name="cuit" readonly="state != 'draft'" />
+                            <field name="environment" readonly="state != 'draft'" />
+                        </group>
+                        <group
+                            string="Certificate Info"
+                            invisible="state not in ('active', 'expired')"
+                        >
+                            <field name="cert_subject" />
+                            <field name="cert_issuer" />
+                            <field name="cert_serial_number" />
+                            <field name="cert_date_start" />
+                            <field name="cert_date_end" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Files" name="files">
+                            <group>
+                                <group string="Private Key">
+                                    <field
+                                        name="private_key"
+                                        filename="private_key_filename"
+                                    />
+                                    <field name="private_key_filename" invisible="1" />
+                                </group>
+                                <group string="CSR">
+                                    <field name="csr" filename="csr_filename" />
+                                    <field name="csr_filename" invisible="1" />
+                                </group>
+                            </group>
+                            <group
+                                string="CSR Content (copy to ARCA portal)"
+                                invisible="not csr_pem"
+                            >
+                                <field
+                                    name="csr_pem"
+                                    widget="text"
+                                    nolabel="1"
+                                    colspan="2"
+                                    readonly="1"
+                                />
+                            </group>
+                            <group string="Signed Certificate">
+                                <field
+                                    name="certificate"
+                                    filename="certificate_filename"
+                                />
+                                <field name="certificate_filename" invisible="1" />
+                            </group>
+                        </page>
+                        <page string="Instructions" name="instructions">
+                            <div class="alert alert-info" role="alert">
+                                <h4>How to get your ARCA certificate:</h4>
+                                <ol>
+                                    <li><strong
+                                    >Generate Key &amp; CSR</strong>: Click the button above to generate your private key and CSR.</li>
+                                    <li><strong
+                                    >Copy CSR</strong>: Copy the CSR content from the "CSR Content" section below.</li>
+                                    <li><strong>Go to ARCA portal</strong>:
+                                        <ul>
+                                        <li><strong
+                                        >Testing</strong>: Access WSASS (Autogestión Certificados Homologación) at arca.gob.ar</li>
+                                        <li><strong
+                                        >Production</strong>: Access "Administración de Certificados Digitales" through "Administrador de Relaciones de Clave Fiscal"</li>
+                                    </ul>
+                                    </li>
+                                    <li><strong
+                                    >Create certificate</strong>: Paste the CSR content and create the certificate in the ARCA portal.</li>
+                                    <li><strong
+                                    >Download &amp; Upload</strong>: Download the signed certificate (.crt) and upload it here using the "Upload Certificate" button.</li>
+                                </ol>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Certificate Action -->
+    <record id="l10n_ar_arca_certificate_action" model="ir.actions.act_window">
+        <field name="name">ARCA Certificates</field>
+        <field name="res_model">l10n_ar.arca.certificate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first ARCA certificate
+            </p>
+            <p>
+                Digital certificates are required to communicate with ARCA
+                web services for electronic invoicing.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items: ARCA section inside Invoicing > Configuration -->
+    <menuitem
+        id="l10n_ar_arca_menu_root"
+        name="ARCA"
+        parent="account.menu_finance_configuration"
+        groups="account.group_account_manager,base.group_system"
+        sequence="90"
+    />
+
+    <menuitem
+        id="l10n_ar_arca_menu_certificates"
+        name="Certificates"
+        parent="l10n_ar_arca_menu_root"
+        action="l10n_ar_arca_certificate_action"
+        sequence="10"
+    />
+</odoo>

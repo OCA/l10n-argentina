@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="l10n_ar_arca_certificate_wizard_view_form" model="ir.ui.view">
+        <field name="name">l10n_ar.arca.certificate.wizard.form</field>
+        <field name="model">l10n_ar.arca.certificate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="certificate_id" invisible="1" />
+                    <field name="certificate_file" filename="certificate_filename" />
+                    <field name="certificate_filename" invisible="1" />
+                </group>
+                <div class="alert alert-info" role="alert">
+                    <p
+                    >Upload the signed certificate (.crt) downloaded from the ARCA portal.</p>
+                </div>
+                <footer>
+                    <button
+                        name="action_upload"
+                        type="object"
+                        string="Upload"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Create Certificate Wizard -->
+    <record id="l10n_ar_arca_create_certificate_wizard_view_form" model="ir.ui.view">
+        <field name="name">l10n_ar.arca.create.certificate.wizard.form</field>
+        <field name="model">l10n_ar.arca.create.certificate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" placeholder="e.g., MyCompany-Testing" />
+                    <field
+                        name="company_id"
+                        options="{'no_create': True, 'no_open': True}"
+                    />
+                    <label for="cuit" string="CUIT" class="fw-bold" />
+                    <field name="cuit" class="text-muted" nolabel="1" />
+                    <field name="environment" widget="radio" />
+                </group>
+                <footer>
+                    <button
+                        name="action_create"
+                        type="object"
+                        string="Create Certificate"
+                        class="btn-primary"
+                        icon="fa-plus"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record
+        id="l10n_ar_arca_create_certificate_wizard_action"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Create ARCA Certificate</field>
+        <field name="res_model">l10n_ar.arca.create.certificate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

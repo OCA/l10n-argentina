@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ar_arca_certificate_user,l10n_ar.arca.certificate.user,model_l10n_ar_arca_certificate,account.group_account_invoice,1,0,0,0
+access_l10n_ar_arca_certificate_manager,l10n_ar.arca.certificate.manager,model_l10n_ar_arca_certificate,account.group_account_manager,1,1,1,1
+access_l10n_ar_arca_wsaa_manager,l10n_ar.arca.wsaa.manager,model_l10n_ar_arca_wsaa,account.group_account_manager,1,1,1,0
+access_l10n_ar_arca_wsfe_manager,l10n_ar.arca.wsfe.manager,model_l10n_ar_arca_wsfe,account.group_account_manager,1,1,1,0
+access_l10n_ar_arca_wsfe_user,l10n_ar.arca.wsfe.user,model_l10n_ar_arca_wsfe,account.group_account_invoice,1,0,0,0
+access_l10n_ar_arca_certificate_wizard,l10n_ar.arca.certificate.wizard,model_l10n_ar_arca_certificate_wizard,account.group_account_manager,1,1,1,0
+access_l10n_ar_arca_create_certificate_wizard,l10n_ar.arca.create.certificate.wizard,model_l10n_ar_arca_create_certificate_wizard,account.group_account_manager,1,1,1,0
