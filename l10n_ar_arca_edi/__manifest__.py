@@ -6,40 +6,8 @@
     "category": "Accounting/Localizations",
     "summary": "Electronic invoicing integration with ARCA (ex-AFIP) for Argentina",
     "development_status": "Beta",
-    "description": """
-Argentina ARCA Electronic Invoicing
-====================================
-
-This module integrates Odoo with ARCA (Agencia de Recaudación y Control Aduanero)
-web services for electronic invoicing in Argentina.
-
-Features:
----------
-* Generate CSR (Certificate Signing Request) from Odoo
-* Manage digital certificates for ARCA authentication
-* WSAA: Authentication and authorization via CMS (Cryptographic Message Syntax)
-* WSFEv1: Electronic invoice authorization (CAE)
-* Support for both testing (homologación) and production environments
-
-Requirements:
--------------
-* OpenSSL (via pyOpenSSL / cryptography)
-* zeep (SOAP client)
-* lxml
-
-Supported document types:
--------------------------
-* Facturas A, B, C, E
-* Notas de Crédito
-* Notas de Débito
-
-ARCA Web Services:
-------------------
-* WSAA - Web Service de Autenticación y Autorización
-* WSFEv1 - Web Service de Factura Electrónica v1
-    """,
     "author": "Leonobitech, Odoo Community Association (OCA)",
-    "website": "https://github.com/leonobitech/l10n_ar_arca_edi",
+    "website": "https://github.com/OCA/l10n-argentina",
     "license": "AGPL-3",
     "maintainers": ["felixfigueroa"],
     "countries": ["ar"],

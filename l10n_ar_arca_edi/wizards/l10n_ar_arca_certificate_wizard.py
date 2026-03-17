@@ -3,7 +3,7 @@
 
 import base64
 
-from odoo import fields, models, _
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 
@@ -26,13 +26,13 @@ class L10nArArcaCertificateWizard(models.TransientModel):
         """Process the uploaded certificate."""
         self.ensure_one()
         if not self.certificate_file:
-            raise UserError(_("Please select a certificate file."))
+            raise UserError(self.env._("Please select a certificate file."))
 
         # Validate it's a valid PEM certificate
         cert_data = base64.b64decode(self.certificate_file)
         if b"-----BEGIN CERTIFICATE-----" not in cert_data:
             raise UserError(
-                _(
+                self.env._(
                     "Invalid certificate format. Please upload the .crt file "
                     "downloaded from the ARCA portal."
                 )
@@ -44,10 +44,8 @@ class L10nArArcaCertificateWizard(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Certificate Uploaded"),
-                "message": _(
-                    "Certificate has been activated successfully."
-                ),
+                "title": self.env._("Certificate Uploaded"),
+                "message": self.env._("Certificate has been activated successfully."),
                 "type": "success",
                 "sticky": False,
                 "next": {

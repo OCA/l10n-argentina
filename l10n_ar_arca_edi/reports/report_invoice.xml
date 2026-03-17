@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <!-- ============================================================ -->
     <!-- Override Wave layout: header height + footer bottom margin   -->
     <!-- ============================================================ -->
@@ -9,88 +8,118 @@
         <xpath expr="//t[@t-set='header_shape_height']" position="attributes">
             <attribute name="t-value">'290'</attribute>
         </xpath>
-
     </template>
 
     <!-- ============================================================ -->
     <!-- Override l10n_ar custom_header: company name + right side     -->
     <!-- ============================================================ -->
     <template id="custom_header" inherit_id="l10n_ar.custom_header">
-
         <!-- Add padding to header container for Wave layout -->
         <xpath expr="//div[hasclass('mb-3')]" position="attributes">
-            <attribute name="style">padding-top: 38px; padding-left: 20px; padding-right: 20px;</attribute>
+            <attribute
+                name="style"
+            >padding-top: 38px; padding-left: 20px; padding-right: 20px;</attribute>
         </xpath>
 
         <!-- Replace company info with structured layout -->
         <xpath expr="//div[@style='padding-right: 0px;']" position="replace">
             <div class="col-6" style="padding-right: 0px;">
                 <t t-if="not pre_printed_report">
-                    <strong style="font-size: 1.3em;" t-field="o.company_id.partner_id.name"/>
+                    <strong
+                        style="font-size: 1.3em;"
+                        t-field="o.company_id.partner_id.name"
+                    />
                     <div style="font-size: 0.80em; margin-top: 2px;">
-                        <t t-out="', '.join([item for item in [header_address.street, header_address.street2, header_address.city] if item])"/>,
+                        <t
+                        t-out="', '.join([item for item in [header_address.street, header_address.street2, header_address.city] if item])"
+                    />,
                     </div>
                     <div style="font-size: 0.80em;">
-                        <t t-out="', '.join([item for item in [header_address.state_id and header_address.state_id.name, header_address.country_id and header_address.country_id.name] if item])"/>.
+                        <t
+                        t-out="', '.join([item for item in [header_address.state_id and header_address.state_id.name, header_address.country_id and header_address.country_id.name] if item])"
+                    />.
                     </div>
                     <div style="margin-top: 3px; font-size: 0.85em;">
                         <div>
-                            <span t-if="header_address.phone">&#9742; <span t-out="header_address.phone"/></span>
-                            <span t-if="header_address.phone and header_address.email"> | </span>
-                            <span t-if="header_address.email"><strong>&#9993;</strong> <span t-out="header_address.email"/></span>
+                            <span t-if="header_address.phone">
+                                &#9742;
+                                <span t-out="header_address.phone" />
+                            </span>
+                            <span
+                                t-if="header_address.phone and header_address.email"
+                            > | </span>
+                            <span t-if="header_address.email">
+                                <strong>
+                                    &#9993;
+                                </strong>
+                                <span t-out="header_address.email" />
+                            </span>
                         </div>
                         <div t-if="header_address.website">
-                            <span t-out="(header_address.website or '').replace('https://', '').replace('http://', '')"/>
+                            <span
+                                t-out="(header_address.website or '').replace('https://', '').replace('http://', '')"
+                            />
                         </div>
                     </div>
                 </t>
             </div>
         </xpath>
 
-
         <!-- Replace right side: invoice number, date, fiscal data -->
         <div id="l10n_ar_header_right" position="replace">
-            <div id="l10n_ar_header_right" class="col-6 text-end" style="padding-left: 0px;">
+            <div
+                id="l10n_ar_header_right"
+                class="col-6 text-end"
+                style="padding-left: 0px;"
+            >
                 <t t-if="not pre_printed_report">
                     <div>
                         Invoice N°:
-                        <strong t-out="report_number"/>
+                        <strong t-out="report_number" />
                     </div>
                 </t>
                 <div>
                     Invoice Date:
-                    <strong t-out="report_date" t-options='{"widget": "date"}'/>
+                    <strong t-out="report_date" t-options='{"widget": "date"}' />
                 </div>
                 <t t-if="not pre_printed_report">
                     <div style="margin-top: 2px;">
-                        <span t-field="o.company_id.l10n_ar_afip_responsibility_type_id"/>
+                        <span
+                            t-field="o.company_id.l10n_ar_afip_responsibility_type_id"
+                        />
                     </div>
                     <div>
                         CUIT:
-                        <strong t-field="o.company_id.partner_id.l10n_ar_formatted_vat"/>
+                        <strong
+                        t-field="o.company_id.partner_id.l10n_ar_formatted_vat"
+                    />
                     </div>
                     <div style="font-size: 0.9em;">
                         Gross Income:
-                        <span t-if="o.company_id.l10n_ar_gross_income_type == 'exempt'">Exempt</span>
-                        <span t-elif="o.company_id.l10n_ar_gross_income_number" t-out="o.company_id.l10n_ar_gross_income_number"/>
+                        <span
+                        t-if="o.company_id.l10n_ar_gross_income_type == 'exempt'"
+                    >Exempt</span>
+                        <span
+                        t-elif="o.company_id.l10n_ar_gross_income_number"
+                        t-out="o.company_id.l10n_ar_gross_income_number"
+                    />
                         <span t-else="">Not registered</span>
                         <span t-if="o.company_id.l10n_ar_afip_start_date">
-                             | Start Date: <span t-field="o.company_id.l10n_ar_afip_start_date"/>
+                             | Start Date: <span
+                        t-field="o.company_id.l10n_ar_afip_start_date"
+                    />
                         </span>
                     </div>
                 </t>
             </div>
         </div>
-
     </template>
 
     <!-- ============================================================ -->
     <!-- Override invoice document: keep original client section,      -->
     <!-- only change footer (QR + CAE)                                -->
     <!-- ============================================================ -->
-    <template id="report_invoice_document"
-        inherit_id="l10n_ar.report_invoice_document">
-
+    <template id="report_invoice_document" inherit_id="l10n_ar.report_invoice_document">
         <!-- Add lateral padding to body content -->
         <xpath expr="//div[hasclass('page')]" position="attributes">
             <attribute name="style">padding-left: 20px; padding-right: 20px;</attribute>
@@ -98,39 +127,71 @@
 
         <!-- Spacer before client section -->
         <div id="informations" position="before">
-            <div style="height: 160px; clear: both;">&#160;</div>
+            <div style="height: 160px; clear: both;">
+                &#160;
+            </div>
         </div>
 
         <!-- Add border to client section -->
         <div id="informations" position="replace">
-            <div id="informations" class="row mt8 mb8" style="border: 1px solid #dee2e6; border-radius: 4px; padding: 8px 12px;">
-                <div class="col-6" style="border-right: 1px solid #dee2e6; padding-right: 12px;">
-                    <t t-if="o.is_sale_document(include_receipts=True)"><strong>Customer: </strong></t>
-                    <t t-else=""><strong>Supplier: </strong></t>
-                    <span t-field="o.partner_id.commercial_partner_id.name"/>
-                    <br/>
-                    <span t-field="o.partner_id" t-options="{'widget': 'contact', 'fields': ['address'], 'no_marker': true, 'no_tag_br': True}"/>
+            <div
+                id="informations"
+                class="row mt8 mb8"
+                style="border: 1px solid #dee2e6; border-radius: 4px; padding: 8px 12px;"
+            >
+                <div
+                    class="col-6"
+                    style="border-right: 1px solid #dee2e6; padding-right: 12px;"
+                >
+                    <t t-if="o.is_sale_document(include_receipts=True)">
+                        <strong>Customer: </strong>
+                    </t>
+                    <t t-else="">
+                        <strong>Supplier: </strong>
+                    </t>
+                    <span t-field="o.partner_id.commercial_partner_id.name" />
+                    <br />
+                    <span
+                        t-field="o.partner_id"
+                        t-options="{'widget': 'contact', 'fields': ['address'], 'no_marker': true, 'no_tag_br': True}"
+                    />
                     <div style="margin-top: 4px;">
-                        <strong>VAT Cond: </strong><span t-field="o.partner_id.l10n_ar_afip_responsibility_type_id"/>
+                        <strong>VAT Cond: </strong>
+                        <span
+                            t-field="o.partner_id.l10n_ar_afip_responsibility_type_id"
+                        />
                     </div>
-                    <t t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id and o.partner_id.l10n_latam_identification_type_id.l10n_ar_afip_code != '99'">
-                        <strong><t t-out="o.partner_id.l10n_latam_identification_type_id.name or o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>:</strong>
-                        <span t-out="o.partner_id.l10n_ar_formatted_vat if o.partner_id.l10n_ar_vat else o.partner_id.vat"/>
+                    <t
+                        t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id and o.partner_id.l10n_latam_identification_type_id.l10n_ar_afip_code != '99'"
+                    >
+                        <strong><t
+                            t-out="o.partner_id.l10n_latam_identification_type_id.name or o.company_id.account_fiscal_country_id.vat_label"
+                            id="inv_tax_id_label"
+                        />:</strong>
+                        <span
+                            t-out="o.partner_id.l10n_ar_formatted_vat if o.partner_id.l10n_ar_vat else o.partner_id.vat"
+                        />
                     </t>
                 </div>
                 <div class="col-6" style="padding-left: 12px;">
                     <t t-if="o.invoice_date_due">
                         <strong>Due Date: </strong>
-                        <span t-field="o.invoice_date_due"/>
+                        <span t-field="o.invoice_date_due" />
                     </t>
                     <t t-if="o.invoice_payment_term_id" name="payment_term">
-                        <br/><strong>Payment Terms: </strong><span t-field="o.invoice_payment_term_id.name"/>
+                        <br />
+                        <strong>Payment Terms: </strong>
+                        <span t-field="o.invoice_payment_term_id.name" />
                     </t>
                     <t t-if="o.invoice_origin">
-                        <br/><strong>Source:</strong> <span t-field="o.invoice_origin"/>
+                        <br />
+                        <strong>Source:</strong>
+                        <span t-field="o.invoice_origin" />
                     </t>
                     <t t-if="o.ref">
-                        <br/><strong>Reference:</strong> <span t-field="o.ref"/>
+                        <br />
+                        <strong>Reference:</strong>
+                        <span t-field="o.ref" />
                     </t>
                 </div>
             </div>
@@ -139,36 +200,56 @@
         <!-- Replace the custom_footer to include CAE and QR code -->
         <t t-set="custom_footer" position="replace">
             <t t-set="custom_footer">
-                <div style="font-size: 0.85em; padding-left: 20px; padding-right: 20px; text-align: left;">
+                <div
+                    style="font-size: 0.85em; padding-left: 20px; padding-right: 20px; text-align: left;"
+                >
                     <t t-if="o.l10n_ar_arca_cae">
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 100px; vertical-align: middle; padding-right: 12px;" rowspan="1">
+                                <td
+                                    style="width: 100px; vertical-align: middle; padding-right: 12px;"
+                                    rowspan="1"
+                                >
                                     <t t-if="o.l10n_ar_arca_qr_code">
-                                        <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=200&amp;height=200' % o.l10n_ar_arca_qr_code"
+                                        <img
+                                            t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=200&amp;height=200' % o.l10n_ar_arca_qr_code"
                                             style="width: 90px; height: 90px;"
-                                            alt="ARCA QR Code"/>
+                                            alt="ARCA QR Code"
+                                        />
                                     </t>
                                 </td>
                                 <td style="vertical-align: middle;">
                                     <div>
-                                        <strong>C.A.E. N°:</strong> <span t-field="o.l10n_ar_arca_cae"/>
+                                        <strong>C.A.E. N°:</strong>
+                                        <span t-field="o.l10n_ar_arca_cae" />
                                         <span style="margin-left: 15px;">
                                             <strong>CAE Exp. Date:</strong>
-                                            <t t-set="cae_due" t-value="o.l10n_ar_arca_cae_due_date"/>
-                                            <span t-if="cae_due and len(cae_due) == 8"
-                                                t-out="'%s/%s/%s' % (cae_due[6:8], cae_due[4:6], cae_due[0:4])"/>
-                                            <span t-else="" t-out="cae_due"/>
+                                            <t
+                                                t-set="cae_due"
+                                                t-value="o.l10n_ar_arca_cae_due_date"
+                                            />
+                                            <span
+                                                t-if="cae_due and len(cae_due) == 8"
+                                                t-out="'%s/%s/%s' % (cae_due[6:8], cae_due[4:6], cae_due[0:4])"
+                                            />
+                                            <span t-else="" t-out="cae_due" />
                                         </span>
                                     </div>
-                                    <div style="font-size: 0.75em; color: #555; margin-top: 3px; line-height: 1.3;">
-                                        Electronic invoice authorized by ARCA (ex-AFIP)<br/>
+                                    <div
+                                        style="font-size: 0.75em; color: #555; margin-top: 3px; line-height: 1.3;"
+                                    >
+                                        Electronic invoice authorized by ARCA (ex-AFIP)<br
+                                    />
                                         pursuant to RG 4892/2020 and RG 2485. Verify by scanning the QR code.
                                     </div>
                                 </td>
-                                <td style="width: 80px; vertical-align: middle; text-align: right;">
+                                <td
+                                    style="width: 80px; vertical-align: middle; text-align: right;"
+                                >
                                     <div t-if="report_type == 'pdf'">
-                                        Page <span class="page"/> / <span class="topage"/>
+                                        Page <span class="page" /> / <span
+                                        class="topage"
+                                    />
                                     </div>
                                 </td>
                             </tr>
@@ -182,9 +263,13 @@
                                         Electronic invoice authorized by ARCA (ex-AFIP) pursuant to RG 4892/2020 and RG 2485.
                                     </div>
                                 </td>
-                                <td style="width: 100px; vertical-align: top; text-align: right;">
+                                <td
+                                    style="width: 100px; vertical-align: top; text-align: right;"
+                                >
                                     <div t-if="report_type == 'pdf'">
-                                        Page <span class="page"/> / <span class="topage"/>
+                                        Page <span class="page" /> / <span
+                                        class="topage"
+                                    />
                                     </div>
                                 </td>
                             </tr>
@@ -193,17 +278,17 @@
                 </div>
             </t>
         </t>
-
     </template>
 
     <!-- ============================================================ -->
     <!-- Override "Total" label to "TOTAL A PAGAR"                    -->
     <!-- ============================================================ -->
-    <template id="document_tax_totals_template"
-        inherit_id="account.document_tax_totals_template">
+    <template
+        id="document_tax_totals_template"
+        inherit_id="account.document_tax_totals_template"
+    >
         <xpath expr="//tr[@class='o_total']/td/strong" position="replace">
             <strong>TOTAL</strong>
         </xpath>
     </template>
-
 </odoo>

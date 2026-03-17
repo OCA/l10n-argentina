@@ -1,34 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <record id="res_config_settings_view_form_arca" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.arca</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field name="priority">1</field>
         <field name="arch" type="xml">
             <xpath expr="//app[@name='account']/block[1]" position="before">
                 <block title="ARCA Electronic Invoicing" id="arca_settings_block">
-
                     <!-- ============================================ -->
                     <!-- Company + CUIT                                -->
                     <!-- ============================================ -->
                     <setting>
                         <span class="o_form_label fw-bold">Company</span>
-                        <span class="fa fa-info-circle ms-1 text-primary"
-                            title="Company for ARCA electronic invoicing."/>
+                        <span
+                            class="fa fa-info-circle ms-1 text-primary"
+                            title="Company for ARCA electronic invoicing."
+                        />
                         <div class="mt-2">
-                            <field name="l10n_ar_arca_company_id"
-                                options="{'no_create': True, 'no_open': True}"/>
+                            <field
+                                name="l10n_ar_arca_company_id"
+                                options="{'no_create': True, 'no_open': True}"
+                            />
                         </div>
                     </setting>
 
                     <setting>
                         <span class="o_form_label fw-bold">CUIT</span>
-                        <span class="fa fa-info-circle ms-1 text-primary"
-                            title="CUIT number from the selected company."/>
+                        <span
+                            class="fa fa-info-circle ms-1 text-primary"
+                            title="CUIT number from the selected company."
+                        />
                         <div class="mt-2 text-muted">
-                            <field name="l10n_ar_arca_company_cuit" readonly="1"/>
+                            <field name="l10n_ar_arca_company_cuit" readonly="1" />
                         </div>
                     </setting>
 
@@ -37,21 +41,27 @@
                     <!-- ============================================ -->
                     <setting invisible="l10n_ar_arca_has_certificate">
                         <span class="o_form_label fw-bold">Certificate</span>
-                        <span class="fa fa-info-circle ms-1 text-primary"
-                            title="How to connect with ARCA:&#10;&#10;1. Click Create Certificate&#10;2. Fill name and select environment&#10;3. Click Generate Key &amp; CSR&#10;4. Copy CSR to ARCA portal:&#10;   • Testing: wsass-homo.afip.gob.ar&#10;   • Production: Administración de Certificados&#10;5. In ARCA: Nuevo Certificado → paste CSR → download .crt&#10;6. In ARCA: Crear autorización a servicio → select wsfe&#10;7. Back in Odoo: Upload Certificate (.crt)&#10;8. Click Test Connection"/>
+                        <span
+                            class="fa fa-info-circle ms-1 text-primary"
+                            title="How to connect with ARCA:&#10;&#10;1. Click Create Certificate&#10;2. Fill name and select environment&#10;3. Click Generate Key &amp; CSR&#10;4. Copy CSR to ARCA portal:&#10;   • Testing: wsass-homo.afip.gob.ar&#10;   • Production: Administración de Certificados&#10;5. In ARCA: Nuevo Certificado → paste CSR → download .crt&#10;6. In ARCA: Crear autorización a servicio → select wsfe&#10;7. Back in Odoo: Upload Certificate (.crt)&#10;8. Click Test Connection"
+                        />
                         <div class="mt-2">
-                            <button name="%(l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_action)d"
+                            <button
+                                name="%(l10n_ar_arca_edi.l10n_ar_arca_create_certificate_wizard_action)d"
                                 type="action"
                                 string="Create Certificate"
                                 class="btn-primary"
-                                icon="fa-plus"/>
+                                icon="fa-plus"
+                            />
                         </div>
                         <div class="mt-2">
                             <span class="text-muted">Or select an existing one: </span>
-                            <field name="l10n_ar_arca_certificate_id"
+                            <field
+                                name="l10n_ar_arca_certificate_id"
                                 domain="[('company_id', '=', company_id)]"
                                 class="d-inline-block"
-                                options="{'no_create': True}"/>
+                                options="{'no_create': True}"
+                            />
                         </div>
                     </setting>
 
@@ -61,63 +71,81 @@
                     <!-- ============================================ -->
 
                     <!-- Current certificate info -->
-                    <setting string="Active Certificate"
+                    <setting
+                        string="Active Certificate"
                         help="Currently selected ARCA certificate."
-                        invisible="not l10n_ar_arca_has_certificate">
-                        <field name="l10n_ar_arca_certificate_id"
+                        invisible="not l10n_ar_arca_has_certificate"
+                    >
+                        <field
+                            name="l10n_ar_arca_certificate_id"
                             domain="[('company_id', '=', company_id)]"
-                            options="{'no_create': True}"/>
+                            options="{'no_create': True}"
+                        />
                     </setting>
 
                     <!-- Step 1: Generate CSR (state=draft) -->
-                    <setting string="Step 1: Generate Key &amp; CSR"
+                    <setting
+                        string="Step 1: Generate Key &amp; CSR"
                         help="Generate a private key and CSR to upload to the ARCA portal."
-                        invisible="l10n_ar_arca_cert_state != 'draft'">
-                        <button name="action_arca_generate_csr"
+                        invisible="l10n_ar_arca_cert_state != 'draft'"
+                    >
+                        <button
+                            name="action_arca_generate_csr"
                             type="object"
                             string="Generate Key &amp; CSR"
                             class="btn-primary"
                             icon="fa-key"
-                            confirm="This will generate a new private key and CSR. Continue?"/>
+                            confirm="This will generate a new private key and CSR. Continue?"
+                        />
                     </setting>
 
                     <!-- Step 2: Copy CSR (state=csr_generated) -->
-                    <setting string="Step 2: Copy CSR to ARCA Portal"
+                    <setting
+                        string="Step 2: Copy CSR to ARCA Portal"
                         help="Copy this content and paste it in the ARCA portal."
-                        invisible="l10n_ar_arca_cert_state != 'csr_generated'">
+                        invisible="l10n_ar_arca_cert_state != 'csr_generated'"
+                    >
                         <div class="o_arca_csr_wrapper">
-                            <field name="l10n_ar_arca_cert_csr_pem"
-                                widget="CopyClipboardChar" readonly="1"
-                                class="w-100"/>
+                            <field
+                                name="l10n_ar_arca_cert_csr_pem"
+                                widget="CopyClipboardChar"
+                                readonly="1"
+                                class="w-100"
+                            />
                         </div>
                     </setting>
 
                     <!-- Step 3: Upload signed cert (state=csr_generated) -->
-                    <setting string="Step 3: Upload Signed Certificate"
+                    <setting
+                        string="Step 3: Upload Signed Certificate"
                         help="Upload the .crt file downloaded from the ARCA portal."
-                        invisible="l10n_ar_arca_cert_state != 'csr_generated'">
-                        <button name="action_arca_upload_certificate"
+                        invisible="l10n_ar_arca_cert_state != 'csr_generated'"
+                    >
+                        <button
+                            name="action_arca_upload_certificate"
                             type="object"
                             string="Upload Certificate"
                             class="btn-primary"
-                            icon="fa-upload"/>
+                            icon="fa-upload"
+                        />
                     </setting>
 
                     <!-- Step 4: Test Connection (state=active) -->
-                    <setting string="Test Connection"
+                    <setting
+                        string="Test Connection"
                         help="Verify authentication with ARCA WSAA servers. Make sure you authorized the wsfe service in the ARCA portal first."
-                        invisible="l10n_ar_arca_cert_state != 'active'">
-                        <button name="action_arca_test_connection"
+                        invisible="l10n_ar_arca_cert_state != 'active'"
+                    >
+                        <button
+                            name="action_arca_test_connection"
                             type="object"
                             string="Test Connection"
                             class="btn-secondary"
-                            icon="fa-plug"/>
+                            icon="fa-plug"
+                        />
                     </setting>
-
-
                 </block>
             </xpath>
         </field>
     </record>
-
 </odoo>

@@ -6,7 +6,7 @@ import logging
 from zeep import Client
 from zeep.transports import Transport
 
-from odoo import api, fields, models, _
+from odoo import api, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -78,12 +78,12 @@ ARCA_CONCEPT_TYPES = {
 
 # ARCA IVA aliquot codes
 ARCA_IVA_CODES = {
-    0: 3,       # 0% (Exento)
-    2.5: 9,     # 2.5%
-    5: 8,       # 5%
-    10.5: 4,    # 10.5%
-    21: 5,      # 21%
-    27: 6,      # 27%
+    0: 3,  # 0% (Exento)
+    2.5: 9,  # 2.5%
+    5: 8,  # 5%
+    10.5: 4,  # 10.5%
+    21: 5,  # 21%
+    27: 6,  # 27%
 }
 
 # ARCA document types for customer identification
@@ -158,7 +158,7 @@ class L10nArArcaWsfe(models.Model):
             )
         except Exception as e:
             raise UserError(
-                _("WSFE FECompUltimoAutorizado failed: %s", str(e))
+                self.env._("WSFE FECompUltimoAutorizado failed: %s", str(e))
             ) from e
 
         self._check_wsfe_errors(response)
@@ -196,12 +196,8 @@ class L10nArArcaWsfe(models.Model):
 
         # Service dates (required for concept 2 and 3)
         if invoice_data["concept"] in (2, 3):
-            detail["FchServDesde"] = invoice_data.get(
-                "service_date_from", ""
-            )
-            detail["FchServHasta"] = invoice_data.get(
-                "service_date_to", ""
-            )
+            detail["FchServDesde"] = invoice_data.get("service_date_from", "")
+            detail["FchServHasta"] = invoice_data.get("service_date_to", "")
             detail["FchVtoPago"] = invoice_data.get("payment_due_date", "")
 
         # IVA lines
@@ -234,9 +230,7 @@ class L10nArArcaWsfe(models.Model):
 
         # Customer IVA condition (RG 5616 - mandatory since April 2025)
         if invoice_data.get("customer_iva_condition"):
-            detail["CondicionIVAReceptorId"] = invoice_data[
-                "customer_iva_condition"
-            ]
+            detail["CondicionIVAReceptorId"] = invoice_data["customer_iva_condition"]
 
         request_data = {
             "FeCabReq": {
@@ -255,13 +249,9 @@ class L10nArArcaWsfe(models.Model):
         )
 
         try:
-            response = client.service.FECAESolicitar(
-                Auth=auth, FeCAEReq=request_data
-            )
+            response = client.service.FECAESolicitar(Auth=auth, FeCAEReq=request_data)
         except Exception as e:
-            raise UserError(
-                _("WSFE FECAESolicitar failed: %s", str(e))
-            ) from e
+            raise UserError(self.env._("WSFE FECAESolicitar failed: %s", str(e))) from e
 
         self._check_wsfe_errors(response)
         result = self._parse_cae_response(response)
@@ -324,9 +314,7 @@ class L10nArArcaWsfe(models.Model):
         return response.ResultGet.PtoVenta if response.ResultGet else []
 
     @api.model
-    def fe_comp_consultar(
-        self, certificate, pos_number, doc_type_code, invoice_number
-    ):
+    def fe_comp_consultar(self, certificate, pos_number, doc_type_code, invoice_number):
         """FECompConsultar: Query an existing authorized invoice."""
         client = self._get_client(certificate)
         auth = self._get_auth(certificate)
@@ -350,8 +338,16 @@ class L10nArArcaWsfe(models.Model):
 
     @api.model
     def cdc_constatar_comprobante(
-        self, certificate, doc_type, pos_number, invoice_number,
-        date, total, cuit_emisor, doc_tipo_receptor, doc_nro_receptor,
+        self,
+        certificate,
+        doc_type,
+        pos_number,
+        invoice_number,
+        date,
+        total,
+        cuit_emisor,
+        doc_tipo_receptor,
+        doc_nro_receptor,
     ):
         """
         ComprobanteConstatar: Verify an invoice's validity via WSCDC.
@@ -384,13 +380,13 @@ class L10nArArcaWsfe(models.Model):
                 },
             )
         except Exception as e:
-            raise UserError(
-                _("WSCDC verification failed: %s", str(e))
-            ) from e
+            raise UserError(self.env._("WSCDC verification failed: %s", str(e))) from e
 
         return {
             "result": response.Resultado if hasattr(response, "Resultado") else None,
-            "observations": str(response.Observaciones) if hasattr(response, "Observaciones") else "",
+            "observations": str(response.Observaciones)
+            if hasattr(response, "Observaciones")
+            else "",
         }
 
     # -------------------------------------------------------------------------
@@ -409,7 +405,7 @@ class L10nArArcaWsfe(models.Model):
         }
 
         if not response or not response.FeDetResp:
-            raise UserError(_("Empty response from WSFE."))
+            raise UserError(self.env._("Empty response from WSFE."))
 
         det = response.FeDetResp.FECAEDetResponse[0]
         result["cae"] = det.CAE
@@ -419,18 +415,22 @@ class L10nArArcaWsfe(models.Model):
         # Observations
         if det.Observaciones:
             for obs in det.Observaciones.Obs:
-                result["observations"].append({
-                    "code": obs.Code,
-                    "message": obs.Msg,
-                })
+                result["observations"].append(
+                    {
+                        "code": obs.Code,
+                        "message": obs.Msg,
+                    }
+                )
 
         # Global errors
         if response.Errors:
             for err in response.Errors.Err:
-                result["errors"].append({
-                    "code": err.Code,
-                    "message": err.Msg,
-                })
+                result["errors"].append(
+                    {
+                        "code": err.Code,
+                        "message": err.Msg,
+                    }
+                )
 
         if result["result"] == "R":
             error_msgs = [
@@ -438,7 +438,7 @@ class L10nArArcaWsfe(models.Model):
                 for e in result["errors"] + result["observations"]
             ]
             raise UserError(
-                _("ARCA rejected the invoice:\n%s", "\n".join(error_msgs))
+                self.env._("ARCA rejected the invoice:\n%s", "\n".join(error_msgs))
             )
 
         return result
@@ -451,6 +451,4 @@ class L10nArArcaWsfe(models.Model):
             for err in response.Errors.Err:
                 errors.append(f"[{err.Code}] {err.Msg}")
             if errors:
-                raise UserError(
-                    _("WSFE Error:\n%s", "\n".join(errors))
-                )
+                raise UserError(self.env._("WSFE Error:\n%s", "\n".join(errors)))

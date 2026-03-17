@@ -7,10 +7,9 @@ import logging
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.serialization import pkcs7
 from cryptography.x509.oid import NameOID
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -111,7 +110,7 @@ class L10nArArcaCertificate(models.Model):
             cuit = rec.cuit.replace("-", "").replace(" ", "")
             if not cuit.isdigit() or len(cuit) != 11:
                 raise UserError(
-                    _("CUIT must be exactly 11 digits (e.g., 20-29318820-4).")
+                    self.env._("CUIT must be exactly 11 digits (e.g., 20-29318820-4).")
                 )
 
     def _format_cuit_with_dashes(self):
@@ -124,7 +123,7 @@ class L10nArArcaCertificate(models.Model):
         """Generate RSA 2048 private key and CSR for ARCA."""
         self.ensure_one()
         if self.state not in ("draft",):
-            raise UserError(_("Can only generate CSR in draft state."))
+            raise UserError(self.env._("Can only generate CSR in draft state."))
 
         cuit_formatted = self._format_cuit_with_dashes()
         company_name = self.company_id.name or "Company"
@@ -145,14 +144,14 @@ class L10nArArcaCertificate(models.Model):
         # Build CSR with ARCA-required fields
         # C=AR, O=company, CN=alias, serialNumber=CUIT XX-XXXXXXXX-X
         csr_builder = x509.CertificateSigningRequestBuilder().subject_name(
-            x509.Name([
-                x509.NameAttribute(NameOID.COUNTRY_NAME, "AR"),
-                x509.NameAttribute(NameOID.ORGANIZATION_NAME, company_name),
-                x509.NameAttribute(NameOID.COMMON_NAME, self.name),
-                x509.NameAttribute(
-                    NameOID.SERIAL_NUMBER, f"CUIT {cuit_formatted}"
-                ),
-            ])
+            x509.Name(
+                [
+                    x509.NameAttribute(NameOID.COUNTRY_NAME, "AR"),
+                    x509.NameAttribute(NameOID.ORGANIZATION_NAME, company_name),
+                    x509.NameAttribute(NameOID.COMMON_NAME, self.name),
+                    x509.NameAttribute(NameOID.SERIAL_NUMBER, f"CUIT {cuit_formatted}"),
+                ]
+            )
         )
 
         # Sign CSR with private key
@@ -161,18 +160,19 @@ class L10nArArcaCertificate(models.Model):
         # Serialize CSR to PEM
         csr_pem = csr.public_bytes(serialization.Encoding.PEM)
 
-        self.write({
-            "private_key": base64.b64encode(private_key_pem),
-            "private_key_filename": f"{self.name}.key",
-            "csr": base64.b64encode(csr_pem),
-            "csr_filename": f"{self.name}.csr",
-            "csr_pem": csr_pem.decode("utf-8"),
-            "state": "csr_generated",
-        })
+        self.write(
+            {
+                "private_key": base64.b64encode(private_key_pem),
+                "private_key_filename": f"{self.name}.key",
+                "csr": base64.b64encode(csr_pem),
+                "csr_filename": f"{self.name}.csr",
+                "csr_pem": csr_pem.decode("utf-8"),
+                "state": "csr_generated",
+            }
+        )
 
         _logger.info(
-            "Generated private key and CSR for certificate '%s' "
-            "(CUIT: %s, env: %s)",
+            "Generated private key and CSR for certificate '%s' (CUIT: %s, env: %s)",
             self.name,
             cuit_formatted,
             self.environment,
@@ -182,8 +182,8 @@ class L10nArArcaCertificate(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("CSR Generated"),
-                "message": _(
+                "title": self.env._("CSR Generated"),
+                "message": self.env._(
                     "Private key and CSR have been generated. "
                     "Download the CSR and upload it to the ARCA portal "
                     "(%s environment).",
@@ -201,7 +201,7 @@ class L10nArArcaCertificate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Upload ARCA Certificate"),
+            "name": self.env._("Upload ARCA Certificate"),
             "res_model": "l10n_ar.arca.certificate.wizard",
             "view_mode": "form",
             "target": "new",
@@ -213,7 +213,7 @@ class L10nArArcaCertificate(models.Model):
         self.ensure_one()
         if self.state != "active":
             raise UserError(
-                _("Certificate must be active to test the connection.")
+                self.env._("Certificate must be active to test the connection.")
             )
 
         wsaa = self.env["l10n_ar.arca.wsaa"]
@@ -222,18 +222,18 @@ class L10nArArcaCertificate(models.Model):
         except UserError:
             raise
         except Exception as e:
-            raise UserError(
-                _("Connection test failed: %s", str(e))
-            ) from e
+            raise UserError(self.env._("Connection test failed: %s", str(e))) from e
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Connection Successful"),
-                "message": _(
+                "title": self.env._("Connection Successful"),
+                "message": self.env._(
                     "WSAA authentication successful. Token valid until %s.",
-                    self.wsaa_token_expiration.strftime("%Y-%m-%d %H:%M") if self.wsaa_token_expiration else "",
+                    self.wsaa_token_expiration.strftime("%Y-%m-%d %H:%M")
+                    if self.wsaa_token_expiration
+                    else "",
                 ),
                 "type": "success",
                 "sticky": False,
@@ -247,16 +247,18 @@ class L10nArArcaCertificate(models.Model):
         cert_pem = base64.b64decode(cert_data)
         cert = x509.load_pem_x509_certificate(cert_pem)
 
-        self.write({
-            "certificate": cert_data,
-            "certificate_filename": f"{self.name}.crt",
-            "cert_subject": cert.subject.rfc4514_string(),
-            "cert_issuer": cert.issuer.rfc4514_string(),
-            "cert_serial_number": str(cert.serial_number),
-            "cert_date_start": cert.not_valid_before,
-            "cert_date_end": cert.not_valid_after,
-            "state": "active",
-        })
+        self.write(
+            {
+                "certificate": cert_data,
+                "certificate_filename": f"{self.name}.crt",
+                "cert_subject": cert.subject.rfc4514_string(),
+                "cert_issuer": cert.issuer.rfc4514_string(),
+                "cert_serial_number": str(cert.serial_number),
+                "cert_date_start": cert.not_valid_before,
+                "cert_date_end": cert.not_valid_after,
+                "state": "active",
+            }
+        )
 
         _logger.info(
             "Certificate '%s' activated. Valid until %s",
@@ -267,19 +269,21 @@ class L10nArArcaCertificate(models.Model):
     def action_revoke(self):
         """Mark certificate as revoked."""
         self.ensure_one()
-        self.write({
-            "state": "revoked",
-            "wsaa_token": False,
-            "wsaa_sign": False,
-            "wsaa_token_expiration": False,
-        })
+        self.write(
+            {
+                "state": "revoked",
+                "wsaa_token": False,
+                "wsaa_sign": False,
+                "wsaa_token_expiration": False,
+            }
+        )
 
     def _get_private_key(self):
         """Return the private key as a cryptography object."""
         self.ensure_one()
         if not self.private_key:
             raise UserError(
-                _("No private key found for certificate '%s'.", self.name)
+                self.env._("No private key found for certificate '%s'.", self.name)
             )
         key_pem = base64.b64decode(self.private_key)
         return serialization.load_pem_private_key(key_pem, password=None)
@@ -289,8 +293,11 @@ class L10nArArcaCertificate(models.Model):
         self.ensure_one()
         if not self.certificate:
             raise UserError(
-                _("No certificate found for '%s'. Upload the signed "
-                  "certificate from ARCA first.", self.name)
+                self.env._(
+                    "No certificate found for '%s'. Upload the signed "
+                    "certificate from ARCA first.",
+                    self.name,
+                )
             )
         cert_pem = base64.b64decode(self.certificate)
         return x509.load_pem_x509_certificate(cert_pem)
@@ -298,10 +305,12 @@ class L10nArArcaCertificate(models.Model):
     def _cron_check_certificate_expiration(self):
         """Cron job to check certificate expiration and update state."""
         now = fields.Datetime.now()
-        expired = self.search([
-            ("state", "=", "active"),
-            ("cert_date_end", "<", now),
-        ])
+        expired = self.search(
+            [
+                ("state", "=", "active"),
+                ("cert_date_end", "<", now),
+            ]
+        )
         if expired:
             expired.write({"state": "expired"})
             _logger.warning(

@@ -1,7 +1,7 @@
 # Copyright 2026 Leonobitech
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -47,16 +47,20 @@ class L10nArArcaCreateCertificateWizard(models.TransientModel):
         cuit = self.company_id.partner_id.vat
         if not cuit:
             raise UserError(
-                _("The selected company does not have a CUIT/VAT configured. "
-                  "Set it in Settings > General Settings > Companies.")
+                self.env._(
+                    "The selected company does not have a CUIT/VAT configured. "
+                    "Set it in Settings > General Settings > Companies."
+                )
             )
 
-        cert = self.env["l10n_ar.arca.certificate"].create({
-            "name": self.name,
-            "company_id": self.company_id.id,
-            "cuit": cuit,
-            "environment": self.environment,
-        })
+        cert = self.env["l10n_ar.arca.certificate"].create(
+            {
+                "name": self.name,
+                "company_id": self.company_id.id,
+                "cuit": cuit,
+                "environment": self.environment,
+            }
+        )
 
         # Set as active certificate for the company
         self.company_id.l10n_ar_arca_certificate_id = cert
@@ -65,8 +69,11 @@ class L10nArArcaCreateCertificateWizard(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Certificate Created"),
-                "message": _("Certificate '%s' created. Now click 'Generate Key & CSR'.", cert.name),
+                "title": self.env._("Certificate Created"),
+                "message": self.env._(
+                    "Certificate '%s' created. Now click 'Generate Key & CSR'.",
+                    cert.name,
+                ),
                 "type": "success",
                 "sticky": False,
                 "next": {"type": "ir.actions.client", "tag": "reload"},

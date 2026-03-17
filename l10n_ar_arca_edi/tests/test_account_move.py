@@ -5,8 +5,6 @@ import base64
 import datetime
 import json
 
-from unittest.mock import patch, MagicMock
-
 from odoo import Command
 from odoo.exceptions import UserError
 from odoo.tests import tagged
@@ -20,13 +18,19 @@ class TestAccountMoveArcaDocType(ArcaEdiTestCommon):
 
     def _create_move(self, doc_type, partner=None):
         """Helper: create a minimal account.move with the given doc type."""
-        return self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": (partner or self.partner_cf).id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": doc_type.id,
-        })
+        return (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": (partner or self.partner_cf).id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": doc_type.id,
+                }
+            )
+        )
 
     def test_get_arca_doc_type_code_factura_c(self):
         """Factura C (code 11) is a supported ARCA doc type."""
@@ -42,13 +46,19 @@ class TestAccountMoveArcaDocType(ArcaEdiTestCommon):
 
     def test_get_arca_doc_type_code_nota_credito_c(self):
         """Nota de Credito C (code 13) is a supported ARCA doc type."""
-        move = self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_refund",
-            "journal_id": self.journal.id,
-            "partner_id": self.partner_cf.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_nc_c.id,
-        })
+        move = (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_refund",
+                    "journal_id": self.journal.id,
+                    "partner_id": self.partner_cf.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_nc_c.id,
+                }
+            )
+        )
         code = move._get_arca_doc_type_code()
         self.assertEqual(code, 13)
 
@@ -60,12 +70,18 @@ class TestAccountMoveArcaDocType(ArcaEdiTestCommon):
 
     def test_get_arca_doc_type_code_no_doc_type_raises(self):
         """Missing document type raises UserError."""
-        move = self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": self.partner_cf.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-        })
+        move = (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": self.partner_cf.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                }
+            )
+        )
         # Force-clear the document type (l10n_ar may auto-assign)
         move.l10n_latam_document_type_id = False
         with self.assertRaises(UserError):
@@ -77,30 +93,40 @@ class TestAccountMoveArcaConceptType(ArcaEdiTestCommon):
     """Test _get_arca_concept_type() (1=products, 2=services, 3=both)."""
 
     def _create_product(self, product_type):
-        return self.env["product.product"].create({
-            "name": f"Test {product_type}",
-            "type": product_type,
-        })
+        return self.env["product.product"].create(
+            {
+                "name": f"Test {product_type}",
+                "type": product_type,
+            }
+        )
 
     def _create_move_with_lines(self, product_types):
         """Create a move with invoice lines for given product types."""
-        move = self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": self.partner_cf.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_fc.id,
-            "invoice_line_ids": [
-                Command.create({
-                    "name": f"Line {i}",
-                    "product_id": self._create_product(pt).id,
-                    "account_id": self.account_revenue.id,
-                    "quantity": 1,
-                    "price_unit": 100.0,
-                })
-                for i, pt in enumerate(product_types)
-            ],
-        })
+        move = (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": self.partner_cf.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_fc.id,
+                    "invoice_line_ids": [
+                        Command.create(
+                            {
+                                "name": f"Line {i}",
+                                "product_id": self._create_product(pt).id,
+                                "account_id": self.account_revenue.id,
+                                "quantity": 1,
+                                "price_unit": 100.0,
+                            }
+                        )
+                        for i, pt in enumerate(product_types)
+                    ],
+                }
+            )
+        )
         return move
 
     def test_concept_products_only(self):
@@ -120,21 +146,29 @@ class TestAccountMoveArcaConceptType(ArcaEdiTestCommon):
 
     def test_concept_no_products_defaults_to_1(self):
         """No products at all (lines without product) -> concept 1 (default)."""
-        move = self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": self.partner_cf.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_fc.id,
-            "invoice_line_ids": [
-                Command.create({
-                    "name": "Generic line",
-                    "account_id": self.account_revenue.id,
-                    "quantity": 1,
-                    "price_unit": 50.0,
-                })
-            ],
-        })
+        move = (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": self.partner_cf.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_fc.id,
+                    "invoice_line_ids": [
+                        Command.create(
+                            {
+                                "name": "Generic line",
+                                "account_id": self.account_revenue.id,
+                                "quantity": 1,
+                                "price_unit": 50.0,
+                            }
+                        )
+                    ],
+                }
+            )
+        )
         self.assertEqual(move._get_arca_concept_type(), 1)
 
 
@@ -143,13 +177,19 @@ class TestAccountMoveArcaCustomerDoc(ArcaEdiTestCommon):
     """Test _get_arca_customer_doc() for different partner configurations."""
 
     def _create_move(self, partner):
-        return self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": partner.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_fc.id,
-        })
+        return (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": partner.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_fc.id,
+                }
+            )
+        )
 
     def test_customer_doc_consumidor_final(self):
         """Consumidor Final (no VAT) -> doc_type=99, doc_number=0."""
@@ -182,13 +222,19 @@ class TestAccountMoveArcaBarcode(ArcaEdiTestCommon):
     """Test _build_arca_barcode() with known values."""
 
     def _create_move(self):
-        return self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": self.partner_cf.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_fc.id,
-        })
+        return (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": self.partner_cf.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_fc.id,
+                }
+            )
+        )
 
     def test_build_barcode_known_values(self):
         """Barcode built with known CUIT, doc type, POS, CAE, date."""
@@ -254,21 +300,29 @@ class TestAccountMoveArcaQrCode(ArcaEdiTestCommon):
     """Test _build_arca_qr_code() URL generation."""
 
     def _create_move(self, partner=None):
-        return self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": (partner or self.partner_cf).id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_fc.id,
-            "invoice_line_ids": [
-                Command.create({
-                    "name": "Test Service",
-                    "account_id": self.account_revenue.id,
-                    "quantity": 1,
-                    "price_unit": 1500.00,
-                })
-            ],
-        })
+        return (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": (partner or self.partner_cf).id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_fc.id,
+                    "invoice_line_ids": [
+                        Command.create(
+                            {
+                                "name": "Test Service",
+                                "account_id": self.account_revenue.id,
+                                "quantity": 1,
+                                "price_unit": 1500.00,
+                            }
+                        )
+                    ],
+                }
+            )
+        )
 
     def test_build_qr_code_url_structure(self):
         """QR URL starts with AFIP domain and contains base64 payload."""
@@ -328,8 +382,7 @@ class TestAccountMoveArcaQrCode(ArcaEdiTestCommon):
         """Missing CAE -> returns False."""
         move = self._create_move()
         result = move._build_arca_qr_code(
-            self.certificate, 11, self.journal, 1,
-            {"cae": None, "cae_due_date": None}
+            self.certificate, 11, self.journal, 1, {"cae": None, "cae_due_date": None}
         )
         self.assertFalse(result)
 
@@ -339,13 +392,19 @@ class TestAccountMoveArcaActions(ArcaEdiTestCommon):
     """Test action_verify_arca / action_request_cae guard conditions."""
 
     def _create_move(self, cae=False):
-        move = self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": self.partner_cf.id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": self.doc_type_fc.id,
-        })
+        move = (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": self.partner_cf.id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": self.doc_type_fc.id,
+                }
+            )
+        )
         if cae:
             move.l10n_ar_arca_cae = cae
         return move
@@ -375,35 +434,45 @@ class TestAccountMoveArcaActions(ArcaEdiTestCommon):
 class TestAccountMoveArcaPrepareData(ArcaEdiTestCommon):
     """Test _prepare_arca_invoice_data() output structure."""
 
-    def _create_move_with_line(self, partner=None, doc_type=None, product_type="service"):
-        product = self.env["product.product"].create({
-            "name": "Test Product",
-            "type": product_type,
-        })
-        move = self.env["account.move"].with_company(self.company).create({
-            "move_type": "out_invoice",
-            "journal_id": self.journal.id,
-            "partner_id": (partner or self.partner_cf).id,
-            "invoice_date": datetime.date(2026, 3, 15),
-            "l10n_latam_document_type_id": (doc_type or self.doc_type_fc).id,
-            "invoice_line_ids": [
-                Command.create({
-                    "name": "Test Line",
-                    "product_id": product.id,
-                    "account_id": self.account_revenue.id,
-                    "quantity": 2,
-                    "price_unit": 500.00,
-                })
-            ],
-        })
+    def _create_move_with_line(
+        self, partner=None, doc_type=None, product_type="service"
+    ):
+        product = self.env["product.product"].create(
+            {
+                "name": "Test Product",
+                "type": product_type,
+            }
+        )
+        move = (
+            self.env["account.move"]
+            .with_company(self.company)
+            .create(
+                {
+                    "move_type": "out_invoice",
+                    "journal_id": self.journal.id,
+                    "partner_id": (partner or self.partner_cf).id,
+                    "invoice_date": datetime.date(2026, 3, 15),
+                    "l10n_latam_document_type_id": (doc_type or self.doc_type_fc).id,
+                    "invoice_line_ids": [
+                        Command.create(
+                            {
+                                "name": "Test Line",
+                                "product_id": product.id,
+                                "account_id": self.account_revenue.id,
+                                "quantity": 2,
+                                "price_unit": 500.00,
+                            }
+                        )
+                    ],
+                }
+            )
+        )
         return move
 
     def test_prepare_data_factura_c_structure(self):
         """Factura C: all amount in net_taxed, IVA totals are 0."""
         move = self._create_move_with_line()
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
 
         # Required keys present
         self.assertIn("pos_number", data)
@@ -437,9 +506,7 @@ class TestAccountMoveArcaPrepareData(ArcaEdiTestCommon):
     def test_prepare_data_service_includes_service_dates(self):
         """Service concept (2) includes service_date_from/to and payment_due_date."""
         move = self._create_move_with_line(product_type="service")
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
         # Concept should be 2 (services)
         self.assertEqual(data["concept"], 2)
         self.assertIn("service_date_from", data)
@@ -451,9 +518,7 @@ class TestAccountMoveArcaPrepareData(ArcaEdiTestCommon):
     def test_prepare_data_product_no_service_dates(self):
         """Product concept (1) does NOT include service dates."""
         move = self._create_move_with_line(product_type="consu")
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
         self.assertEqual(data["concept"], 1)
         self.assertNotIn("service_date_from", data)
         self.assertNotIn("service_date_to", data)
@@ -461,35 +526,27 @@ class TestAccountMoveArcaPrepareData(ArcaEdiTestCommon):
     def test_prepare_data_consumidor_final_doc(self):
         """Consumidor Final partner -> customer_doc_type=99, number=0."""
         move = self._create_move_with_line(partner=self.partner_cf)
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
         self.assertEqual(data["customer_doc_type"], 99)
         self.assertEqual(data["customer_doc_number"], 0)
 
     def test_prepare_data_ri_partner_cuit(self):
         """RI partner -> customer_doc_type=80, customer_doc_number=CUIT digits."""
         move = self._create_move_with_line(partner=self.partner_ri)
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
         self.assertEqual(data["customer_doc_type"], 80)
         self.assertEqual(data["customer_doc_number"], 30712345679)
 
     def test_prepare_data_customer_iva_condition(self):
         """RI partner maps to customer_iva_condition=1 (RG 5616)."""
         move = self._create_move_with_line(partner=self.partner_ri)
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
         self.assertIn("customer_iva_condition", data)
         self.assertEqual(data["customer_iva_condition"], 1)
 
     def test_prepare_data_cf_customer_iva_condition(self):
         """Consumidor Final maps to customer_iva_condition=5."""
         move = self._create_move_with_line(partner=self.partner_cf)
-        data = move._prepare_arca_invoice_data(
-            self.certificate, self.journal, 11, 1
-        )
+        data = move._prepare_arca_invoice_data(self.certificate, self.journal, 11, 1)
         self.assertIn("customer_iva_condition", data)
         self.assertEqual(data["customer_iva_condition"], 5)

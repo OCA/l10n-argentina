@@ -1,12 +1,12 @@
 /* ARCA Electronic Invoicing - Argentine themed status badges */
 
 /* Argentine flag colors */
-$arca-celeste: #75AADB;
-$arca-celeste-light: #B8D4ED;
-$arca-celeste-dark: #5A8FB8;
-$arca-white: #FFFFFF;
-$arca-gold: #F6B40E;
-$arca-gold-dark: #D4960A;
+$arca-celeste: #75aadb;
+$arca-celeste-light: #b8d4ed;
+$arca-celeste-dark: #5a8fb8;
+$arca-white: #ffffff;
+$arca-gold: #f6b40e;
+$arca-gold-dark: #d4960a;
 
 /* Badge base */
 .o_arca_badge {
@@ -22,9 +22,9 @@ $arca-gold-dark: #D4960A;
 
 /* Status: Not configured (grey) */
 .o_arca_badge_draft {
-    background: #E8E8E8;
+    background: #e8e8e8;
     color: #666666;
-    border: 1px solid #D0D0D0;
+    border: 1px solid #d0d0d0;
 }
 
 /* Status: CSR Generated (celeste light) */
@@ -50,16 +50,16 @@ $arca-gold-dark: #D4960A;
 
 /* Status: Expired (red/warning) */
 .o_arca_badge_expired {
-    background: #FDE8E8;
-    color: #B91C1C;
-    border: 1px solid #FBBCBC;
+    background: #fde8e8;
+    color: #b91c1c;
+    border: 1px solid #fbbcbc;
 }
 
 /* Status: Revoked */
 .o_arca_badge_revoked {
-    background: #FEF3C7;
-    color: #92400E;
-    border: 1px solid #FCD34D;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
 }
 
 /* ARCA section in Settings - position at top */
@@ -84,9 +84,9 @@ $arca-gold-dark: #D4960A;
     }
 
     &.o_arca_env_production {
-        background: #FEF3C7;
-        color: #92400E;
-        border: 1px solid #FCD34D;
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fcd34d;
     }
 }
 
@@ -95,7 +95,8 @@ $arca-gold-dark: #D4960A;
     width: 100%;
     max-width: 80vw;
 
-    .o_field_copy_text, .o_field_copy_char {
+    .o_field_copy_text,
+    .o_field_copy_char {
         display: flex;
         align-items: center;
         gap: 4px;
@@ -103,7 +104,7 @@ $arca-gold-dark: #D4960A;
         input {
             font-family: monospace !important;
             font-size: 0.8em;
-            background: #F8F9FA;
+            background: #f8f9fa;
             text-overflow: ellipsis;
             flex: 1;
             min-width: 0;

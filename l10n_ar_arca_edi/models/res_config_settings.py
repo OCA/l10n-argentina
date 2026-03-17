@@ -1,7 +1,7 @@
 # Copyright 2026 Leonobitech
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -66,9 +66,7 @@ class ResConfigSettings(models.TransientModel):
             vat = company.partner_id.vat if company else False
             if vat and len(vat.replace("-", "").replace(" ", "")) == 11:
                 clean = vat.replace("-", "").replace(" ", "")
-                rec.l10n_ar_arca_company_cuit = (
-                    f"{clean[:2]}-{clean[2:10]}-{clean[10]}"
-                )
+                rec.l10n_ar_arca_company_cuit = f"{clean[:2]}-{clean[2:10]}-{clean[10]}"
             else:
                 rec.l10n_ar_arca_company_cuit = vat or ""
 
@@ -87,7 +85,7 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         cert = self.l10n_ar_arca_certificate_id
         if not cert:
-            raise UserError(_("No certificate selected."))
+            raise UserError(self.env._("No certificate selected."))
         result = cert.action_generate_key_and_csr()
         # Reload settings to reflect new state
         if result and result.get("params"):
@@ -99,7 +97,7 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         cert = self.l10n_ar_arca_certificate_id
         if not cert:
-            raise UserError(_("No certificate selected."))
+            raise UserError(self.env._("No certificate selected."))
         return cert.action_upload_certificate()
 
     def action_arca_test_connection(self):
@@ -107,5 +105,5 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         cert = self.l10n_ar_arca_certificate_id
         if not cert:
-            raise UserError(_("No certificate selected."))
+            raise UserError(self.env._("No certificate selected."))
         return cert.action_test_connection()

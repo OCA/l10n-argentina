@@ -12,7 +12,7 @@ from lxml import etree
 from zeep import Client
 from zeep.transports import Transport
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ class L10nArArcaWsaa(models.Model):
 
         if certificate.state != "active":
             raise UserError(
-                _("Certificate '%s' is not active.", certificate.name)
+                self.env._("Certificate '%s' is not active.", certificate.name)
             )
 
         # Check if cached token is still valid (with 10 min margin)
@@ -58,8 +58,7 @@ class L10nArArcaWsaa(models.Model):
             certificate.wsaa_token
             and certificate.wsaa_sign
             and certificate.wsaa_token_expiration
-            and certificate.wsaa_token_expiration
-            > now + datetime.timedelta(minutes=10)
+            and certificate.wsaa_token_expiration > now + datetime.timedelta(minutes=10)
         ):
             return {
                 "token": certificate.wsaa_token,
@@ -124,19 +123,19 @@ class L10nArArcaWsaa(models.Model):
             response = client.service.loginCms(cms_signed)
         except Exception as e:
             _logger.error("WSAA LoginCms failed: %s", str(e))
-            raise UserError(
-                _("WSAA authentication failed: %s", str(e))
-            ) from e
+            raise UserError(self.env._("WSAA authentication failed: %s", str(e))) from e
 
         # Step 4: Parse response
         token, sign, expiration = self._parse_login_response(response)
 
         # Cache token in certificate
-        certificate.sudo().write({
-            "wsaa_token": token,
-            "wsaa_sign": sign,
-            "wsaa_token_expiration": expiration,
-        })
+        certificate.sudo().write(
+            {
+                "wsaa_token": token,
+                "wsaa_sign": sign,
+                "wsaa_token_expiration": expiration,
+            }
+        )
 
         _logger.info(
             "WSAA: Authentication successful. Token valid until %s",
@@ -159,9 +158,7 @@ class L10nArArcaWsaa(models.Model):
         """
         # Load private key
         key_pem = base64.b64decode(certificate.private_key)
-        private_key = serialization.load_pem_private_key(
-            key_pem, password=None
-        )
+        private_key = serialization.load_pem_private_key(key_pem, password=None)
 
         # Load certificate
         cert_pem = base64.b64decode(certificate.certificate)
@@ -203,7 +200,7 @@ class L10nArArcaWsaa(models.Model):
             root = etree.fromstring(response.encode("utf-8"))
         except etree.XMLSyntaxError as e:
             raise UserError(
-                _("Failed to parse WSAA response: %s", str(e))
+                self.env._("Failed to parse WSAA response: %s", str(e))
             ) from e
 
         token = root.findtext(".//token")
@@ -212,7 +209,7 @@ class L10nArArcaWsaa(models.Model):
 
         if not token or not sign:
             raise UserError(
-                _("WSAA response missing token or sign credentials.")
+                self.env._("WSAA response missing token or sign credentials.")
             )
 
         # Parse expiration time (ARCA returns -03:00 timezone)
@@ -223,9 +220,9 @@ class L10nArArcaWsaa(models.Model):
             try:
                 expiration = datetime.datetime.fromisoformat(expiration_str)
                 # Convert to UTC naive datetime for Odoo storage
-                expiration = expiration.astimezone(
-                    datetime.timezone.utc
-                ).replace(tzinfo=None)
+                expiration = expiration.astimezone(datetime.timezone.utc).replace(
+                    tzinfo=None
+                )
             except (ValueError, TypeError):
                 _logger.warning(
                     "Could not parse WSAA expiration time: %s",
