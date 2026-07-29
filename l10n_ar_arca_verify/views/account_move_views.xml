@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_move_form_arca_verify" model="ir.ui.view">
+        <field name="name">account.move.form.l10n_ar_arca_verify</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_l10n_ar_arca_verify_comprobante"
+                    string="Check against ARCA"
+                    type="object"
+                    class="btn-secondary"
+                    invisible="move_type not in ('in_invoice', 'in_refund') or not l10n_ar_arca_verify_vendor_cae"
+                />
+            </xpath>
+            <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                <field
+                    name="l10n_ar_arca_verify_vendor_cae"
+                    invisible="move_type not in ('in_invoice', 'in_refund')"
+                />
+                <field
+                    name="l10n_ar_arca_verify_result"
+                    invisible="not l10n_ar_arca_verify_result"
+                    readonly="1"
+                />
+                <field
+                    name="l10n_ar_arca_verify_observations"
+                    invisible="not l10n_ar_arca_verify_observations"
+                    readonly="1"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
