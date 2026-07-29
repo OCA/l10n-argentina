@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo noupdate="1">
+    <record id="sequence_l10n_ar_withholding_certificate" model="ir.sequence">
+        <field name="name">Certificado de Retención (Argentina)</field>
+        <field name="code">l10n_ar_withholding_certificate</field>
+        <field name="prefix">%(year)s-</field>
+        <field name="padding">8</field>
+        <field name="company_id" eval="False" />
+    </record>
+</odoo>
