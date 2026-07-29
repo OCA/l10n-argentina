@@ -1,0 +1,165 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_arca_ws
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.constraint,message:l10n_ar_arca_ws.constraint_l10n_ar_arca_token_unique_company_env_servico
+msgid "A token already exists for this company, environment and service."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_res_company__l10n_ar_arca_certificate_id
+msgid "ARCA Certificate"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_res_company__l10n_ar_arca_environment
+msgid "ARCA Environment"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model,name:l10n_ar_arca_ws.model_l10n_ar_arca_token
+msgid "ARCA WSAA token/sign, per company/environment/service"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,help:l10n_ar_arca_ws.field_res_company__l10n_ar_arca_certificate_id
+msgid ""
+"Certificate registered on the ARCA portal (WSAA), used to sign the Login "
+"Ticket Request. It must have a private key linked."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model,name:l10n_ar_arca_ws.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__company_id
+msgid "Company"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__environment
+msgid "Environment"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__expiration
+msgid "Expiration"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields.selection,name:l10n_ar_arca_ws.selection__l10n_ar_arca_token__environment__homologacion
+msgid "Homologación"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields.selection,name:l10n_ar_arca_ws.selection__res_company__l10n_ar_arca_environment__homologacion
+msgid "Homologación (testing)"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,help:l10n_ar_arca_ws.field_res_company__l10n_ar_arca_environment
+msgid ""
+"Homologación is the ARCA testing environment: it never issues a legally "
+"valid CAE. Switch to Producción only after validating with real documents "
+"together with the customer."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__id
+msgid "ID"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields.selection,name:l10n_ar_arca_ws.selection__l10n_ar_arca_token__environment__produccion
+#: model:ir.model.fields.selection,name:l10n_ar_arca_ws.selection__res_company__l10n_ar_arca_environment__produccion
+msgid "Producción"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__servico
+msgid "Service"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#. odoo-python
+#: code:addons/l10n_ar_arca_ws/models/l10n_ar_arca_token.py:0
+msgid "Set the ARCA certificate on company %s."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#. odoo-python
+#: code:addons/l10n_ar_arca_ws/models/res_company.py:0
+msgid "Set the CUIT of company %s."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__sign
+msgid "Sign"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#. odoo-python
+#: code:addons/l10n_ar_arca_ws/models/l10n_ar_arca_token.py:0
+#: code:addons/l10n_ar_arca_ws/models/res_company.py:0
+msgid ""
+"The 'arcalib' library is not installed. Install it with pip install "
+"'arcalib[transmissao]' in the Odoo environment."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#. odoo-python
+#: code:addons/l10n_ar_arca_ws/models/l10n_ar_arca_token.py:0
+msgid "The ARCA certificate of company %s has no private key linked."
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,field_description:l10n_ar_arca_ws.field_l10n_ar_arca_token__token
+msgid "Token"
+msgstr ""
+
+#. module: l10n_ar_arca_ws
+#: model:ir.model.fields,help:l10n_ar_arca_ws.field_l10n_ar_arca_token__servico
+msgid ""
+"arcalib endpoint key for the service: wsfev1, wsfexv1, wsbfev1, wscdc or "
+"wspadron_a5 (this is what `arcalib.transmissao.TransmissaoWSxxx` passes to "
+"`get_credentials`, not the internal `<service>` name of WSAA)."
+msgstr ""
