@@ -1,0 +1,158 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_arca_edi
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_observations
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_observations
+msgid "ARCA Remarks"
+msgstr "Observaciones de ARCA"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_result
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_result
+msgid "ARCA Result"
+msgstr "Resultado ARCA"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_result
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_result
+msgid "ARCA never returns a third Resultado value on its own: 'Observado' is the combination of Resultado=A with Observaciones filled in (approval with remarks), not a separate code."
+msgstr "ARCA nunca devuelve un tercer valor de Resultado por su cuenta: 'Observado' es la combinación Resultado=A con Observaciones cargadas (aprobación con salvedad), no un código aparte."
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "ARCA rejected the CAE request (%(resultado)s): %(obs)s"
+msgstr "ARCA rechazó la solicitud de CAE (%(resultado)s): %(obs)s"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__account_move__l10n_ar_arca_result__a
+msgid "Aprobado"
+msgstr "Aprobado"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_cae
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_cae
+msgid "CAE"
+msgstr "CAE"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_cae_due_date
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_cae_due_date
+msgid "CAE due date"
+msgstr "Vencimiento del CAE"
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document_arca_edi_qr
+msgid "CAE due date:"
+msgstr "Vencimiento CAE:"
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.report_invoice_document_arca_edi_qr
+msgid "CAE:"
+msgstr "CAE:"
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Could not obtain the CAE from ARCA: %(detail)s\n\nThe invoice is posted and numbered, but WITHOUT a CAE: it is not a valid document yet. Use the 'Solicitar CAE' button to try again."
+msgstr "No fue posible obtener el CAE de ARCA: %(detail)s\n\nLa factura está validada y numerada, pero SIN CAE: todavía no es un comprobante válido. Use el botón 'Solicitar CAE' para reintentar."
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_edi_enabled
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_edi_enabled
+msgid "Issues electronic invoice (WSFEv1)"
+msgstr "Emite factura electrónica (WSFEv1)"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_account_journal
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model,name:l10n_ar_arca_edi.model_account_move
+msgid "Journal Entry"
+msgstr "Asiento contable"
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Numbering in sync: the last one authorized by ARCA and the last local one are the same (%(nro)s)."
+msgstr "Numeración sincronizada: el último autorizado en ARCA y el último local son el mismo (%(nro)s)."
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Numbering out of sync for %(journal)s / %(doc_type)s: the last one authorized by ARCA is %(arca)s and the last local one is %(local)s. A manual adjustment is required before invoicing again in this journal."
+msgstr "Numeración desincronizada para %(journal)s / %(doc_type)s: el último autorizado en ARCA es %(arca)s y el último local es %(local)s. Se requiere un ajuste manual antes de seguir facturando en este diario."
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_edi_enabled
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_edi_enabled
+msgid "Only used to control the visibility of the 'Solicitar CAE' button in the view: without it the button shows up on any posted invoice, even from a journal with no electronic point of sale."
+msgstr "Solo se usa para controlar la visibilidad del botón 'Solicitar CAE' en la vista: sin esto el botón aparece en cualquier factura validada, incluso de un diario sin punto de venta electrónico."
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__account_move__l10n_ar_arca_result__r
+msgid "Rechazado"
+msgstr "Rechazado"
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_observations
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_observations
+msgid "Remarks returned by ARCA even on an approval (Resultado=A with Observaciones is not an error, it is an approval with remarks)."
+msgstr "Observaciones devueltas por ARCA incluso en una aprobación (Resultado=A con Observaciones no es un error, es una aprobación con salvedad)."
+
+#. module: l10n_ar_arca_edi
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_edi.view_move_form_arca_edi
+msgid "Request CAE"
+msgstr "Solicitar CAE"
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "The CAE can only be requested for a posted invoice."
+msgstr "Solo se puede solicitar el CAE de una factura validada."
+
+#. module: l10n_ar_arca_edi
+#: model:ir.model.fields,help:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
+msgid "The journal issues electronic invoices through the ARCA WSFEv1 (domestic market). It requires the point of sale system to be 'Online Invoice' (l10n_ar_afip_pos_system = RLI_RLM)."
+msgstr "El diario emite factura electrónica por el WSFEv1 de ARCA (mercado interno). Requiere que el sistema de punto de venta sea 'Online Invoice' (l10n_ar_afip_pos_system = RLI_RLM)."
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "There is no installed module able to request the CAE through the ARCA %(webservice)s webservice for document %(document)s."
+msgstr "No hay ningún módulo instalado que sepa solicitar el CAE por el webservice %(webservice)s de ARCA para el comprobante %(document)s."
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "This invoice already has a CAE."
+msgstr "Esta factura ya tiene CAE."
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Unexpected response from ARCA: no FeDetResp."
+msgstr "Respuesta inesperada de ARCA: sin FeDetResp."
+
+#. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "no detail"
+msgstr "sin detalle"
