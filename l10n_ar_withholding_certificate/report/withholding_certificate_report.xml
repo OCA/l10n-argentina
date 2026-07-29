@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="action_report_withholding_certificate" model="ir.actions.report">
+        <field name="name">Withholding Certificate</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field
+            name="report_name"
+        >l10n_ar_withholding_certificate.report_withholding_certificate</field>
+        <field
+            name="report_file"
+        >l10n_ar_withholding_certificate.report_withholding_certificate</field>
+        <field
+            name="print_report_name"
+        >'Withholding Certificate - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="account.model_account_payment" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_withholding_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Withholding Certificate</h2>
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Withholding Agent:</strong>
+                                <span t-field="o.company_id.partner_id" />
+                            </div>
+                            <div class="col-6">
+                                <strong>Withheld Party:</strong>
+                                <span t-field="o.partner_id" />
+                                <br />
+                                <strong>CUIT:</strong>
+                                <span t-field="o.partner_id.l10n_ar_formatted_vat" />
+                            </div>
+                        </div>
+                        <div class="row mb32">
+                            <div class="col-6">
+                                <strong>Payment Date:</strong>
+                                <span t-field="o.date" />
+                            </div>
+                            <div class="col-6">
+                                <strong>Reference:</strong>
+                                <span t-field="o.name" />
+                            </div>
+                        </div>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Certificate No.</th>
+                                    <th>Tax</th>
+                                    <th class="text-end">Taxable Base</th>
+                                    <th class="text-end">Withheld Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    t-foreach="o.l10n_ar_supplier_withholding_ids"
+                                    t-as="line"
+                                >
+                                    <td>
+                                        <span
+                                            t-field="line.l10n_ar_withholding_certificate_number"
+                                        />
+                                    </td>
+                                    <td>
+                                        <span t-field="line.tax_line_id.name" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="abs(line.tax_base_amount)"
+                                            t-options="{'widget': 'monetary', 'display_currency': line.company_currency_id}"
+                                        />
+                                    </td>
+                                    <td class="text-end">
+                                        <span
+                                            t-out="abs(line.balance)"
+                                            t-options="{'widget': 'monetary', 'display_currency': line.company_currency_id}"
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
