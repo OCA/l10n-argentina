@@ -72,7 +72,9 @@ class AccountVatLedgerXlsx(models.AbstractModel):
                 )  # Tipo de Comprobante
                 sheet.write(row + index, 5, obj.name)  # Nro Comprobante
 
-                amounts = obj._l10n_ar_get_amounts()
+                amounts = obj._l10n_ar_get_amounts(
+                    obj._get_rounded_base_and_tax_lines()[0]
+                )
                 credit = 1
                 if obj.l10n_latam_document_type_id.internal_type == "credit_note":
                     credit = -1
