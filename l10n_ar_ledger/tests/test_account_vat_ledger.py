@@ -40,9 +40,7 @@ class TestAccountVatLedger(TestAr):
         shifts every following field of the line and AFIP rejects the file.
         Before this fix only Consumidor Final was sanitized.
         """
-        partner = self._partner(
-            "30-71429569-8", "l10n_ar.res_IVARI", "l10n_ar.it_cuit"
-        )
+        partner = self._partner("30-71429569-8", "l10n_ar.res_IVARI", "l10n_ar.it_cuit")
         self.assertEqual(
             self.ledger.get_partner_document_number(partner),
             "00000000030714295698",
