@@ -292,15 +292,23 @@
       <field name="header_spacing">40</field>
       <field name="dpi">95</field>
     </record>
-    <report
-            id="l10n_ar_action_report_ledger"
-            model="account.vat.ledger"
-            string="Libro IVA"
-            report_type="qweb-pdf"
-            paperformat="l10n_ar_ledger.paperformat_landscape"
-            name="l10n_ar_ledger.ledger_report"
-            file="l10n_ar_ledger.ledger_report"
-            print_report_name="'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' + (object.date_to.strftime('%d-%m-%Y')) + '.pdf'"
-        />
+    <!-- `<record model="ir.actions.report">` em vez da tag `<report>`: esta
+         ficou deprecada na 16.0 (DeprecationWarning na instalacao) e deixou
+         de ser aceita em versoes seguintes. -->
+    <record id="l10n_ar_action_report_ledger" model="ir.actions.report">
+      <field name="name">Libro IVA</field>
+      <field name="model">account.vat.ledger</field>
+      <field name="report_type">qweb-pdf</field>
+      <field
+                name="paperformat_id"
+                ref="l10n_ar_ledger.paperformat_landscape"
+            />
+      <field name="report_name">l10n_ar_ledger.ledger_report</field>
+      <field name="report_file">l10n_ar_ledger.ledger_report</field>
+      <field
+                name="print_report_name"
+            >'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' + (object.date_to.strftime('%d-%m-%Y')) + '.pdf'</field>
+      <field name="binding_type">report</field>
+    </record>
   </data>
 </odoo>
