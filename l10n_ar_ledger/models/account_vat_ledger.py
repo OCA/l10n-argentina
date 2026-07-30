@@ -263,21 +263,25 @@ class AccountVatLedger(models.Model):
         return "80"
 
     def get_partner_document_number(self, partner):
-        if partner.l10n_ar_afip_responsibility_type_id.code == "5":
-            number = partner.vat or ""
-            number = re.sub("[^0-9]", "", number)
-        else:
-            number = partner.vat
-        if number is not False:
-            return number.rjust(20, "0")
-        else:
+        """Number of the partner's identification, digits only, right aligned
+        in 20 positions.
+
+        The digital files use a fixed position layout, so any separator kept
+        in the number (``30-71429569-8``) shifts every following field of the
+        line and makes AFIP reject the whole file. The number is therefore
+        sanitized for every responsibility type, not only for Consumidor
+        Final, which is how the partner's VAT is usually stored.
+        """
+        number = re.sub("[^0-9]", "", partner.vat or "")
+        if not number:
             raise ValidationError(
                 _(
-                    "Partner "
-                    + partner.name
-                    + " has not CUIT/CUIL or DNI. Required fro VAT Ledger Book."
+                    "Partner %s has no CUIT/CUIL or DNI. Required for VAT "
+                    "Ledger Book."
                 )
+                % partner.display_name
             )
+        return number.rjust(20, "0")
 
     def get_digital_invoices(self, return_skiped=False):
         self.ensure_one()
@@ -427,17 +431,26 @@ class AccountVatLedger(models.Model):
                 )
 
     def _get_aliquots(self, inv):
+        """Number of VAT rates of the voucher, for field 19 of
+        ``REGDIGITAL_CV_CBTE``.
+
+        Must match the number of records the voucher generates in
+        ``REGDIGITAL_CV_ALICUOTAS``, which comes from ``_get_vat()``: AFIP
+        rejects the pair of files when the declared count differs from the
+        rate records. ``_get_vat()`` keeps only tax groups whose
+        ``l10n_ar_vat_afip_code`` is set and is not ``0``, ``1`` or ``2``, so
+        the same filter is applied here. Taxes with no VAT code at all (an
+        IIBB perception, for instance) were previously counted and made the
+        count diverge.
+        """
         vat_taxes = []
-        vat_exempt_base_amount = 0
         if inv.l10n_latam_document_type_id.code not in ["11", "12", "13"]:
             for invl in inv.invoice_line_ids:
                 for tax in invl.tax_ids:
-                    if tax.tax_group_id.l10n_ar_vat_afip_code not in ["1", "2"]:
+                    vat_afip_code = tax.tax_group_id.l10n_ar_vat_afip_code
+                    if vat_afip_code and vat_afip_code not in ["0", "1", "2"]:
                         if tax.id not in vat_taxes:
                             vat_taxes.append(tax.id)
-                    if self.type == "purchase":
-                        if tax.amount == 0:
-                            vat_exempt_base_amount += invl.price_subtotal
         return len(vat_taxes)
 
     def get_REGDIGITAL_CV_CBTE(self):
