@@ -58,22 +58,20 @@ class AccountVatLedger(models.Model):
         compute="_compute_digital_files",
     )
     digital_aliquots_file = fields.Binary(
-        "Digital Aliquots File", compute="_compute_digital_files", readonly=True
+        compute="_compute_digital_files", readonly=True
     )
     digital_aliquots_filename = fields.Char(
-        "Digital Aliquots Filename",
         readonly=True,
         compute="_compute_digital_files",
     )
     digital_import_aliquots_file = fields.Binary(
-        "Digital Import Aliquots File", compute="_compute_digital_files", readonly=True
+        compute="_compute_digital_files", readonly=True
     )
     digital_import_aliquots_filename = fields.Char(
-        "Digital Import Aliquots File",
         readonly=True,
         compute="_compute_digital_files",
     )
-    prorate_tax_credit = fields.Boolean("Prorate Tax Credit")
+    prorate_tax_credit = fields.Boolean()
 
     company_id = fields.Many2one(
         "res.company",
@@ -85,17 +83,13 @@ class AccountVatLedger(models.Model):
             "account.vat.ledger"
         ),
     )
-    type = fields.Selection(
-        [("sale", "Sale"), ("purchase", "Purchase")], "Type", required=True
-    )
+    type = fields.Selection([("sale", "Sale"), ("purchase", "Purchase")], required=True)
     date_from = fields.Date(
-        string="Date From",
         required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
     date_to = fields.Date(
-        string="Date To",
         required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
@@ -111,21 +105,19 @@ class AccountVatLedger(models.Model):
         states={"draft": [("readonly", False)]},
     )
     presented_ledger = fields.Binary(
-        "Presented Ledger",
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
-    presented_ledger_name = fields.Char("Presented Ledger Name")
+    presented_ledger_name = fields.Char()
     state = fields.Selection(
         [("draft", "Draft"), ("presented", "Presented"), ("cancel", "Cancelled")],
-        "State",
         required=True,
         default="draft",
     )
-    note = fields.Html("Note")
+    note = fields.Html()
 
-    name = fields.Char("Name", compute="_compute_name")
-    reference = fields.Char("Reference")
+    name = fields.Char(compute="_compute_name")
+    reference = fields.Char()
     invoice_ids = fields.Many2many(
         "account.move", string="Invoices", compute="_compute_data"
     )
@@ -180,15 +172,15 @@ class AccountVatLedger(models.Model):
             elif rec.type == "purchase":
                 ledger_type = _("Purchases")
 
-            name = _("%s VAT Ledger %s - %s") % (
-                ledger_type,
-                rec.date_from
+            name = _("%(ledger_type)s VAT Ledger %(date_from)s - %(date_to)s") % {
+                "ledger_type": ledger_type,
+                "date_from": rec.date_from
                 and fields.Date.from_string(rec.date_from).strftime("%d-%m-%Y")
                 or "",
-                rec.date_to
+                "date_to": rec.date_to
                 and fields.Date.from_string(rec.date_to).strftime("%d-%m-%Y")
                 or "",
-            )
+            }
             if rec.reference:
                 name = "%s - %s" % (name, rec.reference)
             rec.name = name
@@ -198,10 +190,9 @@ class AccountVatLedger(models.Model):
         # AFIP Wait "ISO-8859-1" and not utf-8
         # http://www.planillasutiles.com.ar/2015/08/como-descargar-los-archivos-de.html
         if self.REGDIGITAL_CV_ALICUOTAS:
-            self.digital_aliquots_filename = _("Alicuots_%s_%s.txt") % (
-                self.type,
-                self.date_to,
-            )
+            self.digital_aliquots_filename = _(
+                "Alicuots_%(ledger_type)s_%(date_to)s.txt"
+            ) % {"ledger_type": self.type, "date_to": self.date_to}
             self.digital_aliquots_file = encodebytes(
                 self.REGDIGITAL_CV_ALICUOTAS.encode("ISO-8859-1")
             )
@@ -209,10 +200,9 @@ class AccountVatLedger(models.Model):
             self.digital_aliquots_file = False
             self.digital_aliquots_filename = False
         if self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES:
-            self.digital_import_aliquots_filename = _("Import_Alicuots_%s_%s.txt") % (
-                self.type,
-                self.date_to,
-            )
+            self.digital_import_aliquots_filename = _(
+                "Import_Alicuots_%(ledger_type)s_%(date_to)s.txt"
+            ) % {"ledger_type": self.type, "date_to": self.date_to}
             self.digital_import_aliquots_file = encodebytes(
                 self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES.encode("ISO-8859-1")
             )
@@ -220,10 +210,9 @@ class AccountVatLedger(models.Model):
             self.digital_import_aliquots_file = False
             self.digital_import_aliquots_filename = False
         if self.REGDIGITAL_CV_CBTE:
-            self.digital_vouchers_filename = _("Vouchers_%s_%s.txt") % (
-                self.type,
-                self.date_to,
-            )
+            self.digital_vouchers_filename = _(
+                "Vouchers_%(ledger_type)s_%(date_to)s.txt"
+            ) % {"ledger_type": self.type, "date_to": self.date_to}
             self.digital_vouchers_file = encodebytes(
                 self.REGDIGITAL_CV_CBTE.encode("ISO-8859-1")
             )
