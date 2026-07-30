@@ -3,15 +3,17 @@
 
 {
     "name": "Extra Partner Data and Padrón for Argentina",
-    "version": "16.0.1.0.0",
-    "category": "Partner",
+    "version": "18.0.1.0.0",
+    "category": "Localization/Argentina",
     "license": "AGPL-3",
     "summary": "Extra Partner Data and Padrón for Argentina",
-    "author": "Odoo Community Association (OCA), Codize, Exemax",
+    "author": "Odoo Community Association (OCA), Codize, Exemax, KMEE",
     "website": "https://github.com/OCA/l10n-argentina",
-    "depends": ["base", "l10n_ar_afipws"],
-    "external_dependencies": {},
+    "depends": ["l10n_ar_arca_ws"],
+    "external_dependencies": {
+        "python": ["arcalib"],
+    },
     "data": ["views/res_partner.xml"],
-    "maintainers": ["nimarosa", "ibuioli"],
+    "maintainers": ["mileo"],
     "installable": True,
 }
