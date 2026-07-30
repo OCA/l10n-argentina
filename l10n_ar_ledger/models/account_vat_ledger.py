@@ -69,7 +69,7 @@ class AccountVatLedger(models.Model):
         "Digital Import Aliquots File", compute="_compute_digital_files", readonly=True
     )
     digital_import_aliquots_filename = fields.Char(
-        "Digital Import Aliquots File",
+        "Digital Import Aliquots Filename",
         readonly=True,
         compute="_compute_digital_files",
     )

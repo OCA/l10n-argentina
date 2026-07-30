@@ -3,7 +3,7 @@
 
 {
     "name": "VAT Ledger for Argentina",
-    "version": "14.0.0.0.3",
+    "version": "16.0.1.0.0",
     "category": "Accounting",
     "license": "AGPL-3",
     "summary": "VAT Ledger, VAT Digital Ledger and VAT Reports for Argentina",
