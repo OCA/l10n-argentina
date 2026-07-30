@@ -3,14 +3,16 @@
 
 {
     "name": "VAT Ledger for Argentina",
-    "version": "16.0.1.0.0",
-    "category": "Accounting",
+    "version": "18.0.1.0.0",
+    "category": "Localization/Argentina",
     "license": "AGPL-3",
     "summary": "VAT Ledger, VAT Digital Ledger and VAT Reports for Argentina",
-    "author": "Odoo Community Association (OCA), Codize, Exemax, ADHOC SA, Moldeo Interactive",
+    "author": "Odoo Community Association (OCA), Codize, Exemax, ADHOC SA, "
+    "Moldeo Interactive, KMEE",
     "website": "https://github.com/OCA/l10n-argentina",
-    "depends": ["base", "l10n_ar", "report_xlsx"],
+    "depends": ["l10n_ar", "report_xlsx"],
     "external_dependencies": {},
+    "development_status": "Alpha",
     "data": [
         "security/ir.model.access.csv",
         "security/security.xml",
@@ -18,6 +20,6 @@
         "views/account_vat_ledger_pdf.xml",
         "views/account_vat_ledger_xlsx.xml",
     ],
-    "maintainers": ["nimarosa", "ibuioli"],
+    "maintainers": ["mileo"],
     "installable": True,
 }

@@ -11,14 +11,13 @@ import logging
 import re
 from ast import literal_eval
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
 
 class AccountVatLedger(models.Model):
-
     _name = "account.vat.ledger"
     _description = "Account VAT Ledger"
     _inherit = ["mail.thread"]
@@ -58,47 +57,36 @@ class AccountVatLedger(models.Model):
         compute="_compute_digital_files",
     )
     digital_aliquots_file = fields.Binary(
-        "Digital Aliquots File", compute="_compute_digital_files", readonly=True
+        compute="_compute_digital_files", readonly=True
     )
     digital_aliquots_filename = fields.Char(
-        "Digital Aliquots Filename",
         readonly=True,
         compute="_compute_digital_files",
     )
     digital_import_aliquots_file = fields.Binary(
-        "Digital Import Aliquots File", compute="_compute_digital_files", readonly=True
+        compute="_compute_digital_files", readonly=True
     )
     digital_import_aliquots_filename = fields.Char(
-        "Digital Import Aliquots Filename",
         readonly=True,
         compute="_compute_digital_files",
     )
-    prorate_tax_credit = fields.Boolean("Prorate Tax Credit")
+    prorate_tax_credit = fields.Boolean()
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         required=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
-        default=lambda self: self.env["res.company"]._company_default_get(
-            "account.vat.ledger"
-        ),
+        default=lambda self: self.env.company,
     )
-    type = fields.Selection(
-        [("sale", "Sale"), ("purchase", "Purchase")], "Type", required=True
-    )
+    type = fields.Selection([("sale", "Sale"), ("purchase", "Purchase")], required=True)
     date_from = fields.Date(
-        string="Date From",
         required=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     date_to = fields.Date(
-        string="Date To",
         required=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     journal_ids = fields.Many2many(
         "account.journal",
@@ -108,53 +96,43 @@ class AccountVatLedger(models.Model):
         string="Journals",
         required=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     presented_ledger = fields.Binary(
-        "Presented Ledger",
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
-    presented_ledger_name = fields.Char("Presented Ledger Name")
+    presented_ledger_name = fields.Char()
     state = fields.Selection(
         [("draft", "Draft"), ("presented", "Presented"), ("cancel", "Cancelled")],
-        "State",
         required=True,
         default="draft",
     )
-    note = fields.Html("Note")
+    note = fields.Html()
 
-    name = fields.Char("Name", compute="_compute_name")
-    reference = fields.Char("Reference")
+    name = fields.Char(compute="_compute_name")
+    reference = fields.Char()
     invoice_ids = fields.Many2many(
         "account.move", string="Invoices", compute="_compute_data"
     )
 
+    @api.depends("type", "journal_ids", "date_from", "date_to")
     def _compute_data(self):
-        if self.type == "sale":
-            invoices_domain = [
-                ("state", "not in", ["draft", "cancel"]),
-                ("document_number", "!=", False),
-                ("journal_id", "in", self.journal_ids.ids),
-                ("date", ">=", self.date_from),
-                ("date", "<=", self.date_to),
-            ]
-            invoices = self.env["account.move"].search(
-                invoices_domain, order="invoice_date asc, document_number asc, id asc"
-            )
-        else:
-            invoices_domain = [
+        for rec in self:
+            # `l10n_latam_document_number` is not a stored field (a compute
+            # without store=True in the core): it cannot be used in a domain nor
+            # in the `order` of a `search()`. `name` is the real sequence field
+            # (stored) and, with `l10n_latam_use_documents=True` on the journal,
+            # it is built from the same document number, which makes it the
+            # right field to filter and order by, for both sales and
+            # purchases.
+            domain = [
                 ("state", "not in", ["draft", "cancel"]),
                 ("name", "!=", False),
-                ("journal_id", "in", self.journal_ids.ids),
-                ("date", ">=", self.date_from),
-                ("date", "<=", self.date_to),
+                ("journal_id", "in", rec.journal_ids.ids),
+                ("date", ">=", rec.date_from),
+                ("date", "<=", rec.date_to),
             ]
-            invoices = self.env["account.move"].search(
-                invoices_domain, order="invoice_date asc, name asc, id asc"
-            )
-
-        self.invoice_ids = invoices
+            order = "invoice_date asc, name asc, id asc"
+            rec.invoice_ids = self.env["account.move"].search(domain, order=order)
 
     def format_amount(self, amount, padding=15, decimals=2, invoice=False):
         # Fet amounts on correct sign despite conifiguration on taxes and tax
@@ -167,11 +145,15 @@ class AccountVatLedger(models.Model):
         ):
             amount = -amount
 
-        if amount < 0:
-            template = "-{:0>%dd}" % (padding - 1)
-        else:
-            template = "{:0>%dd}" % (padding)
-        return template.format(int(round(abs(amount) * 10**decimals, decimals)))
+        # Layout de posicao fixa: `padding` e o tamanho TOTAL do campo, entao
+        # o sinal negativo ocupa uma das posicoes (o numero fica com um
+        # digito a menos). Equivalente exato ao template original
+        # ("-{:0>%dd}" % (padding - 1) / "{:0>%dd}" % padding), so reescrito
+        # sem percent-format para o ruff (UP031).
+        sign = "-" if amount < 0 else ""
+        digits = padding - 1 if amount < 0 else padding
+        value = int(round(abs(amount) * 10**decimals, decimals))
+        return f"{sign}{value:0>{digits}d}"
 
     def _compute_name(self):
         for rec in self:
@@ -180,28 +162,36 @@ class AccountVatLedger(models.Model):
             elif rec.type == "purchase":
                 ledger_type = _("Purchases")
 
-            name = _("%s VAT Ledger %s - %s") % (
-                ledger_type,
-                rec.date_from
+            name = _("%(ledger_type)s VAT Ledger %(date_from)s - %(date_to)s") % {
+                "ledger_type": ledger_type,
+                "date_from": rec.date_from
                 and fields.Date.from_string(rec.date_from).strftime("%d-%m-%Y")
                 or "",
-                rec.date_to
+                "date_to": rec.date_to
                 and fields.Date.from_string(rec.date_to).strftime("%d-%m-%Y")
                 or "",
-            )
+            }
             if rec.reference:
-                name = "%s - %s" % (name, rec.reference)
+                name = f"{name} - {rec.reference}"
             rec.name = name
+
+    def action_present(self):
+        self.write({"state": "presented"})
+
+    def action_cancel(self):
+        self.write({"state": "cancel"})
+
+    def action_to_draft(self):
+        self.write({"state": "draft"})
 
     def _compute_digital_files(self):
         self.ensure_one()
         # AFIP Wait "ISO-8859-1" and not utf-8
         # http://www.planillasutiles.com.ar/2015/08/como-descargar-los-archivos-de.html
         if self.REGDIGITAL_CV_ALICUOTAS:
-            self.digital_aliquots_filename = _("Alicuots_%s_%s.txt") % (
-                self.type,
-                self.date_to,
-            )
+            self.digital_aliquots_filename = _(
+                "Alicuots_%(ledger_type)s_%(date_to)s.txt"
+            ) % {"ledger_type": self.type, "date_to": self.date_to}
             self.digital_aliquots_file = encodebytes(
                 self.REGDIGITAL_CV_ALICUOTAS.encode("ISO-8859-1")
             )
@@ -209,10 +199,9 @@ class AccountVatLedger(models.Model):
             self.digital_aliquots_file = False
             self.digital_aliquots_filename = False
         if self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES:
-            self.digital_import_aliquots_filename = _("Import_Alicuots_%s_%s.txt") % (
-                self.type,
-                self.date_to,
-            )
+            self.digital_import_aliquots_filename = _(
+                "Import_Alicuots_%(ledger_type)s_%(date_to)s.txt"
+            ) % {"ledger_type": self.type, "date_to": self.date_to}
             self.digital_import_aliquots_file = encodebytes(
                 self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES.encode("ISO-8859-1")
             )
@@ -220,10 +209,9 @@ class AccountVatLedger(models.Model):
             self.digital_import_aliquots_file = False
             self.digital_import_aliquots_filename = False
         if self.REGDIGITAL_CV_CBTE:
-            self.digital_vouchers_filename = _("Vouchers_%s_%s.txt") % (
-                self.type,
-                self.date_to,
-            )
+            self.digital_vouchers_filename = _(
+                "Vouchers_%(ledger_type)s_%(date_to)s.txt"
+            ) % {"ledger_type": self.type, "date_to": self.date_to}
             self.digital_vouchers_file = encodebytes(
                 self.REGDIGITAL_CV_CBTE.encode("ISO-8859-1")
             )
@@ -234,23 +222,23 @@ class AccountVatLedger(models.Model):
     def compute_digital_data(self):
         alicuotas = self.get_REGDIGITAL_CV_ALICUOTAS()
         lines = []
-        for v, v in alicuotas.items():
-            lines += v
+        for inv_lines in alicuotas.values():
+            lines += inv_lines
         self.REGDIGITAL_CV_ALICUOTAS = "\r\n".join(lines)
 
         impo_alicuotas = {}
         if self.type == "purchase":
             impo_alicuotas = self.get_REGDIGITAL_CV_ALICUOTAS(impo=True)
             lines = []
-            for v, v in impo_alicuotas.items():
-                lines += v
+            for inv_lines in impo_alicuotas.values():
+                lines += inv_lines
             self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES = "\r\n".join(lines)
         alicuotas.update(impo_alicuotas)
         self.get_REGDIGITAL_CV_CBTE()
 
     def get_point_of_sale(self, invoice):
         if self.type == "sale":
-            return "{:0>5d}".format(invoice.journal_id.l10n_ar_afip_pos_number)
+            return f"{invoice.journal_id.l10n_ar_afip_pos_number:0>5d}"
         else:
             return invoice.l10n_latam_document_number[:5]
 
@@ -275,10 +263,7 @@ class AccountVatLedger(models.Model):
         number = re.sub("[^0-9]", "", partner.vat or "")
         if not number:
             raise ValidationError(
-                _(
-                    "Partner %s has no CUIT/CUIL or DNI. Required for VAT "
-                    "Ledger Book."
-                )
+                _("Partner %s has no CUIT/CUIL or DNI. Required for VAT Ledger Book.")
                 % partner.display_name
             )
         return number.rjust(20, "0")
@@ -308,14 +293,16 @@ class AccountVatLedger(models.Model):
         self.ensure_one()
         inv = invoice
         if self.type == "sale":
-            doc_number = int(inv.name.split("-")[2])
+            doc_number = inv._l10n_ar_get_document_number_parts(
+                inv.l10n_latam_document_number, inv.l10n_latam_document_type_id.code
+            )["invoice_number"]
             row = [
                 # Campo 1: Tipo de Comprobante
-                "{:0>3d}".format(int(inv.l10n_latam_document_type_id.code)),
+                f"{int(inv.l10n_latam_document_type_id.code):0>3d}",
                 # Campo 2: Punto de Venta
                 self.get_point_of_sale(inv),
                 # Campo 3: Número de Comprobante
-                "{:0>20d}".format(doc_number),
+                f"{doc_number:0>20d}",
                 # Campo 4: Importe Neto Gravado
                 self.format_amount(base, invoice=inv),
                 # Campo 5: Alícuota de IVA.
@@ -326,7 +313,7 @@ class AccountVatLedger(models.Model):
         elif impo:
             row = [
                 # Campo 1: Despacho de importación.
-                (inv.document_number or inv.number or "").rjust(16, "0"),
+                (inv.l10n_latam_document_number or "").rjust(16, "0"),
                 # Campo 2: Importe Neto Gravado
                 self.format_amount(base, invoice=inv),
                 # Campo 3: Alícuota de IVA
@@ -335,20 +322,16 @@ class AccountVatLedger(models.Model):
                 self.format_amount(tax_amount, invoice=inv),
             ]
         else:
-            doc_number = int(inv.name.split("-")[2])
+            doc_number_parts = inv._l10n_ar_get_document_number_parts(
+                inv.l10n_latam_document_number, inv.l10n_latam_document_type_id.code
+            )
             row = [
                 # Campo 1: Tipo de Comprobante
                 str(inv.l10n_latam_document_type_id.code).zfill(3),
                 # Campo 2: Punto de Venta
-                "{:0>5d}".format(
-                    int(
-                        inv.l10n_latam_document_number[
-                            : inv.l10n_latam_document_number.find("-")
-                        ]
-                    )
-                ),
+                "{:0>5d}".format(doc_number_parts["point_of_sale"]),
                 # Campo 3: Número de Comprobante
-                "{:0>20d}".format(doc_number),
+                "{:0>20d}".format(doc_number_parts["invoice_number"]),
                 # Campo 4: Código de documento del vendedor
                 self.get_partner_document_code(inv.commercial_partner_id),
                 # Campo 5: Número de identificación del vendedor
@@ -372,14 +355,16 @@ class AccountVatLedger(models.Model):
 
         if impo:
             invoices = self.get_digital_invoices().filtered(
-                lambda r: r.l10n_latam_document_type_id.code == "66"
-                and r.state != "cancel"
+                lambda r: (
+                    r.l10n_latam_document_type_id.code == "66" and r.state != "cancel"
+                )
             )
         else:
             invoices = self.get_digital_invoices().filtered(
-                lambda r: r.l10n_latam_document_type_id.code
-                not in ["66", "11", "12", "13"]
-                and r.state != "cancel"
+                lambda r: (
+                    r.l10n_latam_document_type_id.code not in ["66", "11", "12", "13"]
+                    and r.state != "cancel"
+                )
             )
 
         for inv in invoices:
@@ -413,9 +398,11 @@ class AccountVatLedger(models.Model):
     def _check_partners(self, invoices):
         if self.type == "purchase":
             partners = invoices.mapped("commercial_partner_id").filtered(
-                lambda r: r.l10n_latam_identification_type_id.l10n_ar_afip_code
-                in (False, 99)
-                or not r.vat
+                lambda r: (
+                    r.l10n_latam_identification_type_id.l10n_ar_afip_code
+                    in (False, "99")
+                    or not r.vat
+                )
             )
             if partners:
                 raise ValidationError(
@@ -425,9 +412,7 @@ class AccountVatLedger(models.Model):
                         "Partners: \r\n\r\n"
                         "%s"
                     )
-                    % "\r\n".join(
-                        ["[%i] %s" % (p.id, p.display_name) for p in partners]
-                    )
+                    % "\r\n".join(f"[{p.id}] {p.display_name}" for p in partners)
                 )
 
     def _get_aliquots(self, inv):
@@ -461,33 +446,40 @@ class AccountVatLedger(models.Model):
 
         for inv in invoices:
             qty_ali = self._get_aliquots(inv)
-            currency_rate = inv.l10n_ar_currency_rate
+            # Tipo de Cambio: 1 when the document currency is the company
+            # currency; otherwise pesos per foreign unit (the same convention
+            # used in the WSFEv1 payload,
+            # l10n_ar_arca_edi._l10n_ar_arca_currency_rate).
+            currency_rate = (
+                1.0
+                if inv.currency_id == inv.company_id.currency_id
+                else 1 / (inv.invoice_currency_rate or 1.0)
+            )
             currency_code = inv.currency_id.l10n_ar_afip_code
-            doc_number = int(inv.name.split("-")[2])
-            amounts = inv._l10n_ar_get_amounts()
+            doc_number = inv._l10n_ar_get_document_number_parts(
+                inv.l10n_latam_document_number, inv.l10n_latam_document_type_id.code
+            )["invoice_number"]
+            base_lines, _tax_lines = inv._get_rounded_base_and_tax_lines()
+            amounts = inv._l10n_ar_get_amounts(base_lines)
 
             row = [
                 # Campo 1: Fecha de comprobante
                 fields.Date.from_string(inv.invoice_date).strftime("%Y%m%d"),
                 # Campo 2: Tipo de Comprobante.
-                "{:0>3d}".format(int(inv.l10n_latam_document_type_id.code)),
+                f"{int(inv.l10n_latam_document_type_id.code):0>3d}",
                 # Campo 3: Punto de Venta
                 self.get_point_of_sale(inv),
                 # Campo 4: Número de Comprobante
-                "{:0>20d}".format(doc_number),
+                f"{doc_number:0>20d}",
             ]
 
             if self.type == "sale":
                 # Campo 5: Número de Comprobante Hasta.
-                row.append("{:0>20d}".format(doc_number))
+                row.append(f"{doc_number:0>20d}")
             else:
                 # Campo 5: Despacho de importación
                 if inv.l10n_latam_document_type_id.code == "66":
-                    row.append(
-                        (inv.l10n_latam_document_number or inv.number or "").rjust(
-                            16, "0"
-                        )
-                    )
+                    row.append((inv.l10n_latam_document_number or "").rjust(16, "0"))
                 else:
                     row.append("".rjust(16, " "))
 
@@ -600,33 +592,29 @@ class AccountVatLedger(models.Model):
             else:
                 # Campo 21: Crédito Fiscal Computable
                 if self.prorate_tax_credit:
-                    if self.prorate_type == "global":
-                        row.append(self.format_amount(0, invoice=inv))
-                    else:
-                        # row.append(self.format_amount(0))
-                        # por ahora no implementado pero seria lo mismo que
-                        # sacar si prorrateo y que el cliente entre en el digital
-                        # en cada comprobante y complete cuando es en
-                        # credito fiscal computable
-                        raise ValidationError(
-                            _(
-                                "Para utilizar el prorrateo por comprobante:\n"
-                                '1) Exporte los archivos sin la opción "Proratear '
-                                'Crédito de Impuestos"\n2) Importe los mismos '
-                                "en el aplicativo\n3) En el aplicativo de afip, "
-                                "comprobante por comprobante, indique el valor "
-                                'correspondiente en el campo "Crédito Fiscal '
-                                'Computable"'
-                            )
+                    # Prorating per document is not implemented: the only
+                    # field the module had to pick the mode ("prorate_type")
+                    # was never declared, so this branch raised AttributeError
+                    # every time it was reached. Until there is a real
+                    # implementation, the manual guidance below is the only
+                    # path.
+                    raise ValidationError(
+                        _(
+                            "Para utilizar el prorrateo por comprobante:\n"
+                            '1) Exporte los archivos sin la opción "Proratear '
+                            'Crédito de Impuestos"\n2) Importe los mismos '
+                            "en el aplicativo\n3) En el aplicativo de afip, "
+                            "comprobante por comprobante, indique el valor "
+                            'correspondiente en el campo "Crédito Fiscal '
+                            'Computable"'
                         )
+                    )
                 else:
-                    imp_neto = 0
                     imp_liquidado = 0
                     vats = inv._get_vat()
                     for v in vats:
                         if v["Id"] in ["3", "4", "5", "6", "8", "9"]:
-                            imp_neto += v["BaseImp"]
-                            imp_liquidado = v["BaseImp"] + v["Importe"]
+                            imp_liquidado += v["BaseImp"] + v["Importe"]
                     row.append(self.format_amount(round(imp_liquidado, 2), invoice=inv))
 
                 row += [
