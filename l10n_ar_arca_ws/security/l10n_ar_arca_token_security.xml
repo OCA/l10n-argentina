@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="l10n_ar_arca_token_comp_rule" model="ir.rule">
+        <field name="name">l10n_ar.arca.token: multi-company</field>
+        <field name="model_id" ref="model_l10n_ar_arca_token" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
