@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-04-07 19:23+0000\n"
-"Last-Translator: Ignacio Buioli <ibuioli@gmail.com>\n"
+"PO-Revision-Date: 2026-08-04 04:46+0000\n"
+"Last-Translator: Fede Vara <fvara@raptiv.io>\n"
 "Language-Team: none\n"
 "Language: es_AR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 5.15.2\n"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,help:l10n_ar_afipws.field_afipws_certificate__state
@@ -50,90 +50,90 @@ msgstr ""
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
 msgid "<span class=\"o_form_label\">AFIP Webservices</span>"
-msgstr ""
+msgstr "<span class=\"o_form_label\">Webservices ARCA</span>"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_certificate_alias
 msgid "AFIP Certificado"
-msgstr "Certificado AFIP"
+msgstr "Certificado ARCA"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_filter
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
 msgid "AFIP Certificados"
-msgstr "Certificados AFIP"
+msgstr "Certificados ARCA"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
 msgid "AFIP Certificates"
-msgstr "Certificados AFIP"
+msgstr "Certificados ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.act_afipws_auth
 msgid "AFIP Connections"
-msgstr "Conexiones AFIP"
+msgstr "Conexiones ARCA"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 msgid "AFIP Connector"
-msgstr "Conector AFIP"
+msgstr "Conector ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.model,name:l10n_ar_afipws.model_afipws_certificate_alias
 msgid "AFIP Distingish Name / Alias"
-msgstr "Nombre Distinguido / Alias AFIP"
+msgstr "Alias ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__afip_login_url
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 msgid "AFIP Login URL"
-msgstr "URL de Acceso AFIP"
+msgstr "URL de Acceso ARCA"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 msgid "AFIP Servers"
-msgstr "Servidores AFIP"
+msgstr "Servidores ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__afip_ws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_tree
 msgid "AFIP WS"
-msgstr "AFIP WS"
+msgstr "WS ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.actions.act_window,name:l10n_ar_afipws.action_upload_certificate
 msgid "AFIP WS - Upload Certificate"
-msgstr "AFIP WS - Cargar Certificado"
+msgstr "WS ARCA - Cargar Certificado"
 
 #. module: l10n_ar_afipws
 #: model:ir.model,name:l10n_ar_afipws.model_afipws_connection
 msgid "AFIP WS Connection"
-msgstr "Conexión AFIP WS"
+msgstr "Conexión WS ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__afip_ws_env_type
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_config_settings__afip_ws_env_type
 msgid "AFIP WS Environment"
-msgstr "Entorno de AFIP WS"
+msgstr "Entorno de WS ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_afipws_connection__afip_ws_url
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
 msgid "AFIP WS URL"
-msgstr "AFIP WS URL"
+msgstr "URL de WS ARCA"
 
 #. module: l10n_ar_afipws
 #: model:ir.ui.menu,name:l10n_ar_afipws.menu_afipws
 msgid "AFIP Web Services"
-msgstr "AFIP Web Services"
+msgstr "Web Services ARCA"
 
 #. module: l10n_ar_afipws
 #. odoo-python
 #: code:addons/l10n_ar_afipws/models/afipws_connection.py:0
 #, python-format
 msgid "AFIP Webservice %s not implemented yet"
-msgstr "El Webservice de AFIP %s no ha sido implementado"
+msgstr "El Webservice de ARCA %s aún no ha sido implementado"
 
 #. module: l10n_ar_afipws
 #: model:ir.model.fields,field_description:l10n_ar_afipws.field_res_company__alias_ids
@@ -153,7 +153,7 @@ msgstr "CUIT"
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
 msgid "CUIT de la Compañía"
-msgstr "CUIT de la Compañía"
+msgstr "CUIT de la Empresa"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
@@ -258,7 +258,7 @@ msgstr "CUIT de la Compañía"
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_tree
 msgid "Compañía"
-msgstr "Compañía"
+msgstr "Empresa"
 
 #. module: l10n_ar_afipws
 #: model:ir.ui.menu,name:l10n_ar_afipws.menu_action_afipws_auth
@@ -273,7 +273,7 @@ msgstr "Configurar Ajustes"
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
 msgid "Configure AFIP web-services"
-msgstr ""
+msgstr "Configurar web-services ARCA"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_form
@@ -375,9 +375,9 @@ msgid ""
 "Production: This is the connection used in real world.\n"
 "Homologation: Use this environment to test AFIP Web Services."
 msgstr ""
-"El Entorno es usado para conectarse a los Servicios Web de AFIP.\n"
+"El Entorno es usado para conectarse a los Servicios Web de ARCA.\n"
 "Producción: Esta es la conexión usada en el mundo real.\n"
-"Homologación: Utilice este entorno para probar los Servicios Web de AFIP."
+"Homologación: Utilice este entorno para probar los Servicios Web de ARCA."
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_filter
@@ -493,12 +493,12 @@ msgstr "Última actualización el"
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
 msgid "List certificates"
-msgstr ""
+msgstr "Listar certificados"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.res_config_settings_view_form
 msgid "List conections"
-msgstr ""
+msgstr "Listar conexiones"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_filter
@@ -515,6 +515,8 @@ msgid ""
 "Not confirmed certificate for \"%(environment_type)s\" on company \"%(name)s"
 "\""
 msgstr ""
+"Certificado para \"%(environment_type)s\" de la empresa \"%(name)s\" no "
+"confirmado"
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_certificate_alias_form
@@ -613,6 +615,8 @@ msgid ""
 "Tiene más de un certificado de \"%(environment_type)s\" confirmado.Por "
 "favor, deje un solo certificado de \"%(environment_type)s\" confirmado."
 msgstr ""
+"Tenés más de un certificado de \"%(environment_type)s\" confirmado. Por "
+"favor, dejá un solo certificado de \"%(environment_type)s\" confirmado."
 
 #. module: l10n_ar_afipws
 #: model_terms:ir.ui.view,arch_db:l10n_ar_afipws.view_afipws_auth_form
