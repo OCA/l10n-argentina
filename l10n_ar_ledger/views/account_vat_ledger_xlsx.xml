@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<odoo>
+
+<!-- `<record model="ir.actions.report">` em vez da tag `<report>`: esta
+     ficou deprecada na 16.0 (DeprecationWarning na instalacao) e deixou
+     de ser aceita em versoes seguintes. -->
+<record id="account_vat_ledger_xlsx" model="ir.actions.report">
+  <field name="name">VAT Ledger (XLSX)</field>
+  <field name="model">account.vat.ledger</field>
+  <field name="report_type">xlsx</field>
+  <field name="report_name">l10n_ar_ledger.account_vat_ledger_xlsx</field>
+  <field name="report_file">account_vat_ledger</field>
+  <field name="attachment_use" eval="False" />
+  <field name="binding_type">report</field>
+</record>
+
+</odoo>
