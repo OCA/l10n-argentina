@@ -1,0 +1,5 @@
+- Codize
+- Exemax
+- Nimarosa
+- Ignacio Buioli \<ibuioli@gmail.com\>
+- Stroom Technology (Migration to v19)

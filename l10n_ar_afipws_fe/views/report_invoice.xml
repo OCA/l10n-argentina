@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inherit from l10n_ar report to add CAE/QR -->
+    <template
+        id="report_invoice_document_afip"
+        inherit_id="l10n_ar.report_invoice_document"
+    >
+        <!-- Add CAE and QR to footer_left_column -->
+        <xpath expr="//div[@name='footer_left_column']" position="inside">
+            <t t-if="o.afip_auth_code">
+                <table
+                    class="table-borderless"
+                    style="border: 0 !important; border-collapse: collapse; border-spacing: 0;"
+                >
+                    <tr>
+                        <td
+                            t-if="o.afip_qr_code"
+                            style="vertical-align: middle; padding-right: 15px; border: 0 !important; border-style: none !important;"
+                        >
+                            <img
+                                t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;quiet=%s' % ('QR', o.afip_qr_code, 120, 120, 0)"
+                                alt="AFIP QR Code"
+                                style="height:80px; width:80px;"
+                            />
+                        </td>
+                        <td
+                            style="vertical-align: middle; border: 0 !important; border-style: none !important;"
+                        >
+                            <strong>CAE:</strong>
+                            <span t-field="o.afip_auth_code" />
+                            <br />
+                            <strong>Vto. CAE:</strong>
+                            <span t-field="o.afip_auth_code_due" />
+                        </td>
+                    </tr>
+                </table>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="afip_ws_consult_form" model="ir.ui.view">
+        <field name="name">ARCA webservice invoice consultation</field>
+        <field name="model">l10n_ar_afipws_fe.ws.consult</field>
+        <field name="arch" type="xml">
+            <form string="Consult Invoice in ARCA">
+                <p>
+                    Consult an invoice already authorized by ARCA. This operation is
+                    read-only and does not create or modify invoices.
+                </p>
+                <group>
+                    <field
+                        name="journal_id"
+                        options="{'no_create': True, 'no_open': True}"
+                    />
+                    <field name="available_document_type_ids" invisible="1" />
+                    <field
+                        name="document_type_id"
+                        domain="[('id', 'in', available_document_type_ids)]"
+                        options="{'no_create': True, 'no_open': True}"
+                    />
+                    <label for="number" />
+                    <div class="o_row">
+                        <field name="number" />
+                        <button
+                            name="action_get_last_number"
+                            string="Use Last Authorized"
+                            type="object"
+                            class="btn-secondary"
+                        />
+                    </div>
+                </group>
+                <separator string="ARCA Response" invisible="not queried" />
+                <group invisible="not queried">
+                    <group>
+                        <field name="result" />
+                        <field name="invoice_date" />
+                        <field name="amount_total" />
+                        <field name="currency_code" />
+                    </group>
+                    <group>
+                        <field name="authorization_code" />
+                        <field name="authorization_due_date" />
+                    </group>
+                </group>
+                <group invisible="not queried">
+                    <field
+                        name="move_id"
+                        options="{'no_create': True, 'no_open': True}"
+                    />
+                </group>
+                <field
+                    name="response_data"
+                    nolabel="1"
+                    readonly="1"
+                    invisible="not queried"
+                />
+                <field name="queried" invisible="1" />
+                <footer>
+                    <button
+                        name="action_consult"
+                        string="Consult ARCA"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button
+                        name="action_recover_invoice"
+                        string="Recover Draft Invoice"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not queried or result != 'A' or not move_id"
+                    />
+                    <button string="Close" special="cancel" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_afip_ws_consult" model="ir.actions.act_window">
+        <field name="name">Consult Invoice in ARCA</field>
+        <field name="res_model">l10n_ar_afipws_fe.ws.consult</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_afip_ws_consult"
+        name="Consult Invoice in ARCA"
+        parent="l10n_ar_afipws.menu_afipws"
+        action="action_afip_ws_consult"
+        sequence="100"
+        groups="base.group_user"
+    />
+</odoo>

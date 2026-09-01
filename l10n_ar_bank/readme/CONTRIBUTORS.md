@@ -1,0 +1,5 @@
+- ADHOC SA
+- Moldeo Interactive
+- Exemax
+- Codize
+- Stroom Technology (Migration to v19)

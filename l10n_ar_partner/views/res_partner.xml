@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form_afip_padron" model="ir.ui.view">
+        <field name="name">res.partner.form.afip.padron</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <!-- Add button after the vat field -->
+            <xpath expr="//field[@name='vat']" position="after">
+                <button
+                    name="update_from_padron"
+                    string="Actualizar desde AFIP"
+                    type="object"
+                    class="btn-link btn-sm"
+                    icon="fa-refresh"
+                    title="Actualizar datos del contacto desde el Padrón de AFIP"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
