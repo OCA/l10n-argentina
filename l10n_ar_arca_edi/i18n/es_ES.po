@@ -78,6 +78,12 @@ msgid "Electronic credit invoices for SMEs (FCE MiPyME, document type %(code)s) 
 msgstr "Las facturas de crédito electrónicas MiPyME (FCE, tipo de comprobante %(code)s) todavía no están soportadas: ARCA exige los datos 'Opcionales' (CBU y opción de transmisión) que este módulo no envía, por lo que el comprobante sería rechazado. Use otro tipo de comprobante para %(document)s."
 
 #. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Export documents (letter E, type %(code)s) are authorized by the ARCA WSFEXv1 webservice, not by WSFEv1. Install the module l10n_ar_arca_edi_export to issue %(document)s."
+msgstr "Los comprobantes de exportación (letra E, tipo %(code)s) los autoriza el webservice WSFEXv1 de ARCA, no el WSFEv1. Instale el módulo l10n_ar_arca_edi_export para emitir %(document)s."
+
+#. module: l10n_ar_arca_edi
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_edi_enabled
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_edi_enabled

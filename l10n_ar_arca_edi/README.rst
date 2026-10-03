@@ -101,6 +101,11 @@ Known issues / Roadmap
   rechaza con un error claro antes de asignar el número y de llamar a
   ARCA. El soporte requiere enviar esos datos (módulo adicional o
   extensión de este).
+- Los comprobantes de exportación (letra E, tipos 19, 20 y 21) se
+  autorizan por WSFEXv1, que sirve el módulo
+  ``l10n_ar_arca_edi_export``. Sin ese módulo instalado, este módulo
+  rechaza la validación con un error claro en vez de enviarlos por
+  WSFEv1, donde ARCA los rechazaría.
 
 Bug Tracker
 ===========

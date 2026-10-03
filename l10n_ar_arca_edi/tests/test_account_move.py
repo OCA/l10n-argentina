@@ -570,3 +570,62 @@ class TestAccountMoveArcaEdi(TestArCommon):
         mocked.assert_called_once()
         self.assertEqual(invoice.state, "posted")
         self.assertTrue(invoice.l10n_ar_arca_cae)
+
+    def test_export_invoice_without_the_export_module_is_refused(self):
+        """Letter E goes through WSFEXv1; WSFEv1 would reject it.
+
+        With no module routing it elsewhere, the posting is refused up front
+        (invoice stays in draft, no number consumed) and ARCA is never called.
+        """
+        for xmlid in ("dc_e_f", "dc_e_nd", "dc_e_nc"):
+            with self.subTest(xmlid=xmlid):
+                move_type = "out_refund" if xmlid.endswith("_nc") else "out_invoice"
+                invoice = self._create_factura_b(move_type=move_type)
+                doc_type = self.env.ref(f"l10n_ar.{xmlid}")
+                invoice.l10n_latam_document_type_id = doc_type
+                # Simulate "no module routes it": the repository CI installs
+                # l10n_ar_arca_edi_export next to this module, and then the
+                # real hook already answers "wsfexv1".
+                with (
+                    patch.object(
+                        type(invoice), "_l10n_ar_arca_webservice", return_value="wsfev1"
+                    ),
+                    patch(
+                        "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"
+                    ) as mocked,
+                    self.assertRaises(UserError) as ctx,
+                ):
+                    invoice.action_post()
+                mocked.assert_not_called()
+                self.assertIn("l10n_ar_arca_edi_export", str(ctx.exception))
+                self.assertIn(doc_type.code, str(ctx.exception))
+                self.assertEqual(invoice.state, "draft")
+                self.assertFalse(invoice.posted_before)
+
+    def test_export_document_with_a_routing_module_is_not_refused(self):
+        """When a module routes the export to its own webservice, the rule
+        steps aside: the refusal is only for "nobody serves it"."""
+        invoice = self._create_factura_b()
+        invoice.l10n_latam_document_type_id = self.env.ref("l10n_ar.dc_e_f")
+        with (
+            patch.object(
+                type(invoice), "_l10n_ar_arca_webservice", return_value="wsfexv1"
+            ),
+            patch(
+                "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"
+            ) as mocked,
+            mute_logger("odoo.addons.l10n_ar_arca_edi.models.account_move"),
+        ):
+            invoice.action_post()
+        mocked.assert_not_called()
+        self.assertEqual(invoice.state, "posted")
+
+    def test_export_rule_does_not_affect_a_domestic_invoice(self):
+        invoice = self._create_factura_b()
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(),
+        ) as mocked:
+            invoice.action_post()
+        mocked.assert_called_once()
+        self.assertTrue(invoice.l10n_ar_arca_cae)

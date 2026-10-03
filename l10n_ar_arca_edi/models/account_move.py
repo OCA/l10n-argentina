@@ -27,6 +27,11 @@ L10N_AR_ARCA_FCE_CODES = frozenset(
     ("201", "202", "203", "206", "207", "208", "211", "212", "213")
 )
 
+# Export (letter E) document types: factura, nota de debito and nota de
+# credito. They are authorized by WSFEXv1, never by the WSFEv1 this module
+# speaks to: sent there ARCA rejects them.
+L10N_AR_ARCA_EXPORT_CODES = frozenset(("19", "20", "21"))
+
 
 class L10nArArcaRejection(UserError):
     """ARCA answered, and the answer was a rejection.
@@ -87,6 +92,7 @@ class AccountMove(models.Model):
         """
         for move in self:
             move._l10n_ar_arca_check_fce()
+            move._l10n_ar_arca_check_export_webservice()
 
     def _l10n_ar_arca_check_fce(self):
         self.ensure_one()
@@ -99,6 +105,28 @@ class AccountMove(models.Model):
                     "'Opcionales' data (CBU and transmission option) that this "
                     "module does not send, so the document would be rejected. "
                     "Use another document type for %(document)s."
+                )
+                % {"code": doc_type.code, "document": self.display_name}
+            )
+
+    def _l10n_ar_arca_check_export_webservice(self):
+        """An export document needs a module serving WSFEXv1 to route it.
+
+        The routing hook answers "wsfev1" unless some module recognizes the
+        document as its own (`l10n_ar_arca_edi_export` does for letter E). If it
+        still says "wsfev1" for an export type, nobody is able to send it.
+        """
+        self.ensure_one()
+        doc_type = self.l10n_latam_document_type_id
+        is_export = (
+            doc_type.code in L10N_AR_ARCA_EXPORT_CODES or doc_type.l10n_ar_letter == "E"
+        )
+        if is_export and self._l10n_ar_arca_webservice() == "wsfev1":
+            raise UserError(
+                _(
+                    "Export documents (letter E, type %(code)s) are authorized by "
+                    "the ARCA WSFEXv1 webservice, not by WSFEv1. Install the "
+                    "module l10n_ar_arca_edi_export to issue %(document)s."
                 )
                 % {"code": doc_type.code, "document": self.display_name}
             )
