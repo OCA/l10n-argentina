@@ -1,11 +1,10 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import base64
 import logging
 from datetime import timedelta, timezone
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 from .res_company import AMBIENTE_ODOO_TO_ARCALIB
@@ -43,13 +42,10 @@ class L10nArArcaToken(models.Model):
     sign = fields.Char(required=True)
     expiration = fields.Datetime(required=True)
 
-    _sql_constraints = [
-        (
-            "unique_company_env_servico",
-            "unique(company_id, environment, servico)",
-            "A token already exists for this company, environment and service.",
-        )
-    ]
+    _unique_company_env_servico = models.Constraint(
+        "unique(company_id, environment, servico)",
+        "A token already exists for this company, environment and service.",
+    )
 
     def _get_wsaa_adapter(self, company):
         """Return an adapter exposing ``get_credentials(service)`` for a company.
@@ -116,13 +112,7 @@ class _WsaaOdooAdapter:
     """
 
     def __init__(self, env, company):
-        # Named `self.env` (not `self._env`) on purpose: that is what
-        # `odoo.tools.translate._get_lang` looks for in the frame to resolve the
-        # language of the `_()` messages raised by this adapter (which is not a
-        # `models.Model`, so Odoo cannot find the language by itself). Without
-        # it, every `UserError` from here logs a "no translation language
-        # detected" WARNING, which fails the OCA checklog even though the
-        # exception itself is correct.
+        # Messages are translated with self.env._ (not a model, no own env).
         self.env = env
         self._company = company
 
@@ -165,7 +155,7 @@ class _WsaaOdooAdapter:
             from arcalib.transmissao.wsaa import WSAA
         except ImportError as err:
             raise UserError(
-                _(
+                self.env._(
                     "The 'arcalib' library is not installed. Install it with "
                     "pip install 'arcalib[transmissao]' in the Odoo environment."
                 )
@@ -178,19 +168,24 @@ class _WsaaOdooAdapter:
         company = self._company.sudo()
         certificate = company.l10n_ar_arca_certificate_id
         if not certificate:
-            raise UserError(_("Set the ARCA certificate on company %s.") % company.name)
+            raise UserError(
+                self.env._(
+                    "Set the ARCA certificate on company %(company)s.",
+                    company=company.name,
+                )
+            )
         if not certificate.private_key_id:
             raise UserError(
-                _("The ARCA certificate of company %s has no private key linked.")
-                % company.name
+                self.env._(
+                    "The ARCA certificate of company %(company)s has no private "
+                    "key linked.",
+                    company=company.name,
+                )
             )
 
-        cert_pem = base64.b64decode(
-            certificate.with_context(bin_size=False).pem_certificate
-        )
-        key_pem = base64.b64decode(
-            certificate.private_key_id.with_context(bin_size=False).pem_key
-        )
+        # Odoo 20: binary fields are read as BinaryValue, raw bytes in .content.
+        cert_pem = certificate.pem_certificate.content
+        key_pem = certificate.private_key_id.pem_key.content
         ambiente = getattr(
             arcalib_config, AMBIENTE_ODOO_TO_ARCALIB[company.l10n_ar_arca_environment]
         )

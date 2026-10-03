@@ -1,7 +1,7 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 # Maps the value of the `l10n_ar_arca_environment` Selection field to the name
@@ -61,7 +61,9 @@ class ResCompany(models.Model):
         self.ensure_one()
         cuit = self.partner_id._get_id_number_sanitize()
         if not cuit:
-            raise UserError(_("Set the CUIT of company %s.") % self.name)
+            raise UserError(
+                self.env._("Set the CUIT of company %(company)s.", company=self.name)
+            )
         return cuit
 
     @api.model
@@ -77,7 +79,7 @@ class ResCompany(models.Model):
             from arcalib import transmissao
         except ImportError as err:
             raise UserError(
-                _(
+                self.env._(
                     "The 'arcalib' library is not installed. Install it with "
                     "pip install 'arcalib[transmissao]' in the Odoo environment."
                 )

@@ -1,12 +1,12 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import base64
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
+from odoo.tools import BinaryBytes
 
 from odoo.addons.l10n_ar_arca_ws.models.res_company import AMBIENTE_ODOO_TO_ARCALIB
 
@@ -51,7 +51,7 @@ class TestL10nArArcaWs(TransactionCase):
             {
                 "name": "Certificado de prueba ARCA",
                 "company_id": cls.company.id,
-                "content": base64.b64encode(cert_pem + b"\n" + key_pem),
+                "content": BinaryBytes(cert_pem + b"\n" + key_pem),
             }
         )
         cls.company.l10n_ar_arca_certificate_id = cls.certificate
@@ -73,7 +73,7 @@ class TestL10nArArcaWs(TransactionCase):
             {
                 "name": "Certificado sin clave",
                 "company_id": self.company.id,
-                "content": base64.b64encode(
+                "content": BinaryBytes(
                     _self_signed_cert_and_key_pem()[0]  # only the cert, no key
                 ),
             }
@@ -153,8 +153,8 @@ class TestL10nArArcaWs(TransactionCase):
         self.assertEqual((token, sign), ("TOK-NEW", "SIGN-NEW"))
 
     def test_get_cuit_normalizes_a_formatted_vat(self):
-        self.company.partner_id.vat = "30-71234567-8"
-        self.assertEqual(self.company._l10n_ar_arca_get_cuit(), 30712345678)
+        self.company.partner_id.vat = "30-71234567-1"
+        self.assertEqual(self.company._l10n_ar_arca_get_cuit(), 30712345671)
 
     def test_get_cuit_without_vat_raises_usererror(self):
         self.company.partner_id.vat = False
@@ -162,16 +162,16 @@ class TestL10nArArcaWs(TransactionCase):
             self.company._l10n_ar_arca_get_cuit()
 
     def test_get_transmissao_builds_the_right_class_with_normalized_cuit(self):
-        self.company.partner_id.vat = "30-71234567-8"
+        self.company.partner_id.vat = "30-71234567-1"
         from arcalib.transmissao import TransmissaoWSFEv1
 
         transmissao = self.company._l10n_ar_arca_get_transmissao("TransmissaoWSFEv1")
         self.assertIsInstance(transmissao, TransmissaoWSFEv1)
-        self.assertEqual(transmissao.cuit, 30712345678)
+        self.assertEqual(transmissao.cuit, 30712345671)
 
     def test_get_transmissao_honours_the_alternative_cuit_kwarg(self):
         # TransmissaoWSPadronA5 names its parameter `cuit_representada`.
-        self.company.partner_id.vat = "30-71234567-8"
+        self.company.partner_id.vat = "30-71234567-1"
         from arcalib.transmissao import TransmissaoWSPadronA5
 
         transmissao = self.company._l10n_ar_arca_get_transmissao(
@@ -182,7 +182,7 @@ class TestL10nArArcaWs(TransactionCase):
     def test_get_transmissao_environment_matches_the_selected_one(self):
         from arcalib.transmissao import HOMOLOGACION, PRODUCCION
 
-        self.company.partner_id.vat = "30-71234567-8"
+        self.company.partner_id.vat = "30-71234567-1"
         self.company.l10n_ar_arca_environment = "homologacion"
         self.assertEqual(
             self.company._l10n_ar_arca_get_transmissao("TransmissaoWSFEv1").ambiente,
@@ -213,7 +213,7 @@ class TestL10nArArcaWs(TransactionCase):
                     "login": "billing.arca@example.org",
                     "company_id": self.company.id,
                     "company_ids": [(6, 0, self.company.ids)],
-                    "groups_id": [
+                    "group_ids": [
                         (4, self.env.ref("account.group_account_invoice").id),
                     ],
                 }
@@ -239,3 +239,53 @@ class TestL10nArArcaWs(TransactionCase):
             [("company_id", "=", self.company.id), ("servico", "=", "wsfev1")]
         )
         self.assertEqual(len(cached), 1)
+
+    def test_login_signs_the_ticket_with_the_stored_certificate(self):
+        """Only the HTTP POST is mocked: the ticket is built and signed (CMS)
+        with the certificate and key read from certificate.certificate."""
+        import base64
+
+        from arcalib.transmissao import base
+        from arcalib.wsaa.bindings.wsaa import LoginCms, LoginCmsResponse
+        from cryptography.hazmat.primitives.serialization import Encoding, pkcs7
+
+        now = datetime.now(timezone(timedelta(hours=-3))).replace(microsecond=0)
+        ticket_response = (
+            '<loginTicketResponse version="1.0"><header>'
+            "<source>CN=wsaahomo</source><destination>CN=test</destination>"
+            "<uniqueId>1</uniqueId>"
+            f"<generationTime>{now.isoformat()}</generationTime>"
+            f"<expirationTime>{(now + timedelta(hours=12)).isoformat()}"
+            "</expirationTime></header><credentials><token>TOK-CMS</token>"
+            "<sign>SIGN-CMS</sign></credentials></loginTicketResponse>"
+        )
+        sent = []
+
+        def fake_post(url, soap_action, body_xml, timeout=30):
+            sent.append(body_xml)
+            return base.render_body(LoginCmsResponse(loginCmsReturn=ticket_response))
+
+        with patch("arcalib.transmissao.base.post_soap", side_effect=fake_post):
+            token, sign = self.company._l10n_ar_arca_get_wsaa_adapter().get_credentials(
+                "wsfev1"
+            )
+
+        self.assertEqual((token, sign), ("TOK-CMS", "SIGN-CMS"))
+        self.assertEqual(len(sent), 1)
+        login = base.parse_response(sent[0], LoginCms)
+        cms = base64.b64decode(login.in0)
+        # The signed ticket asks for the WSFE service...
+        self.assertIn(b"<service>wsfe</service>", cms)
+        # ...and is signed with the company certificate, not another one.
+        signer_certs = pkcs7.load_der_pkcs7_certificates(cms)
+        self.assertEqual(
+            [c.public_bytes(Encoding.PEM).strip() for c in signer_certs],
+            [self.certificate.pem_certificate.content.strip()],
+        )
+        # The token obtained this way is cached in the database.
+        self.assertEqual(
+            self.env["l10n_ar.arca.token"]
+            .search([("company_id", "=", self.company.id), ("servico", "=", "wsfev1")])
+            .token,
+            "TOK-CMS",
+        )
