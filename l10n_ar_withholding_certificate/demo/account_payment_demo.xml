@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- Vendor payment of the Responsable Inscripto demo company withholding
+         Ganancias (regime 119, the demo tax numbered by a sequence), posted so
+         that the withholding gets its certificate number. -->
+    <record
+        id="demo_payment_withholding_certificate"
+        model="account.payment"
+        context="{'allowed_company_ids': [ref('base.company_ri')]}"
+    >
+        <field name="company_id" ref="base.company_ri" />
+        <field name="partner_id" ref="l10n_ar.res_partner_adhoc" />
+        <field name="payment_type">outbound</field>
+        <field name="partner_type">supplier</field>
+        <field name="date" eval="time.strftime('%Y-%m-01')" />
+        <field name="amount">1000000</field>
+        <field name="withhold">withhold_pay</field>
+        <field
+            name="journal_id"
+            model="account.journal"
+            search="[('company_id', '=', ref('base.company_ri')), ('type', '=', 'bank')]"
+        />
+    </record>
+    <record
+        id="demo_payment_withholding_certificate_line"
+        model="account.payment.withholding.line"
+        context="{'allowed_company_ids': [ref('base.company_ri')]}"
+    >
+        <field name="payment_id" ref="demo_payment_withholding_certificate" />
+        <field
+            name="tax_id"
+            model="account.tax"
+            search="[('company_id', '=', ref('base.company_ri')), ('type_tax_use', '=', 'purchase'), ('l10n_ar_code', '=', '119')]"
+        />
+        <field name="base_amount">1000000</field>
+    </record>
+    <function
+        model="account.payment"
+        name="action_post"
+        eval="[[ref('demo_payment_withholding_certificate')]]"
+        context="{'allowed_company_ids': [ref('base.company_ri')]}"
+    />
+</odoo>
