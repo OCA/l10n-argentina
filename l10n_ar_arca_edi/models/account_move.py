@@ -93,6 +93,7 @@ class AccountMove(models.Model):
         for move in self:
             move._l10n_ar_arca_check_fce()
             move._l10n_ar_arca_check_export_webservice()
+            move._l10n_ar_arca_check_concept()
 
     def _l10n_ar_arca_check_fce(self):
         self.ensure_one()
@@ -129,6 +130,36 @@ class AccountMove(models.Model):
                     "the ARCA WSFEXv1 webservice, not by WSFEv1. Install the "
                     "module l10n_ar_arca_edi_export to issue %(document)s.",
                     code=doc_type.code,
+                    document=self.display_name,
+                )
+            )
+
+    def _l10n_ar_arca_check_concept(self):
+        """WSFEv1 needs the concept (products, services or both) and it cannot
+        be determined without a product.
+
+        The core derives `l10n_ar_afip_concept` from the product types of the
+        lines and, when no line has a product, falls back to "Productos". For a
+        document made only of free-text lines that may be wrong (a services
+        invoice sent as products, for instance), and ARCA validates the concept
+        against the service dates and the payment due date. So instead of
+        guessing, the document is refused.
+
+        Only WSFEv1 documents: WSFEXv1 (exports) has no `Concepto`.
+        """
+        self.ensure_one()
+        if self._l10n_ar_arca_webservice() != "wsfev1":
+            return
+        lines = self.invoice_line_ids.filtered(
+            lambda line: line.display_type not in ("line_section", "line_note")
+        )
+        if not lines.product_id:
+            raise UserError(
+                self.env._(
+                    "ARCA requires the concept of the invoice (products, services "
+                    "or both) and it is determined by the products on the lines. "
+                    "%(document)s has no line with a product, so the concept "
+                    "cannot be determined. Set a product on at least one line.",
                     document=self.display_name,
                 )
             )
