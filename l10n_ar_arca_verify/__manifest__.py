@@ -3,7 +3,7 @@
 
 {
     "name": "Argentina ARCA Document Verification (WSCDC)",
-    "version": "18.0.1.0.0",
+    "version": "20.0.1.0.0",
     "category": "Localization/Argentina",
     "summary": "Check vendor documents against ARCA (WSCDC)",
     "author": "KMEE, Odoo Community Association (OCA)",

@@ -1,7 +1,7 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 
@@ -40,9 +40,11 @@ class AccountMove(models.Model):
     def _l10n_ar_arca_verify_comprobante(self):
         self.ensure_one()
         if self.move_type not in ("in_invoice", "in_refund"):
-            raise UserError(_("Document checking only applies to vendor bills."))
+            raise UserError(
+                self.env._("Document checking only applies to vendor bills.")
+            )
         if not self.l10n_ar_arca_verify_vendor_cae:
-            raise UserError(_("Enter the vendor CAE before checking."))
+            raise UserError(self.env._("Enter the vendor CAE before checking."))
 
         transmissao = self.company_id._l10n_ar_arca_get_transmissao("TransmissaoWSCDC")
         cmp_datos = self._l10n_ar_arca_build_cmp_datos()
@@ -69,8 +71,7 @@ class AccountMove(models.Model):
             CbteFch=self.invoice_date.strftime("%Y%m%d") if self.invoice_date else None,
             ImpTotal=self.amount_total,
             CodAutorizacion=self.l10n_ar_arca_verify_vendor_cae,
-            DocTipoReceptor=receptor.l10n_latam_identification_type_id.l10n_ar_afip_code
-            or "99",
+            DocTipoReceptor=receptor.l10n_ar_afip_code or "99",
             DocNroReceptor=str(receptor._get_id_number_sanitize()),
         )
 
@@ -78,7 +79,7 @@ class AccountMove(models.Model):
         self.ensure_one()
         result = response.ComprobanteConstatarResult
         if not result:
-            raise UserError(_("Unexpected response from ARCA: no result."))
+            raise UserError(self.env._("Unexpected response from ARCA: no result."))
 
         observations = []
         if result.Observaciones and result.Observaciones.Obs:

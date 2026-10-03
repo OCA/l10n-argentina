@@ -1,12 +1,12 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import base64
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from odoo.exceptions import UserError
 from odoo.tests import tagged
+from odoo.tools import BinaryBytes
 
 from odoo.addons.l10n_ar.tests.common import TestArCommon
 
@@ -50,7 +50,7 @@ class TestAccountMoveArcaVerify(TestArCommon):
             {
                 "name": "Certificado de teste",
                 "company_id": cls.company_ri.id,
-                "content": base64.b64encode(cert_pem + b"\n" + key_pem),
+                "content": BinaryBytes(cert_pem + b"\n" + key_pem),
             }
         )
         cls.company_ri.l10n_ar_arca_certificate_id = cls.certificate
@@ -91,7 +91,9 @@ class TestAccountMoveArcaVerify(TestArCommon):
         fake_response = ComprobanteConstatarResponse(
             ComprobanteConstatarResult=CmpResponse(
                 Resultado="OK",
-                Observaciones=ArrayOfObs(Obs=[Obs(Code=1, Msg="observacao teste")]),
+                Observaciones=ArrayOfObs(
+                    Obs=[Obs(Code=1, Msg="observacion de prueba")]
+                ),
             )
         )
 
@@ -113,14 +115,22 @@ class TestAccountMoveArcaVerify(TestArCommon):
         )
         self.assertEqual(cmp_datos.PtoVta, 1)
         self.assertEqual(cmp_datos.CbteNro, 123)
-        # The receptor of the document is the company itself, not the vendor.
+        self.assertEqual(cmp_datos.CbteModo, "CAE")
+        self.assertEqual(cmp_datos.CodAutorizacion, "70123456789012")
+        self.assertEqual(
+            cmp_datos.CbteFch, self.vendor_bill.invoice_date.strftime("%Y%m%d")
+        )
+        self.assertAlmostEqual(cmp_datos.ImpTotal, self.vendor_bill.amount_total)
+        # The receptor of the document is the company itself, not the vendor,
+        # identified by its CUIT (Odoo 20: core l10n_ar_afip_code).
+        self.assertEqual(cmp_datos.DocTipoReceptor, "80")
         self.assertEqual(
             cmp_datos.DocNroReceptor,
             str(self.company_ri.partner_id._get_id_number_sanitize()),
         )
         self.assertEqual(self.vendor_bill.l10n_ar_arca_verify_result, "OK")
         self.assertIn(
-            "observacao teste", self.vendor_bill.l10n_ar_arca_verify_observations
+            "observacion de prueba", self.vendor_bill.l10n_ar_arca_verify_observations
         )
 
     def test_customer_invoice_cannot_be_verified_without_calling_arca(self):
@@ -141,3 +151,31 @@ class TestAccountMoveArcaVerify(TestArCommon):
         ):
             sale_invoice.action_l10n_ar_arca_verify_comprobante()
         mocked.assert_not_called()
+
+    def test_rejected_check_stores_the_errors(self):
+        from arcalib.wscdc.bindings.wscdc import (
+            ArrayOfErr,
+            CmpResponse,
+            ComprobanteConstatarResponse,
+            Err,
+        )
+
+        self.vendor_bill.l10n_ar_arca_verify_vendor_cae = "70000000000000"
+        fake_response = ComprobanteConstatarResponse(
+            ComprobanteConstatarResult=CmpResponse(
+                Resultado="R",
+                Errors=ArrayOfErr(Err=[Err(Code=602, Msg="No existe el comprobante")]),
+            )
+        )
+        with patch(
+            "arcalib.transmissao.wscdc.TransmissaoWSCDC.comprobante_constatar",
+            return_value=fake_response,
+        ):
+            self.vendor_bill.action_l10n_ar_arca_verify_comprobante()
+        self.assertEqual(self.vendor_bill.l10n_ar_arca_verify_result, "R")
+        self.assertEqual(
+            self.vendor_bill.l10n_ar_arca_verify_observations,
+            "[602] No existe el comprobante",
+        )
+        # The vendor bill itself is not touched by the check.
+        self.assertEqual(self.vendor_bill.state, "posted")
