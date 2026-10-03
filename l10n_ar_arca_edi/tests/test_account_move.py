@@ -1,14 +1,13 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import base64
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from odoo import Command
 from odoo.exceptions import UserError
 from odoo.tests import tagged
-from odoo.tools import mute_logger
+from odoo.tools import BinaryBytes, mute_logger
 
 from odoo.addons.l10n_ar.tests.common import TestArCommon
 
@@ -61,7 +60,7 @@ class TestAccountMoveArcaEdi(TestArCommon):
             {
                 "name": "Certificado de prueba",
                 "company_id": cls.company_ri.id,
-                "content": base64.b64encode(cert_pem + b"\n" + key_pem),
+                "content": BinaryBytes(cert_pem + b"\n" + key_pem),
             }
         )
         cls.company_ri.l10n_ar_arca_certificate_id = cls.certificate
@@ -463,3 +462,205 @@ class TestAccountMoveArcaEdi(TestArCommon):
         # Could not classify the result, but recorded what happened.
         self.assertFalse(invoice.l10n_ar_arca_result)
         self.assertTrue(invoice.l10n_ar_arca_observations)
+
+    def _post_approved(self, invoice, cae="70123456789012"):
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(resultado="A", cae=cae),
+        ) as mocked:
+            invoice.action_post()
+        return mocked.call_args.args[0].FeDetReq.FECAEDetRequest[0]
+
+    def _create_factura_a(self):
+        return self._create_invoice_ar(
+            journal_id=self.journal_arca.id,
+            partner_id=self.res_partner_adhoc.id,
+            invoice_line_ids=[
+                self._prepare_invoice_line(
+                    product_id=self.product_iva_21, price_unit=100.0
+                )
+            ],
+        )
+
+    def test_receiver_with_cuit_is_sent_as_doc_tipo_80(self):
+        """Odoo 20: the receiver document type comes from the core
+        res.partner.l10n_ar_afip_code (identifiers), not from l10n_latam_base."""
+        invoice = self._create_factura_a()
+        det = self._post_approved(invoice)
+        self.assertEqual(self.res_partner_adhoc.l10n_ar_afip_code, "80")
+        self.assertEqual(det.DocTipo, 80)
+        self.assertEqual(det.DocNro, int(self.res_partner_adhoc.vat))
+        self.assertEqual(
+            det.CondicionIVAReceptorId,
+            int(self.res_partner_adhoc.l10n_ar_afip_responsibility_type_id.code),
+        )
+
+    def test_consumidor_final_without_id_is_sent_as_doc_tipo_99(self):
+        invoice = self._create_factura_b()
+        det = self._post_approved(invoice)
+        self.assertEqual(det.DocTipo, 99)
+        self.assertEqual(det.DocNro, 0)
+
+    def test_qr_payload_matches_the_authorized_document(self):
+        import json
+        from base64 import b64decode
+        from urllib.parse import parse_qs, urlparse
+
+        invoice = self._create_factura_a()
+        det = self._post_approved(invoice, cae="71234567890123")
+        parts = invoice._l10n_ar_get_document_number_parts(
+            invoice.l10n_latam_document_number,
+            invoice.l10n_latam_document_type_id.code,
+        )
+        url = invoice._l10n_ar_arca_qr_url()
+        self.assertTrue(url.startswith("https://www.afip.gob.ar/fe/qr/?p="))
+        payload = json.loads(b64decode(parse_qs(urlparse(url).query)["p"][0]))
+        self.assertEqual(
+            payload,
+            {
+                "ver": 1,
+                "fecha": invoice.invoice_date.strftime("%Y-%m-%d"),
+                "cuit": int(self.company_ri.vat),
+                "ptoVta": 3,
+                "tipoCmp": int(invoice.l10n_latam_document_type_id.code),
+                "nroCmp": parts["invoice_number"],
+                "importe": det.ImpTotal,
+                "moneda": "PES",
+                "ctz": 1.0,
+                "tipoDocRec": 80,
+                "nroDocRec": int(self.res_partner_adhoc.vat),
+                "tipoCodAut": "E",
+                "codAut": 71234567890123,
+            },
+        )
+
+    def test_printed_invoice_shows_the_cae_and_the_qr(self):
+        invoice = self._create_factura_a()
+        self._post_approved(invoice, cae="71234567890123")
+        html = (
+            self.env["ir.actions.report"]
+            ._render_qweb_html("account.account_invoices", invoice.ids)[0]
+            .decode()
+        )
+        self.assertIn('name="l10n_ar_arca_qr"', html)
+        self.assertIn("71234567890123", html)
+        self.assertIn("barcode_type=QR", html)
+
+    def test_printed_invoice_without_cae_has_no_qr(self):
+        invoice = self._create_factura_b()
+        with (
+            mute_logger("odoo.addons.l10n_ar_arca_edi.models.account_move"),
+            patch(
+                "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+                return_value=self._fake_fecae_response(resultado="R", obs="no"),
+            ),
+        ):
+            invoice.action_post()
+        html = (
+            self.env["ir.actions.report"]
+            ._render_qweb_html("account.account_invoices", invoice.ids)[0]
+            .decode()
+        )
+        self.assertNotIn('name="l10n_ar_arca_qr"', html)
+
+    @_MUTE_EDI
+    def test_resend_button_after_rejection_gets_the_cae(self):
+        invoice = self._create_factura_b()
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(resultado="R", obs="caido"),
+        ):
+            invoice.action_post()
+        self.assertFalse(invoice.l10n_ar_arca_cae)
+        number = invoice.l10n_latam_document_number
+
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(resultado="A", cae="7999"),
+        ) as mocked:
+            invoice.action_l10n_ar_arca_request_cae()
+
+        mocked.assert_called_once()
+        # Same document number: the resend does not consume a new one.
+        self.assertEqual(invoice.l10n_latam_document_number, number)
+        self.assertEqual(invoice.l10n_ar_arca_cae, "7999")
+        self.assertEqual(invoice.l10n_ar_arca_result, "A")
+        # A second click is refused: the invoice already has a CAE.
+        with self.assertRaises(UserError):
+            invoice.action_l10n_ar_arca_request_cae()
+
+    def test_check_sequence_reports_sync_and_divergence(self):
+        from arcalib.wsfev1.bindings.wsfev1 import (
+            FecompUltimoAutorizadoResponse,
+            FerecuperaLastCbteResponse,
+        )
+
+        invoice = self._create_factura_b()
+        self._post_approved(invoice)
+        local = invoice._l10n_ar_get_document_number_parts(
+            invoice.l10n_latam_document_number,
+            invoice.l10n_latam_document_type_id.code,
+        )["invoice_number"]
+
+        def ultimo(nro):
+            return FecompUltimoAutorizadoResponse(
+                FECompUltimoAutorizadoResult=FerecuperaLastCbteResponse(
+                    PtoVta=3, CbteTipo=6, CbteNro=nro
+                )
+            )
+
+        target = "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecomp_ultimo_autorizado"
+        with (
+            patch(target, return_value=ultimo(local)),
+            self.assertRaises(UserError) as ctx,
+        ):
+            invoice.action_l10n_ar_arca_check_sequence()
+        self.assertIn("in sync", str(ctx.exception))
+        with (
+            patch(target, return_value=ultimo(local + 2)),
+            self.assertRaises(UserError) as ctx,
+        ):
+            invoice.action_l10n_ar_arca_check_sequence()
+        self.assertIn("out of sync", str(ctx.exception))
+        self.assertIn(str(local + 2), str(ctx.exception))
+
+    @_MUTE_EDI
+    def test_reversible_credit_note_signs_tributos_like_the_header(self):
+        """ARCA cross-checks the Tributos array against ImpTrib: on a credit
+        note with a reversible code both have to be negative."""
+        self.tax_perc_iibb.amount = 3.0
+        invoice = self._create_invoice_ar(
+            journal_id=self.journal_arca.id,
+            partner_id=self.partner_cf.id,
+            invoice_line_ids=[
+                self._prepare_invoice_line(
+                    product_id=self.product_iva_105_perc,
+                    price_unit=1000.0,
+                    tax_ids=[Command.set([self.tax_10_5.id, self.tax_perc_iibb.id])],
+                )
+            ],
+        )
+        with patch("arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"):
+            invoice.action_post()
+        wizard = (
+            self.env["account.move.reversal"]
+            .with_context(active_ids=invoice.ids, active_model="account.move")
+            .create({"reason": "signo", "journal_id": invoice.journal_id.id})
+        )
+        wizard.refund_moves()
+        credit_note = invoice.reversal_move_ids
+        with patch("arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"):
+            credit_note.action_post()
+        code = credit_note.l10n_latam_document_type_id.code
+        with patch.object(
+            type(credit_note),
+            "_get_l10n_ar_codes_used_for_inv_and_ref",
+            return_value=[code],
+        ):
+            req = credit_note._l10n_ar_arca_build_fecae_request()
+        det = req.FeDetReq.FECAEDetRequest[0]
+        self.assertAlmostEqual(det.ImpTrib, -30.0, places=2)
+        self.assertAlmostEqual(
+            sum(t.Importe for t in det.Tributos.Tributo), det.ImpTrib, places=2
+        )
+        self.assertAlmostEqual(det.Tributos.Tributo[0].BaseImp, -1000.0, places=2)

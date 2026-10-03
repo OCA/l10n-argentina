@@ -5,7 +5,7 @@ import base64
 import json
 import logging
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 from odoo.tools import float_round
 
@@ -138,7 +138,7 @@ class AccountMove(models.Model):
                     }
                 )
                 self.message_post(
-                    body=_(
+                    body=self.env._(
                         "Could not obtain the CAE from ARCA: %(detail)s\n\n"
                         "The invoice is posted and numbered, but WITHOUT a CAE: "
                         "it is not a valid document yet. Use the 'Solicitar CAE' "
@@ -180,20 +180,23 @@ class AccountMove(models.Model):
         """Common preconditions and dispatch to the document webservice."""
         self.ensure_one()
         if self.l10n_ar_arca_cae:
-            raise UserError(_("This invoice already has a CAE."))
+            raise UserError(self.env._("This invoice already has a CAE."))
         if self.state != "posted":
-            raise UserError(_("The CAE can only be requested for a posted invoice."))
+            raise UserError(
+                self.env._("The CAE can only be requested for a posted invoice.")
+            )
 
         webservice = self._l10n_ar_arca_webservice()
         handler = getattr(self, f"_l10n_ar_arca_request_cae_{webservice}", None)
         if handler is None:
             raise UserError(
-                _(
+                self.env._(
                     "There is no installed module able to request the CAE "
                     "through the ARCA %(webservice)s webservice for document "
-                    "%(document)s."
+                    "%(document)s.",
+                    webservice=webservice,
+                    document=self.display_name,
                 )
-                % {"webservice": webservice, "document": self.display_name}
             )
         return handler()
 
@@ -256,9 +259,7 @@ class AccountMove(models.Model):
 
         det = FecaedetRequest(
             Concepto=int(self.l10n_ar_afip_concept or "1"),
-            DocTipo=int(
-                partner.l10n_latam_identification_type_id.l10n_ar_afip_code or "99"
-            ),
+            DocTipo=int(partner.l10n_ar_afip_code or "99"),
             DocNro=partner._get_id_number_sanitize(),
             CbteDesde=invoice_number,
             CbteHasta=invoice_number,
@@ -342,21 +343,12 @@ class AccountMove(models.Model):
     def _l10n_ar_arca_amount_sign(self):
         """Sign to apply to the document amounts: -1 or 1.
 
-        Some document types serve as invoice AND as credit note. For those the
-        core flips the sign of every amount when the document is a reversal, so
-        ARCA can tell one from the other. The rule is read from the core itself
-        (`l10n_ar._l10n_ar_get_amounts`) rather than duplicated as a literal
-        list, so it cannot drift if Odoo SA changes the codes.
+        Some document types serve as invoice AND as credit note: for those
+        the core flips the sign of every amount on a reversal
+        (l10n_ar._l10n_ar_is_refund_invoice, Odoo 20).
         """
         self.ensure_one()
-        if self.move_type in (
-            "out_refund",
-            "in_refund",
-        ) and self.l10n_latam_document_type_id.code in (
-            self._get_l10n_ar_codes_used_for_inv_and_ref()
-        ):
-            return -1
-        return 1
+        return -1 if self._l10n_ar_is_refund_invoice() else 1
 
     def _l10n_ar_arca_imp_total(self, amounts):
         """`ImpTotal` of the document, summed from its own parts.
@@ -511,7 +503,7 @@ class AccountMove(models.Model):
         self.ensure_one()
         result = response.FECAESolicitarResult
         if not result or not result.FeDetResp or not result.FeDetResp.FECAEDetResponse:
-            raise UserError(_("Unexpected response from ARCA: no FeDetResp."))
+            raise UserError(self.env._("Unexpected response from ARCA: no FeDetResp."))
 
         det = result.FeDetResp.FECAEDetResponse[0]
         # Resultado/Observaciones come from FEDetResponse, the base class that
@@ -531,11 +523,11 @@ class AccountMove(models.Model):
             # `_l10n_ar_arca_log_cae_failure`, from the data the exception
             # carries.
             raise L10nArArcaRejection(
-                _("ARCA rejected the CAE request (%(resultado)s): %(obs)s")
-                % {
-                    "resultado": det.Resultado,
-                    "obs": observations or _("no detail"),
-                },
+                self.env._(
+                    "ARCA rejected the CAE request (%(resultado)s): %(obs)s",
+                    resultado=det.Resultado,
+                    obs=observations or self.env._("no detail"),
+                ),
                 resultado=det.Resultado,
                 observations=observations,
             )
@@ -583,9 +575,7 @@ class AccountMove(models.Model):
             ),
             "moneda": self.currency_id.l10n_ar_afip_code or "PES",
             "ctz": self._l10n_ar_arca_currency_rate(),
-            "tipoDocRec": int(
-                partner.l10n_latam_identification_type_id.l10n_ar_afip_code or "99"
-            ),
+            "tipoDocRec": int(partner.l10n_ar_afip_code or "99"),
             "nroDocRec": partner._get_id_number_sanitize(),
             "tipoCodAut": "E",
             "codAut": int(self.l10n_ar_arca_cae or 0),
@@ -624,7 +614,7 @@ class AccountMove(models.Model):
                 ("l10n_latam_document_type_id", "=", doc_type.id),
                 ("state", "=", "posted"),
             ],
-            order="l10n_latam_document_number desc",
+            order="sequence_number desc, id desc",
             limit=1,
         )
         last_local_number = 0
@@ -635,23 +625,21 @@ class AccountMove(models.Model):
 
         if last_local_number == last_arca_number:
             raise UserError(
-                _(
+                self.env._(
                     "Numbering in sync: the last one authorized by ARCA and "
-                    "the last local one are the same (%(nro)s)."
+                    "the last local one are the same (%(nro)s).",
+                    nro=last_arca_number,
                 )
-                % {"nro": last_arca_number}
             )
         raise UserError(
-            _(
+            self.env._(
                 "Numbering out of sync for %(journal)s / %(doc_type)s: the "
                 "last one authorized by ARCA is %(arca)s and the last local one "
                 "is %(local)s. A manual adjustment is required before invoicing "
-                "again in this journal."
+                "again in this journal.",
+                journal=journal.name,
+                doc_type=doc_type.name,
+                arca=last_arca_number,
+                local=last_local_number,
             )
-            % {
-                "journal": journal.name,
-                "doc_type": doc_type.name,
-                "arca": last_arca_number,
-                "local": last_local_number,
-            }
         )
