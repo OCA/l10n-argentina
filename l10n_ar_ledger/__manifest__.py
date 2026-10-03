@@ -19,6 +19,9 @@
         "views/account_vat_ledger_pdf.xml",
         "views/account_vat_ledger_xlsx.xml",
     ],
+    "demo": [
+        "demo/account_vat_ledger_demo.xml",
+    ],
     "maintainers": ["mileo"],
     "installable": True,
 }
