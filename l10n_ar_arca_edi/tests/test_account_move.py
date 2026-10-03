@@ -519,4 +519,4 @@ class TestAccountMoveArcaEdi(TestArCommon):
         self.assertIn("out of sync", str(ctx.exception))
         self.assertIn(str(local + 2), str(ctx.exception))
         # The local number reported is the last one, not the first.
-        self.assertIn("local one is %s." % local, str(ctx.exception))
+        self.assertIn(f"local one is {local}.", str(ctx.exception))
