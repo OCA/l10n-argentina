@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="ledger_report">
         <t t-call="web.html_container">
@@ -7,10 +8,10 @@
                         <h2>
             Libro IVA
 
-            <span class="pl-1" t-if="o.type == 'sale'">
+            <span t-if="o.type == 'sale'" class="pl-1">
               Ventas
             </span>
-            <span class="pl-1" t-if="o.type == 'purchase'">
+            <span t-if="o.type == 'purchase'" class="pl-1">
               Compras
             </span>
           </h2>
@@ -91,7 +92,7 @@
                                             t-value="total_neto_gravado + netoG"
                                         />
                                         <t
-                                            t-esc="netoG"
+                                            t-out="netoG"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
@@ -110,7 +111,7 @@
                                             t-value="total_neto_no_gravado + netoN"
                                         />
                                         <t
-                                            t-esc="netoN"
+                                            t-out="netoN"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
@@ -129,7 +130,7 @@
                                             t-value="total_neto_exento + netoE"
                                         />
                                         <t
-                                            t-esc="netoE"
+                                            t-out="netoE"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
@@ -148,7 +149,7 @@
                                             t-value="total_iva27 + iva27"
                                         />
                                         <t
-                                            t-esc="iva27"
+                                            t-out="iva27"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
@@ -167,7 +168,7 @@
                                             t-value="total_iva21 + iva21"
                                         />
                                         <t
-                                            t-esc="iva21"
+                                            t-out="iva21"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
@@ -186,7 +187,7 @@
                                             t-value="total_iva105 + iva105"
                                         />
                                         <t
-                                            t-esc="iva105"
+                                            t-out="iva105"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
@@ -205,13 +206,13 @@
                                             t-value="total_otros + otros"
                                         />
                                         <t
-                                            t-esc="otros"
+                                            t-out="otros"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="netoG + iva27 + iva21 + iva105 + otros"
+                                            t-out="netoG + iva27 + iva21 + iva105 + otros"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                         <t
@@ -233,7 +234,7 @@
                                             />
                                         </t>
                                         <span
-                                            t-esc="total_amount"
+                                            t-out="total_amount"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: invoice.currency_id}"
                                         />
                                         <t
@@ -251,55 +252,55 @@
                                     <td />
                                     <td>
                                         <p
-                                            t-esc="total_neto_gravado"
+                                            t-out="total_neto_gravado"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_neto_no_gravado"
+                                            t-out="total_neto_no_gravado"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_neto_exento"
+                                            t-out="total_neto_exento"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_iva27"
+                                            t-out="total_iva27"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_iva21"
+                                            t-out="total_iva21"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_iva105"
+                                            t-out="total_iva105"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_otros"
+                                            t-out="total_otros"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_gravado"
+                                            t-out="total_gravado"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
                                     <td>
                                         <p
-                                            t-esc="total_total"
+                                            t-out="total_total"
                                             t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"
                                         />
                                     </td>
