@@ -32,16 +32,17 @@ Argentina Withholding Certificate
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Certificado de retención en PDF a partir del pago, con numeración
-secuencial propia, sobre las líneas de retención que
-``l10n_ar_withholding`` del core ya modela
-(``account.move.l10n_ar_withholding_ids``). No implementa el cálculo de
-la retención: solamente la emisión del comprobante.
+Certificado de retención en PDF a partir del pago a proveedor, sobre las
+líneas de retención que ``l10n_ar_withholding`` del core ya modela
+(``account.payment.withholding_line_ids``). No implementa el cálculo de
+la retención ni la numeración: el número de cada certificado es el que
+el core asigna a la línea al confirmar el pago, desde la secuencia de
+retención configurada en el impuesto.
 
 Solo se certifican las retenciones que la compañía practicó como agente
-de retención al pagarle a un proveedor. El campo del core mezcla esas
-con las retenciones sufridas al cobrarle a un cliente, que se acreditan
-con el certificado que emite el cliente.
+de retención al pagarle a un proveedor (impuestos de compra), en pagos
+confirmados. Las retenciones sufridas al cobrarle a un cliente se
+acreditan con el certificado que emite el cliente.
 
 **Table of contents**
 
@@ -54,14 +55,9 @@ Known issues / Roadmap
 - Libro de retenciones sufridas (reporte consolidado por período)
   todavía no está implementado en esta versión: solo el certificado por
   pago.
-- Numeración por secuencia global (``company_id`` vacío en la
-  ``ir.sequence`` de este módulo): compañías distintas en la misma base
-  comparten la misma numeración de certificado. Si un agente de
-  retención necesita una serie propia, registre otra ``ir.sequence`` con
-  el mismo ``code`` (``l10n_ar_withholding_certificate``) y el
-  ``company_id`` cargado: el ``next_by_code`` de Odoo ya prioriza la
-  secuencia de la compañía cuando existe, sin necesidad de modificar
-  código.
+- La numeración es la del core: configure una secuencia de retención
+  (``withholding_sequence_id``) en cada impuesto de retención; un mismo
+  agente con series distintas por régimen usa secuencias distintas.
 
 Bug Tracker
 ===========

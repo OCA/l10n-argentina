@@ -375,15 +375,16 @@ ul.auto-toc {
 !! source digest: sha256:72e287514b7fe412e9cc8edff662557184cd0d13988b4fcbc6d94a0b766ac5fb
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/license-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/l10n-argentina/tree/20.0/l10n_ar_withholding_certificate"><img alt="OCA/l10n-argentina" src="https://img.shields.io/badge/github-OCA%2Fl10n--argentina-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/l10n-argentina-20-0/l10n-argentina-20-0-l10n_ar_withholding_certificate"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/l10n-argentina&amp;target_branch=20.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>Certificado de retención en PDF a partir del pago, con numeración
-secuencial propia, sobre las líneas de retención que
-<tt class="docutils literal">l10n_ar_withholding</tt> del core ya modela
-(<tt class="docutils literal">account.move.l10n_ar_withholding_ids</tt>). No implementa el cálculo de
-la retención: solamente la emisión del comprobante.</p>
+<p>Certificado de retención en PDF a partir del pago a proveedor, sobre las
+líneas de retención que <tt class="docutils literal">l10n_ar_withholding</tt> del core ya modela
+(<tt class="docutils literal">account.payment.withholding_line_ids</tt>). No implementa el cálculo de
+la retención ni la numeración: el número de cada certificado es el que
+el core asigna a la línea al confirmar el pago, desde la secuencia de
+retención configurada en el impuesto.</p>
 <p>Solo se certifican las retenciones que la compañía practicó como agente
-de retención al pagarle a un proveedor. El campo del core mezcla esas
-con las retenciones sufridas al cobrarle a un cliente, que se acreditan
-con el certificado que emite el cliente.</p>
+de retención al pagarle a un proveedor (impuestos de compra), en pagos
+confirmados. Las retenciones sufridas al cobrarle a un cliente se
+acreditan con el certificado que emite el cliente.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -403,14 +404,9 @@ con el certificado que emite el cliente.</p>
 <li>Libro de retenciones sufridas (reporte consolidado por período)
 todavía no está implementado en esta versión: solo el certificado por
 pago.</li>
-<li>Numeración por secuencia global (<tt class="docutils literal">company_id</tt> vacío en la
-<tt class="docutils literal">ir.sequence</tt> de este módulo): compañías distintas en la misma base
-comparten la misma numeración de certificado. Si un agente de
-retención necesita una serie propia, registre otra <tt class="docutils literal">ir.sequence</tt> con
-el mismo <tt class="docutils literal">code</tt> (<tt class="docutils literal">l10n_ar_withholding_certificate</tt>) y el
-<tt class="docutils literal">company_id</tt> cargado: el <tt class="docutils literal">next_by_code</tt> de Odoo ya prioriza la
-secuencia de la compañía cuando existe, sin necesidad de modificar
-código.</li>
+<li>La numeración es la del core: configure una secuencia de retención
+(<tt class="docutils literal">withholding_sequence_id</tt>) en cada impuesto de retención; un mismo
+agente con series distintas por régimen usa secuencias distintas.</li>
 </ul>
 </div>
 <div class="section" id="bug-tracker">

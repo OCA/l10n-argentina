@@ -11,13 +11,13 @@
                 <!-- Field declared invisible because the button `invisible`
                      depends on it: Odoo only evaluates the modifier when the
                      field is present in the view. -->
-                <field name="l10n_ar_supplier_withholding_ids" invisible="1" />
+                <field name="l10n_ar_withholding_certificate_line_ids" invisible="1" />
                 <button
                     name="action_l10n_ar_print_withholding_certificate"
                     string="Print Withholding Certificate"
                     type="object"
                     class="btn-secondary"
-                    invisible="not l10n_ar_supplier_withholding_ids"
+                    invisible="not l10n_ar_withholding_certificate_line_ids"
                 />
             </xpath>
         </field>
