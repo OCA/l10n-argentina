@@ -19,13 +19,12 @@ the ARCA homologación environment is another layer, dependent on the customer
 certificate.
 """
 
-import base64
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from odoo import Command
 from odoo.tests import tagged
-from odoo.tools import mute_logger
+from odoo.tools import BinaryBytes, mute_logger
 
 from odoo.addons.l10n_ar.tests.common import TestArCommon
 
@@ -128,10 +127,9 @@ class TestE2ECicloFiscal(TestArCommon):
             {
                 "name": "Certificado E2E",
                 "company_id": cls.company_ri.id,
-                "content": base64.b64encode(cert_pem + b"\n" + key_pem),
+                "content": BinaryBytes(cert_pem + b"\n" + key_pem),
             }
         )
-        cls.env.ref("base.es").l10n_ar_arca_cuit_pais = "203"
         cls.journal_interno = cls._create_journal(
             "wsfe",
             data={
@@ -168,9 +166,9 @@ class TestE2ECicloFiscal(TestArCommon):
         self.assertEqual(invoice.l10n_ar_arca_result, "A")
 
         det = wsfe.call_args.args[0].FeDetReq.FECAEDetRequest[0]
-        # a identidade que a ARCA valida: o total tem que ser a soma exata
-        # das parcelas informadas. E o que quebra quando os valores vao
-        # zerados por chamar o helper do core sem base_lines.
+        # The identity ARCA validates: the total is the exact sum of the
+        # reported parts. It breaks when the amounts go out zeroed because the
+        # core helper was called without base_lines.
         soma = det.ImpTotConc + det.ImpNeto + det.ImpOpEx + det.ImpTrib + det.ImpIVA
         self.assertAlmostEqual(soma, det.ImpTotal, places=2)
         self.assertAlmostEqual(det.ImpTotal, invoice.amount_total, places=2)
@@ -183,7 +181,7 @@ class TestE2ECicloFiscal(TestArCommon):
         self.assertAlmostEqual(
             sum(t.Importe for t in det.Tributos.Tributo), det.ImpTrib, places=2
         )
-        # documento de identificacao do cliente: CUIT (80), numero sanitizado
+        # Customer identification: CUIT (80), sanitized number
         self.assertEqual(det.DocTipo, 80)
         self.assertEqual(det.DocNro, 30714295698)
         self.assertIsNone(det.CbtesAsoc)  # an invoice has no associated document
@@ -211,7 +209,7 @@ class TestE2ECicloFiscal(TestArCommon):
 
         self.assertEqual(credit_note.l10n_ar_arca_cae, "70333333333333")
         det_nc = wsfe_nc.call_args.args[0].FeDetReq.FECAEDetRequest[0]
-        # CbtesAsoc e o que torna a NC valida na ARCA: sem isso, rejeicao.
+        # CbtesAsoc is what makes the credit note valid for ARCA.
         self.assertTrue(det_nc.CbtesAsoc)
         asoc = det_nc.CbtesAsoc.CbteAsoc[0]
         self.assertEqual(asoc.Tipo, int(invoice.l10n_latam_document_type_id.code))
@@ -244,17 +242,17 @@ class TestE2ECicloFiscal(TestArCommon):
             ) as wsfex,
             patch(
                 "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"
-            ) as wsfe_nao_usado,
+            ) as wsfe_not_used,
         ):
             export_invoice.action_post()
 
-        # roteamento correto: exportacao NAO pode passar pelo WSFEv1
-        wsfe_nao_usado.assert_not_called()
+        # Routing: an export must NOT go through WSFEv1
+        wsfe_not_used.assert_not_called()
         wsfex.assert_called_once()
         self.assertEqual(export_invoice.l10n_ar_arca_cae, "70222222222222")
 
         cmp_export = wsfex.call_args.args[0]
-        self.assertEqual(cmp_export.Cuit_pais_cliente, 203)
+        self.assertEqual(cmp_export.Cuit_pais_cliente, 55000004102)
         self.assertTrue(cmp_export.Items)
         self.assertAlmostEqual(
             sum(item.Pro_total_item for item in cmp_export.Items.Item),

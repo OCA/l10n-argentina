@@ -1,14 +1,13 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-import base64
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from odoo import Command
 from odoo.exceptions import UserError
 from odoo.tests import tagged
-from odoo.tools import mute_logger
+from odoo.tools import BinaryBytes, mute_logger
 
 from odoo.addons.l10n_ar.tests.common import TestArCommon
 
@@ -62,15 +61,10 @@ class TestAccountMoveArcaEdiExport(TestArCommon):
             {
                 "name": "Certificado de prueba",
                 "company_id": cls.company_ri.id,
-                "content": base64.b64encode(cert_pem + b"\n" + key_pem),
+                "content": BinaryBytes(cert_pem + b"\n" + key_pem),
             }
         )
         cls.company_ri.l10n_ar_arca_certificate_id = cls.certificate
-
-        # Test value, not the real ARCA code (which is not verified against an
-        # official source in this project, see readme/ROADMAP.rst and the help
-        # of res.country.l10n_ar_arca_cuit_pais).
-        cls.env.ref("base.es").l10n_ar_arca_cuit_pais = "203"
 
         cls.export_invoice = cls._create_invoice_ar(
             journal_id=cls.sale_expo_journal_ri.id,
@@ -108,7 +102,7 @@ class TestAccountMoveArcaEdiExport(TestArCommon):
             self.export_invoice.action_post()
 
         req = self.export_invoice._l10n_ar_arca_build_fex_request()
-        self.assertEqual(req.Cuit_pais_cliente, 203)
+        self.assertEqual(req.Cuit_pais_cliente, 55000004102)
         self.assertEqual(req.Cliente, "Barcelona Food")
         self.assertTrue(req.Domicilio_cliente)
         self.assertTrue(req.Items)
@@ -125,7 +119,7 @@ class TestAccountMoveArcaEdiExport(TestArCommon):
         with patch("arcalib.transmissao.wsfexv1.TransmissaoWSFEXv1.fex_authorize"):
             self.export_invoice.action_post()
 
-        self.env.ref("base.es").l10n_ar_arca_cuit_pais = False
+        self.env.ref("base.es").l10n_ar_legal_entity_vat = False
         with (
             patch(
                 "arcalib.transmissao.wsfexv1.TransmissaoWSFEXv1.fex_authorize"
@@ -403,3 +397,46 @@ class TestAccountMoveArcaEdiExport(TestArCommon):
         )
         self.assertFalse(domestic.l10n_ar_arca_is_export)
         self.assertEqual(domestic._l10n_ar_arca_webservice(), "wsfev1")
+
+    @_MUTE_EDI
+    def test_cuit_pais_comes_from_the_core_table_by_partner_kind(self):
+        """Odoo 20: the generic CUIT per country is the core l10n_ar table
+        (res.country.l10n_ar_legal_entity_vat / l10n_ar_natural_vat)."""
+        spain = self.env.ref("base.es")
+        self.assertTrue(self.res_partner_barcelona_food.is_company)
+        self.export_invoice.l10n_ar_arca_tipo_expo = "1"
+        with patch("arcalib.transmissao.wsfexv1.TransmissaoWSFEXv1.fex_authorize"):
+            self.export_invoice.action_post()
+        self.assertEqual(
+            self.export_invoice._l10n_ar_arca_get_cuit_pais(),
+            int(spain.l10n_ar_legal_entity_vat),
+        )
+
+        person = self.env["res.partner"].create(
+            {
+                "name": "Turista de Madrid",
+                "country_id": spain.id,
+                "street": "Gran Via 1",
+                "city": "Madrid",
+                "additional_identifiers": {"PASSPORT": "AAB458734"},
+                "l10n_ar_afip_responsibility_type_id": self.env.ref(
+                    "l10n_ar.res_EXT"
+                ).id,
+            }
+        )
+        self.assertFalse(person.is_company)
+        invoice = self._create_invoice_ar(
+            journal_id=self.sale_expo_journal_ri.id,
+            partner_id=person.id,
+            invoice_line_ids=[
+                self._prepare_invoice_line(
+                    price_unit=50.0, product_id=self.product_iva_21
+                )
+            ],
+        )
+        invoice.l10n_ar_arca_tipo_expo = "2"
+        with patch("arcalib.transmissao.wsfexv1.TransmissaoWSFEXv1.fex_authorize"):
+            invoice.action_post()
+        req = invoice._l10n_ar_arca_build_fex_request()
+        self.assertEqual(req.Cuit_pais_cliente, int(spain.l10n_ar_natural_vat))
+        self.assertNotEqual(spain.l10n_ar_natural_vat, spain.l10n_ar_legal_entity_vat)

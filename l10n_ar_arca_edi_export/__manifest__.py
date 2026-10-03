@@ -3,7 +3,7 @@
 
 {
     "name": "Argentina ARCA Export Invoicing (WSFEXv1)",
-    "version": "18.0.1.0.0",
+    "version": "20.0.1.0.0",
     "category": "Localization/Argentina",
     "summary": "ARCA export electronic invoice (letter E), via WSFEXv1",
     "author": "KMEE, Odoo Community Association (OCA)",
@@ -18,7 +18,6 @@
     },
     "data": [
         "views/account_move_views.xml",
-        "views/res_country_views.xml",
     ],
     "installable": True,
     "maintainers": ["mileo"],

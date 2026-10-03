@@ -4,9 +4,10 @@ de `l10n_ar_arca_edi` y reutiliza los mismos campos de CAE: este módulo
 solamente agrega el ruteo hacia el webservice de exportación cuando el
 documento es letra E.
 
-Agrega el CUIT País de ARCA en `res.country`, de carga manual, y el
-campo `Permiso de embarque existente` para la exportación definitiva de
-bienes.
+El CUIT País del cliente sale de la tabla que el núcleo (`l10n_ar`) ya
+trae en `res.country` (CUIT genérico de persona jurídica o de persona
+física, según el contacto). Agrega el campo `Permiso de embarque
+existente` para la exportación definitiva de bienes.
 
 El WSFEXv1 transporta ítems y total, sin campo para impuestos. Una
 factura cuyo total no coincida con la suma de los ítems se rechaza antes

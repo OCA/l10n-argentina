@@ -1,7 +1,7 @@
 # Copyright 2026 KMEE
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 from odoo.addons.l10n_ar_arca_edi.models.account_move import L10nArArcaRejection
@@ -75,7 +75,9 @@ class AccountMove(models.Model):
         self.ensure_one()
         if not self.l10n_ar_arca_tipo_expo:
             raise UserError(
-                _("Fill in the 'Tipo de exportación' before requesting the CAE.")
+                self.env._(
+                    "Fill in the 'Tipo de exportación' before requesting the CAE."
+                )
             )
 
         transmissao = self.company_id._l10n_ar_arca_get_transmissao(
@@ -86,23 +88,28 @@ class AccountMove(models.Model):
         self._l10n_ar_arca_process_fex_response(response)
 
     def _l10n_ar_arca_get_cuit_pais(self):
-        """CUIT País: ARCA's own per-country code, distinct from the country
-        code `l10n_ar_afip_code`, mandatory in WSFEXv1.
+        """CUIT País of the customer (Cuit_pais_cliente, mandatory in WSFEXv1).
 
-        Has to be configured by hand in `res.country.l10n_ar_arca_cuit_pais`
-        (see that field and this module's readme/ROADMAP.rst: there is no
-        reliable source at hand to populate the whole table).
+        The core l10n_ar already ships the ARCA generic CUIT per country on
+        res.country (data/res.country.csv): one for legal entities and one for
+        natural persons.
         """
         self.ensure_one()
-        country = self.partner_id.country_id
-        cuit_pais = country.l10n_ar_arca_cuit_pais
+        partner = self.partner_id.commercial_partner_id
+        country = partner.country_id
+        field_name = (
+            "l10n_ar_legal_entity_vat" if partner.is_company else "l10n_ar_natural_vat"
+        )
+        cuit_pais = country[field_name] if country else False
         if not cuit_pais:
             raise UserError(
-                _(
-                    "Set the 'CUIT País (ARCA)' of country %(country)s before "
-                    "requesting the export CAE for this contact."
+                self.env._(
+                    "Set the '%(field)s' (CUIT País of ARCA) of country "
+                    "%(country)s before requesting the export CAE for this "
+                    "contact.",
+                    field=self.env["res.country"]._fields[field_name].string,
+                    country=country.name or self.env._("(no country)"),
                 )
-                % {"country": country.name or _("(no country)")}
             )
         return int(cuit_pais)
 
@@ -167,7 +174,7 @@ class AccountMove(models.Model):
             return None
         if self.l10n_ar_arca_permiso_existente == "S":
             raise UserError(
-                _(
+                self.env._(
                     "This version of the module does not send the shipping "
                     "permit detail (Permisos array of WSFEXv1), so declaring "
                     "'Permiso de embarque existente' = S is not possible: ARCA "
@@ -184,7 +191,7 @@ class AccountMove(models.Model):
         collapses the line breaks because the webservice field is single line.
         """
         self.ensure_one()
-        address = self.partner_id._display_address(without_company=True) or ""
+        address = self.partner_id._display_address(without_name=True) or ""
         return (
             ", ".join(part.strip() for part in address.splitlines() if part.strip())
             or None
@@ -227,11 +234,11 @@ class AccountMove(models.Model):
             uom = base_line["product_uom_id"]
             if not uom.l10n_ar_afip_code:
                 raise UserError(
-                    _(
+                    self.env._(
                         "The unit of measure '%(uom)s' has no AFIP code. Set "
-                        "it before invoicing an export."
+                        "it before invoicing an export.",
+                        uom=uom.display_name or self.env._("(no unit)"),
                     )
-                    % {"uom": uom.display_name or _("(no unit)")}
                 )
 
             # Line amount already net, computed by the core.
@@ -264,18 +271,16 @@ class AccountMove(models.Model):
         # that helps nobody: better to refuse here, naming what is left over.
         if self.currency_id.compare_amounts(items_total, self.amount_total) != 0:
             raise UserError(
-                _(
+                self.env._(
                     "The total of this export invoice (%(total)s) does not "
                     "match the sum of the items (%(items)s). WSFEXv1 only "
                     "carries items and total, with no field for taxes, "
                     "perceptions, cash rounding or early payment discount. "
                     "Remove whatever is adding up outside the items before "
-                    "requesting the CAE."
+                    "requesting the CAE.",
+                    total=self.amount_total,
+                    items=items_total,
                 )
-                % {
-                    "total": self.amount_total,
-                    "items": items_total,
-                }
             )
         if not items:
             return None, items_total
@@ -286,7 +291,9 @@ class AccountMove(models.Model):
         result = response.FEXAuthorizeResult
         auth = result.FEXResultAuth if result else None
         if not auth:
-            raise UserError(_("Unexpected response from ARCA (WSFEXv1): no result."))
+            raise UserError(
+                self.env._("Unexpected response from ARCA (WSFEXv1): no result.")
+            )
 
         if auth.Resultado != "A":
             # Same contract as the WSFEv1 path: nothing is written before
@@ -295,11 +302,11 @@ class AccountMove(models.Model):
             # the exception and is persisted by
             # `_l10n_ar_arca_log_cae_failure`.
             raise L10nArArcaRejection(
-                _("ARCA rejected the export CAE request (%(resultado)s): %(obs)s")
-                % {
-                    "resultado": auth.Resultado,
-                    "obs": auth.Motivos_Obs or _("no detail"),
-                },
+                self.env._(
+                    "ARCA rejected the export CAE request (%(resultado)s): %(obs)s",
+                    resultado=auth.Resultado,
+                    obs=auth.Motivos_Obs or self.env._("no detail"),
+                ),
                 resultado=auth.Resultado,
                 observations=auth.Motivos_Obs,
             )

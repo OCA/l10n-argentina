@@ -5,13 +5,10 @@
 - Cotización de moneda extranjera por ARCA (FEXGetPARAM_Cotizacion) no
   implementada: hoy se usa la cotización del propio Odoo (invertida al
   formato que ARCA espera, pesos por unidad extranjera).
-- `CUIT País` (`res.country.l10n_ar_arca_cuit_pais`): no viene cargado
-  para ningún país. Es una tabla propia de ARCA (código por país,
-  distinto de `l10n_ar_afip_code`) que no fue obtenida de una fuente
-  oficial. Debe configurarse manualmente por país antes de facturar una
-  exportación hacia ese destino (el código levanta un error claro si
-  falta, en lugar de enviar un valor equivocado). Cargarlo a partir de
-  la tabla oficial de ARCA es un punto pendiente.
+- `CUIT País`: se toma el CUIT genérico de persona jurídica o de persona
+  física del país del cliente (`res.country`, datos del núcleo
+  `l10n_ar`). El CUIT genérico para "otro tipo de sujeto"
+  (`l10n_ar_other_vat`) no se usa.
 - `Items`: obligatorio e implementado a partir de las líneas de la
   factura, pero sin verificación contra una muestra real aprobada por
   ARCA (el mapeo de la bonificación y del código de unidad de medida

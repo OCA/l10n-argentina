@@ -380,9 +380,11 @@ para diarios con sistema de punto de venta <tt class="docutils literal">FEERCEL<
 Depende de <tt class="docutils literal">l10n_ar_arca_edi</tt> y reutiliza los mismos campos de CAE:
 este módulo solamente agrega el ruteo hacia el webservice de exportación
 cuando el documento es letra E.</p>
-<p>Agrega el CUIT País de ARCA en <tt class="docutils literal">res.country</tt>, de carga manual, y el
-campo <tt class="docutils literal">Permiso de embarque existente</tt> para la exportación definitiva
-de bienes.</p>
+<p>El CUIT País del cliente sale de la tabla que el núcleo (<tt class="docutils literal">l10n_ar</tt>) ya
+trae en <tt class="docutils literal">res.country</tt> (CUIT genérico de persona jurídica o de persona
+física, según el contacto). Agrega el campo
+<tt class="docutils literal">Permiso de embarque existente</tt> para la exportación definitiva de
+bienes.</p>
 <p>El WSFEXv1 transporta ítems y total, sin campo para impuestos. Una
 factura cuyo total no coincida con la suma de los ítems se rechaza antes
 del envío, indicando qué quedó fuera, en lugar de dejar que ARCA la
@@ -410,13 +412,10 @@ automatizarlo.</li>
 <li>Cotización de moneda extranjera por ARCA (FEXGetPARAM_Cotizacion) no
 implementada: hoy se usa la cotización del propio Odoo (invertida al
 formato que ARCA espera, pesos por unidad extranjera).</li>
-<li><tt class="docutils literal">CUIT País</tt> (<tt class="docutils literal">res.country.l10n_ar_arca_cuit_pais</tt>): no viene
-cargado para ningún país. Es una tabla propia de ARCA (código por
-país, distinto de <tt class="docutils literal">l10n_ar_afip_code</tt>) que no fue obtenida de una
-fuente oficial. Debe configurarse manualmente por país antes de
-facturar una exportación hacia ese destino (el código levanta un error
-claro si falta, en lugar de enviar un valor equivocado). Cargarlo a
-partir de la tabla oficial de ARCA es un punto pendiente.</li>
+<li><tt class="docutils literal">CUIT País</tt>: se toma el CUIT genérico de persona jurídica o de
+persona física del país del cliente (<tt class="docutils literal">res.country</tt>, datos del núcleo
+<tt class="docutils literal">l10n_ar</tt>). El CUIT genérico para “otro tipo de sujeto”
+(<tt class="docutils literal">l10n_ar_other_vat</tt>) no se usa.</li>
 <li><tt class="docutils literal">Items</tt>: obligatorio e implementado a partir de las líneas de la
 factura, pero sin verificación contra una muestra real aprobada por
 ARCA (el mapeo de la bonificación y del código de unidad de medida
