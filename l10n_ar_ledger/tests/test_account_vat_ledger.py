@@ -189,3 +189,46 @@ class TestAccountVatLedger(TestArCommon):
             len(invoice._get_vat()),
             "Campo 19 must match the number of rate records",
         )
+
+    def test_purchase_computable_vat_credit_is_the_vat_only(self):
+        """Field 21 (Credito Fiscal Computable) without proration is the VAT
+        assessed of the voucher (ARCA specification, field 21, positions
+        240 to 254): it must not add the taxable base nor the untaxed amounts.
+        """
+        bill = self._create_invoice_ar(
+            move_type="in_invoice",
+            journal_id=self.purchase_journal.id,
+            partner_id=self.res_partner_adhoc.id,
+            invoice_date="2026-06-21",
+            invoice_line_ids=[
+                self._prepare_invoice_line(
+                    price_unit=500.0,
+                    product_id=self.product_iva_21,
+                    tax_ids=[Command.set(self.tax_21_purchase.ids)],
+                ),
+                self._prepare_invoice_line(
+                    price_unit=1000.0,
+                    product_id=self.product_iva_105,
+                    tax_ids=[Command.set(self._search_tax("iva_105", "purchase").ids)],
+                ),
+                self._prepare_invoice_line(
+                    price_unit=200.0,
+                    product_id=self.product_no_gravado,
+                    tax_ids=[Command.set(self.tax_no_gravado_purchase.ids)],
+                ),
+            ],
+        )
+        bill.l10n_latam_document_number = "00001-00000457"
+        bill.action_post()
+        ledger = self._create_ledger("purchase", self.purchase_journal)
+        ledger.compute_digital_data()
+        rows = ledger.REGDIGITAL_CV_CBTE.split("\r\n")
+        self.assertEqual(len(rows), 2)
+        for row in rows:
+            self.assertEqual(len(row), 325)
+        by_number = {row[16:36]: row for row in rows}
+        # Field 21 sits at positions 240 to 254.
+        # 21% on 500.00 plus 10.5% on 1000.00: 105.00 + 105.00 of VAT.
+        self.assertEqual(by_number["457".zfill(20)][239:254], "000000000021000")
+        # The first bill of the period: 21% on 500.00.
+        self.assertEqual(by_number["456".zfill(20)][239:254], "000000000010500")
