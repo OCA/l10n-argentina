@@ -1,0 +1,79 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_arca_verify
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_vendor_cae
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_vendor_cae
+msgid "CAE printed on the document received from the vendor (entered by hand from the PDF or XML of the vendor bill). Used to check the document against ARCA (WSCDC)."
+msgstr "CAE informado en el comprobante recibido del proveedor (cargado manualmente a partir del PDF o XML de la factura de compra). Se usa para constatar el comprobante contra ARCA (WSCDC)."
+
+#. module: l10n_ar_arca_verify
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_verify.view_move_form_arca_verify
+msgid "Check against ARCA"
+msgstr "Constatar en ARCA"
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_observations
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_observations
+msgid "Check remarks"
+msgstr "Observaciones de la constatación"
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_result
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_result
+msgid "Check result"
+msgstr "Resultado de la constatación"
+
+#. module: l10n_ar_arca_verify
+#. odoo-python
+#: code:addons/l10n_ar_arca_verify/models/account_move.py:0
+msgid "Document checking only applies to vendor bills."
+msgstr "La constatación de comprobantes solo se aplica a facturas de compra."
+
+#. module: l10n_ar_arca_verify
+#. odoo-python
+#: code:addons/l10n_ar_arca_verify/models/account_move.py:0
+msgid "Enter the vendor CAE before checking."
+msgstr "Informe el CAE del proveedor antes de constatar."
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model,name:l10n_ar_arca_verify.model_account_move
+msgid "Journal Entry"
+msgstr "Asiento contable"
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_observations
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_observations
+msgid "Remarks and errors returned by ARCA along with the result (why it was or was not validated)."
+msgstr "Observaciones y errores devueltos por ARCA junto con el resultado (por qué fue o no constatado)."
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_result
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_result
+msgid "Text returned by ARCA in ComprobanteConstatarResult.Resultado. It is a Char and not a Selection: the possible values were not verified against the official specification (TO BE VERIFIED, see readme/ROADMAP.rst)."
+msgstr "Texto devuelto por ARCA en ComprobanteConstatarResult.Resultado. Es Char y no Selection: los valores posibles no fueron verificados contra la especificación oficial (A VERIFICAR, ver readme/ROADMAP.rst)."
+
+#. module: l10n_ar_arca_verify
+#. odoo-python
+#: code:addons/l10n_ar_arca_verify/models/account_move.py:0
+msgid "Unexpected response from ARCA: no result."
+msgstr "Respuesta inesperada de ARCA: sin resultado."
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_vendor_cae
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_vendor_cae
+msgid "Vendor CAE"
+msgstr "CAE del proveedor"

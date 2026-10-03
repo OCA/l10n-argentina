@@ -1,0 +1,86 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_arca_verify
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_vendor_cae
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_vendor_cae
+msgid ""
+"CAE printed on the document received from the vendor (entered by hand from "
+"the PDF or XML of the vendor bill). Used to check the document against ARCA "
+"(WSCDC)."
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model_terms:ir.ui.view,arch_db:l10n_ar_arca_verify.view_move_form_arca_verify
+msgid "Check against ARCA"
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_observations
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_observations
+msgid "Check remarks"
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_result
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_result
+msgid "Check result"
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#. odoo-python
+#: code:addons/l10n_ar_arca_verify/models/account_move.py:0
+msgid "Document checking only applies to vendor bills."
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#. odoo-python
+#: code:addons/l10n_ar_arca_verify/models/account_move.py:0
+msgid "Enter the vendor CAE before checking."
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model,name:l10n_ar_arca_verify.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_observations
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_observations
+msgid ""
+"Remarks and errors returned by ARCA along with the result (why it was or was"
+" not validated)."
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_result
+#: model:ir.model.fields,help:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_result
+msgid ""
+"Text returned by ARCA in ComprobanteConstatarResult.Resultado. It is a Char "
+"and not a Selection: the possible values were not verified against the "
+"official specification (TO BE VERIFIED, see readme/ROADMAP.rst)."
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#. odoo-python
+#: code:addons/l10n_ar_arca_verify/models/account_move.py:0
+msgid "Unexpected response from ARCA: no result."
+msgstr ""
+
+#. module: l10n_ar_arca_verify
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_bank_statement_line__l10n_ar_arca_verify_vendor_cae
+#: model:ir.model.fields,field_description:l10n_ar_arca_verify.field_account_move__l10n_ar_arca_verify_vendor_cae
+msgid "Vendor CAE"
+msgstr ""
