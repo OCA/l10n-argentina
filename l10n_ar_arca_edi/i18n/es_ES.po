@@ -72,6 +72,12 @@ msgid "Could not obtain the CAE from ARCA: %(detail)s\n\nThe invoice is posted a
 msgstr "No fue posible obtener el CAE de ARCA: %(detail)s\n\nLa factura está validada y numerada, pero SIN CAE: todavía no es un comprobante válido. Use el botón 'Solicitar CAE' para reintentar."
 
 #. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Electronic credit invoices for SMEs (FCE MiPyME, document type %(code)s) are not supported yet: ARCA requires the 'Opcionales' data (CBU and transmission option) that this module does not send, so the document would be rejected. Use another document type for %(document)s."
+msgstr "Las facturas de crédito electrónicas MiPyME (FCE, tipo de comprobante %(code)s) todavía no están soportadas: ARCA exige los datos 'Opcionales' (CBU y opción de transmisión) que este módulo no envía, por lo que el comprobante sería rechazado. Use otro tipo de comprobante para %(document)s."
+
+#. module: l10n_ar_arca_edi
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_edi_enabled
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_edi_enabled

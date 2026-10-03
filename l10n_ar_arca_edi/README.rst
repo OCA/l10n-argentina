@@ -98,6 +98,13 @@ Known issues / Roadmap
   divergencia de numeración (compara y avisa); no ajusta la secuencia
   por su cuenta, a propósito: ajustar la numeración contable fuera del
   flujo normal es una operación de riesgo.
+- FCE MiPyME (factura de crédito electrónica, tipos 201, 202, 203, 206,
+  207, 208, 211, 212 y 213) no soportada: ARCA exige el array
+  ``Opcionales`` (2101 CBU, 27 opción de transmisión y 22 en las notas
+  que anulan) que este módulo no envía. Mientras tanto la validación se
+  rechaza con un error claro antes de asignar el número y de llamar a
+  ARCA. El soporte requiere enviar esos datos (módulo adicional o
+  extensión de este).
 
 Bug Tracker
 ===========
