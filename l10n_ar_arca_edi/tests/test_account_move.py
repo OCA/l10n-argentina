@@ -74,10 +74,11 @@ class TestAccountMoveArcaEdi(TestArCommon):
             },
         )
 
-    def _create_factura_b(self):
+    def _create_factura_b(self, **kwargs):
         return self._create_invoice_ar(
             journal_id=self.journal_arca.id,
             partner_id=self.partner_cf.id,
+            **kwargs,
             invoice_line_ids=[
                 self._prepare_invoice_line(
                     product_id=self.product_iva_21, price_unit=100.0
@@ -520,3 +521,52 @@ class TestAccountMoveArcaEdi(TestArCommon):
         self.assertIn(str(local + 2), str(ctx.exception))
         # The local number reported is the last one, not the first.
         self.assertIn(f"local one is {local}.", str(ctx.exception))
+
+    def test_fce_documents_are_refused_before_numbering_and_before_arca(self):
+        """FCE MiPyME needs `Opcionales` (2101, 27, 22) this module never sends.
+
+        ARCA would reject it, so the posting is refused up front: the invoice
+        stays in draft (no number consumed) and ARCA is never called.
+        """
+        fce_xmlids = (
+            "dc_fce_a_f",
+            "dc_fce_a_nd",
+            "dc_fce_a_nc",
+            "dc_fce_b_f",
+            "dc_fce_b_nd",
+            "dc_fce_b_nc",
+            "dc_fce_c_f",
+            "dc_fce_c_nd",
+            "dc_fce_c_nc",
+        )
+        for xmlid in fce_xmlids:
+            with self.subTest(xmlid=xmlid):
+                # The core refuses a credit note type on an invoice.
+                move_type = "out_refund" if xmlid.endswith("_nc") else "out_invoice"
+                invoice = self._create_factura_b(move_type=move_type)
+                doc_type = self.env.ref(f"l10n_ar.{xmlid}")
+                invoice.l10n_latam_document_type_id = doc_type
+                with (
+                    patch(
+                        "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"
+                    ) as mocked,
+                    self.assertRaises(UserError) as ctx,
+                ):
+                    invoice.action_post()
+                mocked.assert_not_called()
+                self.assertIn("FCE", str(ctx.exception))
+                self.assertIn(doc_type.code, str(ctx.exception))
+                self.assertEqual(invoice.state, "draft")
+                self.assertFalse(invoice.posted_before)
+                self.assertFalse(invoice.l10n_ar_arca_cae)
+
+    def test_fce_rule_does_not_affect_a_regular_invoice(self):
+        invoice = self._create_factura_b()
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(),
+        ) as mocked:
+            invoice.action_post()
+        mocked.assert_called_once()
+        self.assertEqual(invoice.state, "posted")
+        self.assertTrue(invoice.l10n_ar_arca_cae)

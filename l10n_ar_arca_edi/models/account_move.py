@@ -19,6 +19,14 @@ L10N_AR_ARCA_RESULT_VALUES = frozenset(
     value for value, _label in L10N_AR_ARCA_RESULT_SELECTION
 )
 
+# FCE MiPyME (Factura de Credito Electronica) document types: factura, nota de
+# debito and nota de credito, letters A, B and C. ARCA requires the `Opcionales`
+# array on them (2101 CBU, 27 transmission option, 22 for the notes that
+# cancel); this module sends none of those, so ARCA would reject the document.
+L10N_AR_ARCA_FCE_CODES = frozenset(
+    ("201", "202", "203", "206", "207", "208", "211", "212", "213")
+)
+
 
 class L10nArArcaRejection(UserError):
     """ARCA answered, and the answer was a rejection.
@@ -61,16 +69,49 @@ class AccountMove(models.Model):
         "Observaciones is not an error, it is an approval with remarks).",
     )
 
+    def _l10n_ar_arca_needs_authorization(self):
+        """Whether this move is an electronic sale document to send to ARCA."""
+        self.ensure_one()
+        return (
+            self.journal_id.l10n_ar_arca_edi_enabled
+            and self.move_type in ("out_invoice", "out_refund")
+            and not self.l10n_ar_arca_cae
+        )
+
+    def _l10n_ar_arca_check_can_authorize(self):
+        """Refuse, with a clear error, documents this module cannot send right.
+
+        Each rule here covers a document that would be sent wrong or rejected
+        by ARCA. It runs before the number is assigned (see `_post`) and before
+        any call to ARCA, so nothing is consumed on either side.
+        """
+        for move in self:
+            move._l10n_ar_arca_check_fce()
+
+    def _l10n_ar_arca_check_fce(self):
+        self.ensure_one()
+        doc_type = self.l10n_latam_document_type_id
+        if doc_type.code in L10N_AR_ARCA_FCE_CODES:
+            raise UserError(
+                _(
+                    "Electronic credit invoices for SMEs (FCE MiPyME, document "
+                    "type %(code)s) are not supported yet: ARCA requires the "
+                    "'Opcionales' data (CBU and transmission option) that this "
+                    "module does not send, so the document would be rejected. "
+                    "Use another document type for %(document)s."
+                )
+                % {"code": doc_type.code, "document": self.display_name}
+            )
+
     def _post(self, soft=True):
+        # Validate BEFORE `super()._post()`: that is where Odoo assigns the
+        # document number, and a document refused here must not burn one.
+        self.filtered(
+            lambda m: m.state == "draft" and m._l10n_ar_arca_needs_authorization()
+        )._l10n_ar_arca_check_can_authorize()
         posted = super()._post(soft=soft)
 
-        to_authorize = posted.filtered(
-            lambda m: (
-                m.journal_id.l10n_ar_arca_edi_enabled
-                and m.move_type in ("out_invoice", "out_refund")
-                and not m.l10n_ar_arca_cae
-            )
-        )
+        to_authorize = posted.filtered(lambda m: m._l10n_ar_arca_needs_authorization())
         for move in to_authorize:
             # Every invoice is authorized independently, with its own
             # try/except: a rejection does NOT undo the posting nor the number
@@ -183,6 +224,10 @@ class AccountMove(models.Model):
             raise UserError(_("This invoice already has a CAE."))
         if self.state != "posted":
             raise UserError(_("The CAE can only be requested for a posted invoice."))
+
+        # Also here, not only in `_post`: the manual button reaches this method
+        # for invoices posted before the rule existed.
+        self._l10n_ar_arca_check_can_authorize()
 
         webservice = self._l10n_ar_arca_webservice()
         handler = getattr(self, f"_l10n_ar_arca_request_cae_{webservice}", None)
