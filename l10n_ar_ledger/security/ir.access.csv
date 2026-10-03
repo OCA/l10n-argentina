@@ -1,0 +1,3 @@
+id,name,model_id,group_id/id,operation,domain
+access_account_vat_ledger_accountant,account_vat_ledger_accountant,account.vat.ledger,account.group_account_user,crud,
+multi_company_vat_ledger,Vat Ledger Multi Company,account.vat.ledger,,crud,"[('company_id', 'in', company_ids)]"

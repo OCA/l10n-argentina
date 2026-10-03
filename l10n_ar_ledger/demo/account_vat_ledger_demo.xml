@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Invoices and credit notes A go to the digital VAT ledger. -->
+    <record id="l10n_ar.dc_a_f" model="l10n_latam.document.type">
+        <field name="export_to_digital" eval="True" />
+    </record>
+    <record id="l10n_ar.dc_a_nc" model="l10n_latam.document.type">
+        <field name="export_to_digital" eval="True" />
+    </record>
+    <!-- Sales VAT ledger of the current month of the Responsable Inscripto
+         demo company, with the digital files generated and presented. -->
+    <record
+        id="demo_vat_ledger_sale"
+        model="account.vat.ledger"
+        context="{'allowed_company_ids': [ref('base.company_ri')]}"
+    >
+        <field name="company_id" ref="base.company_ri" />
+        <field name="type">sale</field>
+        <field name="date_from" eval="time.strftime('%Y-%m-01')" />
+        <field
+            name="date_to"
+            eval="(DateTime.today() + relativedelta(day=31)).strftime('%Y-%m-%d')"
+        />
+        <field
+            name="journal_ids"
+            model="account.journal"
+            search="[('company_id', '=', ref('base.company_ri')), ('type', '=', 'sale'), ('l10n_latam_use_documents', '=', True)]"
+        />
+    </record>
+    <function
+        model="account.vat.ledger"
+        name="compute_digital_data"
+        eval="[[ref('demo_vat_ledger_sale')]]"
+        context="{'allowed_company_ids': [ref('base.company_ri')]}"
+    />
+    <function
+        model="account.vat.ledger"
+        name="action_present"
+        eval="[[ref('demo_vat_ledger_sale')]]"
+        context="{'allowed_company_ids': [ref('base.company_ri')]}"
+    />
+</odoo>
