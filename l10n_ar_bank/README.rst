@@ -34,13 +34,37 @@ Listado de Bancos Argentinos
 
 List of argentinian banks
 
-This module add Argentinian banks objects and res_bank model fields for
-CBU and it's validations.
+This module adds the list of Argentinian banks (BCRA entities) and lets
+you pick one of them on a bank account, filling the bank name, BIC and
+address of the account.
 
 **Table of contents**
 
 .. contents::
    :local:
+
+Usage
+=====
+
+On a bank account (Contacts > a contact > Bank Accounts), choose the
+bank in the "Argentinian Bank" field: the bank name, BIC and address of
+the account are filled from the bank list. They can still be edited by
+hand.
+
+The list itself is available at ``/odoo/ar-banks``.
+
+Changelog
+=========
+
+20.0.1.0.0
+----------
+
+Odoo 20 removed the ``res.bank`` model and moved ``res.partner.bank`` to
+``base``, with the bank name, BIC and address as plain fields of the
+account. The bank list moves to the ``l10n_ar_bank.bank`` model, linked
+to the bank account by the ``l10n_ar_bank_id`` field, which fills those
+fields. The xmlids of the bank list are kept
+(``l10n_ar_bank.<BCRA code>``).
 
 Bug Tracker
 ===========

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="l10n_ar_bank_bank_view_form" model="ir.ui.view">
+        <field name="name">l10n_ar_bank.bank.form</field>
+        <field name="model">l10n_ar_bank.bank</field>
+        <field name="arch" type="xml">
+            <form string="Argentinian Bank">
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="text-bg-danger"
+                        invisible="active"
+                    />
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="bic" />
+                            <field name="active" invisible="1" />
+                        </group>
+                        <group>
+                            <label for="street" string="Address" />
+                            <div class="o_address_format">
+                                <field
+                                    name="street"
+                                    placeholder="Street..."
+                                    class="o_address_street"
+                                />
+                                <field
+                                    name="street2"
+                                    placeholder="Street 2..."
+                                    class="o_address_street"
+                                />
+                                <field
+                                    name="city"
+                                    placeholder="City"
+                                    class="o_address_city"
+                                />
+                                <field
+                                    name="state_id"
+                                    placeholder="State"
+                                    class="o_address_state"
+                                    options="{'no_open': True}"
+                                />
+                                <field
+                                    name="zip"
+                                    placeholder="ZIP"
+                                    class="o_address_zip"
+                                />
+                                <field
+                                    name="country_id"
+                                    placeholder="Country"
+                                    class="o_address_country"
+                                    options="{'no_open': True, 'no_create': True}"
+                                />
+                            </div>
+                            <field name="phone" />
+                            <field name="email" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="l10n_ar_bank_bank_view_list" model="ir.ui.view">
+        <field name="name">l10n_ar_bank.bank.list</field>
+        <field name="model">l10n_ar_bank.bank</field>
+        <field name="arch" type="xml">
+            <list string="Argentinian Banks">
+                <field name="code" />
+                <field name="name" />
+                <field name="bic" optional="show" />
+                <field name="city" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <record id="l10n_ar_bank_bank_view_search" model="ir.ui.view">
+        <field name="name">l10n_ar_bank.bank.search</field>
+        <field name="model">l10n_ar_bank.bank</field>
+        <field name="arch" type="xml">
+            <search string="Argentinian Banks">
+                <field name="name" />
+                <field name="code" />
+                <field name="bic" />
+                <separator />
+                <filter
+                    name="inactive"
+                    string="Archived"
+                    domain="[('active', '=', False)]"
+                />
+            </search>
+        </field>
+    </record>
+
+    <record id="l10n_ar_bank_bank_action" model="ir.actions.act_window">
+        <field name="name">Argentinian Banks</field>
+        <field name="res_model">l10n_ar_bank.bank</field>
+        <field name="path">ar-banks</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id='00005' model='res.bank'>
+    <record id='00005' model='l10n_ar_bank.bank'>
+        <field name='code'>00005</field>
         <field name='name'>Abn  Amro Bank N. V.</field>
         <field name='bic'>ABNAMRO</field>
         <field name='active'>1</field>
         <field name='street'>Victoria Ocampo 360</field>
         <field name='street2'>piso pb</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4320-0600</field>
         <field name='email'>consultas.por.la.web@ar.abnamro.com</field>
     </record>
-    <record id='00295' model='res.bank'>
+    <record id='00295' model='l10n_ar_bank.bank'>
+        <field name='code'>00295</field>
         <field name='name'>American Express Bank Ltd. Sociedad Anon</field>
         <field name='bic'>AEXP</field>
         <field name='active'>1</field>
@@ -20,12 +22,13 @@
         <field name='street2' />
         <field name='zip'>C1061AAA</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4310-3000</field>
         <field name='email'>amex.bank.argentina@aexp.com</field>
     </record>
-    <record id='00340' model='res.bank'>
+    <record id='00340' model='l10n_ar_bank.bank'>
+        <field name='code'>00340</field>
         <field name='name'>Bacs Banco De Credito Y Securitizacion S</field>
         <field name='bic'>BACS</field>
         <field name='active'>1</field>
@@ -33,12 +36,13 @@
         <field name='street2'>piso 8a</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4347-1010</field>
         <field name='email'>bacs@bacs.com.ar</field>
     </record>
-    <record id='00147' model='res.bank'>
+    <record id='00147' model='l10n_ar_bank.bank'>
+        <field name='code'>00147</field>
         <field name='name'>Banco B.I. Creditanstalt Sociedad Anonim</field>
         <field name='bic'>BICREDITANSTALT</field>
         <field name='active'>1</field>
@@ -46,12 +50,13 @@
         <field name='street2' />
         <field name='zip'>C1106ABG</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4319-8400</field>
         <field name='email'>info@bicreditanstalt.com.ar</field>
     </record>
-    <record id='00336' model='res.bank'>
+    <record id='00336' model='l10n_ar_bank.bank'>
+        <field name='code'>00336</field>
         <field name='name'>Banco Bradesco Argentina S.A.</field>
         <field name='bic'>ARNET</field>
         <field name='active'>1</field>
@@ -59,12 +64,13 @@
         <field name='street2' />
         <field name='zip'>C1002ABK</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>01-4114-6111</field>
         <field name='email'>bradesco@arnet.com.ar</field>
     </record>
-    <record id='00331' model='res.bank'>
+    <record id='00331' model='l10n_ar_bank.bank'>
+        <field name='code'>00331</field>
         <field name='name'>Banco Cetelem Argentina S.A.</field>
         <field name='bic'>CETELEM</field>
         <field name='active'>1</field>
@@ -72,12 +78,13 @@
         <field name='street2'>piso 1</field>
         <field name='zip'>1638</field>
         <field name='city'>Vicente López</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4796-8600</field>
         <field name='email'>comercial@cetelem.com.ar</field>
     </record>
-    <record id='00319' model='res.bank'>
+    <record id='00319' model='l10n_ar_bank.bank'>
+        <field name='code'>00319</field>
         <field name='name'>Banco Cmf S.A.</field>
         <field name='bic'>CMFB</field>
         <field name='active'>1</field>
@@ -85,12 +92,13 @@
         <field name='street2' />
         <field name='zip'>C1106BKD</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4318-6800</field>
         <field name='email'>cmfb@cmfb.com.ar</field>
     </record>
-    <record id='00389' model='res.bank'>
+    <record id='00389' model='l10n_ar_bank.bank'>
+        <field name='code'>00389</field>
         <field name='name'>Banco Columbia S.A.</field>
         <field name='bic'>COLUMBIA</field>
         <field name='active'>1</field>
@@ -98,12 +106,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-43490300</field>
         <field name='email'>info@columbia.com.ar</field>
     </record>
-    <record id='00299' model='res.bank'>
+    <record id='00299' model='l10n_ar_bank.bank'>
+        <field name='code'>00299</field>
         <field name='name'>Banco Comafi Sociedad Anonima</field>
         <field name='bic'>COMAFI</field>
         <field name='active'>1</field>
@@ -111,12 +120,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4328-5555</field>
         <field name='email'>contactenos@comafi.com.ar</field>
     </record>
-    <record id='00191' model='res.bank'>
+    <record id='00191' model='l10n_ar_bank.bank'>
+        <field name='code'>00191</field>
         <field name='name'>Banco Credicoop Cooperativo Limitado</field>
         <field name='bic'>BANCOCREDICOOP</field>
         <field name='active'>1</field>
@@ -124,12 +134,13 @@
         <field name='street2' />
         <field name='zip'>C1003ABJ</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4320-5000</field>
         <field name='email'>credicoop@bancocredicoop.coop</field>
     </record>
-    <record id='00094' model='res.bank'>
+    <record id='00094' model='l10n_ar_bank.bank'>
+        <field name='code'>00094</field>
         <field name='name'>Banco De Corrientes S.A.</field>
         <field name='bic'>BCOCTES</field>
         <field name='active'>1</field>
@@ -137,12 +148,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Corrientes</field>
-        <field name='state' ref='base.state_ar_w' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_w' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>03783-479300</field>
         <field name='email'>bcteservicios@bcoctes.com.ar</field>
     </record>
-    <record id='00315' model='res.bank'>
+    <record id='00315' model='l10n_ar_bank.bank'>
+        <field name='code'>00315</field>
         <field name='name'>Banco De Formosa S.A.</field>
         <field name='bic'>FORMOSA</field>
         <field name='active'>1</field>
@@ -150,11 +162,12 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Formosa</field>
-        <field name='state' ref='base.state_ar_p' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_p' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>03717-429200</field>
     </record>
-    <record id='00007' model='res.bank'>
+    <record id='00007' model='l10n_ar_bank.bank'>
+        <field name='code'>00007</field>
         <field name='name'>Banco De Galicia Y Buenos Aires S.A.</field>
         <field name='bic'>BANCOGALICIA</field>
         <field name='active'>1</field>
@@ -162,12 +175,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-6329-0000</field>
         <field name='email'>asuntosinstitucionales@bancogalicia.com.ar</field>
     </record>
-    <record id='00300' model='res.bank'>
+    <record id='00300' model='l10n_ar_bank.bank'>
+        <field name='code'>00300</field>
         <field name='name'>Banco De Inversion Y Comercio Exterior S</field>
         <field name='bic'>BICE</field>
         <field name='active'>1</field>
@@ -175,12 +189,13 @@
         <field name='street2' />
         <field name='zip'>C1002ABL</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4313-9546</field>
         <field name='email'>comercial@bice.com.ar</field>
     </record>
-    <record id='00029' model='res.bank'>
+    <record id='00029' model='l10n_ar_bank.bank'>
+        <field name='code'>00029</field>
         <field name='name'>Banco De La Ciudad De Buenos Aires</field>
         <field name='bic'>BANCOCIUDAD</field>
         <field name='active'>1</field>
@@ -188,12 +203,13 @@
         <field name='street2' />
         <field name='zip'>C1005AAH</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4329-8600</field>
         <field name='email'>servicioalcliente@bancociudad.com.ar</field>
     </record>
-    <record id='00011' model='res.bank'>
+    <record id='00011' model='l10n_ar_bank.bank'>
+        <field name='code'>00011</field>
         <field name='name'>Banco De La Nacion Argentina</field>
         <field name='bic'>BNA</field>
         <field name='active'>1</field>
@@ -201,12 +217,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4347-6000</field>
         <field name='email'>telemarketing@bna.com.ar</field>
     </record>
-    <record id='00093' model='res.bank'>
+    <record id='00093' model='l10n_ar_bank.bank'>
+        <field name='code'>00093</field>
         <field name='name'>Banco De La Pampa Sociedad De Economмa M</field>
         <field name='bic'>BLP</field>
         <field name='active'>1</field>
@@ -214,12 +231,13 @@
         <field name='street2' />
         <field name='zip'>L6300DRE</field>
         <field name='city'>Santa Rosa</field>
-        <field name='state' ref='base.state_ar_l' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_l' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>02954-451000</field>
         <field name='email'>infoweb@blp.com.ar</field>
     </record>
-    <record id='00014' model='res.bank'>
+    <record id='00014' model='l10n_ar_bank.bank'>
+        <field name='code'>00014</field>
         <field name='name'>Banco De La Provincia De Buenos Aires</field>
         <field name='bic'>BAPROPAGOS</field>
         <field name='active'>1</field>
@@ -227,12 +245,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>La Plata</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4347-0000</field>
         <field name='email'>atencionalclienteBPBA@bapropagos.com.ar</field>
     </record>
-    <record id='00020' model='res.bank'>
+    <record id='00020' model='l10n_ar_bank.bank'>
+        <field name='code'>00020</field>
         <field name='name'>Banco De La Provincia De Cordoba S.A.</field>
         <field name='bic'>BANCOR</field>
         <field name='active'>1</field>
@@ -240,12 +259,13 @@
         <field name='street2' />
         <field name='zip'>X5000AGD</field>
         <field name='city'>Córdoba</field>
-        <field name='state' ref='base.state_ar_x' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_x' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0351-4207200</field>
         <field name='email'>contgral@bancor.com.ar</field>
     </record>
-    <record id='00269' model='res.bank'>
+    <record id='00269' model='l10n_ar_bank.bank'>
+        <field name='code'>00269</field>
         <field name='name'>Banco De La Republica Oriental Del Urugu</field>
         <field name='bic'>BROUBSAS</field>
         <field name='active'>1</field>
@@ -253,12 +273,13 @@
         <field name='street2' />
         <field name='zip'>C1035ABC</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4132-2000</field>
         <field name='email'>brou@broubsas.com.ar</field>
     </record>
-    <record id='00045' model='res.bank'>
+    <record id='00045' model='l10n_ar_bank.bank'>
+        <field name='code'>00045</field>
         <field name='name'>Banco De San Juan S.A.</field>
         <field name='bic'>BANCOSANJUAN</field>
         <field name='active'>1</field>
@@ -266,12 +287,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>San Juan</field>
-        <field name='state' ref='base.state_ar_j' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_j' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0264-4291000</field>
         <field name='email'>sdirectorio@bancosanjuan.com</field>
     </record>
-    <record id='00086' model='res.bank'>
+    <record id='00086' model='l10n_ar_bank.bank'>
+        <field name='code'>00086</field>
         <field name='name'>Banco De Santa Cruz S.A.</field>
         <field name='bic'>BANCOSANTACRUZ</field>
         <field name='active'>1</field>
@@ -279,12 +301,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Río Gallegos</field>
-        <field name='state' ref='base.state_ar_z' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_z' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>02966-441200</field>
         <field name='email'>sdirectorio@bancosantacruz.com</field>
     </record>
-    <record id='00321' model='res.bank'>
+    <record id='00321' model='l10n_ar_bank.bank'>
+        <field name='code'>00321</field>
         <field name='name'>Banco De Santiago Del Estero S.A.</field>
         <field name='bic'>ARNET</field>
         <field name='active'>1</field>
@@ -292,12 +315,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Santiago del Estero</field>
-        <field name='state' ref='base.state_ar_g' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_g' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0385-450-2300</field>
         <field name='email'>bsegerencia@arnet.com.ar</field>
     </record>
-    <record id='00332' model='res.bank'>
+    <record id='00332' model='l10n_ar_bank.bank'>
+        <field name='code'>00332</field>
         <field name='name'>Banco De Servicios Financieros S.A.</field>
         <field name='bic'>CETELEM</field>
         <field name='active'>1</field>
@@ -305,12 +329,13 @@
         <field name='street2' />
         <field name='zip'>B1640GJA</field>
         <field name='city'>Martínez</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>-4003-7275</field>
         <field name='email'>comercial@cetelem.com.ar</field>
     </record>
-    <record id='00338' model='res.bank'>
+    <record id='00338' model='l10n_ar_bank.bank'>
+        <field name='code'>00338</field>
         <field name='name'>Banco De Servicios Y Transacciones S.A.</field>
         <field name='bic'>BANCOST</field>
         <field name='active'>1</field>
@@ -318,12 +343,13 @@
         <field name='street2'>piso 3</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-5235-2300</field>
         <field name='email'>info@bancost.com.ar</field>
     </record>
-    <record id='00198' model='res.bank'>
+    <record id='00198' model='l10n_ar_bank.bank'>
+        <field name='code'>00198</field>
         <field name='name'>Banco De Valores S.A.</field>
         <field name='bic'>BANVAL</field>
         <field name='active'>1</field>
@@ -331,12 +357,13 @@
         <field name='street2' />
         <field name='zip'>C1041AAH</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4323-6900</field>
         <field name='email'>info@banval.sba.com.ar</field>
     </record>
-    <record id='00083' model='res.bank'>
+    <record id='00083' model='l10n_ar_bank.bank'>
+        <field name='code'>00083</field>
         <field name='name'>Banco Del Chubut S.A.</field>
         <field name='bic'>CHUBUTBANK</field>
         <field name='active'>1</field>
@@ -344,12 +371,13 @@
         <field name='street2' />
         <field name='zip'>U9103ANG</field>
         <field name='city'>Rawson</field>
-        <field name='state' ref='base.state_ar_u' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_u' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>02965-482505</field>
         <field name='email'>contacto@chubutbank.com.ar</field>
     </record>
-    <record id='00310' model='res.bank'>
+    <record id='00310' model='l10n_ar_bank.bank'>
+        <field name='code'>00310</field>
         <field name='name'>Banco Del Sol S.A.</field>
         <field name='bic'>BANCODELSOL</field>
         <field name='active'>1</field>
@@ -357,12 +385,13 @@
         <field name='street2' />
         <field name='zip'>B1900AVM</field>
         <field name='city'>La Plata</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0221-4232403</field>
         <field name='email'>buzon@bancodelsol.com</field>
     </record>
-    <record id='00060' model='res.bank'>
+    <record id='00060' model='l10n_ar_bank.bank'>
+        <field name='code'>00060</field>
         <field name='name'>Banco Del Tucuman S.A.</field>
         <field name='bic'>BANCODELTUCUMAN</field>
         <field name='active'>1</field>
@@ -370,12 +399,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>San Miguel de Tucumán</field>
-        <field name='state' ref='base.state_ar_t' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_t' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0381-4503300</field>
         <field name='email'>bancodeltucuman@bancodeltucuman.com.ar</field>
     </record>
-    <record id='00046' model='res.bank'>
+    <record id='00046' model='l10n_ar_bank.bank'>
+        <field name='code'>00046</field>
         <field name='name'>Banco Do Brasil S.A.</field>
         <field name='bic'>BB</field>
         <field name='active'>1</field>
@@ -383,12 +413,13 @@
         <field name='street2'>piso 2</field>
         <field name='zip'>C1004AAG</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>-4000-2700</field>
         <field name='email'>buenosaires@bb.com.br</field>
     </record>
-    <record id='00303' model='res.bank'>
+    <record id='00303' model='l10n_ar_bank.bank'>
+        <field name='code'>00303</field>
         <field name='name'>Banco Finansur S.A.</field>
         <field name='bic'>BANCOFINANSUR</field>
         <field name='active'>1</field>
@@ -396,12 +427,13 @@
         <field name='street2' />
         <field name='zip'>C1041AAN</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-43243400</field>
         <field name='email'>marketing@bancofinansur.com.ar</field>
     </record>
-    <record id='00044' model='res.bank'>
+    <record id='00044' model='l10n_ar_bank.bank'>
+        <field name='code'>00044</field>
         <field name='name'>Banco Hipotecario S.A.</field>
         <field name='bic'>HIPOTECARIO</field>
         <field name='active'>1</field>
@@ -409,12 +441,13 @@
         <field name='street2' />
         <field name='zip'>C1003ABC</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4347-5000</field>
         <field name='email'>info@hipotecario.com.ar</field>
     </record>
-    <record id='00322' model='res.bank'>
+    <record id='00322' model='l10n_ar_bank.bank'>
+        <field name='code'>00322</field>
         <field name='name'>Banco Industrial S.A.</field>
         <field name='bic'>BANCOINDUSTRIAL</field>
         <field name='active'>1</field>
@@ -422,12 +455,13 @@
         <field name='street2' />
         <field name='zip'>C1041AAL</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-5238-0200</field>
         <field name='email'>info@bancoindustrial.com.ar</field>
     </record>
-    <record id='00259' model='res.bank'>
+    <record id='00259' model='l10n_ar_bank.bank'>
+        <field name='code'>00259</field>
         <field name='name'>Banco Itau Argentina S.A.</field>
         <field name='bic'>ITAU</field>
         <field name='active'>1</field>
@@ -435,11 +469,12 @@
         <field name='street2'>piso 19</field>
         <field name='zip'>C1010AAP</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='email'>consultasysugerenciasclientes@itau.com.ar</field>
     </record>
-    <record id='00305' model='res.bank'>
+    <record id='00305' model='l10n_ar_bank.bank'>
+        <field name='code'>00305</field>
         <field name='name'>Banco Julio Sociedad Anonima</field>
         <field name='bic'>BANCOJULIO</field>
         <field name='active'>1</field>
@@ -447,12 +482,13 @@
         <field name='street2'>piso pb</field>
         <field name='zip'>X5000IJC</field>
         <field name='city'>Córdoba</field>
-        <field name='state' ref='base.state_ar_x' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_x' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0351-4213007</field>
         <field name='email'>gcia.administracion@bancojulio.com.ar</field>
     </record>
-    <record id='00285' model='res.bank'>
+    <record id='00285' model='l10n_ar_bank.bank'>
+        <field name='code'>00285</field>
         <field name='name'>Banco Macro S.A.</field>
         <field name='bic'>MACRO</field>
         <field name='active'>1</field>
@@ -460,12 +496,13 @@
         <field name='street2'>piso 7</field>
         <field name='zip'>C1041AAI</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-5222-6500</field>
         <field name='email'>serviciosalcliente@macro.com.ar</field>
     </record>
-    <record id='00254' model='res.bank'>
+    <record id='00254' model='l10n_ar_bank.bank'>
+        <field name='code'>00254</field>
         <field name='name'>Banco Mariva S.A.</field>
         <field name='bic'>MARIVA</field>
         <field name='active'>1</field>
@@ -473,12 +510,13 @@
         <field name='street2' />
         <field name='zip'>C1041AAJ</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4321-2200</field>
         <field name='email'>tecnol@mariva.com.ar</field>
     </record>
-    <record id='00341' model='res.bank'>
+    <record id='00341' model='l10n_ar_bank.bank'>
+        <field name='code'>00341</field>
         <field name='name'>Banco Masventas S.A.</field>
         <field name='bic'>BANCOMASVENTAS</field>
         <field name='active'>1</field>
@@ -486,12 +524,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Salta</field>
-        <field name='state' ref='base.state_ar_a' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_a' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0387-4310298</field>
         <field name='email'>masventas@bancomasventas.com.ar</field>
     </record>
-    <record id='00281' model='res.bank'>
+    <record id='00281' model='l10n_ar_bank.bank'>
+        <field name='code'>00281</field>
         <field name='name'>Banco Meridian S.A.</field>
         <field name='bic'>BANCOMERIDIAN</field>
         <field name='active'>1</field>
@@ -499,12 +538,13 @@
         <field name='street2' />
         <field name='zip'>C1005AAD</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4130-8500</field>
         <field name='email'>info@bancomeridian.com</field>
     </record>
-    <record id='00065' model='res.bank'>
+    <record id='00065' model='l10n_ar_bank.bank'>
+        <field name='code'>00065</field>
         <field name='name'>Banco Municipal De Rosario</field>
         <field name='bic'>BMROS</field>
         <field name='active'>1</field>
@@ -512,12 +552,13 @@
         <field name='street2' />
         <field name='zip'>S2000CJJ</field>
         <field name='city'>Rosario</field>
-        <field name='state' ref='base.state_ar_s' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_s' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0341-4256162</field>
         <field name='email'>cliente@bmros.com.ar</field>
     </record>
-    <record id='00034' model='res.bank'>
+    <record id='00034' model='l10n_ar_bank.bank'>
+        <field name='code'>00034</field>
         <field name='name'>Banco Patagonia S.A.</field>
         <field name='bic'>BANCOPATAGONIA</field>
         <field name='active'>1</field>
@@ -525,12 +566,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4132-6300</field>
         <field name='email'>bancopatagonia@bancopatagonia.com.ar</field>
     </record>
-    <record id='00301' model='res.bank'>
+    <record id='00301' model='l10n_ar_bank.bank'>
+        <field name='code'>00301</field>
         <field name='name'>Banco Piano S.A.</field>
         <field name='bic'>PIANO</field>
         <field name='active'>1</field>
@@ -538,12 +580,13 @@
         <field name='street2' />
         <field name='zip'>C1004AAG</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4394-2463</field>
         <field name='email'>info@piano.com.ar</field>
     </record>
-    <record id='00306' model='res.bank'>
+    <record id='00306' model='l10n_ar_bank.bank'>
+        <field name='code'>00306</field>
         <field name='name'>Banco Privado De Inversiones Sociedad An</field>
         <field name='bic'>BANCOPRIVADO</field>
         <field name='active'>1</field>
@@ -551,12 +594,13 @@
         <field name='street2'>piso pb</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4318-7300</field>
         <field name='email'>info@bancoprivado.com.ar</field>
     </record>
-    <record id='00268' model='res.bank'>
+    <record id='00268' model='l10n_ar_bank.bank'>
+        <field name='code'>00268</field>
         <field name='name'>Banco Provincia De Tierra Del Fuego</field>
         <field name='bic'>BANCOTDF</field>
         <field name='active'>1</field>
@@ -564,12 +608,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Ushuaia</field>
-        <field name='state' ref='base.state_ar_v' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_v' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>02901-441600</field>
         <field name='email'>info@bancotdf.com.ar</field>
     </record>
-    <record id='00097' model='res.bank'>
+    <record id='00097' model='l10n_ar_bank.bank'>
+        <field name='code'>00097</field>
         <field name='name'>Banco Provincia Del Neuquén Sociedad Anс</field>
         <field name='bic'>BPN</field>
         <field name='active'>1</field>
@@ -577,12 +622,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Neuquén</field>
-        <field name='state' ref='base.state_ar_q' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_q' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0299-4496600</field>
         <field name='email'>institucional@bpn.com.ar</field>
     </record>
-    <record id='00079' model='res.bank'>
+    <record id='00079' model='l10n_ar_bank.bank'>
+        <field name='code'>00079</field>
         <field name='name'>Banco Regional De Cuyo S.A.</field>
         <field name='bic'>BANCOREGIONAL</field>
         <field name='active'>1</field>
@@ -590,12 +636,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Mendoza</field>
-        <field name='state' ref='base.state_ar_m' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_m' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0261-4498800</field>
         <field name='email'>brc@bancoregional.com.ar</field>
     </record>
-    <record id='00247' model='res.bank'>
+    <record id='00247' model='l10n_ar_bank.bank'>
+        <field name='code'>00247</field>
         <field name='name'>Banco Roela S.A.</field>
         <field name='bic'>BANCOROELA</field>
         <field name='active'>1</field>
@@ -603,12 +650,13 @@
         <field name='street2' />
         <field name='zip'>X5000ACE</field>
         <field name='city'>Córdoba</field>
-        <field name='state' ref='base.state_ar_x' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_x' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0351-4241777</field>
         <field name='email'>servicioalcliente@bancoroela.com.ar</field>
     </record>
-    <record id='00277' model='res.bank'>
+    <record id='00277' model='l10n_ar_bank.bank'>
+        <field name='code'>00277</field>
         <field name='name'>Banco Saenz S.A.</field>
         <field name='bic'>SAENZSA</field>
         <field name='active'>1</field>
@@ -616,12 +664,13 @@
         <field name='street2' />
         <field name='zip'>C1035CABA</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4342-6969</field>
         <field name='email'>contaduria@saenzsa.com.ar</field>
     </record>
-    <record id='00072' model='res.bank'>
+    <record id='00072' model='l10n_ar_bank.bank'>
+        <field name='code'>00072</field>
         <field name='name'>Banco Santander Rio S.A.</field>
         <field name='bic'>SANTANDERRIO</field>
         <field name='active'>1</field>
@@ -629,12 +678,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>La Plata</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4341-1000</field>
         <field name='email'>info@santanderrio.com.ar</field>
     </record>
-    <record id='00027' model='res.bank'>
+    <record id='00027' model='l10n_ar_bank.bank'>
+        <field name='code'>00027</field>
         <field name='name'>Banco Supervielle S.A.</field>
         <field name='bic'>SUPERVIELLE</field>
         <field name='active'>1</field>
@@ -642,12 +692,13 @@
         <field name='street2' />
         <field name='zip'>C1003ABH</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4324-8000</field>
         <field name='email'>Eduardo.Hospital@supervielle.com.ar</field>
     </record>
-    <record id='00262' model='res.bank'>
+    <record id='00262' model='l10n_ar_bank.bank'>
+        <field name='code'>00262</field>
         <field name='name'>Bank Of America, National Association</field>
         <field name='bic'>BANKOFAMERICA</field>
         <field name='active'>1</field>
@@ -655,12 +706,13 @@
         <field name='street2'>piso 10</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4317-3500</field>
         <field name='email'>alberto.filippini@bankofamerica.com</field>
     </record>
-    <record id='00017' model='res.bank'>
+    <record id='00017' model='l10n_ar_bank.bank'>
+        <field name='code'>00017</field>
         <field name='name'>Bbva Banco Frances S.A.</field>
         <field name='bic'>BANCOFRANCES</field>
         <field name='active'>1</field>
@@ -668,12 +720,13 @@
         <field name='street2' />
         <field name='zip'>C1003ABC</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4346-4000</field>
         <field name='email'>mensajes@bancofrances.com.ar</field>
     </record>
-    <record id='00266' model='res.bank'>
+    <record id='00266' model='l10n_ar_bank.bank'>
+        <field name='code'>00266</field>
         <field name='name'>Bnp Paribas</field>
         <field name='bic'>BNPPARIBAS</field>
         <field name='active'>1</field>
@@ -681,12 +734,13 @@
         <field name='street2'>piso 26</field>
         <field name='zip'>C1106ABG</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4318-0318</field>
         <field name='email'>info@bnpparibas.com.ar</field>
     </record>
-    <record id='65203' model='res.bank'>
+    <record id='65203' model='l10n_ar_bank.bank'>
+        <field name='code'>65203</field>
         <field name='name'>Caja De Credito "Cuenca" Cooperativa Lim</field>
         <field name='bic'>CCCUENCA</field>
         <field name='active'>1</field>
@@ -694,12 +748,13 @@
         <field name='street2' />
         <field name='zip'>1672</field>
         <field name='city'>Villa Lynch</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4512-6000</field>
         <field name='email'>cuenca@cccuenca.com.ar</field>
     </record>
-    <record id='64085' model='res.bank'>
+    <record id='64085' model='l10n_ar_bank.bank'>
+        <field name='code'>64085</field>
         <field name='name'>Caja De Credito Cooperativa La Capital D</field>
         <field name='bic'>LACAPITALDELPLATA</field>
         <field name='active'>1</field>
@@ -707,12 +762,13 @@
         <field name='street2' />
         <field name='zip'>C1002ABL</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-5252-0100</field>
         <field name='email'>correo@lacapitaldelplata.com.ar</field>
     </record>
-    <record id='00016' model='res.bank'>
+    <record id='00016' model='l10n_ar_bank.bank'>
+        <field name='code'>00016</field>
         <field name='name'>Citibank N.A.</field>
         <field name='bic'>CITIBANK</field>
         <field name='active'>1</field>
@@ -720,11 +776,12 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4329-1000</field>
     </record>
-    <record id='44077' model='res.bank'>
+    <record id='44077' model='l10n_ar_bank.bank'>
+        <field name='code'>44077</field>
         <field name='name'>Compañía Financiera Argentina S.A.</field>
         <field name='bic'>CFA</field>
         <field name='active'>1</field>
@@ -732,12 +789,13 @@
         <field name='street2' />
         <field name='zip'>C1005AAF</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4348-9999</field>
         <field name='email'>sac@cfa.com.ar</field>
     </record>
-    <record id='00325' model='res.bank'>
+    <record id='00325' model='l10n_ar_bank.bank'>
+        <field name='code'>00325</field>
         <field name='name'>Deutsche Bank S.A.</field>
         <field name='bic'>DB</field>
         <field name='active'>1</field>
@@ -745,12 +803,13 @@
         <field name='street2' />
         <field name='zip'>C1049AAA</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4590-2800</field>
         <field name='email'>monica.mestre@db.com</field>
     </record>
-    <record id='44092' model='res.bank'>
+    <record id='44092' model='l10n_ar_bank.bank'>
+        <field name='code'>44092</field>
         <field name='name'>Fiat Credito Compañía Financiera S.A.</field>
         <field name='bic'>FIATFINANCIERA</field>
         <field name='active'>1</field>
@@ -758,12 +817,13 @@
         <field name='street2' />
         <field name='zip'>C1064AAL</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>01-4344-5700</field>
         <field name='email'>gabriela.bruno@fiatfinanciera.com.ar</field>
     </record>
-    <record id='44059' model='res.bank'>
+    <record id='44059' model='l10n_ar_bank.bank'>
+        <field name='code'>44059</field>
         <field name='name'>Ford Credit Compañía Financiera S.A.</field>
         <field name='bic'>FORDMAIL</field>
         <field name='active'>1</field>
@@ -771,12 +831,13 @@
         <field name='street2' />
         <field name='zip'>B1610BKK</field>
         <field name='city'>Ricardo Rojas</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>-4510-8325</field>
         <field name='email'>fordcredit@fordmail.com.ar</field>
     </record>
-    <record id='44090' model='res.bank'>
+    <record id='44090' model='l10n_ar_bank.bank'>
+        <field name='code'>44090</field>
         <field name='name'>Ge Compañía Financiera S.A.</field>
         <field name='bic'>GE</field>
         <field name='active'>1</field>
@@ -784,12 +845,13 @@
         <field name='street2'>piso 11</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4104-9600</field>
         <field name='email'>gemoney_ar@ge.com</field>
     </record>
-    <record id='44093' model='res.bank'>
+    <record id='44093' model='l10n_ar_bank.bank'>
+        <field name='code'>44093</field>
         <field name='name'>Gmac Compañía Financiera S.A.</field>
         <field name='bic'>GM</field>
         <field name='active'>1</field>
@@ -797,12 +859,13 @@
         <field name='street2' />
         <field name='zip'>C1408BRR</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>01-4317-1900</field>
         <field name='email'>contactenos@gm.com</field>
     </record>
-    <record id='00150' model='res.bank'>
+    <record id='00150' model='l10n_ar_bank.bank'>
+        <field name='code'>00150</field>
         <field name='name'>Hsbc Bank Argentina S.A.</field>
         <field name='bic'>HSBC</field>
         <field name='active'>1</field>
@@ -810,12 +873,13 @@
         <field name='street2' />
         <field name='zip'>C1005AAE</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4320-2800</field>
         <field name='email'>contactenos@hsbc.com.ar</field>
     </record>
-    <record id='44096' model='res.bank'>
+    <record id='44096' model='l10n_ar_bank.bank'>
+        <field name='code'>44096</field>
         <field name='name'>John Deere Credit Compañía Financiera S.</field>
         <field name='bic'>JOHNDEERE</field>
         <field name='active'>1</field>
@@ -823,12 +887,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Granadero Baigorria</field>
-        <field name='state' ref='base.state_ar_s' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_s' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0341-410-5331</field>
         <field name='email'>jdca@johndeere.com</field>
     </record>
-    <record id='00165' model='res.bank'>
+    <record id='00165' model='l10n_ar_bank.bank'>
+        <field name='code'>00165</field>
         <field name='name'>Jpmorgan Chase Bank, National Associatio</field>
         <field name='bic'>JPMORGAN</field>
         <field name='active'>1</field>
@@ -836,12 +901,13 @@
         <field name='street2'>piso 23</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4325-8046</field>
         <field name='email'>gayoso_paola@jpmorgan.com</field>
     </record>
-    <record id='00312' model='res.bank'>
+    <record id='00312' model='l10n_ar_bank.bank'>
+        <field name='code'>00312</field>
         <field name='name'>Mba Lazard Banco De Inversiones S. A.</field>
         <field name='bic'>MERCHANT</field>
         <field name='active'>1</field>
@@ -849,12 +915,13 @@
         <field name='street2'>piso 1</field>
         <field name='zip'>C1107AAD</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4319-5800</field>
         <field name='email'>mba@merchant.com.ar</field>
     </record>
-    <record id='44094' model='res.bank'>
+    <record id='44094' model='l10n_ar_bank.bank'>
+        <field name='code'>44094</field>
         <field name='name'>Mercedes-Benz Compañía Financiera Argent</field>
         <field name='bic'>DAIMLERCHRYSLER</field>
         <field name='active'>1</field>
@@ -862,12 +929,13 @@
         <field name='street2' />
         <field name='zip'>C1107CII</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>-4808-8900</field>
         <field name='email'>maria_fernanda.pellegrino@daimlerchrysler.com</field>
     </record>
-    <record id='44068' model='res.bank'>
+    <record id='44068' model='l10n_ar_bank.bank'>
+        <field name='code'>44068</field>
         <field name='name'>Metropolis Compañía Financiera S.A.</field>
         <field name='bic'>METROPOLISCF</field>
         <field name='active'>1</field>
@@ -875,12 +943,13 @@
         <field name='street2' />
         <field name='zip'>C1041AAH</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-5554-5800</field>
         <field name='email'>mensajes@metropoliscf.com</field>
     </record>
-    <record id='45056' model='res.bank'>
+    <record id='45056' model='l10n_ar_bank.bank'>
+        <field name='code'>45056</field>
         <field name='name'>Montemar Compañía Financiera S.A.</field>
         <field name='bic'>MONTEMARCIAFIN</field>
         <field name='active'>1</field>
@@ -888,12 +957,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Mendoza</field>
-        <field name='state' ref='base.state_ar_m' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_m' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0261-4494500</field>
         <field name='email'>informes@montemarciafin.com.ar</field>
     </record>
-    <record id='45072' model='res.bank'>
+    <record id='45072' model='l10n_ar_bank.bank'>
+        <field name='code'>45072</field>
         <field name='name'>Multifinanzas Compañía Financiera S.A.</field>
         <field name='bic'>SINECTIS</field>
         <field name='active'>1</field>
@@ -901,12 +971,13 @@
         <field name='street2' />
         <field name='zip'>C1041AAJ</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4393-3953</field>
         <field name='email'>multifin@sinectis.com.ar</field>
     </record>
-    <record id='00386' model='res.bank'>
+    <record id='00386' model='l10n_ar_bank.bank'>
+        <field name='code'>00386</field>
         <field name='name'>Nuevo Banco De Entre Rios S.A.</field>
         <field name='bic'>NUEVOBERSA</field>
         <field name='active'>1</field>
@@ -914,12 +985,13 @@
         <field name='street2' />
         <field name='zip'>E3100ACD</field>
         <field name='city'>Paraná</field>
-        <field name='state' ref='base.state_ar_e' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_e' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0343-4201200</field>
         <field name='email'>info@nuevobersa.com.ar</field>
     </record>
-    <record id='00309' model='res.bank'>
+    <record id='00309' model='l10n_ar_bank.bank'>
+        <field name='code'>00309</field>
         <field name='name'>Nuevo Banco De La Rioja Sociedad Anonima</field>
         <field name='bic'>NBLR</field>
         <field name='active'>1</field>
@@ -927,12 +999,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>La Rioja</field>
-        <field name='state' ref='base.state_ar_f' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_f' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>03822-430575</field>
         <field name='email'>nblrsa@nblr.com.ar</field>
     </record>
-    <record id='00330' model='res.bank'>
+    <record id='00330' model='l10n_ar_bank.bank'>
+        <field name='code'>00330</field>
         <field name='name'>Nuevo Banco De Santa Fe Sociedad Anonima</field>
         <field name='bic'>BANCOBSF</field>
         <field name='active'>1</field>
@@ -940,12 +1013,13 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>Santa Fe</field>
-        <field name='state' ref='base.state_ar_s' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_s' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0341-4294200</field>
         <field name='email'>contactobc@bancobsf.com.ar</field>
     </record>
-    <record id='00311' model='res.bank'>
+    <record id='00311' model='l10n_ar_bank.bank'>
+        <field name='code'>00311</field>
         <field name='name'>Nuevo Banco Del Chaco S. A.</field>
         <field name='bic'>NBCH</field>
         <field name='active'>1</field>
@@ -953,12 +1027,13 @@
         <field name='street2' />
         <field name='zip'>H3500CBD</field>
         <field name='city'>Resistencia</field>
-        <field name='state' ref='base.state_ar_h' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_h' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>03722-447400</field>
         <field name='email'>nbchdir@nbch.com.ar</field>
     </record>
-    <record id='44098' model='res.bank'>
+    <record id='44098' model='l10n_ar_bank.bank'>
+        <field name='code'>44098</field>
         <field name='name'>Psa Finance Argentina Compañía Financiera</field>
         <field name='bic'>PSA</field>
         <field name='active'>1</field>
@@ -966,11 +1041,12 @@
         <field name='street2'>piso 3</field>
         <field name='zip'>C1041AAP</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4131-6313</field>
     </record>
-    <record id='00339' model='res.bank'>
+    <record id='00339' model='l10n_ar_bank.bank'>
+        <field name='code'>00339</field>
         <field name='name'>Rci Banque</field>
         <field name='bic'>RCI</field>
         <field name='active'>1</field>
@@ -980,11 +1056,12 @@
         <field
             name='city'
         >Esc. Primaria p/Adultos Nro 16 Fray Justo Santa María de Oro - Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4779-6068</field>
     </record>
-    <record id='44095' model='res.bank'>
+    <record id='44095' model='l10n_ar_bank.bank'>
+        <field name='code'>44095</field>
         <field name='name'>Rombo Compañía Financiera S.A.</field>
         <field name='bic'>ROMBO</field>
         <field name='active'>1</field>
@@ -994,11 +1071,12 @@
         <field
             name='city'
         >Esc. Primaria p/Adultos Nro 16 Fray Justo Santa María de Oro - Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4779-6065</field>
     </record>
-    <record id='00015' model='res.bank'>
+    <record id='00015' model='l10n_ar_bank.bank'>
+        <field name='code'>00015</field>
         <field
             name='name'
         >Industrial and Commercial Bank of China (Argentina) S.A.</field>
@@ -1008,12 +1086,13 @@
         <field name='street2' />
         <field name='zip'>C1005AAA</field>
         <field name='city'>Ciudad Autónoma de Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>0810-444-4652</field>
         <field name='email'>diego.jahoda@icbc.com.ar</field>
     </record>
-    <record id='00018' model='res.bank'>
+    <record id='00018' model='l10n_ar_bank.bank'>
+        <field name='code'>00018</field>
         <field name='name'>The Bank Of Tokyo-Mitsubishi Ufj, Ltd.</field>
         <field name='bic'>MUFG</field>
         <field name='active'>1</field>
@@ -1021,12 +1100,13 @@
         <field name='street2'>piso 2</field>
         <field name='zip' />
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4348-2000</field>
         <field name='email'>btmu@ar.mufg.jp</field>
     </record>
-    <record id='44099' model='res.bank'>
+    <record id='44099' model='l10n_ar_bank.bank'>
+        <field name='code'>44099</field>
         <field name='name'>Toyota Compañía Financiera De Argentina</field>
         <field name='bic'>TOYOTACFA</field>
         <field name='active'>1</field>
@@ -1034,12 +1114,13 @@
         <field name='street2' />
         <field name='zip'>C1091AAQ</field>
         <field name='city'>Buenos Aires</field>
-        <field name='state' ref='base.state_ar_c' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_c' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4341-7900</field>
         <field name='email'>info@ToyotaCFA.com.ar</field>
     </record>
-    <record id='44088' model='res.bank'>
+    <record id='44088' model='l10n_ar_bank.bank'>
+        <field name='code'>44088</field>
         <field name='name'>Volkswagen Credit Compañia Financiera S.</field>
         <field name='bic'>VWFS</field>
         <field name='active'>1</field>
@@ -1047,8 +1128,8 @@
         <field name='street2' />
         <field name='zip' />
         <field name='city'>General Pacheco</field>
-        <field name='state' ref='base.state_ar_b' />
-        <field name='country' ref='base.ar' />
+        <field name='state_id' ref='base.state_ar_b' />
+        <field name='country_id' ref='base.ar' />
         <field name='phone'>011-4317-9000</field>
         <field name='email'>mariana.rodriguez@vwfs.com</field>
     </record>
