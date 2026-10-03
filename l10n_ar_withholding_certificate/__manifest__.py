@@ -17,6 +17,9 @@
         "views/account_payment_views.xml",
         "report/withholding_certificate_report.xml",
     ],
+    "demo": [
+        "demo/account_payment_demo.xml",
+    ],
     "installable": True,
     "maintainers": ["mileo"],
 }
