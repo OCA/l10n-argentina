@@ -34,7 +34,8 @@ SALE_CBTE_LAYOUT = [
     ("aliquots_count", 1),
 ]
 
-# Fixed width layout of REGDIGITAL_CV_CBTE (purchases), up to field 12.
+# Fixed width layout of REGDIGITAL_CV_CBTE (purchases), up to field 22 (ARCA
+# design LIBRO_IVA_DIGITAL_COMPRAS_CBTE, positions 1 to 269).
 PURCHASE_CBTE_LAYOUT = [
     ("date", 8),
     ("document_type", 3),
@@ -48,6 +49,16 @@ PURCHASE_CBTE_LAYOUT = [
     ("untaxed_base", 15),
     ("exempt_base", 15),
     ("vat_perception", 15),
+    ("national_perception", 15),
+    ("iibb_perception", 15),
+    ("municipal_perception", 15),
+    ("internal_taxes", 15),
+    ("currency", 3),
+    ("currency_rate", 10),
+    ("aliquots_count", 1),
+    ("operation_code", 1),
+    ("computable_vat_credit", 15),
+    ("other_taxes", 15),
 ]
 
 
@@ -275,6 +286,47 @@ class TestAccountVatLedger(TestArCommon):
             "000000000010500",
         )
         self.assertFalse(ledger.REGDIGITAL_CV_COMPRAS_IMPORTACIONES)
+
+    def test_purchase_computable_vat_credit_is_the_vat_only(self):
+        """Field 21 (Credito Fiscal Computable) without proration is the VAT
+        assessed of the voucher (ARCA specification, field 21): it must not
+        add the taxable base nor the untaxed amounts."""
+        bill = self._create_invoice_ar(
+            move_type="in_invoice",
+            journal_id=self.purchase_journal.id,
+            partner_id=self.res_partner_adhoc.id,
+            invoice_date="2026-06-21",
+            invoice_line_ids=[
+                self._prepare_invoice_line(
+                    price_unit=500.0,
+                    product_id=self.product_iva_21,
+                    tax_ids=[Command.set(self.tax_21_purchase.ids)],
+                ),
+                self._prepare_invoice_line(
+                    price_unit=1000.0,
+                    product_id=self.product_iva_105,
+                    tax_ids=[Command.set(self._search_tax("iva_105", "purchase").ids)],
+                ),
+                self._prepare_invoice_line(
+                    price_unit=200.0,
+                    product_id=self.product_iva_21,
+                    tax_ids=[Command.set(self.tax_no_gravado_purchase.ids)],
+                ),
+            ],
+        )
+        bill.l10n_latam_document_number = "00001-00000457"
+        bill.action_post()
+        ledger = self._create_ledger("purchase", self.purchase_journal)
+        rows = self._cbte_rows(ledger)
+        row = split_fixed(rows[1], PURCHASE_CBTE_LAYOUT)
+        self.assertEqual(row["number"], "457".zfill(20))
+        self.assertEqual(row["aliquots_count"], "2")
+        # 21% on 500.00 plus 10.5% on 1000.00: 105.00 + 105.00 of VAT.
+        self.assertEqual(row["computable_vat_credit"], "000000000021000")
+        # The first bill of the period: 21% on 500.00.
+        first = split_fixed(rows[0], PURCHASE_CBTE_LAYOUT)
+        self.assertEqual(first["computable_vat_credit"], "000000000010500")
+        self.assertEqual(len(rows[0]), 325)
 
     def test_digital_files_are_the_records_in_latin1(self):
         ledger = self._create_ledger("sale", self.sale_journal)

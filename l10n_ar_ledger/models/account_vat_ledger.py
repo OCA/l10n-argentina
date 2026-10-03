@@ -612,11 +612,9 @@ class AccountVatLedger(models.Model):
                         )
                     )
                 else:
-                    imp_liquidado = 0
-                    vats = inv._get_vat()
-                    for v in vats:
-                        if v["Id"] in ["3", "4", "5", "6", "8", "9"]:
-                            imp_liquidado += v["BaseImp"] + v["Importe"]
+                    # Without proration, field 21 equals the VAT assessed
+                    # (sum of "Impuesto liquidado"), never the taxable base.
+                    imp_liquidado = sum(v["Importe"] for v in inv._get_vat())
                     row.append(self.format_amount(round(imp_liquidado, 2), invoice=inv))
 
                 row += [
