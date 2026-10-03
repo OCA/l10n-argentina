@@ -403,3 +403,36 @@ class TestAccountMoveArcaEdiExport(TestArCommon):
         )
         self.assertFalse(domestic.l10n_ar_arca_is_export)
         self.assertEqual(domestic._l10n_ar_arca_webservice(), "wsfev1")
+
+    @_MUTE_EDI
+    def test_export_invoice_is_not_refused_by_the_arca_edi_guards(self):
+        """l10n_ar_arca_edi refuses letter E when nobody serves WSFEXv1; with
+        this module installed the routing hook answers "wsfexv1" and the
+        refusal must step aside."""
+        self.assertEqual(self.export_invoice._l10n_ar_arca_webservice(), "wsfexv1")
+        self.export_invoice._l10n_ar_arca_check_can_authorize()
+        with patch("arcalib.transmissao.wsfexv1.TransmissaoWSFEXv1.fex_authorize"):
+            self.export_invoice.action_post()
+        self.assertEqual(self.export_invoice.state, "posted")
+
+    @_MUTE_EDI
+    def test_export_without_a_product_line_is_not_refused(self):
+        """The "at least one product line" rule of l10n_ar_arca_edi exists
+        because WSFEv1 needs the concept; WSFEXv1 has no `Concepto`, so an
+        export made of free-text lines must still go through."""
+        invoice = self._create_invoice_ar(
+            journal_id=self.sale_expo_journal_ri.id,
+            partner_id=self.res_partner_barcelona_food.id,
+            invoice_line_ids=[
+                self._prepare_invoice_line(
+                    price_unit=100.0,
+                    name="Free text",
+                    tax_ids=[Command.set([self.tax_21.id])],
+                )
+            ],
+        )
+        self.assertFalse(invoice.invoice_line_ids.product_id)
+        invoice._l10n_ar_arca_check_can_authorize()
+        with patch("arcalib.transmissao.wsfexv1.TransmissaoWSFEXv1.fex_authorize"):
+            invoice.action_post()
+        self.assertEqual(invoice.state, "posted")
