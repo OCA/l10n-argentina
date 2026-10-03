@@ -41,6 +41,12 @@ msgid "ARCA rejected the CAE request (%(resultado)s): %(obs)s"
 msgstr ""
 
 #. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "ARCA requires the concept of the invoice (products, services or both) and it is determined by the products on the lines. %(document)s has no line with a product, so the concept cannot be determined. Set a product on at least one line."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
 #: model:ir.model.fields.selection,name:l10n_ar_arca_edi.selection__account_move__l10n_ar_arca_result__a
 msgid "Aprobado"
 msgstr ""

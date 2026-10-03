@@ -106,6 +106,12 @@ Known issues / Roadmap
   ``l10n_ar_arca_edi_export``. Sin ese módulo instalado, este módulo
   rechaza la validación con un error claro en vez de enviarlos por
   WSFEv1, donde ARCA los rechazaría.
+- Concepto de la factura (productos, servicios o ambos): lo deriva el
+  core de los productos de las líneas y, sin ningún producto, cae en
+  Productos, lo que puede ser incorrecto. Hasta que se pueda informar el
+  concepto de forma explícita, una factura sin ninguna línea con
+  producto se rechaza con un error claro antes de asignar el número y de
+  llamar a ARCA.
 
 Bug Tracker
 ===========

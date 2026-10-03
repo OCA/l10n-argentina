@@ -629,3 +629,77 @@ class TestAccountMoveArcaEdi(TestArCommon):
             invoice.action_post()
         mocked.assert_called_once()
         self.assertTrue(invoice.l10n_ar_arca_cae)
+
+    def test_invoice_without_any_product_line_is_refused(self):
+        """The concept comes from the products and defaults to "Productos" when
+        there is none, which may be wrong: refuse instead of guessing.
+
+        The invoice stays in draft (no number consumed) and ARCA is never
+        called.
+        """
+        free_text_line = self._prepare_invoice_line(
+            price_unit=100.0,
+            name="Consulting hours",
+            tax_ids=[Command.set([self.tax_21.id])],
+        )
+        for label, lines in (
+            ("free text line", [free_text_line]),
+            (
+                "section and note only",
+                [
+                    Command.create({"display_type": "line_section", "name": "S"}),
+                    Command.create({"display_type": "line_note", "name": "N"}),
+                ],
+            ),
+        ):
+            with self.subTest(label):
+                invoice = self._create_invoice_ar(
+                    journal_id=self.journal_arca.id,
+                    partner_id=self.partner_cf.id,
+                    invoice_line_ids=lines,
+                )
+                with (
+                    patch(
+                        "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar"
+                    ) as mocked,
+                    self.assertRaises(UserError) as ctx,
+                ):
+                    invoice.action_post()
+                mocked.assert_not_called()
+                self.assertIn("no line with a product", str(ctx.exception))
+                self.assertEqual(invoice.state, "draft")
+                self.assertFalse(invoice.posted_before)
+
+    def test_one_product_line_among_free_text_lines_is_enough(self):
+        free_text_line = self._prepare_invoice_line(
+            price_unit=50.0,
+            name="Free text",
+            tax_ids=[Command.set([self.tax_21.id])],
+        )
+        invoice = self._create_invoice_ar(
+            journal_id=self.journal_arca.id,
+            partner_id=self.partner_cf.id,
+            invoice_line_ids=[
+                free_text_line,
+                self._prepare_invoice_line(
+                    product_id=self.product_iva_21, price_unit=100.0
+                ),
+            ],
+        )
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(),
+        ) as mocked:
+            invoice.action_post()
+        mocked.assert_called_once()
+        self.assertTrue(invoice.l10n_ar_arca_cae)
+
+    def test_concept_rule_does_not_affect_a_regular_invoice(self):
+        invoice = self._create_factura_b()
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(),
+        ) as mocked:
+            invoice.action_post()
+        mocked.assert_called_once()
+        self.assertEqual(invoice.l10n_ar_afip_concept, "1")
