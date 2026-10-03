@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <record id="view_country_form_arca_edi_export" model="ir.ui.view">
+        <field name="name">res.country.form.l10n_ar_arca_edi_export</field>
+        <field name="inherit_id" ref="base.view_country_form" />
+        <field name="model">res.country</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="l10n_ar_arca_cuit_pais" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
