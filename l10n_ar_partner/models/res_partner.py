@@ -13,9 +13,7 @@ _RESPONSIBILITY_CODE_MONOTRIBUTO = "6"
 _RESPONSIBILITY_CODE_RESPONSABLE_INSCRIPTO = "1"
 _RESPONSIBILITY_CODE_CONSUMIDOR_FINAL = "5"
 
-# ARCA code (l10n_latam.identification.type.l10n_ar_afip_code) of the CUIT.
-# `name` is a translatable field: comparing by it classified partners holding a
-# CUIT as CUIT-less in bulk on an es_AR database.
+# ARCA code of the CUIT, as computed by the core in res.partner.l10n_ar_afip_code.
 _IDENTIFICATION_AFIP_CODE_CUIT = "80"
 
 # Known differences between the province name the padrón A5 returns
@@ -60,10 +58,7 @@ class ResPartner(models.Model):
         of automation that suggests, it does not apply itself.
         """
         for partner in self:
-            if (
-                partner.l10n_latam_identification_type_id.l10n_ar_afip_code
-                != _IDENTIFICATION_AFIP_CODE_CUIT
-            ):
+            if partner.l10n_ar_afip_code != _IDENTIFICATION_AFIP_CODE_CUIT:
                 partner._update_from_padron_without_cuit()
                 continue
             partner._update_from_padron_with_cuit()
@@ -92,7 +87,8 @@ class ResPartner(models.Model):
         self.name = datos.razonSocial or " ".join(
             filter(None, [datos.nombre, datos.apellido])
         )
-        self.company_type = "person" if datos.tipoPersona == "FISICA" else "company"
+        # tipoPersona is not written: since Odoo 20 is_company is computed by
+        # l10n_ar from the CUIT prefix.
 
         domicilio = datos.domicilioFiscal
         if domicilio:
@@ -104,8 +100,8 @@ class ResPartner(models.Model):
         self._update_responsibility_from_padron(persona)
 
     def _update_from_padron_without_cuit(self):
-        # Sem CUIT identificado: mesma decisão da versão 14.0 deste módulo,
-        # tratar como Consumidor Final por padrão.
+        # No CUIT: same decision as the 14.0 version of this module, treat
+        # the partner as Consumidor Final.
         self.ensure_one()
         responsibility = self.env["l10n_ar.afip.responsibility.type"].search(
             [("code", "=", _RESPONSIBILITY_CODE_CONSUMIDOR_FINAL)], limit=1
@@ -136,7 +132,7 @@ class ResPartner(models.Model):
             self.state_id = state[:1].id
         else:
             _logger.info(
-                "Padrón A5 devolveu província '%s' sem correspondência em "
+                "Padrón A5 returned province '%s' with no match in "
                 "res.country.state for %s; state_id left unchanged.",
                 provincia,
                 self.display_name,
