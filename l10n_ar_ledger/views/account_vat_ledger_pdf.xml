@@ -60,7 +60,7 @@
                                     </td>
                                     <td>
                                         <span
-                                            t-if="invoice.partner_id.l10n_latam_identification_type_id.l10n_ar_afip_code == '80'"
+                                            t-if="invoice.partner_id.l10n_ar_afip_code == '80'"
                                             t-field="invoice.partner_id.vat"
                                         />
                                     </td>
@@ -333,7 +333,6 @@
         <field name="report_type">qweb-pdf</field>
         <field name="paperformat_id" ref="paperformat_landscape" />
         <field name="report_name">l10n_ar_ledger.ledger_report</field>
-        <field name="report_file">l10n_ar_ledger.ledger_report</field>
         <field
             name="print_report_name"
         >'Libro IVA ' + ('Compras' if object.type == 'purchase' else 'Ventas') + '_' + (object.date_to.strftime('%d-%m-%Y')) + '.pdf'</field>

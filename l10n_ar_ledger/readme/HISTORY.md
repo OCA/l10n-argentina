@@ -9,3 +9,11 @@
   `l10n_latam_document_number`/`invoice_currency_rate`; corrección de un
   compute sin `@api.depends`; corrección del acumulador del Crédito
   Fiscal Computable.
+
+## 20.0.1.0.0 (2026-10-03)
+
+- Migración a 20.0: identificación del contacto tomada de
+  `l10n_ar_afip_code` y `_get_id_number_sanitize()` del core (el modelo
+  `l10n_latam.identification.type` ya no existe); archivos digitales
+  escritos como `BinaryBytes`; permisos en `ir.access`; `report_file`
+  quitado de las acciones de reporte.

@@ -9,10 +9,10 @@
   no implementado. El único camino soportado es prorratear por
   comprobante fuera de Odoo (el propio error indica cómo).
 - No hay ningún test de regresión con un archivo TXT esperado
-  versionado: los tests de este módulo confirman que el TXT se genera
-  sin levantar excepción y verifican algunos campos, no el archivo
-  completo byte a byte. Compararlo contra un archivo esperado, generado
-  a partir de un período real y revisado por el contador, es el próximo
-  paso natural de esta suite.
+  versionado: los tests verifican campo por campo las posiciones fijas
+  de los registros de comprobantes y alícuotas, no el archivo completo
+  byte a byte. Compararlo contra un archivo esperado, generado a partir
+  de un período real y revisado por el contador, es el próximo paso
+  natural de esta suite.
 - Ninguno de los 5 diseños de registro fue validado contra el validador
   oficial de ARCA ni contra homologación real.

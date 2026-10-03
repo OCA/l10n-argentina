@@ -2,17 +2,12 @@
 # For copyright and license notices, see __manifest__.py file in module root
 # directory
 ##############################################################################
-try:
-    from base64 import encodebytes
-except ImportError:  # 3+
-    from base64 import encodestring as encodebytes
-
 import logging
-import re
 from ast import literal_eval
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import BinaryBytes
 
 _logger = logging.getLogger(__name__)
 
@@ -20,7 +15,7 @@ _logger = logging.getLogger(__name__)
 class AccountVatLedger(models.Model):
     _name = "account.vat.ledger"
     _description = "Account VAT Ledger"
-    _inherit = ["mail.thread"]
+    _inherit = "mail.thread"
     _order = "date_from desc"
 
     digital_skip_invoice_tests = fields.Boolean(
@@ -74,7 +69,6 @@ class AccountVatLedger(models.Model):
 
     company_id = fields.Many2one(
         "res.company",
-        string="Company",
         required=True,
         readonly=True,
         default=lambda self: self.env.company,
@@ -158,19 +152,20 @@ class AccountVatLedger(models.Model):
     def _compute_name(self):
         for rec in self:
             if rec.type == "sale":
-                ledger_type = _("Sales")
+                ledger_type = self.env._("Sales")
             elif rec.type == "purchase":
-                ledger_type = _("Purchases")
+                ledger_type = self.env._("Purchases")
 
-            name = _("%(ledger_type)s VAT Ledger %(date_from)s - %(date_to)s") % {
-                "ledger_type": ledger_type,
-                "date_from": rec.date_from
+            name = self.env._(
+                "%(ledger_type)s VAT Ledger %(date_from)s - %(date_to)s",
+                ledger_type=ledger_type,
+                date_from=rec.date_from
                 and fields.Date.from_string(rec.date_from).strftime("%d-%m-%Y")
                 or "",
-                "date_to": rec.date_to
+                date_to=rec.date_to
                 and fields.Date.from_string(rec.date_to).strftime("%d-%m-%Y")
                 or "",
-            }
+            )
             if rec.reference:
                 name = f"{name} - {rec.reference}"
             rec.name = name
@@ -189,30 +184,36 @@ class AccountVatLedger(models.Model):
         # AFIP Wait "ISO-8859-1" and not utf-8
         # http://www.planillasutiles.com.ar/2015/08/como-descargar-los-archivos-de.html
         if self.REGDIGITAL_CV_ALICUOTAS:
-            self.digital_aliquots_filename = _(
-                "Alicuots_%(ledger_type)s_%(date_to)s.txt"
-            ) % {"ledger_type": self.type, "date_to": self.date_to}
-            self.digital_aliquots_file = encodebytes(
+            self.digital_aliquots_filename = self.env._(
+                "Alicuots_%(ledger_type)s_%(date_to)s.txt",
+                ledger_type=self.type,
+                date_to=self.date_to,
+            )
+            self.digital_aliquots_file = BinaryBytes(
                 self.REGDIGITAL_CV_ALICUOTAS.encode("ISO-8859-1")
             )
         else:
             self.digital_aliquots_file = False
             self.digital_aliquots_filename = False
         if self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES:
-            self.digital_import_aliquots_filename = _(
-                "Import_Alicuots_%(ledger_type)s_%(date_to)s.txt"
-            ) % {"ledger_type": self.type, "date_to": self.date_to}
-            self.digital_import_aliquots_file = encodebytes(
+            self.digital_import_aliquots_filename = self.env._(
+                "Import_Alicuots_%(ledger_type)s_%(date_to)s.txt",
+                ledger_type=self.type,
+                date_to=self.date_to,
+            )
+            self.digital_import_aliquots_file = BinaryBytes(
                 self.REGDIGITAL_CV_COMPRAS_IMPORTACIONES.encode("ISO-8859-1")
             )
         else:
             self.digital_import_aliquots_file = False
             self.digital_import_aliquots_filename = False
         if self.REGDIGITAL_CV_CBTE:
-            self.digital_vouchers_filename = _(
-                "Vouchers_%(ledger_type)s_%(date_to)s.txt"
-            ) % {"ledger_type": self.type, "date_to": self.date_to}
-            self.digital_vouchers_file = encodebytes(
+            self.digital_vouchers_filename = self.env._(
+                "Vouchers_%(ledger_type)s_%(date_to)s.txt",
+                ledger_type=self.type,
+                date_to=self.date_to,
+            )
+            self.digital_vouchers_file = BinaryBytes(
                 self.REGDIGITAL_CV_CBTE.encode("ISO-8859-1")
             )
         else:
@@ -244,15 +245,12 @@ class AccountVatLedger(models.Model):
 
     def get_partner_document_code(self, partner):
         if partner.l10n_ar_afip_responsibility_type_id.code == "5":
-            res = str(
-                partner.l10n_latam_identification_type_id.l10n_ar_afip_code
-            ).zfill(2)
-            return res
+            return (partner.l10n_ar_afip_code or "").zfill(2)
         return "80"
 
     def get_partner_document_number(self, partner):
-        """Number of the partner's identification, digits only, right aligned
-        in 20 positions.
+        """Number of the partner's identification, without separators, right
+        aligned in 20 positions.
 
         The digital files use a fixed position layout, so any separator kept
         in the number (``30-71429569-8``) shifts every following field of the
@@ -260,11 +258,13 @@ class AccountVatLedger(models.Model):
         sanitized for every responsibility type, not only for Consumidor
         Final, which is how the partner's VAT is usually stored.
         """
-        number = re.sub("[^0-9]", "", partner.vat or "")
+        number = str(partner._get_id_number_sanitize() or "")
         if not number:
             raise ValidationError(
-                _("Partner %s has no CUIT/CUIL or DNI. Required for VAT Ledger Book.")
-                % partner.display_name
+                self.env._(
+                    "Partner %s has no CUIT/CUIL or DNI. Required for VAT Ledger Book.",
+                    partner.display_name,
+                )
             )
         return number.rjust(20, "0")
 
@@ -399,20 +399,19 @@ class AccountVatLedger(models.Model):
         if self.type == "purchase":
             partners = invoices.mapped("commercial_partner_id").filtered(
                 lambda r: (
-                    r.l10n_latam_identification_type_id.l10n_ar_afip_code
-                    in (False, "99")
-                    or not r.vat
+                    r.l10n_ar_afip_code in (False, "99")
+                    or not r._get_id_number_sanitize()
                 )
             )
             if partners:
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "On purchase digital, partner document type is mandatory "
                         "and it must be different from 99. "
                         "Partners: \r\n\r\n"
-                        "%s"
+                        "%s",
+                        "\r\n".join(f"[{p.id}] {p.display_name}" for p in partners),
                     )
-                    % "\r\n".join(f"[{p.id}] {p.display_name}" for p in partners)
                 )
 
     def _get_aliquots(self, inv):
@@ -433,9 +432,12 @@ class AccountVatLedger(models.Model):
             for invl in inv.invoice_line_ids:
                 for tax in invl.tax_ids:
                     vat_afip_code = tax.tax_group_id.l10n_ar_vat_afip_code
-                    if vat_afip_code and vat_afip_code not in ["0", "1", "2"]:
-                        if tax.id not in vat_taxes:
-                            vat_taxes.append(tax.id)
+                    if (
+                        vat_afip_code
+                        and vat_afip_code not in ["0", "1", "2"]
+                        and tax.id not in vat_taxes
+                    ):
+                        vat_taxes.append(tax.id)
         return len(vat_taxes)
 
     def get_REGDIGITAL_CV_CBTE(self):
@@ -599,14 +601,14 @@ class AccountVatLedger(models.Model):
                     # implementation, the manual guidance below is the only
                     # path.
                     raise ValidationError(
-                        _(
-                            "Para utilizar el prorrateo por comprobante:\n"
-                            '1) Exporte los archivos sin la opción "Proratear '
-                            'Crédito de Impuestos"\n2) Importe los mismos '
-                            "en el aplicativo\n3) En el aplicativo de afip, "
-                            "comprobante por comprobante, indique el valor "
-                            'correspondiente en el campo "Crédito Fiscal '
-                            'Computable"'
+                        self.env._(
+                            "Prorating the tax credit per document is not "
+                            "supported:\n"
+                            '1) Export the files without the "Prorate Tax '
+                            'Credit" option\n'
+                            "2) Import them in the ARCA application\n"
+                            "3) In the ARCA application, document by document, "
+                            'fill in the "Crédito Fiscal Computable" field'
                         )
                     )
                 else:

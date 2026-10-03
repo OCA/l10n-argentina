@@ -3,7 +3,7 @@
 
 {
     "name": "VAT Ledger for Argentina",
-    "version": "18.0.1.0.0",
+    "version": "20.0.1.0.0",
     "category": "Localization/Argentina",
     "license": "AGPL-3",
     "summary": "VAT Ledger, VAT Digital Ledger and VAT Reports for Argentina",
@@ -14,8 +14,7 @@
     "external_dependencies": {},
     "development_status": "Alpha",
     "data": [
-        "security/ir.model.access.csv",
-        "security/security.xml",
+        "security/ir.access.csv",
         "views/account_vat_ledger.xml",
         "views/account_vat_ledger_pdf.xml",
         "views/account_vat_ledger_xlsx.xml",
