@@ -624,7 +624,7 @@ class AccountMove(models.Model):
                 ("l10n_latam_document_type_id", "=", doc_type.id),
                 ("state", "=", "posted"),
             ],
-            order="l10n_latam_document_number desc",
+            order="sequence_number desc, id desc",
             limit=1,
         )
         last_local_number = 0

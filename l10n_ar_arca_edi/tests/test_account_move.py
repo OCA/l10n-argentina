@@ -463,3 +463,60 @@ class TestAccountMoveArcaEdi(TestArCommon):
         # Could not classify the result, but recorded what happened.
         self.assertFalse(invoice.l10n_ar_arca_result)
         self.assertTrue(invoice.l10n_ar_arca_observations)
+
+    def _post_approved(self, invoice):
+        with patch(
+            "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecae_solicitar",
+            return_value=self._fake_fecae_response(resultado="A"),
+        ):
+            invoice.action_post()
+
+    def test_check_sequence_reports_sync_and_divergence(self):
+        """The button used to order by l10n_latam_document_number, a computed
+        field that is not stored, which raised a ValueError on every click."""
+        from arcalib.wsfev1.bindings.wsfev1 import (
+            FecompUltimoAutorizadoResponse,
+            FerecuperaLastCbteResponse,
+        )
+
+        first = self._create_factura_b()
+        self._post_approved(first)
+        last = self._create_factura_b()
+        self._post_approved(last)
+        parts = last._l10n_ar_get_document_number_parts(
+            last.l10n_latam_document_number,
+            last.l10n_latam_document_type_id.code,
+        )
+        local = parts["invoice_number"]
+        self.assertGreater(
+            local,
+            first._l10n_ar_get_document_number_parts(
+                first.l10n_latam_document_number,
+                first.l10n_latam_document_type_id.code,
+            )["invoice_number"],
+        )
+
+        def ultimo(nro):
+            return FecompUltimoAutorizadoResponse(
+                FECompUltimoAutorizadoResult=FerecuperaLastCbteResponse(
+                    PtoVta=3, CbteTipo=6, CbteNro=nro
+                )
+            )
+
+        target = "arcalib.transmissao.wsfev1.TransmissaoWSFEv1.fecomp_ultimo_autorizado"
+        with (
+            patch(target, return_value=ultimo(local)),
+            self.assertRaises(UserError) as ctx,
+        ):
+            first.action_l10n_ar_arca_check_sequence()
+        self.assertIn("in sync", str(ctx.exception))
+        self.assertNotIn("out of sync", str(ctx.exception))
+        with (
+            patch(target, return_value=ultimo(local + 2)),
+            self.assertRaises(UserError) as ctx,
+        ):
+            first.action_l10n_ar_arca_check_sequence()
+        self.assertIn("out of sync", str(ctx.exception))
+        self.assertIn(str(local + 2), str(ctx.exception))
+        # The local number reported is the last one, not the first.
+        self.assertIn("local one is %s." % local, str(ctx.exception))
