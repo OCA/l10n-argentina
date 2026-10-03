@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!-- Copyright 2026 KMEE
      License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
 <odoo>
@@ -12,8 +12,8 @@
         <xpath expr="//div[@name='qr_code_placeholder']" position="after">
             <div
                 t-if="o.l10n_ar_arca_cae"
-                name="l10n_ar_arca_qr"
                 class="d-flex mb-3 avoid-page-break-inside"
+                name="l10n_ar_arca_qr"
             >
                 <div class="qrcode me-3">
                     <img
