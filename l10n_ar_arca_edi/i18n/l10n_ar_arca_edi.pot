@@ -83,6 +83,12 @@ msgid "Electronic credit invoices for SMEs (FCE MiPyME, document type %(code)s) 
 msgstr ""
 
 #. module: l10n_ar_arca_edi
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi/models/account_move.py:0
+msgid "Export documents (letter E, type %(code)s) are authorized by the ARCA WSFEXv1 webservice, not by WSFEv1. Install the module l10n_ar_arca_edi_export to issue %(document)s."
+msgstr ""
+
+#. module: l10n_ar_arca_edi
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_bank_statement_line__l10n_ar_arca_edi_enabled
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_journal__l10n_ar_arca_edi_enabled
 #: model:ir.model.fields,field_description:l10n_ar_arca_edi.field_account_move__l10n_ar_arca_edi_enabled

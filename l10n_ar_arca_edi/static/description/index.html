@@ -452,6 +452,11 @@ que anulan) que este módulo no envía. Mientras tanto la validación se
 rechaza con un error claro antes de asignar el número y de llamar a
 ARCA. El soporte requiere enviar esos datos (módulo adicional o
 extensión de este).</li>
+<li>Los comprobantes de exportación (letra E, tipos 19, 20 y 21) se
+autorizan por WSFEXv1, que sirve el módulo
+<tt class="docutils literal">l10n_ar_arca_edi_export</tt>. Sin ese módulo instalado, este módulo
+rechaza la validación con un error claro en vez de enviarlos por
+WSFEv1, donde ARCA los rechazaría.</li>
 </ul>
 </div>
 <div class="section" id="bug-tracker">
