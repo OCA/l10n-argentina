@@ -1,0 +1,1 @@
+odoo-addon-report-xlsx>=16.0dev,<16.1dev
