@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 KMEE
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html). -->
+<odoo>
+    <!-- QR code required on the Argentine electronic invoice (RG 4892/2020),
+         plus the CAE and its due date on the document. Without them the PDF is
+         not the legal comprobante, even with an approved CAE. -->
+    <template
+        id="report_invoice_document_arca_edi_qr"
+        inherit_id="account.report_invoice_document"
+    >
+        <xpath expr="//div[@name='qr_code_placeholder']" position="after">
+            <div
+                t-if="o.l10n_ar_arca_cae"
+                name="l10n_ar_arca_qr"
+                class="d-flex mb-3 avoid-page-break-inside"
+            >
+                <div class="qrcode me-3">
+                    <img
+                        t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', quote_plus(o._l10n_ar_arca_qr_url()), 128, 128)"
+                    />
+                </div>
+                <div class="d-inline text-muted lh-sm">
+                    <p class="mb-0">
+                        CAE: <span t-field="o.l10n_ar_arca_cae" />
+                    </p>
+                    <p class="mb-0">
+                        CAE due date:
+                        <span t-field="o.l10n_ar_arca_cae_due_date" />
+                    </p>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
