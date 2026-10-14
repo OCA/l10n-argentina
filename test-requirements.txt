@@ -1,0 +1,1 @@
+odoo-addon-l10n_ar_arca_ws @ git+https://github.com/OCA/l10n-argentina@refs/pull/96/head#subdirectory=l10n_ar_arca_ws

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">Partner ARCA Padron</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <header invisible="not vat or country_code != 'AR'">
+                    <button
+                        name="update_from_padron"
+                        string="Update data from ARCA"
+                        help="Update Partner data from the ARCA Padrón A5."
+                        type="object"
+                    />
+                </header>
+            </sheet>
+        </field>
+    </record>
+</odoo>
