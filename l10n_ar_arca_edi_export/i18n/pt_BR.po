@@ -1,0 +1,161 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ar_arca_edi_export
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: Portuguese (BR)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "(no country)"
+msgstr "(sem país)"
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "(no unit)"
+msgstr "(sem unidade)"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi_export.selection__account_move__l10n_ar_arca_tipo_expo__1
+msgid "1 - Exportación definitiva de bienes"
+msgstr "1 - Exportação definitiva de bens"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi_export.selection__account_move__l10n_ar_arca_tipo_expo__2
+msgid "2 - Servicios"
+msgstr "2 - Serviços"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi_export.selection__account_move__l10n_ar_arca_tipo_expo__4
+msgid "4 - Otros (exportación)"
+msgstr "4 - Outros (exportação)"
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "ARCA rejected the export CAE request (%(resultado)s): %(obs)s"
+msgstr "A ARCA rejeitou o pedido de CAE de exportação (%(resultado)s): %(obs)s"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_res_country__l10n_ar_arca_cuit_pais
+msgid "CUIT País (ARCA)"
+msgstr "CUIT País (ARCA)"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_res_country__l10n_ar_arca_cuit_pais
+msgid "Code ARCA assigns to each country to identify the foreign taxpayer in WSFEXv1 (Cuit_pais_cliente). It is a table of ARCA's own, distinct from the country code (l10n_ar_afip_code) the core already ships.\n\nIt comes empty: the full table was not obtained from an official ARCA source, and filling in some 200 countries by deduction would be worse than leaving it blank (the module raises a clear error when it is missing, instead of sending a wrong number). Fill in the destination country by hand before invoicing an export to it, checking the official ARCA CUIT País table."
+msgstr "Código que a ARCA atribui a cada país para identificar o contribuinte do exterior no WSFEXv1 (Cuit_pais_cliente). É uma tabela própria da ARCA, distinta do código de país (l10n_ar_afip_code) que o core já traz.\n\nNão vem preenchido: a tabela completa não foi obtida de fonte oficial da ARCA, e preencher uns 200 países por dedução seria pior que deixar em branco (o módulo levanta erro claro quando falta, em vez de enviar um número errado). Preencha manualmente o país de destino antes de faturar exportação para ele, conferindo na tabela oficial de CUIT País da ARCA."
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model,name:l10n_ar_arca_edi_export.model_res_country
+msgid "Country"
+msgstr "País"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_account_bank_statement_line__l10n_ar_arca_permiso_existente
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_account_move__l10n_ar_arca_permiso_existente
+msgid "Existing shipping permit"
+msgstr "Permiso de embarque existente"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_account_bank_statement_line__l10n_ar_arca_tipo_expo
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_account_move__l10n_ar_arca_tipo_expo
+msgid "Export type (WSFEXv1)"
+msgstr "Tipo de exportação (WSFEXv1)"
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "Fill in the 'Tipo de exportación' before requesting the CAE."
+msgstr "Preencha o 'Tipo de exportación' antes de solicitar o CAE."
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_account_bank_statement_line__l10n_ar_arca_is_export
+#: model:ir.model.fields,field_description:l10n_ar_arca_edi_export.field_account_move__l10n_ar_arca_is_export
+msgid "Is export"
+msgstr "É exportação"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model,name:l10n_ar_arca_edi_export.model_account_journal
+msgid "Journal"
+msgstr "Diário"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model,name:l10n_ar_arca_edi_export.model_account_move
+msgid "Journal Entry"
+msgstr "Lançamento contábil"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_account_bank_statement_line__l10n_ar_arca_is_export
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_account_move__l10n_ar_arca_is_export
+msgid "Letter E (exportación): the CAE request goes to WSFEXv1 instead of WSFEv1."
+msgstr "Letra E (exportación): o pedido de CAE vai para o WSFEXv1 em vez do WSFEv1."
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_account_bank_statement_line__l10n_ar_arca_permiso_existente
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_account_move__l10n_ar_arca_permiso_existente
+msgid "Mandatory on the definitive export of goods (Tipo_expo = 1): states whether a shipping permit exists for the document. Sending the permit detail (Permisos array of WSFEXv1) is not implemented yet, which is why marking 'S' is refused: see readme/ROADMAP.rst."
+msgstr "Obrigatório na exportação definitiva de bens (Tipo_expo = 1): informa se existe permiso de embarque para o comprovante. O envio do detalhe dos permisos (array Permisos do WSFEXv1) ainda não está implementado, por isso marcar 'S' é recusado: ver readme/ROADMAP.rst."
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi_export.selection__account_move__l10n_ar_arca_permiso_existente__n
+msgid "N - No"
+msgstr "N - Não"
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields.selection,name:l10n_ar_arca_edi_export.selection__account_move__l10n_ar_arca_permiso_existente__s
+msgid "S - Sí"
+msgstr "S - Sim"
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "Set the 'CUIT País (ARCA)' of country %(country)s before requesting the export CAE for this contact."
+msgstr "Configure o 'CUIT País (ARCA)' do país %(country)s antes de solicitar o CAE de exportação para este contato."
+
+#. module: l10n_ar_arca_edi_export
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_account_bank_statement_line__l10n_ar_arca_tipo_expo
+#: model:ir.model.fields,help:l10n_ar_arca_edi_export.field_account_move__l10n_ar_arca_tipo_expo
+msgid "TO BE VERIFIED: the mapping was not confirmed against the official ARCA specification for WSFEXv1 (Tipo_expo). Manual entry until that verification. See readme/ROADMAP.rst."
+msgstr "A VERIFICAR: o mapeamento não foi confirmado contra a especificação oficial da ARCA para WSFEXv1 (Tipo_expo). Preenchimento manual até essa verificação. Ver readme/ROADMAP.rst."
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "The total of this export invoice (%(total)s) does not match the sum of the items (%(items)s). WSFEXv1 only carries items and total, with no field for taxes, perceptions, cash rounding or early payment discount. Remove whatever is adding up outside the items before requesting the CAE."
+msgstr "O total desta fatura de exportação (%(total)s) não bate com a soma dos itens (%(items)s). O WSFEXv1 só transporta itens e total, sem campo para imposto, percepção, arredondamento de caixa ou desconto por pagamento antecipado. Remova o que estiver somando fora dos itens antes de solicitar o CAE."
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "The unit of measure '%(uom)s' has no AFIP code. Set it before invoicing an export."
+msgstr "A unidade de medida '%(uom)s' não tem código AFIP. Configure-o antes de faturar exportação."
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "This version of the module does not send the shipping permit detail (Permisos array of WSFEXv1), so declaring 'Permiso de embarque existente' = S is not possible: ARCA would reject the document for the missing detail."
+msgstr "Esta versão do módulo não envia o detalhe dos permisos de embarque (array Permisos do WSFEXv1), por isso não é possível declarar 'Permiso de embarque existente' = S: a ARCA rejeitaria o comprovante por falta do detalhe."
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "Unexpected response from ARCA (WSFEXv1): no result."
+msgstr "Resposta inesperada da ARCA (WSFEXv1): sem resultado."
+
+#. module: l10n_ar_arca_edi_export
+#. odoo-python
+#: code:addons/l10n_ar_arca_edi_export/models/account_move.py:0
+msgid "no detail"
+msgstr "sem detalhe"
