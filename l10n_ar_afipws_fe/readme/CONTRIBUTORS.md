@@ -1,0 +1,7 @@
+- ADHOC SA
+- Moldeo Interactive
+- Exemax
+- Codize
+- Nimarosa
+- Ignacio Buioli \<ibuioli@gmail.com\>
+- Stroom Technology (Migration to v19)

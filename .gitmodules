@@ -1,0 +1,6 @@
+[submodule "repos/aicapture-odoo"]
+	path = repos/aicapture-odoo
+	url = git@github.com:mhamrastroom/aicapture-odoo.git
+[submodule "repos/l10n-ar-accounting"]
+	path = repos/l10n-ar-accounting
+	url = git@github.com:mhamrastroom/l10n-ar-accounting.git
